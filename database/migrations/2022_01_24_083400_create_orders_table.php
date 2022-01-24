@@ -18,7 +18,7 @@ class CreateOrdersTable extends Migration
             $table->bigInteger('toko_id');
             $table->bigInteger('sales_id');
             $table->enum('status_pengiriman', ['0', '1'])->default('0')->index('status_pengiriman')->comment('0:belum kirim, 1:sudah kirim');
-            $table->varchar('foto_pengiriman', 255);
+            $table->varchar('foto_pengiriman', 255)->nullable();
             $table->timestamps();
         });
     }
