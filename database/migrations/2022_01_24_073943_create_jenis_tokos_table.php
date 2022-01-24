@@ -14,7 +14,7 @@ class CreateJenisTokosTable extends Migration
     public function up()
     {
         Schema::create('jenis_tokos', function (Blueprint $table) {
-            $table->id()->primary();
+            $table->id();
             $table->string('nama', 255);
             $table->text('keterangan')->nullable();
         });
