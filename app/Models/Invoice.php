@@ -2,8 +2,11 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
+use App\Models\Order;
+use App\Models\Pembayaran;
+use App\Models\MetodePembayaran;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class Invoice extends Model
 {
@@ -12,4 +15,16 @@ class Invoice extends Model
     protected $guarded = [
       'id'
     ];
+
+    public function linkpembayaran(){
+      return $this->hasMany(Pembayaran::class, 'invoice_id');
+    }
+
+    public function linkorder(){
+      return $this->belongsTo(Order::class, 'id', 'order_id');
+    }
+
+    public function linkmetodepembayaran(){
+      return $this->belongsTo(MetodePembayaran::class, 'id', 'metodepembayaran_id');
+    }
 }
