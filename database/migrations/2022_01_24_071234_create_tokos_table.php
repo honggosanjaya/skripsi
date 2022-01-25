@@ -14,7 +14,7 @@ class CreateTokosTable extends Migration
     public function up()
     {
         Schema::create('tokos', function (Blueprint $table) {
-            $table->id()->primary();
+            $table->id();
             $table->bigInteger('jenis_toko_id');
             $table->string('nama',255);
             $table->string('alamat_utama',255);

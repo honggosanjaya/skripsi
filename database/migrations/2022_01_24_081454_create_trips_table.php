@@ -14,7 +14,7 @@ class CreateTripsTable extends Migration
     public function up()
     {
         Schema::create('trips', function (Blueprint $table) {
-            $table->id()->primary();
+            $table->id();
             $table->bigInteger('toko_id');
             $table->bigInteger('sales_id');
             $table->text('alasan_menolak')->nullable();

@@ -17,7 +17,7 @@ class CreateInvoicesTable extends Migration
             $table->id();
             $table->bigInteger('order_id');
             $table->bigInteger('metodepembayaran_id');
-            $table->varchar('nomor_invoice', 255);
+            $table->string('nomor_invoice', 255);
             $table->double('harga_total');
             $table->timestamp('waktu_pelunasan');
             $table->enum('status_pelunasan', ['0', '1', '2'])->default('0')->index('status_pelunasan')->comment('0:belum lunas, 1:setengah lunas, 2:lunas');
