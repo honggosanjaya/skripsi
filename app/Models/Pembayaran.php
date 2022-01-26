@@ -12,8 +12,8 @@ class Pembayaran extends Model
 
     protected $guarded = ['id'];
 
-    public function linkinvoice()
+    public function linkInvoice()
     {
-        return $this->hasOne(Invoice::class, 'id', 'invoice_id');
+        return $this->belongsTo(Invoice::class, 'id', 'invoice_id');
     }
 }
