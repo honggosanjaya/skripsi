@@ -5,6 +5,8 @@ namespace App\Models;
 use App\Models\JenisToko;
 use App\Models\Trip;
 use App\Models\Order;
+use App\Models\History;
+use App\Models\Retur;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
