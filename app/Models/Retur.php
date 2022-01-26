@@ -12,7 +12,7 @@ class Retur extends Model
     protected $guarded = [
       'id'
     ];
-    public function linkSales()
+    public function linkSales() 
     { 
       return $this->belongsTo(User::class, 'id', 'sales_id');
     }
