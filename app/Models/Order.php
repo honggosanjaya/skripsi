@@ -17,15 +17,15 @@ class Order extends Model
       'id'
     ];
 
-    public function linkinvoice(){
+    public function linkInvoice(){
       return $this->hasOne(Invoice::class, 'order_id');
     }
 
-    public function linkorderitem(){
+    public function linkOrderItem(){
       return $this->hasMany(OrderItem::class, 'order_id');
     }
 
-    public function linktoko(){
+    public function linkToko(){
       return $this->belongsTo(Toko::class, 'id', 'toko_id');
     }
 
