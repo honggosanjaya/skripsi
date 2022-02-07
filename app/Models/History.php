@@ -15,11 +15,11 @@ class History extends Model
       'id'
     ];
 
-    public function linktoko(){
+    public function linkToko(){
       return $this->belongsTo(Toko::class, 'id', 'toko_id');
     }
 
-    public function linkitem(){
+    public function linkItem(){
       return $this->belongsTo(Item::class, 'id', 'item_id');
     }
 }

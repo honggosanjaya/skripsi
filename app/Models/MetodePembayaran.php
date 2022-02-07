@@ -14,7 +14,7 @@ class MetodePembayaran extends Model
       'id'
     ];
 
-    public function linkinvoice(){
-      return $this->hasMany(Invoice::class, 'pembayaran_id');
+    public function linkInvoice(){
+      return $this->hasMany(Invoice::class, 'metodepembayaran_id');
     }
 }

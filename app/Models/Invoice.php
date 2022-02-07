@@ -16,11 +16,11 @@ class Invoice extends Model
       'id'
     ];
 
-    public function linkpembayaran(){
+    public function linkPembayaran(){
       return $this->hasMany(Pembayaran::class, 'invoice_id');
     }
 
-    public function linkorder(){
+    public function linkOrder(){
       return $this->belongsTo(Order::class, 'id', 'order_id');
     }
 

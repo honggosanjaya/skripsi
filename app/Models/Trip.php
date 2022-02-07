@@ -13,12 +13,12 @@ class Trip extends Model
 
     protected $guarded = ['id'];
 
-    public function linktoko()
+    public function linkToko()
     {
         return $this->belongsTo(Toko::class, 'id', 'toko_id');
     }
 
-    public function linksales()
+    public function linkSales()
     {
         return $this->belongsTo(User::class, 'id', 'sales_id');
     }

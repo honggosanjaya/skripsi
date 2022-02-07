@@ -12,8 +12,8 @@ class JenisToko extends Model
 
     protected $guarded = ['id'];
 
-    public function linktoko()
+    public function linkToko()
     {
-        return $this->hasMany(Toko::class, 'id');
+        return $this->hasMany(Toko::class, 'jenis_toko_id', 'id');
     }
 }
