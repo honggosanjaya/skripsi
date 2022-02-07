@@ -2,8 +2,10 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
+use App\Models\Item;
+use App\Models\Toko;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class History extends Model
 {
@@ -12,4 +14,12 @@ class History extends Model
     protected $guarded = [
       'id'
     ];
+
+    public function linkToko(){
+      return $this->belongsTo(Toko::class, 'id', 'toko_id');
+    }
+
+    public function linkItem(){
+      return $this->belongsTo(Item::class, 'id', 'item_id');
+    }
 }

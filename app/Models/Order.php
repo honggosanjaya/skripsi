@@ -2,8 +2,12 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
+use App\Models\Toko;
+use App\Models\User;
+use App\Models\Invoice;
+use App\Models\OrderItem;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class Order extends Model
 {
@@ -12,4 +16,20 @@ class Order extends Model
     protected $guarded = [
       'id'
     ];
+
+    public function linkInvoice(){
+      return $this->belongsTo(Invoice::class, 'order_id');
+    }
+
+    public function linkOrderItem(){
+      return $this->hasMany(OrderItem::class, 'order_id');
+    }
+
+    public function linkToko(){
+      return $this->belongsTo(Toko::class, 'id', 'toko_id');
+    }
+
+    public function linksales(){
+      return $this->belongsTo(User::class, 'id', 'sales_id');
+    }
 }
