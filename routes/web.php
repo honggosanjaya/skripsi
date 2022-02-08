@@ -21,6 +21,10 @@ Route::get('/home', function () {
     return view('home');
 })->middleware('admin');
 
+Route::get('/testing', function () {
+    return view('testing');
+});
+
 Route::get('/check', function () {
     return view('check');
 })->middleware('supervisor');
