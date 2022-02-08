@@ -31,6 +31,6 @@ Route::get('/check', function () {
 
 Route::get('/dashboard', function () {
     return view('dashboard');
-})->middleware('auth')->name('dashboard');
+})->middleware('notsales')->name('dashboard');
 
 require __DIR__.'/auth.php';
