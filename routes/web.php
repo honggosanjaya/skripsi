@@ -1,7 +1,5 @@
 <?php
 
-use App\Http\Controllers\LoginController;
-use App\Http\Controllers\RegisterController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -16,9 +14,19 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::get('/', function () {
-    return view('testing');
+    return view('welcome');
 });
 
 Route::get('/home', function () {
     return view('home');
-});
+})->middleware('admin');
+
+Route::get('/check', function () {
+    return view('check');
+})->middleware('supervisor');
+
+Route::get('/dashboard', function () {
+    return view('dashboard');
+})->middleware('auth')->name('dashboard');
+
+require __DIR__.'/auth.php';

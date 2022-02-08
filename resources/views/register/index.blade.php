@@ -1,12 +1,16 @@
+<head>
+  <link href=" {{ mix('css/bootstrap.css') }}" rel="stylesheet">
+</head>
+
 <div class="row justify-content-center">
     <div class="col-lg-5">
         <main class="form-registration">
             <form action="/register" method="POST">
               @csrf
 
-              <h1 class="h3 mb-3 fw-normal">Registration Form</h1>
+              <h1 class="h3 mb-3 mt-3 fw-normal">Registration Form</h1>
           
-              <div class="form-floating">
+              <div class="form-floating my-2">
                 <input type="text" name="nama" class="form-control rounded-top
                 @error('nama') is-invalid @enderror" id="nama" placeholder="Nama" required 
                 value="{{ old('nama') }}">
@@ -18,7 +22,7 @@
                 @enderror
               </div>
 
-              <div class="form-floating">
+              <div class="form-floating my-2">
                 <input type="text" name="nomor_telepon" class="form-control 
                 @error('username') is-invalid @enderror" id="nomor_telepon" placeholder="Nomor Telepon" required
                 value="{{ old('nomor_telepon') }}">
@@ -54,7 +58,7 @@
             </div>
         -->
 
-              <div class="form-floating">
+              <div class="form-floating my-2">
                 <input type="email" name="email" class="form-control
                 @error('email') is-invalid @enderror" id="email" placeholder="name@example.com" required
                 value="{{ old('email') }}">
@@ -66,7 +70,7 @@
                 @enderror
               </div>
 
-              <div class="form-floating">
+              <div class="form-floating my-2">
                 <input type="password" name="password" class="form-control rounded-bottom
                 @error('password') is-invalid @enderror" id="password" placeholder="Password" required>
                 <label for="password">Password</label>
@@ -86,4 +90,5 @@
     </div>
 </div>
 
+<script src="{{ mix('js/bootstrap.js') }}"></script>
 <script src="{{ asset('js/eventHandle.js') }}"></script>
