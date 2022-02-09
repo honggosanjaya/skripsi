@@ -1,0 +1,203 @@
+@import url("https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap");
+@import "./variables";
+@import "./modifBoostrap";
+
+* {
+    padding: 0;
+    margin: 0;
+    box-sizing: border-box;
+    list-style: none;
+    text-decoration: none;
+}
+
+body {
+    font-family: "Poppins", sans-serif;
+    overflow-x: hidden;
+    background-color: $body-bg;
+}
+
+.dropdown-toggle {
+    color: #000;
+    text-decoration: none;
+    &:hover {
+        color: $secondary-color;
+    }
+    &::after {
+        border: 0;
+    }
+}
+
+.sidebar {
+    width: 250px;
+    position: fixed;
+    left: 0;
+    top: 0;
+    height: 100vh;
+    background-color: $sidebar-bg;
+    transition: width 300ms;
+    overflow-y: auto;
+    overflow-x: hidden;
+    z-index: 999;
+
+    .sidebar-brand {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 1rem;
+        .hamburger_icon {
+            font-size: 2.5rem;
+            color: white;
+            &:hover {
+                color: $secondary-color;
+            }
+        }
+    }
+
+    .sidebar-menu {
+        padding: 2rem 0 2rem 1rem;
+        hr,
+        h1 {
+            color: #fff;
+        }
+
+        a {
+            display: block;
+            color: #c3c1bf;
+            padding: 5px 15px;
+            text-decoration: none;
+            &.active {
+                color: #66615b;
+                background-color: $whitesmoke;
+                border-radius: 1.875rem 0 0 1.875rem;
+                padding: 1rem;
+            }
+            &:hover {
+                color: $secondary-color;
+            }
+        }
+    }
+}
+
+#nav-toggle {
+    display: none;
+
+    &:checked {
+        & ~ .main-content main {
+            margin-left: 0;
+        }
+
+        & + .sidebar {
+            width: 70px;
+
+            .sidebar-brand h2 span:last-child,
+            .sidebar-brand h3,
+            .sidebar-menu li a span:last-child,
+            .sidebar-menu h1,
+            .darkmode-toggle .darkmode-switch {
+                display: none;
+            }
+
+            .darkmode-toggle {
+                display: block;
+            }
+        }
+    }
+
+    & ~ .main-content {
+        margin-left: 70px;
+    }
+}
+
+.main-content {
+    transition: margin-left 300ms;
+    margin-left: 250px;
+}
+
+header {
+    background: lightgoldenrodyellow;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1.25rem 1.6rem;
+    left: 250px;
+    z-index: 999;
+    transition: left 300ms;
+    // box-shadow: rgba(33, 35, 38, 0.1) 0px 10px 10px -10px;
+
+    .admin-wrapper {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        position: relative;
+        .profile_picture {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+        }
+        .active_indicator {
+            background-color: green;
+            width: 0.75rem;
+            height: 0.75rem;
+            border-radius: 50%;
+            position: absolute;
+            left: calc(40px - 0.5rem);
+            bottom: 0;
+        }
+    }
+
+    .dropdown-toggle {
+        max-height: 50px;
+    }
+}
+
+main {
+    // padding: 0 24px;
+    margin: 0 0 60px 180px;
+    transition: margin-left 300ms;
+    min-height: calc(100vh - 90px);
+    position: relative;
+}
+
+@media only screen and (max-width: 768px) {
+    html {
+        font-size: 14px;
+    }
+}
+
+@media only screen and (max-width: 560px) {
+    html {
+        font-size: 12px;
+    }
+
+    header {
+        padding: 10px;
+        .dropdown-toggle {
+            max-height: 40px;
+        }
+    }
+}
+
+.search-box {
+    position: relative;
+    .form-control {
+        text-indent: 15px;
+        border: none;
+        height: 45px;
+        border-radius: 0px;
+        border-bottom: 1px solid #eee;
+        &:focus {
+            color: #495057;
+            background-color: #fff;
+            border-color: #eee;
+            outline: 0;
+            box-shadow: none;
+            border: 1px solid blue;
+        }
+    }
+    i {
+        position: absolute;
+        top: 14px;
+        left: 4px;
+        color: #b8b9bc;
+    }
+}
