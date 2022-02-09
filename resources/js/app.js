@@ -1,5 +1,4 @@
-require('./bootstrap');
-
+require('./components/Example');
 import Alpine from 'alpinejs';
 
 window.Alpine = Alpine;

@@ -1,5 +1,6 @@
 const mix = require('laravel-mix');
 
+
 // package
 mix
   .js('resources/js/bootstrap.js', 'public/js/bootstrap.js')
@@ -17,7 +18,7 @@ mix
     [
 
     ],
-    "public/css/main.css"
+    "public/custom/css/main.css"
   )
   .js(
     [
@@ -27,9 +28,10 @@ mix
   );
 
 
-mix.js('resources/js/app.js', 'public/js').postCss('resources/css/app.css', 'public/css', [
-  require('postcss-import'),
-  require('tailwindcss'),
-  require('autoprefixer'),
-]);
+mix.js('resources/js/app.js', 'public/js/app.js')
+  .postCss('resources/css/app.css', 'public/css/app.css', [
+    require('postcss-import'),
+    require('tailwindcss'),
+    require('autoprefixer'),
+  ]);
 
