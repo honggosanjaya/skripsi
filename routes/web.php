@@ -78,7 +78,7 @@ Route::prefix('dashboard')->group(function() {
 
 Route::get('/home', function () {
     return view('home');
-});
+})->middleware(['auth','admin']);
 
 Route::get('/testing', function () {
     return view('testing');
@@ -86,7 +86,7 @@ Route::get('/testing', function () {
 
 Route::get('/check', function () {
     return view('check');
-})->middleware('supervisor');
+})->middleware(['auth','supervisor']);
 
 Route::get('/dashboard', function () {
     return view('dashboard');
