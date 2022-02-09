@@ -7,13 +7,22 @@
       {{-- active sign --}}
       <div class="active_indicator"></div>
       <div class="admin-name ms-2">
-        <h4 class="mb-0 fs-6">Username Nya</h4>
+        <h4 class="mb-0 fs-6">{{ auth()->user()->nama }}</h4>
+        @if (auth()->user()->role === "1")
+        <small>Admin</small>
+        @else
         <small>Supervisor</small>
+        @endif
+        
       </div>
     </div>
   </a>
   <ul class="dropdown-menu p-3" aria-labelledby="navbarDropdown">
-    <button class="btn btn-danger d-block w-100">Log Out</button>
+    <form method="POST" action="{{ route('logout') }}">
+      @csrf
+      <button class="btn btn-danger d-block w-100">Log Out</button>
+    </form>
+    
     <a href="/dashboard/profil/ubahpassword" class="btn btn-primary d-block w-100 mt-3">Ubah Password</a>
     <a href="/dashboard/profil/ubah" class="btn btn-warning d-block w-100 mt-3">Ubah Profil</a>
   </ul>
