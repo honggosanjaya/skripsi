@@ -10921,7 +10921,7 @@ return jQuery;
 /******/ 	
 /************************************************************************/
 var __webpack_exports__ = {};
-// This entry need to be wrapped in an IIFE because it need to be isolated against other modules in the chunk.
+// This entry need to be wrapped in an IIFE because it need to be isolated against other entry modules.
 (() => {
 /*!******************************!*\
   !*** ./resources/js/main.js ***!
@@ -10931,6 +10931,18 @@ window.$ = window.jQuery = __webpack_require__(/*! jquery */ "./node_modules/jqu
 if ($('#example').length) {
   alert('check mix untuk custom + jquery');
 }
+})();
+
+// This entry need to be wrapped in an IIFE because it need to be isolated against other entry modules.
+(() => {
+/*!***********************************!*\
+  !*** ./resources/js/dashboard.js ***!
+  \***********************************/
+$(document).ready(function () {
+  $('.batalkanAksi_btn').click(function () {
+    confirm('apakah anda yakin? perubahan akan terbuang');
+  });
+});
 })();
 
 /******/ })()
