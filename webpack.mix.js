@@ -18,7 +18,7 @@ mix
         [    
             
         ],
-        "public/css/main.css"
+        "public/custom/css/main.css"
     )
     .js(
         [
@@ -28,7 +28,8 @@ mix
     );
 
 
-mix.js('resources/js/app.js', 'public/js/app.js').postCss('resources/css/app.css', 'public/css/app.css', [
+mix.js('resources/js/app.js', 'public/js/app.js')
+.postCss('resources/css/app.css', 'public/css/app.css', [
     require('postcss-import'),
     require('tailwindcss'),
     require('autoprefixer'),
