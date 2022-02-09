@@ -78,5 +78,19 @@ Route::prefix('dashboard')->group(function() {
 
 Route::get('/home', function () {
     return view('home');
+})->middleware(['auth','admin']);
+
+Route::get('/testing', function () {
+    return view('testing');
 });
+
+Route::get('/check', function () {
+    return view('check');
+})->middleware('supervisor');
+
+Route::get('/dashboard', function () {
+    return view('dashboard');
+})->middleware(['auth','notsales'])->name('dashboard');
+
+require __DIR__.'/auth.php';
 

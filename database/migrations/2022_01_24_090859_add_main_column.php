@@ -15,9 +15,11 @@ class AddMainColumn extends Migration
     {
         Schema::table('users', function (Blueprint $table) {
             $table->string('nomor_telepon',15);
-            $table->string('foto_profil',255);
+            $table->string('foto_profil',255)->nullable();
             $table->enum('status',['0','1'])->comment('0:Sudah Dipecat, 1:Masih Bekerja')->default(1);
-            $table->enum('role',['0','1','2'])->comment('0:Admin, 1:Supervisor, 2:Sales')->default(0);
+
+            $table->enum('role',['0','1','2'])->comment('0:Sales, 1:Admin, 2:Supervisor')->default(0);
+
         });
     }
 
