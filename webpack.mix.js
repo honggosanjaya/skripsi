@@ -4,8 +4,8 @@ const mix = require('laravel-mix');
 // package
 mix
   .js('resources/js/bootstrap.js', 'public/js/bootstrap.js')
-  .sass('resources/sass/app.scss', 'public/css/bootstrap.css');
-
+  .sass('resources/sass/app.scss', 'public/css/bootstrap.css')
+  .sass('resources/sass/dashboard.scss', 'public/css/dashboard.css');
 // react
 mix
   .js('resources/js/app.js', 'public/js/react.js')
@@ -22,7 +22,8 @@ mix
   )
   .js(
     [
-      'resources/js/main.js'
+      'resources/js/main.js',
+      'resources/js/dashboard.js'
     ]
     , 'public/js/main.js'
   );
