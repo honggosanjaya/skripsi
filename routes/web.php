@@ -17,7 +17,7 @@ Route::get('/', function () {
     return view('welcome');
 });
 
-Route::prefix('dashboard')->group(function() {
+Route::prefix('dashboard')->middleware(['auth','notsales'])->group(function() {
   Route::get('/', function() {
     return view('layouts/dashboard');
   });
@@ -88,9 +88,9 @@ Route::get('/check', function () {
     return view('check');
 })->middleware(['auth','supervisor']);
 
-Route::get('/dashboard', function () {
-    return view('dashboard');
-})->middleware(['auth','notsales'])->name('dashboard');
+// Route::get('/dashboard', function () {
+//     return view('dashboard');
+// })->middleware(['auth','notsales'])->name('dashboard');
 
 require __DIR__.'/auth.php';
 
