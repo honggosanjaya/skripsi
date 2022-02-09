@@ -76,3 +76,7 @@ Route::prefix('dashboard')->group(function() {
 
 });
 
+Route::get('/home', function () {
+    return view('home');
+});
+

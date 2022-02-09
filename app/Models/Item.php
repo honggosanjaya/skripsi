@@ -12,4 +12,17 @@ class Item extends Model
     protected $guarded = [
       'id'
     ];
+    public function linkOrderItem()
+    { 
+        return $this->hasMany(Orderitem::class, 'item_id');
+    }
+    public function linkHistory()
+    {
+        return $this->hasMany(History::class, 'item_id');
+    }
+    public function linkRetur()
+    {
+        return $this->hasMany(Retur::class, 'item_id');
+    }
+    
 }

@@ -1,5 +1,10 @@
 {
     "/js/app.js": "/js/app.js",
     "/css/dashboard.css": "/css/dashboard.css",
-    "/css/app.css": "/css/app.css"
+    "/css/app.css": "/css/app.css",
+    "/js/bootstrap.js": "/js/bootstrap.js",
+    "/js/react.js": "/js/react.js",
+    "/js/main.js": "/js/main.js",
+    "/css/bootstrap.css": "/css/bootstrap.css",
+    "/css/main.css": "/css/main.css"
 }
