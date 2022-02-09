@@ -19,7 +19,7 @@ Route::get('/', function () {
 
 Route::get('/home', function () {
     return view('home');
-})->middleware('admin');
+})->middleware(['auth','admin']);
 
 Route::get('/testing', function () {
     return view('testing');
@@ -31,6 +31,6 @@ Route::get('/check', function () {
 
 Route::get('/dashboard', function () {
     return view('dashboard');
-})->middleware('notsales')->name('dashboard');
+})->middleware(['auth','notsales'])->name('dashboard');
 
 require __DIR__.'/auth.php';
