@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\SupervisorController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -63,15 +64,19 @@ Route::prefix('dashboard')->middleware(['auth','notsales'])->group(function() {
   });
 
   Route::prefix('pengguna')->group(function() {
-    Route::get('/', function() {
-      return view('supervisor/pengguna');
-    });
-    Route::get('/tambah', function() {
-      return view('supervisor/addPengguna');
-    });
-    Route::get('/ubah', function() {
-      return view('supervisor/editPengguna');
-    });
+    Route::get('/', [SupervisorController::class, 'index']);
+
+    Route::get('/cari', [SupervisorController::class, 'search']);
+
+    Route::get('/tambah', [SupervisorController::class, 'create']);
+
+    Route::post('/tambahuser', [SupervisorController::class, 'store']);
+
+    Route::get('/ubah/{user:id}', [SupervisorController::class, 'edit']);
+
+    Route::put('/ubahuser/{user:id}', [SupervisorController::class, 'update']);
+
+    Route::get('/hapus/{user:id}', [SupervisorController::class, 'destroy']);
   });
 
 });
