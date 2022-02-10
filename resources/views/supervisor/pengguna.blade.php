@@ -11,27 +11,6 @@
 
   <a href="/dashboard/pengguna/tambah" class="btn btn-primary my-4">Tambah User</a>
 
-  @if(session()->has('addDataSuccess'))
-  <div class="alert alert-success alert-dismissible fade show" role="alert">
-  {{ session('addDataSuccess') }}
-  <button type="button" class="btn btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-  </div>
-  @endif
-
-  @if(session()->has('updateDataSuccess'))
-  <div class="alert alert-success alert-dismissible fade show" role="alert">
-  {{ session('updateDataSuccess') }}
-  <button type="button" class="btn btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-  </div>
-  @endif
-
-  @if(session()->has('deleteDataSuccess'))
-  <div class="alert alert-success alert-dismissible fade show" role="alert">
-  {{ session('deleteDataSuccess') }}
-  <button type="button" class="btn btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-  </div>
-  @endif
-
   <table class="table">
     <thead>
       <tr>
