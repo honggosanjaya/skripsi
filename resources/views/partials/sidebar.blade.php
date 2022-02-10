@@ -17,10 +17,9 @@
         </a>
       </li>
     </ul>
-
-    <hr class="my-4" />
-
+  
     @can('admin')
+    <hr class="my-4" />
     <h1 class="mb-3 fs-6">Admin</h1>
     <ul class="p-0">
       <li class="mb-3">
@@ -41,10 +40,8 @@
     </ul>
     @endcan
     
-
-    <hr class="my-4" />
-
     @can('supervisor')
+    <hr class="my-4" />
     <h1 class="mb-3 fs-6">Supervisor</h1>
     <ul class="p-0">
       <li class="mb-3">
