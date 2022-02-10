@@ -87,17 +87,5 @@ class SupervisorController extends Controller
         return redirect('/dashboard/pengguna')->with('updateDataSuccess','Update User '. $user->nama .' Berhasil');        
     }
 
-    public function destroy(User $user)
-    {
-        User::destroy($user->id);
-
-        return redirect('/dashboard/pengguna')->with('deleteDataSuccess','User '. $user->nama .' Telah dihapus');
-        // if($post->image){
-        //     Storage::delete($post->image);
-        // }
-        // Post::destroy($post->id);
-
-        // return redirect('/dashboard/posts')->with('success','Post has been deleted');
-    }
-
+    
 }

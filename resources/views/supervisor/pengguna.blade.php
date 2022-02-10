@@ -52,9 +52,7 @@
         <td>
           <a href="/dashboard/pengguna/ubah/{{ $user->id }}" class="btn btn-warning">Ubah</a>
         </td>
-        <td>
-          <a href="/dashboard/pengguna/hapus/{{ $user->id }}" class="btn btn-danger">Hapus</a>
-        </td>
+        
       </tr>
       @endforeach
       

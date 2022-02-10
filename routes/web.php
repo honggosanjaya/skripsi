@@ -76,7 +76,7 @@ Route::prefix('dashboard')->middleware(['auth','notsales'])->group(function() {
 
     Route::put('/ubahuser/{user:id}', [SupervisorController::class, 'update']);
 
-    Route::get('/hapus/{user:id}', [SupervisorController::class, 'destroy']);
+    
   });
 
 });
