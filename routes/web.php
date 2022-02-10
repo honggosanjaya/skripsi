@@ -88,9 +88,5 @@ Route::get('/check', function () {
     return view('check');
 })->middleware(['auth','supervisor']);
 
-// Route::get('/dashboard', function () {
-//     return view('dashboard');
-// })->middleware(['auth','notsales'])->name('dashboard');
-
 require __DIR__.'/auth.php';
 
