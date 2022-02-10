@@ -20,7 +20,7 @@
 
     <hr class="my-4" />
 
-
+    @can('admin')
     <h1 class="mb-3 fs-6">Admin</h1>
     <ul class="p-0">
       <li class="mb-3">
@@ -39,10 +39,12 @@
         </a>
       </li>
     </ul>
+    @endcan
+    
 
     <hr class="my-4" />
 
-
+    @can('supervisor')
     <h1 class="mb-3 fs-6">Supervisor</h1>
     <ul class="p-0">
       <li class="mb-3">
@@ -51,5 +53,7 @@
         </a>
       </li>
     </ul>
+    @endcan
+    
   </div>
 </div>
