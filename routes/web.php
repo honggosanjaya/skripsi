@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\ItemController;
 use App\Http\Controllers\SupervisorController;
 use Illuminate\Support\Facades\Route;
 
@@ -31,19 +32,21 @@ Route::prefix('dashboard')->middleware(['auth','notsales'])->group(function() {
     return view('admin/retur');
   });
 
-  Route::prefix('produk')->group(function() {
-    Route::get('/', function() {
-      return view('admin/produk');
-    });
+  Route::resource('/produk', ItemController::class);
 
-    Route::get('/tambah', function() {
-      return view('admin/addProduk');
-    });
+  // Route::prefix('produk')->group(function() {
+  //   Route::get('/', function() {
+  //     return view('admin/produk/produk');
+  //   });
 
-    Route::get('/ubah', function() {
-      return view('admin/editProduk');
-    });
-  });
+  //   Route::get('/tambah', function() {
+  //     return view('admin/produk/addProduk');
+  //   });
+
+  //   Route::get('/ubah', function() {
+  //     return view('admin/produk/editProduk');
+  //   });
+  // });
   
   Route::get('/profil/ubah', function() {
     return view('adminSupervisor/editProfil');
