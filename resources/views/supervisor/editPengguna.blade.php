@@ -22,7 +22,7 @@
         <label for="nomor_telepon" class="form-label">No Telepon</label>
         <input type="text" name="nomor_telepon" class="form-control rounded-top
                 @error('nomor_telepon') is-invalid @enderror" id="nomor_telepon" placeholder="Nomor Telepon" 
-                value="{{ old('nomor_telepon', $user->nomor_telepon) }}">
+                value="{{ old('nomor_telepon', $user->nomor_telepon) }}" readonly>
                 
                 @error('nomor_telepon')
                 <div class="invalid-feedback">
@@ -70,7 +70,7 @@
         <label for="email" class="form-label">Email</label>
         <input type="email" name="email" class="form-control rounded-top
                 @error('email') is-invalid @enderror" id="email" placeholder="Email" 
-                value="{{ old('email', $user->email) }}">
+                value="{{ old('email', $user->email) }}" readonly>
                 
                 @error('email')
                 <div class="invalid-feedback">
