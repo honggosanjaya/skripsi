@@ -39,11 +39,11 @@ class SupervisorController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'nama' => ['required', 'string', 'max:255'],
-            'nomor_telepon' => ['required', 'min:3', 'max:15'],
-            'role' => ['required'],
-            'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
-            'password' => ['required'],
+            'nama' => 'required|string|max:20',
+            'nomor_telepon' => 'required|min:3|max:15',
+            'role' => 'required',
+            'email' => 'required|string|email|max:255|unique:users',
+            'password' => 'required',
         ]);
 
         User::create([
@@ -74,11 +74,11 @@ class SupervisorController extends Controller
     public function update(Request $request, User $user)
     {
         $rules = $request->validate([
-            'nama' => ['required', 'string', 'max:255'],
-            'nomor_telepon' => ['required', 'min:3', 'max:15'],
-            'status' => ['required'],
-            'role' => ['required'],
-            'email' => ['required', 'string', 'email', 'max:255'],            
+            'nama' => 'required|string|max:255',
+            'nomor_telepon' => 'required|min:3|max:15',
+            'status' => 'required',
+            'role' => 'required',
+            'email' => 'required|string|email|max:255',                          
         ]);
 
         User::Where('id', $user->id)

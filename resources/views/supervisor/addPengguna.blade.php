@@ -7,7 +7,7 @@
       <div class="mb-3">
         <label for="nama" class="form-label">Nama</label>
         <input type="text" name="nama" class="form-control rounded-top
-                @error('nama') is-invalid @enderror" id="nama" placeholder="Nama" required 
+                @error('nama') is-invalid @enderror" id="nama" placeholder="Nama"
                 value="{{ old('nama') }}">
                 
                 @error('nama')
@@ -20,7 +20,7 @@
       <div class="mb-3">
         <label for="nomor_telepon" class="form-label">No Telepon</label>
         <input type="text" name="nomor_telepon" class="form-control rounded-top
-                @error('nomor_telepon') is-invalid @enderror" id="nomor_telepon" placeholder="Nomor Telepon" required 
+                @error('nomor_telepon') is-invalid @enderror" id="nomor_telepon" placeholder="Nomor Telepon" 
                 value="{{ old('nomor_telepon') }}">
                 
                 @error('nomor_telepon')
@@ -37,14 +37,14 @@
           <option value="0">Sales</option>
           <option value="1">Admin</option>
           <option value="2">Supervisor</option>
-        </select>
+        </select>        
       </div>
 
 
       <div class="mb-3">
         <label for="email" class="form-label">Email</label>
         <input type="email" name="email" class="form-control rounded-top
-                @error('email') is-invalid @enderror" id="email" placeholder="Email" required 
+                @error('email') is-invalid @enderror" id="email" placeholder="Email" 
                 value="{{ old('email') }}">
                 
                 @error('email')
@@ -57,7 +57,7 @@
       <div class="mb-3">
         <label for="password" class="form-label">Password</label>
         <input type="password" name="password" class="form-control rounded-top
-                @error('password') is-invalid @enderror" id="password" placeholder="Password" required 
+                @error('password') is-invalid @enderror" id="password" placeholder="Password"  
                 value="{{ old('password') }}">
                 
                 @error('password')
