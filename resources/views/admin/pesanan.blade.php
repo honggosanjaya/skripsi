@@ -12,8 +12,10 @@
         <th scope="col">No</th>
         <th scope="col">id pesanan</th>
         <th scope="col">nama toko</th>
+        <th scope="col">jenis toko</th>
         <th scope="col">nama sales</th>
-        <th scope="col">metode bayar</th>
+        <th scope="col">harga total</th>
+        <th scope="col">metode pembayaran</th>
         <th scope="col">status pembayaran</th>
         <th scope="col">tanggal kirim</th>
         <th scope="col">status pengiriman</th>
@@ -22,15 +24,28 @@
       </tr>
     </thead>
     <tbody>
+      @foreach ($tokos as $toko)
       <tr>
-        <th scope="row">1</th>
-        <td>1</td>
-        <td>Toko ABC</td>
+        <th scope="row">{{ $loop->iteration }}</th>
+        <td>{{ $toko->linkOrder[0]->id }}</td>
+        <td>{{ $toko->nama }}</td>
+        <td>{{ $toko->linkJenisToko->nama }}</td>
         <td>Hendro Hanjaya</td>
-        <td>Tunai</td>
+        <td>
+        {{ $toko->linkOrder[0]->linkInvoice->harga_total }}
+        </td>
+        <td>{{ $toko->linkOrder[0]->linkInvoice->linkmetodepembayaran->nama }}</td>
+
+        @if ($toko->linkOrder[0]->linkInvoice->status_pelunasan == "0")
+        <td>Belum Lunas</td>
+        @elseif ($toko->linkOrder[0]->linkInvoice->status_pelunasan == "1")
+        <td>Setengah Lunas</td>
+        @else
         <td>Lunas</td>
+        @endif
+        
         <td>23-02-2022</td>
-        <td>Belum kirim</td>
+        <td>Belum</td>
         <td>Bambang Santoso</td>
         <td>
           <button class="btn btn-success">Terima</button>
@@ -39,6 +54,8 @@
           <button class="btn btn-info">Detail</button>
         </td>
       </tr>
+      @endforeach
+      
     </tbody>
   </table>
 @endsection

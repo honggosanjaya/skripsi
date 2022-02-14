@@ -25,6 +25,6 @@ class Invoice extends Model
     }
 
     public function linkmetodepembayaran(){
-      return $this->belongsTo(MetodePembayaran::class, 'id', 'metodepembayaran_id');
+      return $this->belongsTo(MetodePembayaran::class, 'metodepembayaran_id');
     }
 }

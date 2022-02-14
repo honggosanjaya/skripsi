@@ -18,7 +18,7 @@ class Toko extends Model
 
     public function linkJenisToko()
     {
-        return $this->belongsTo(JenisToko::class, 'id', 'jenis_toko_id');
+        return $this->belongsTo(JenisToko::class, 'id');
     }
 
     public function linkTrip()
@@ -28,7 +28,7 @@ class Toko extends Model
 
     public function linkOrder()
     {
-        return $this->hasMany(Order::class, 'toko_id', 'id');
+        return $this->hasMany(Order::class, 'toko_id', 'id')->with(['linkInvoice']);
     }
 
     public function linkHistory()
