@@ -23,7 +23,7 @@
       <button class="btn btn-danger d-block w-100">Log Out</button>
     </form>
     
-    <a href="/dashboard/profil/ubahpassword" class="btn btn-primary d-block w-100 mt-3">Ubah Password</a>
+    <a href="/dashboard/profil/ubahpasswordlama/{{ auth()->user()->id }}" class="btn btn-primary d-block w-100 mt-3">Ubah Password</a>
     <a href="/dashboard/profil/ubah" class="btn btn-warning d-block w-100 mt-3">Ubah Profil</a>
   </ul>
 

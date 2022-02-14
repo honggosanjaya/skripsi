@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\SupervisorController;
+use App\Http\Controllers\UbahPasswordController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -45,22 +46,19 @@ Route::prefix('dashboard')->middleware(['auth','notsales'])->group(function() {
     });
   });
   
-  Route::get('/profil/ubah', function() {
-    return view('adminSupervisor/editProfil');
-  });
-
-  Route::get('/profil/ubahpassword', function() {
-    return view('adminSupervisor/editPassword');
-  });
-
   Route::prefix('profil')->group(function() {
     Route::get('/ubah', function() {
       return view('adminSupervisor/editProfil');
     });
 
-    Route::get('/ubahpassword', function() {
-      return view('adminSupervisor/editPassword');
-    });
+    Route::get('/ubahpasswordlama/{user:id}', [UbahPasswordController::class, 'index']);
+
+    Route::post('/check/{user:id}', [UbahPasswordController::class, 'check']);
+
+    Route::get('/ubahpasswordbaru/{user:id}', [UbahPasswordController::class, 'indexPasswordBaru']);
+
+    Route::post('/gantipassword/{user:id}', [UbahPasswordController::class, 'gantiPassword']);
+
   });
 
   Route::prefix('pengguna')->group(function() {
