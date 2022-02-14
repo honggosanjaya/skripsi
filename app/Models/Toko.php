@@ -18,7 +18,7 @@ class Toko extends Model
 
     public function linkJenisToko()
     {
-        return $this->belongsTo(JenisToko::class, 'id');
+        return $this->belongsTo(JenisToko::class, 'jenis_toko_id', 'id');
     }
 
     public function linkTrip()
