@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\PesananController;
 use App\Http\Controllers\SupervisorController;
 use App\Http\Controllers\UbahPasswordController;
 use Illuminate\Support\Facades\Route;
@@ -24,9 +25,7 @@ Route::prefix('dashboard')->middleware(['auth','notsales'])->group(function() {
     return view('layouts/dashboard');
   });
   
-  Route::get('/pesanan', function() {
-    return view('admin/pesanan');
-  });
+  Route::get('/pesanan', [PesananController::class, 'index']);
   
   Route::get('/retur', function() {
     return view('admin/retur');
