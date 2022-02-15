@@ -56,10 +56,10 @@ class ItemController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show(Item $item)
+    public function show($id)
     {
-        return view('admin.produk.detailProduk', [
-          'item' => $item
+        return view('admin/produk/detailProduk', [
+          'barang' => Item::where('id', $id)->first()
         ]);
     }
 
@@ -85,17 +85,22 @@ class ItemController extends Controller
      */
     public function update(Request $request, $id)
     {
-
-      $validatedData = $request->validate([
-        'nama_barang' => 'required|max:255',
+      $validation = ([
         'stok' => 'required|integer',
         'satuan' => 'required|max:255',
-        'harga_satuan' => 'required|numeric'
+        'harga_satuan' => 'required|numeric',
+        'status_produk' => 'required|in:aktif,nonaktif'
       ]);
 
-        Item::where('id', $id) ->update($validatedData);
+      if($request->nama_barang !== Item::where('id', $id)->first()->nama_barang){
+        $validation['nama_barang'] = 'required|max:255|unique:items';
+      }
+
+      $validatedData = $request->validate($validation);
+
+      Item::where('id', $id)->update($validatedData);
     
-        return redirect('/dashboard/produk') -> with('successMessage', 'Berhasil mengubah data produk dengan id '.$id);
+      return redirect('/dashboard/produk') -> with('successMessage', 'Berhasil mengubah data '.Item::where('id', $id)->first()->nama_barang);
     }
 
     

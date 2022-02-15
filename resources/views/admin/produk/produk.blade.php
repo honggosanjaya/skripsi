@@ -24,6 +24,7 @@
         <th scope="col">Stok</th>
         <th scope="col">Satuan Stok</th>
         <th scope="col">Harga</th>
+        <th scope="col">Status</th>
         <th scope="col">Aksi</th>
       </tr>
     </thead>
@@ -36,10 +37,10 @@
           <td>{{ $item->stok }}</td>
           <td>{{ $item->satuan }}</td>
           <td>{{ $item->harga_satuan }}</td>
+          <td>{{ $item->status_produk }}</td>
           <td>
             <a href="/dashboard/produk/{{ $item->id }}" class="btn btn-primary">Detail</a>
             <a href="/dashboard/produk/{{ $item->id }}/edit" class="btn btn-warning">Ubah</a>
-            {{-- <button class="btn btn-success">Aktifkan</button> --}}
           </td>
         </tr>
       @endforeach

@@ -29,25 +29,11 @@ Route::prefix('dashboard')->middleware(['auth','notsales'])->group(function() {
   });
   
   Route::get('/retur', function() {
-    return view('admin/retur');
+    return view('admin/retur/retur');
   });
 
   Route::resource('/produk', ItemController::class);
 
-  // Route::prefix('produk')->group(function() {
-  //   Route::get('/', function() {
-  //     return view('admin/produk/produk');
-  //   });
-
-  //   Route::get('/tambah', function() {
-  //     return view('admin/produk/addProduk');
-  //   });
-
-  //   Route::get('/ubah', function() {
-  //     return view('admin/produk/editProduk');
-  //   });
-  // });
-  
   Route::get('/profil/ubah', function() {
     return view('adminSupervisor/editProfil');
   });
@@ -68,18 +54,11 @@ Route::prefix('dashboard')->middleware(['auth','notsales'])->group(function() {
 
   Route::prefix('pengguna')->group(function() {
     Route::get('/', [SupervisorController::class, 'index']);
-
     Route::get('/cari', [SupervisorController::class, 'search']);
-
     Route::get('/tambah', [SupervisorController::class, 'create']);
-
     Route::post('/tambahuser', [SupervisorController::class, 'store']);
-
     Route::get('/ubah/{user:id}', [SupervisorController::class, 'edit']);
-
     Route::put('/ubahuser/{user:id}', [SupervisorController::class, 'update']);
-
-    
   });
 
 });
