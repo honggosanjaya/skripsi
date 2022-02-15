@@ -52,7 +52,7 @@
         <td>Seto Mulyadi</td>
         <td>2</td>
         <td>sapunya jelek katanya apik</td>
-        <td>sedang kirim</td>
+        <td>menunggu persetujuan</td>
         <td>ganti sapu baru</td>
         <td>Riski Setia</td>
         <td>

@@ -17,40 +17,40 @@
         </a>
       </li>
     </ul>
-  
+
     @can('admin')
-    <hr class="my-4" />
-    <h1 class="mb-3 fs-6">Admin</h1>
-    <ul class="p-0">
-      <li class="mb-3">
-        <a class="{{ Request::is('dashboard/pesanan/*') ? 'active' : '' }}" href="/dashboard/pesanan">
-          <i class="bi bi-calendar3-event me-2"></i><span>Pesanan</span>
-        </a>
-      </li>
-      <li class="mb-3">
-        <a class="{{ Request::is('dashboard/retur/*') ? 'active' : '' }}" href="/dashboard/retur">
-          <i class="bi bi-calendar3-event me-2"></i><span>Retur</span>
-        </a>
-      </li>
-      <li class="mb-3">
-        <a class="{{ Request::is('dashboard/produk/*') ? 'active' : '' }}" href="/dashboard/produk">
-          <i class="bi bi-calendar3-event me-2"></i><span>Produk</span>
-        </a>
-      </li>
-    </ul>
+      <hr class="my-4" />
+      <h1 class="mb-3 fs-6">Admin</h1>
+      <ul class="p-0">
+        <li class="mb-3">
+          <a class="{{ Request::is('dashboard/pesanan*') ? 'active' : '' }}" href="/dashboard/pesanan">
+            <i class="bi bi-calendar3-event me-2"></i><span>Pesanan</span>
+          </a>
+        </li>
+        <li class="mb-3">
+          <a class="{{ Request::is('dashboard/retur*') ? 'active' : '' }}" href="/dashboard/retur">
+            <i class="bi bi-calendar3-event me-2"></i><span>Retur</span>
+          </a>
+        </li>
+        <li class="mb-3">
+          <a class="{{ Request::is('dashboard/produk*') ? 'active' : '' }}" href="/dashboard/produk">
+            <i class="bi bi-calendar3-event me-2"></i><span>Produk</span>
+          </a>
+        </li>
+      </ul>
     @endcan
-    
+
     @can('supervisor')
-    <hr class="my-4" />
-    <h1 class="mb-3 fs-6">Supervisor</h1>
-    <ul class="p-0">
-      <li class="mb-3">
-        <a class="{{ Request::is('dashboard/pengguna/*') ? 'active' : '' }}" href="/dashboard/pengguna">
-          <i class="bi bi-calendar3-event me-2"></i><span>Atur Pengguna</span>
-        </a>
-      </li>
-    </ul>
+      <hr class="my-4" />
+      <h1 class="mb-3 fs-6">Supervisor</h1>
+      <ul class="p-0">
+        <li class="mb-3">
+          <a class="{{ Request::is('dashboard/pengguna*') ? 'active' : '' }}" href="/dashboard/pengguna">
+            <i class="bi bi-calendar3-event me-2"></i><span>Atur Pengguna</span>
+          </a>
+        </li>
+      </ul>
     @endcan
-    
+
   </div>
 </div>
