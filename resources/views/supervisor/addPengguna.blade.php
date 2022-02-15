@@ -2,7 +2,7 @@
 
 @section('main_content')
   <div class="p-4">
-    <form method="POST" action="/dashboard/pengguna/tambahuser">
+    <form method="POST" action="/dashboard/pengguna/tambahuser" enctype="multipart/form-data">
       @csrf
       <div class="mb-3">
         <label for="nama" class="form-label">Nama</label>
@@ -40,6 +40,17 @@
         </select>        
       </div>
 
+      <div class="mb-3">
+        <label for="foto_profil" class="form-label">Foto Profil</label>
+        <img class="img-preview img-fluid mb-3 col-sm-5">
+        <input class="form-control @error('foto_profil') is-invalid @enderror" type="file" id="foto_profil" 
+        name="foto_profil" onchange="previewImage()">
+            @error('foto_profil')
+            <div class="invalid-feedback">
+                {{ $message }}
+            </div>
+            @enderror   
+      </div>
 
       <div class="mb-3">
         <label for="email" class="form-label">Email</label>
@@ -72,4 +83,8 @@
       <a href="/dashboard/pengguna" class="batalkanAksi_btn btn btn-danger ms-3">Batal</a>
     </form>
   </div>
+<script src="{{ mix('js/main.js') }}"></script>
+
 @endsection
+
+

@@ -22,7 +22,7 @@
         <label for="nomor_telepon" class="form-label">No Telepon</label>
         <input type="text" name="nomor_telepon" class="form-control rounded-top
                 @error('nomor_telepon') is-invalid @enderror" id="nomor_telepon" placeholder="Nomor Telepon" 
-                value="{{ old('nomor_telepon', $user->nomor_telepon) }}" readonly>
+                value="{{ old('nomor_telepon', $user->nomor_telepon) }}">
                 
                 @error('nomor_telepon')
                 <div class="invalid-feedback">

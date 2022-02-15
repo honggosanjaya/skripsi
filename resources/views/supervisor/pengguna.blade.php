@@ -1,11 +1,15 @@
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet"/>
 @extends('layouts/main')
 
 @section('main_content')
   <div class="mt-3 search-box">
     <form method="GET" action="/dashboard/pengguna/cari">
-      <i class="bi bi-search"></i>
-      <input type="text" class="form-control w-75" name="cari" placeholder="Cari Pengguna..."
-      value="{{ request('cari') }}">   
+      <div class="input-group w-50">
+        <input type="text" class="form-control" name="cari" placeholder="Cari Pengguna..."
+        value="{{ request('cari') }}">
+        <button type="submit" class="btn btn-primary">Cari</button>   
+      </div>
+      
     </form>    
   </div>
 
@@ -19,7 +23,7 @@
         <th scope="col">nama lengkap</th>
         <th scope="col">nomor telepon</th>
         <th scope="col">email</th>
-        <th scope="col">foto</th>
+        <th scope="col">profil</th>
         <th scope="col">status</th>
         <th scope="col">role</th>
         <th scope="col">aksi</th>
@@ -33,7 +37,9 @@
         <td>{{ $user->nama }}</td>
         <td>{{ $user->nomor_telepon }}</td>
         <td>{{ $user->email }}</td>
-        <td>foto</td>
+        <td><img src="{{ asset('storage/'.$user->foto_profil) }}" class="img-preview img-fluid"
+          width="50px" height="50px">
+        </td>
         
         @if ($user->status === "1")
         <td class="text-success">Aktif</td>

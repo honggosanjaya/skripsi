@@ -10945,5 +10945,23 @@ $(document).ready(function () {
 });
 })();
 
+// This entry need to be wrapped in an IIFE because it need to be isolated against other entry modules.
+(() => {
+/*!*************************************!*\
+  !*** ./resources/js/eventHandle.js ***!
+  \*************************************/
+window.previewImage = function () {
+  var image = document.querySelector('#foto_profil');
+  var imgPreview = document.querySelector('.img-preview');
+  imgPreview.style.display = 'block';
+  var oFReader = new FileReader();
+  oFReader.readAsDataURL(image.files[0]);
+
+  oFReader.onload = function (oFREvent) {
+    imgPreview.src = oFREvent.target.result;
+  };
+};
+})();
+
 /******/ })()
 ;
