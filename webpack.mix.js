@@ -23,7 +23,8 @@ mix
   .js(
     [
       'resources/js/main.js',
-      'resources/js/dashboard.js'
+      'resources/js/dashboard.js',
+      'resources/js/eventHandle.js',
     ]
     , 'public/js/main.js'
   );
