@@ -8,7 +8,7 @@
       <div class="mb-3">
         <label for="nama" class="form-label">Nama</label>
         <input type="text" name="nama" class="form-control rounded-top
-                @error('nama') is-invalid @enderror" id="nama" placeholder="Nama" required 
+                @error('nama') is-invalid @enderror" id="nama" placeholder="Nama" 
                 value="{{ old('nama', $user->nama) }}">
                 
                 @error('nama')
@@ -21,7 +21,7 @@
       <div class="mb-3">
         <label for="nomor_telepon" class="form-label">No Telepon</label>
         <input type="text" name="nomor_telepon" class="form-control rounded-top
-                @error('nomor_telepon') is-invalid @enderror" id="nomor_telepon" placeholder="Nomor Telepon" required 
+                @error('nomor_telepon') is-invalid @enderror" id="nomor_telepon" placeholder="Nomor Telepon" 
                 value="{{ old('nomor_telepon', $user->nomor_telepon) }}">
                 
                 @error('nomor_telepon')
@@ -69,8 +69,8 @@
       <div class="mb-3">
         <label for="email" class="form-label">Email</label>
         <input type="email" name="email" class="form-control rounded-top
-                @error('email') is-invalid @enderror" id="email" placeholder="Email" required 
-                value="{{ old('email', $user->email) }}">
+                @error('email') is-invalid @enderror" id="email" placeholder="Email" 
+                value="{{ old('email', $user->email) }}" readonly>
                 
                 @error('email')
                 <div class="invalid-feedback">

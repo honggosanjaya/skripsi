@@ -7,6 +7,9 @@ use App\Models\User;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rules;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Storage;
+
 
 class SupervisorController extends Controller
 {
@@ -39,17 +42,23 @@ class SupervisorController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'nama' => ['required', 'string', 'max:255'],
-            'nomor_telepon' => ['required', 'min:3', 'max:15'],
-            'role' => ['required'],
-            'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
-            'password' => ['required'],
+            'nama' => 'required|string|max:20',
+            'nomor_telepon' => 'required|min:3|max:15',
+            'role' => 'required',
+            'foto_profil' => 'image|file|max:1024',
+            'email' => 'required|string|email|max:255|unique:users',
+            'password' => 'required',
         ]);
 
+        if($request->file('foto_profil')){
+            $request->foto_profil = $request->file('foto_profil')->store('profil');
+        }
+      
         User::create([
             'nama' => $request->nama,
             'nomor_telepon' => $request->nomor_telepon,
             'role' => $request->role,
+            'foto_profil' => $request->foto_profil,
             'email' => $request->email,
             'password' => Hash::make($request->password),
         ]);
@@ -74,11 +83,11 @@ class SupervisorController extends Controller
     public function update(Request $request, User $user)
     {
         $rules = $request->validate([
-            'nama' => ['required', 'string', 'max:255'],
-            'nomor_telepon' => ['required', 'min:3', 'max:15'],
-            'status' => ['required'],
-            'role' => ['required'],
-            'email' => ['required', 'string', 'email', 'max:255'],            
+            'nama' => 'required|string|max:255',
+            'nomor_telepon' => 'required|min:3|max:15',
+            'status' => 'required',
+            'role' => 'required',
+            'email' => 'required|string|email|max:255',                          
         ]);
 
         User::Where('id', $user->id)
