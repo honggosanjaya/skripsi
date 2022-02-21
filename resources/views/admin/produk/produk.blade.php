@@ -41,6 +41,12 @@
           <td>
             <a href="/dashboard/produk/{{ $item->id }}" class="btn btn-primary">Detail</a>
             <a href="/dashboard/produk/{{ $item->id }}/edit" class="btn btn-warning">Ubah</a>
+            <form action="/dashboard/produk/ubahstatus/{{ $item->id }}" method="POST">
+              @csrf
+              <button type="submit" class="btn {{ $item->status_produk === 'aktif' ? 'btn-danger' : 'btn-success' }}">
+                {{ $item->status_produk === 'aktif' ? 'Nonaktifkan' : 'aktifkan' }} Produk
+              </button>
+            </form>
           </td>
         </tr>
       @endforeach

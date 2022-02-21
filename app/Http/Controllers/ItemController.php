@@ -63,6 +63,7 @@ class ItemController extends Controller
         ]);
     }
 
+
     /**
      * Show the form for editing the specified resource.
      *
@@ -75,6 +76,18 @@ class ItemController extends Controller
           'barang' => Item::where('id', $id)->first()
         ]);
     }
+
+    public function ubahstatus($id)
+    {
+      $status = Item::where('id', $id)->first()->status_produk;
+      if($status === 'aktif'){
+        Item::where('id', $id)->update(['status_produk' => 'nonaktif']);
+      }else if($status === 'nonaktif'){
+        Item::where('id', $id)->update(['status_produk' => 'aktif']);
+      }
+    
+      return redirect('/dashboard/produk') -> with('successMessage', 'Berhasil mengubah status '.Item::where('id', $id)->first()->nama_barang);
+    } 
 
     /**
      * Update the specified resource in storage.
