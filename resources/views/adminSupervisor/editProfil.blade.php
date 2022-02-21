@@ -43,6 +43,83 @@
                 </div>
                 @enderror        
       </div>
+      <div class="mb-3">
+        <label for="alamat" class="form-label">Alamat</label>
+        <input type="text" name="alamat" class="form-control rounded-top
+                @error('alamat') is-invalid @enderror" id="alamat" placeholder="jl. xxxxx"
+                value="{{ old('alamat', $user->alamat) }}" >
+                
+                @error('alamat')
+                <div class="invalid-feedback">
+                  {{ $message }}
+                </div>
+                @enderror        
+      </div>
+
+      <div class="mb-3">
+        <label for="tanggal_lahir" class="form-label">Tanggal Lahir</label>
+        <input type="text" name="tanggal_lahir" class="form-control rounded-top datetimepicker
+                @error('tanggal_lahir') is-invalid @enderror" id="tanggal_lahir" placeholder="tanggal lahir"
+                value="{{ old('tanggal_lahir', $user->tanggal_lahir) }}" >
+                
+                @error('tanggal_lahir')
+                <div class="invalid-feedback">
+                  {{ $message }}
+                </div>
+                @enderror        
+      </div>
+      
+      <div class="mb-3">
+        <label for="agama" class="form-label">Agama</label>
+        <input type="text" name="agama" class="form-control rounded-top
+                @error('agama') is-invalid @enderror" id="agama" placeholder="agama"
+                value="{{ old('agama', $user->agama) }}" >
+                
+                @error('agama')
+                <div class="invalid-feedback">
+                  {{ $message }}
+                </div>
+                @enderror        
+      </div>
+
+      <div class="mb-3">
+        <label for="nama_wali" class="form-label">Nama Wali</label>
+        <input type="text" name="nama_wali" class="form-control rounded-top
+                @error('nama_wali') is-invalid @enderror" id="nama_wali" placeholder="nama wali"
+                value="{{ old('nama_wali', $user->nama_wali) }}" >
+                
+                @error('nama_wali')
+                <div class="invalid-feedback">
+                  {{ $message }}
+                </div>
+                @enderror        
+      </div>
+
+      <div class="mb-3">
+        <label for="nomer_telepon_wali" class="form-label">Nomer Telepon Wali</label>
+        <input type="text" name="nomer_telepon_wali" class="form-control rounded-top
+                @error('nomer_telepon_wali') is-invalid @enderror" id="nomer_telepon_wali" placeholder="08xxxxxxxxx"
+                value="{{ old('nomer_telepon_wali', $user->nomer_telepon_wali) }}" >
+                
+                @error('nomer_telepon_wali')
+                <div class="invalid-feedback">
+                  {{ $message }}
+                </div>
+                @enderror        
+      </div>
+
+      <div class="mb-3">
+        <label for="status_wali" class="form-label">Status Wali</label>
+        <input type="text" name="status_wali" class="form-control rounded-top
+                @error('status_wali') is-invalid @enderror" id="status_wali" placeholder="Status Wali"
+                value="{{ old('status_wali', $user->status_wali) }}" >
+                
+                @error('status_wali')
+                <div class="invalid-feedback">
+                  {{ $message }}
+                </div>
+                @enderror        
+      </div>
 
       {{-- tambahkan preview image --}}
       <div class="d-flex flex-column mb-3">

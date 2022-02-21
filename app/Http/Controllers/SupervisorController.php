@@ -87,7 +87,14 @@ class SupervisorController extends Controller
             'nomor_telepon' => 'required|min:3|max:15',
             'status' => 'required',
             'role' => 'required',
-            'email' => 'required|string|email|max:255',                          
+            'email' => 'required|string|email|max:255',      
+            'foto_profil' => 'image|file|max:1024',
+            'alamat' => 'string|max:255',
+            'tanggal_lahir' => 'string|max:255',
+            'agama' => 'string|max:255',
+            'nama_wali' => 'string|max:20',
+            'nomer_telepon_wali' => 'min:3|max:15',
+            'status_wali' => 'string|max:255',                    
         ]);
 
         User::Where('id', $user->id)
