@@ -27,7 +27,7 @@ class SupervisorController extends Controller
 
     public function search()
     {
-        $user = DB::table('users')->where('nama','like','%'.request('cari').'%')->get();
+        $user = DB::table('users')->where(strtolower('nama'),'like','%'.request('cari').'%')->get();
        
         return view('supervisor/pengguna',[
             'users' => $user
@@ -45,6 +45,12 @@ class SupervisorController extends Controller
             'nama' => 'required|string|max:20',
             'nomor_telepon' => 'required|min:3|max:15',
             'role' => 'required',
+            'alamat' => 'string|max:255',
+            'tanggal_lahir' => 'string|max:255',
+            'agama' => 'string|max:255',
+            'nama_wali' => 'string|max:20',
+            'nomer_telepon_wali' => 'min:3|max:15',
+            'status_wali' => 'string|max:255',
             'foto_profil' => 'image|file|max:1024',
             'email' => 'required|string|email|max:255|unique:users',
             'password' => 'required',
@@ -53,15 +59,24 @@ class SupervisorController extends Controller
         if($request->file('foto_profil')){
             $request->foto_profil = $request->file('foto_profil')->store('profil');
         }
-      
+
+              
         User::create([
             'nama' => $request->nama,
             'nomor_telepon' => $request->nomor_telepon,
             'role' => $request->role,
+            'alamat' => $request->alamat,
+            'tanggal_lahir' => $request->tanggal_lahir,
+            'agama' => $request->agama,
+            'nama_wali' => $request->nama_wali,
+            'nomer_telepon_wali' => $request->nomer_telepon_wali,
+            'status_wali' => $request->status_wali,
             'foto_profil' => $request->foto_profil,
             'email' => $request->email,
             'password' => Hash::make($request->password),
         ]);
+
+
 
         return redirect('/dashboard/pengguna')->with('addDataSuccess','Tambah user berhasil');
     }
