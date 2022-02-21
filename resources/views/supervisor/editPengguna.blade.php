@@ -106,15 +106,51 @@
         
         <div class="mb-3">
           <label for="agama" class="form-label">Agama</label>
-          <input type="text" name="agama" class="form-control rounded-top
-                  @error('agama') is-invalid @enderror" id="agama" placeholder="agama"
-                  value="{{ old('agama', $user->agama) }}" >
-                  
-                  @error('agama')
-                  <div class="invalid-feedback">
-                    {{ $message }}
-                  </div>
-                  @enderror        
+          <select class="form-select" name="agama">
+            @if($user->agama === "Islam")
+              <option value="{{ $user->agama }}" selected>Islam</option>
+              <option value="Kristen">Kristen</option>
+              <option value="Katolik">Katolik</option>
+              <option value="Hindu">Hindu</option>
+              <option value="Buddha">Buddha</option>
+              <option value="Kong Hu Cu">Kong Hu Cu</option>
+            @elseif ($user->agama === "Kristen") 
+              <option value="{{ $user->agama }}" selected>Kristen</option>
+              <option value="Islam">Islam</option>
+              <option value="Katolik">Katolik</option>
+              <option value="Hindu">Hindu</option>
+              <option value="Buddha">Buddha</option>
+              <option value="Kong Hu Cu">Kong Hu Cu</option>
+            @elseif ($user->agama === "Katolik") 
+              <option value="{{ $user->agama }}" selected>Katolik</option>
+              <option value="Islam">Islam</option>
+              <option value="Kristen">Kristen</option>
+              <option value="Hindu">Hindu</option>
+              <option value="Buddha">Buddha</option>
+              <option value="Kong Hu Cu">Kong Hu Cu</option>
+            @elseif ($user->agama === "Hindu") 
+              <option value="{{ $user->agama }}" selected>Hindu</option>
+              <option value="Islam">Islam</option>
+              <option value="Katolik">Katolik</option>
+              <option value="Kristen">Kristen</option>
+              <option value="Buddha">Buddha</option>
+              <option value="Kong Hu Cu">Kong Hu Cu</option>
+            @elseif ($user->agama === "Buddha")  
+              <option value="{{ $user->agama }}" selected>Buddha</option>
+              <option value="Islam">Islam</option>
+              <option value="Katolik">Katolik</option>
+              <option value="Hindu">Hindu</option>
+              <option value="Kristen">Kristen</option>
+              <option value="Kong Hu Cu">Kong Hu Cu</option>           
+            @else
+              <option value="{{ $user->agama }}" selected>Kong Hu Cu</option>
+              <option value="Islam">Islam</option>
+              <option value="Katolik">Katolik</option>
+              <option value="Hindu">Hindu</option>
+              <option value="Kristen">Kristen</option>
+              <option value="Buddha">Buddha</option>    
+            @endif                
+          </select>             
         </div>
   
         <div class="mb-3">
@@ -145,15 +181,15 @@
   
         <div class="mb-3">
           <label for="status_wali" class="form-label">Status Wali</label>
-          <input type="text" name="status_wali" class="form-control rounded-top
-                  @error('status_wali') is-invalid @enderror" id="status_wali" placeholder="Status Wali"
-                  value="{{ old('status_wali', $user->status_wali) }}" >
-                  
-                  @error('status_wali')
-                  <div class="invalid-feedback">
-                    {{ $message }}
-                  </div>
-                  @enderror        
+          <select class="form-select" name="status_wali">
+            @if($user->status_wali === "Orang Tua")
+              <option value="{{ $user->status_wali }}" selected>Orang Tua</option>
+              <option value="Wali">Wali</option>            
+            @else
+            <option value="{{ $user->status_wali }}" selected>Wali</option>
+            <option value="Orang Tua">Orang Tua</option>      
+            @endif                
+          </select>             
         </div>
 
             
