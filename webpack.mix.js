@@ -25,6 +25,7 @@ mix
       'resources/js/main.js',
       'resources/js/dashboard.js',
       'resources/js/eventHandle.js',
+      'resources/js/profile.js',
     ]
     , 'public/js/main.js'
   );

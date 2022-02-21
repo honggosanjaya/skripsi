@@ -23,7 +23,14 @@ class ProfilController extends Controller
             'nama' => 'required|string|max:20',
             'nomor_telepon' => 'required|min:3|max:15',
             'email' => 'required|string|email|max:255',
-            'foto_profil' => 'image|file|max:1024'          
+            'foto_profil' => 'image|file|max:1024',
+            'alamat' => 'string|max:255',
+            'tanggal_lahir' => 'string|max:255',
+            'agama' => 'string|max:255',
+            'nama_wali' => 'string|max:20',
+            'nomer_telepon_wali' => 'min:3|max:15',
+            'status_wali' => 'string|max:255',
+
         ]);
 
         if($request->file('foto_profil')){
