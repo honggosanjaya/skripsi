@@ -20,6 +20,6 @@ class Trip extends Model
 
     public function linkSales()
     {
-        return $this->belongsTo(User::class, 'id', 'sales_id');
+        return $this->hasOne(User::class, 'id', 'sales_id');
     }
 }
