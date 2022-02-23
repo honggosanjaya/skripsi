@@ -48,6 +48,21 @@
         @enderror
       </div>
 
+      <div class="mb-3">
+        <label for="status_produk" class="form-label">Status Produk</label>
+        <select class="form-select @error('status_produk') is-invalid @enderror" id="status_produk" name="status_produk"
+          value="{{ old('status_produk') }}">
+          <option hidden="true">Pilih Status Produk</option>
+          <option value="aktif">Aktif</option>
+          <option value="nonaktif">Tidak Aktif</option>
+        </select>
+        @error('status_produk')
+          <div class="invalid-feedback">
+            {{ $message }}
+          </div>
+        @enderror
+      </div>
+
       <button type="submit" class="btn btn-primary">Submit</button>
       <a href="/dashboard/produk" class="batalkanAksi_btn btn btn-danger ms-3">Batal</a>
     </form>

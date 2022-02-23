@@ -43,7 +43,8 @@ class ItemController extends Controller
           'nama_barang' => 'required|max:255|unique:items',
           'stok' => 'required|integer|min:1',
           'satuan' => 'required|max:255',
-          'harga_satuan' => 'required|numeric'
+          'harga_satuan' => 'required|numeric',
+          'status_produk' => 'required|in:aktif,nonaktif'
         ]);
 
         Item::create($validatedData);
