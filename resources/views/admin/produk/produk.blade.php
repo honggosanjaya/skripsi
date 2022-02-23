@@ -1,6 +1,7 @@
 @extends('layouts/main')
 
 @section('main_content')
+<div class="produk-tbl">
   @if (session()->has('successMessage'))
     <div class="alert alert-success alert-dismissible fade show" role="alert">
       {{ session('successMessage') }}
@@ -15,7 +16,7 @@
 
   <a href="/dashboard/produk/create" class="btn btn-primary my-4">Tambah Produk</a>
 
-  <table class="table">
+  <table class="table table-produk">
     <thead>
       <tr>
         <th scope="col">No</th>
@@ -37,19 +38,17 @@
           <td>{{ $item->stok }}</td>
           <td>{{ $item->satuan }}</td>
           <td>{{ $item->harga_satuan }}</td>
-          <td>{{ $item->status_produk }}</td>
+          <td class="status-prd">{{ $item->status_produk }}</td>
           <td>
             <a href="/dashboard/produk/{{ $item->id }}" class="btn btn-primary">Detail</a>
             <a href="/dashboard/produk/{{ $item->id }}/edit" class="btn btn-warning">Ubah</a>
-            <form action="/dashboard/produk/ubahstatus/{{ $item->id }}" method="POST">
-              @csrf
-              <button type="submit" class="btn {{ $item->status_produk === 'aktif' ? 'btn-danger' : 'btn-success' }}">
-                {{ $item->status_produk === 'aktif' ? 'Nonaktifkan' : 'aktifkan' }} Produk
-              </button>
-            </form>
+            <button data-id="{{ $item->id }}" class="btn status-btn {{ $item->status_produk === 'aktif' ? 'btn-danger' : 'btn-success' }}">
+              {{ $item->status_produk === 'aktif' ? 'Nonaktifkan' : 'aktifkan' }} Produk
+            </button>
           </td>
         </tr>
       @endforeach
     </tbody>
   </table>
+</div>
 @endsection
