@@ -38,7 +38,7 @@ Route::prefix('dashboard')->middleware(['auth','notsales'])->group(function() {
   });
 
   Route::resource('/produk', ItemController::class);
-  Route::post('/produk/ubahstatus/{item:id}', [ItemController::class, 'ubahstatus']);
+  Route::get('/produk/ubahstatus/{item:id}', [ItemController::class, 'ubahstatus']);
   
   Route::prefix('profil')->group(function() {
     /**
