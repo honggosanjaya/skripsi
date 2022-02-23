@@ -81,17 +81,17 @@ class ItemController extends Controller
     public function ubahstatus($id)
     {
       $status = Item::where('id', $id)->first()->status_produk;
+      
       if($status === 'aktif'){
         Item::where('id', $id)->update(['status_produk' => 'nonaktif']);
       }else if($status === 'nonaktif'){
         Item::where('id', $id)->update(['status_produk' => 'aktif']);
       }      
+
       return response()->json([
         'status'=> Item::where('id', $id)->first()->status_produk,
         'successMessage' => 'Berhasil mengubah status '.Item::where('id', $id)->first()->nama_barang,
       ]);
-    
-      // return redirect('/dashboard/produk') -> with('successMessage', 'Berhasil mengubah status '.Item::where('id', $id)->first()->nama_barang);
     } 
 
     /**
