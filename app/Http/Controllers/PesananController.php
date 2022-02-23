@@ -12,8 +12,8 @@ class PesananController extends Controller
 {
     public function index()
     {
-        $toko = Toko::with(['linkJenisToko','linkOrder'])->get();
-        
+        $toko = Toko::with(['linkJenisToko','linkOrder','linkTrip'])->get();
+        // dd($toko[0]);
         return view('admin/pesanan', [
             'tokos' => $toko                       
         ]);

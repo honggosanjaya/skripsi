@@ -23,7 +23,7 @@ class Toko extends Model
 
     public function linkTrip()
     {
-        return $this->hasMany(Trip::class, 'toko_id', 'id');
+        return $this->hasMany(Trip::class, 'toko_id', 'id')->with(['linkSales']);
     }
 
     public function linkOrder()

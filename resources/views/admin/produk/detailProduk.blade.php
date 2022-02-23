@@ -11,8 +11,12 @@
 
     <div class="action_group">
       <a href="/dashboard/produk/{{ $barang->id }}/edit" class="btn btn-warning">Edit</a>
-      <button class="btn btn-danger">{{ $barang->status_produk === 'aktif' ? 'Nonaktifkan' : 'aktifkan' }}
-        Produk</button>
+      <form action="/dashboard/produk/ubahstatus/{{ $barang->id }}" method="POST">
+        @csrf
+        <button type="submit" class="btn {{ $barang->status_produk === 'aktif' ? 'btn-danger' : 'btn-success' }}">
+          {{ $barang->status_produk === 'aktif' ? 'Nonaktifkan' : 'aktifkan' }} Produk
+        </button>
+      </form>
     </div>
   </div>
 @endsection
