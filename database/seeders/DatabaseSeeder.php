@@ -18,10 +18,10 @@ class DatabaseSeeder extends Seeder
         Toko::create([
           "jenis_toko_id" => '1',
           "nama" => 'Toko Admin',
-          "alamat_utama" => "Perumahan Araya",
-          "keterangan_alamat" => "Tokonya admin",
+          "alamat_utama" => "Toko Admin",
+          "keterangan_alamat" => "Ini Toko Admin",
           "status" => "-1",
-          "durasi kunjungan (satuan hari)" => 0,
+          "durasi_kunjungan" => 0,
           "terakhir_order" => "2022-02-11 17:00:00",
           "counter_to_effective_call" => "0",
           "total_counter" => "0",
