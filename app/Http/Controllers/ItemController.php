@@ -14,10 +14,11 @@ class ItemController extends Controller
      */
     public function index()
     {
-        return view('admin/produk/produk', [
+        return view('admin/produk/lihatProduk', [
           'items' => Item::all()
         ]);
     }
+
 
     /**
      * Show the form for creating a new resource.
@@ -26,9 +27,7 @@ class ItemController extends Controller
      */
     public function create()
     {
-      return view('admin/produk/addProduk',[
-        
-      ]);
+      return view('admin/produk/addProduk');
     }
 
     /**
@@ -43,7 +42,8 @@ class ItemController extends Controller
           'nama_barang' => 'required|max:255|unique:items',
           'stok' => 'required|integer|min:1',
           'satuan' => 'required|max:255',
-          'harga_satuan' => 'required|numeric'
+          'harga_satuan' => 'required|numeric',
+          'status_produk' => 'required|in:aktif,nonaktif'
         ]);
 
         Item::create($validatedData);
@@ -80,17 +80,17 @@ class ItemController extends Controller
     public function ubahstatus($id)
     {
       $status = Item::where('id', $id)->first()->status_produk;
+      
       if($status === 'aktif'){
         Item::where('id', $id)->update(['status_produk' => 'nonaktif']);
       }else if($status === 'nonaktif'){
         Item::where('id', $id)->update(['status_produk' => 'aktif']);
       }      
+
       return response()->json([
         'status'=> Item::where('id', $id)->first()->status_produk,
         'successMessage' => 'Berhasil mengubah status '.Item::where('id', $id)->first()->nama_barang,
       ]);
-    
-      // return redirect('/dashboard/produk') -> with('successMessage', 'Berhasil mengubah status '.Item::where('id', $id)->first()->nama_barang);
     } 
 
     /**
@@ -120,15 +120,4 @@ class ItemController extends Controller
       return redirect('/dashboard/produk') -> with('successMessage', 'Berhasil mengubah data '.Item::where('id', $id)->first()->nama_barang);
     }
 
-    
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy($id)
-    {
-        //
-    }
 }

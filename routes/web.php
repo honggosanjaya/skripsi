@@ -3,6 +3,7 @@
 use App\Http\Controllers\ItemController;
 use App\Http\Controllers\PesananController;
 use App\Http\Controllers\ProfilController;
+use App\Http\Controllers\StokController;
 use App\Http\Controllers\SupervisorController;
 use App\Http\Controllers\UbahPasswordController;
 use Illuminate\Support\Facades\Route;
@@ -37,7 +38,9 @@ Route::prefix('dashboard')->middleware(['auth','notsales'])->group(function() {
     return view('admin/retur');
   });
 
-  Route::resource('/produk', ItemController::class);
+  Route::get('/produk/stok/edit', [StokController::class, 'index2']);
+  Route::resource('/produk/stok', StokController::class)->except('destroy');
+  Route::resource('/produk', ItemController::class)->except('destroy');
   Route::get('/produk/ubahstatus/{item:id}', [ItemController::class, 'ubahstatus']);
   
   Route::prefix('profil')->group(function() {
