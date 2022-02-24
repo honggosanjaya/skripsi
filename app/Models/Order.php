@@ -26,10 +26,10 @@ class Order extends Model
     }
 
     public function linkToko(){
-      return $this->belongsTo(Toko::class, 'id', 'toko_id');
+      return $this->belongsTo(Toko::class, 'toko_id','id')->with(['linkJenisToko']);
     }
 
     public function linksales(){
-      return $this->belongsTo(User::class, 'id', 'sales_id');
+      return $this->belongsTo(User::class, 'sales_id','id');
     }
 }
