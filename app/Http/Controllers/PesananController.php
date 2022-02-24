@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Invoice;
 use App\Models\MetodePembayaran;
 use App\Models\Order;
 use App\Models\Toko;
@@ -12,10 +13,11 @@ class PesananController extends Controller
 {
     public function index()
     {
-        $toko = Toko::with(['linkJenisToko','linkOrder','linkTrip'])->get();
-        // dd($toko[0]);
+        //$toko = Toko::with(['linkJenisToko','linkOrder','linkTrip'])->get();
+        $invoice = Invoice::with(['linkOrder','linkmetodepembayaran'])->get();
+        
         return view('admin/pesanan', [
-            'tokos' => $toko                       
+            'invoices' => $invoice                       
         ]);
     }
 }
