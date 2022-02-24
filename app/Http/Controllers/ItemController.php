@@ -14,10 +14,11 @@ class ItemController extends Controller
      */
     public function index()
     {
-        return view('admin/produk/produk', [
+        return view('admin/produk/lihatProduk', [
           'items' => Item::all()
         ]);
     }
+
 
     /**
      * Show the form for creating a new resource.
@@ -26,9 +27,7 @@ class ItemController extends Controller
      */
     public function create()
     {
-      return view('admin/produk/addProduk',[
-        
-      ]);
+      return view('admin/produk/addProduk');
     }
 
     /**
@@ -121,15 +120,4 @@ class ItemController extends Controller
       return redirect('/dashboard/produk') -> with('successMessage', 'Berhasil mengubah data '.Item::where('id', $id)->first()->nama_barang);
     }
 
-    
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy($id)
-    {
-        //
-    }
 }

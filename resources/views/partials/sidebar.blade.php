@@ -33,7 +33,7 @@
           </a>
         </li>
         <li class="mb-3">
-          <a class="{{ Request::is('dashboard/produk*') ? 'active' : '' }}" href="/dashboard/produk">
+          <a class="{{ Request::is('dashboard/produk*') ? 'active' : '' }}" href="/dashboard/produk/stok">
             <i class="bi bi-calendar3-event me-2"></i><span>Produk</span>
           </a>
         </li>
