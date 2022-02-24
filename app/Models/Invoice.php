@@ -21,7 +21,7 @@ class Invoice extends Model
     }
 
     public function linkOrder(){
-      return $this->hasOne(Order::class, 'id', 'order_id');
+      return $this->hasOne(Order::class, 'id', 'order_id')->with(['linksales','linkToko']);
     }
 
     public function linkmetodepembayaran(){

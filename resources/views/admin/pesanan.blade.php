@@ -9,6 +9,7 @@
   <table class="table">
     <thead>
       <tr>
+        <th scope="col">No</th>
         <th scope="col">id pesanan</th>
         <th scope="col">nama toko</th>
         <th scope="col">jenis toko</th>
@@ -23,32 +24,28 @@
       </tr>
     </thead>
     <tbody>
-      @foreach ($tokos as $toko)
+      @foreach ($invoices as $invoice)
         <tr>
-          <td>{{ $toko->linkOrder[0]->id ?? null }}</td>
-          <td>{{ $toko->nama ?? null }}</td>
-          <td>{{ $toko->linkJenisToko->nama ?? null }}</td>
-          @if (isset($toko->linkTrip[0]))
-            <td>{{ $toko->linkTrip[0]->linkSales->nama }}</td>
+          <th scope="row">{{ $loop->iteration }}</th>
+          <td>{{ $invoice->linkOrder->id }}</td>
+          <td>{{ $invoice->linkOrder->linkToko->nama }}</td>
+          <td>{{ $invoice->linkOrder->linkToko->linkJenisToko->nama }}</td>
+          @if (isset($invoice->linkOrder->linksales->nama))
+            <td>{{ $invoice->linkOrder->linksales->nama }}</td>
           @else
-            <td><small>tidak ada data sales</small></td>
+            <td>Ini kosong bos</td>
           @endif
           <td>
-            {{ $toko->linkOrder[0]->linkInvoice->harga_total ?? null }}
+            {{ $invoice->harga_total }}
           </td>
-          <td>{{ $toko->linkOrder[0]->linkInvoice->linkmetodepembayaran->nama ?? null }}</td>
+          <td>{{ $invoice->linkmetodepembayaran->nama }}</td>
 
-
-          @if (isset($toko->linkOrder[0]))
-            @if ($toko->linkOrder[0]->linkInvoice->status_pelunasan == '0')
-              <td>Belum Lunas</td>
-            @elseif ($toko->linkOrder[0]->linkInvoice->status_pelunasan == '1')
-              <td>Setengah Lunas</td>
-            @else
-              <td>Lunas</td>
-            @endif
+          @if ($invoice->status_pelunasan == '0')
+            <td>Belum Lunas</td>
+          @elseif ($invoice->status_pelunasan == '1')
+            <td>Setengah Lunas</td>
           @else
-            <td><small>tidak ada data pembayaran</small></td>
+            <td>Lunas</td>
           @endif
 
           <td>23-02-2022</td>
