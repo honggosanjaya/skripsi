@@ -13,7 +13,7 @@
     <ul class="p-0">
       <li class="mb-3">
         <a class="{{ Request::is('dashboard') ? 'active' : '' }}" href="/dashboard">
-          <i class="bi bi-calendar3-event me-2"></i><span>Dashboard</span>
+          <i class="bi bi-speedometer2 me-2"></i><span>Dashboard</span>
         </a>
       </li>
     </ul>
@@ -24,7 +24,7 @@
       <ul class="p-0">
         <li class="mb-3">
           <a class="{{ Request::is('dashboard/pesanan*') ? 'active' : '' }}" href="/dashboard/pesanan">
-            <i class="bi bi-calendar3-event me-2"></i><span>Pesanan</span>
+            <i class="bi bi-truck me-2"></i><span>Pesanan</span>
           </a>
         </li>
         <li class="mb-3">
@@ -34,7 +34,7 @@
         </li>
         <li class="mb-3">
           <a class="{{ Request::is('dashboard/produk*') ? 'active' : '' }}" href="/dashboard/produk/stok">
-            <i class="bi bi-calendar3-event me-2"></i><span>Produk</span>
+            <i class="bi bi-bag-check-fill me-2"></i><span>Produk</span>
           </a>
         </li>
       </ul>
