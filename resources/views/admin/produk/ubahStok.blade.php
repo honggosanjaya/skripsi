@@ -8,26 +8,23 @@
     </div>
   @endif
 
-  @foreach ($items as $item)
-    <div class="card product_wrapper mt-4">
-      <h3>Nama Barang</h3>
-      <p>{{ $item->nama_barang ?? null }}</p>
 
-      <h3>Stok Saat Ini</h3>
-      <p>{{ $item->stok ?? null }} {{ $item->satuan ?? null }}</p>
+  <div class="stok-page">
+    @foreach ($items as $item)
+      <div class="card product_wrapper mt-4">
+        <h3>Nama Barang</h3>
+        <p>{{ $item->nama_barang ?? null }}</p>
 
-      <h3>Harga</h3>
-      <p>{{ $item->harga_satuan ?? null }}</p>
+        <h3>Stok Saat Ini</h3>
+        <p>{{ $item->stok ?? null }} {{ $item->satuan ?? null }}</p>
 
+        <form method="POST" action="/dashboard/produk/stok/{{ $item->id }}">
+          @method('put')
+          @csrf
 
-      <form method="POST" action="/dashboard/produk/stok/{{ $item->id }}">
-        @method('put')
-        @csrf
-
-        <div class="row">
-          <div class="col">
-            <div class="mb-3">
-              <label class="form-label">Perubahan Stok</label>
+          <div class="mb-3 w-50">
+            <label class="form-label">Perubahan Stok</label>
+            <div class="position-relative">
               <input type="number" class="form-control @error('stok') is-invalid @enderror" id="stok" name="stok"
                 value="{{ old('stok') }}">
               @error('stok')
@@ -35,31 +32,19 @@
                   {{ $message }}
                 </div>
               @enderror
-            </div>
 
-            <div class="form-check form-switch">
-              <input type="checkbox" class="form-check-input" role="switch" id="aksi" name="aksi" value="dikurangi">
-              <label class="form-check-label" for="aksi">Stok Dikurangi</label>
+              <span class="satuan">{{ $item->satuan ?? null }}</span>
             </div>
           </div>
 
-          <div class="col">
-            <div class="mb-3">
-              <label class="form-label">Satuan Stok</label>
-              <input type="text" class="form-control @error('satuan') is-invalid @enderror" id="satuan" name="satuan"
-                value="{{ old('satuan', $item->satuan) }}">
-              @error('satuan')
-                <div class="invalid-feedback">
-                  {{ $message }}
-                </div>
-              @enderror
-            </div>
+          <div class="form-check form-switch">
+            <input type="checkbox" class="form-check-input" role="switch" id="aksi" name="aksi" value="dikurangi">
+            <label class="form-check-label" for="aksi">Stok Dikurangi</label>
           </div>
-        </div>
+        </form>
+      </div>
+    @endforeach
 
-        <button type="submit" class="btn btn-danger my-3">ubah</button>
-      </form>
-
-    </div>
-  @endforeach
+    <button class="btn btn-danger ubahStok-btn">ubah</button>
+  </div>
 @endsection

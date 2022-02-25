@@ -88,7 +88,6 @@ class StokController extends Controller
       $validation = ([
         "aksi" => 'nullable',
         "stok" => 'required|integer|min:1',
-        "satuan" => 'required|max:255'
       ]);
 
       if($request->aksi === 'dikurangi'){
@@ -100,13 +99,11 @@ class StokController extends Controller
 
       if($validatedData['aksi'] === 'dikurangi'){
         Item::where('id', $id)->update([
-          'stok' => $stok_saatini - $validatedData['stok'],
-          'satuan' => $request->satuan
+          'stok' => $stok_saatini - $validatedData['stok']
         ]);
       }else{
         Item::where('id', $id)->update([
-          'stok' => $stok_saatini + $validatedData['stok'],
-          'satuan' => $request->satuan
+          'stok' => $stok_saatini + $validatedData['stok']
         ]);
       }
       
@@ -133,9 +130,9 @@ class StokController extends Controller
             
     
       if($validatedData['aksi'] === 'dikurangi'){
-        return redirect('/dashboard/produk/stok/edit') -> with('successMessage', 'stok ' .$items->nama_barang. ' dikurangi ' .$validatedData['stok'].' '.$validatedData['satuan']);
+        return redirect('/dashboard/produk/stok/edit') -> with('successMessage', 'stok ' .$items->nama_barang. ' dikurangi ' .$validatedData['stok']);
       } else{
-        return redirect('/dashboard/produk/stok/edit') -> with('successMessage', 'stok ' .$items->nama_barang. ' ditambah ' .$validatedData['stok'].' '.$validatedData['satuan']);
+        return redirect('/dashboard/produk/stok/edit') -> with('successMessage', 'stok ' .$items->nama_barang. ' ditambah ' .$validatedData['stok']);
       }
     }
 
