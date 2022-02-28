@@ -3,6 +3,7 @@
 use App\Http\Controllers\ItemController;
 use App\Http\Controllers\PesananController;
 use App\Http\Controllers\ProfilController;
+use App\Http\Controllers\ReturController;
 use App\Http\Controllers\StokController;
 use App\Http\Controllers\SupervisorController;
 use App\Http\Controllers\UbahPasswordController;
@@ -34,9 +35,7 @@ Route::prefix('dashboard')->middleware(['auth','notsales'])->group(function() {
   
   Route::get('/pesanan', [PesananController::class, 'index']);
   
-  Route::get('/retur', function() {
-    return view('admin/retur');
-  });
+  Route::get('/retur', [ReturController::class, 'index']);
 
   Route::get('/produk/stok/edit', [StokController::class, 'index2']);
   Route::resource('/produk/stok', StokController::class)->except('destroy');

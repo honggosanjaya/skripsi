@@ -30,7 +30,6 @@
   <table class="table">
     <thead>
       <tr>
-        <th scope="col">No</th>
         <th scope="col">id retur</th>
         <th scope="col">nama item</th>
         <th scope="col">nama toko</th>
@@ -44,24 +43,50 @@
       </tr>
     </thead>
     <tbody>
-      <tr>
-        <th scope="row">1</th>
-        <td>1</td>
-        <td>Sapu Apik</td>
-        <td>Toko Sapu Lawang</td>
-        <td>Seto Mulyadi</td>
-        <td>2</td>
-        <td>sapunya jelek katanya apik</td>
-        <td>menunggu persetujuan</td>
-        <td>ganti sapu baru</td>
-        <td>Riski Setia</td>
-        <td>
-          <button class="btn btn-success">Terima</button>
-          <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#exampleModal">
-            Tolak
-          </button>
-        </td>
-      </tr>
+      @foreach ($returs as $retur)
+        <tr>
+          <td>{{ $retur->id }}</td>
+          <td>{{ $retur->linkItem->nama_barang }}</td>
+          <td>{{ $retur->linkToko->nama }}</td>
+          <td>{{ $retur->linkSales->nama }}i</td>
+          <td>{{ $retur->quantity }}</td>
+          <td>{{ $retur->alasan }}</td>
+          @if ($retur->status == '-1')
+            <td>Ditolak</td>
+          @elseif ($retur->status == '0')
+            <td>Belum melakukan tindakan</td>
+          @else
+            <td>Disetujui</td>
+          @endif
+
+          @if ($retur->tindakan_selanjutnya == '0')
+            <td>Tukar barang</td>
+          @else
+            <td>Lainnya</td>
+          @endif
+
+          <td>{{ $nama_admin }}</td>
+
+          @if ($retur->status == '-1')
+            <td>
+              <button class="btn btn-success">Terima</button>
+            </td>
+          @elseif ($retur->status == '0')
+            <td>
+              <button class="btn btn-success">Terima</button>
+              <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#exampleModal">
+                Tolak
+              </button>
+            </td>
+          @else
+            <td>
+              <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#exampleModal">
+                Tolak
+              </button>
+            </td>
+          @endif
+        </tr>
+      @endforeach
     </tbody>
   </table>
 @endsection

@@ -14,14 +14,14 @@ class Retur extends Model
     ];
     public function linkSales() 
     { 
-      return $this->belongsTo(User::class, 'id', 'sales_id');
+      return $this->belongsTo(User::class, 'sales_id', 'id');
     }
     public function linkItem()
     {
-      return $this->belongsTo(Item::class, 'id', 'item_id');
+      return $this->belongsTo(Item::class, 'item_id', 'id' );
     }
     public function linkToko()
     {
-      return $this->belongsTo(Toko::class, 'id', 'toko_id');
+      return $this->belongsTo(Toko::class, 'toko_id');
     }
 }
