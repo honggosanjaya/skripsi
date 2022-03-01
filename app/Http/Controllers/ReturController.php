@@ -26,6 +26,31 @@ class ReturController extends Controller
       }
 
 
+      public function terimaRetur($id)
+      {
+        $retur = Retur::where('id', $id)->first();
+
+        Retur::where('id', $id)->update(['status' => '1']);
+
+        return response()->json([
+          'status_retur'=> $retur->status,
+          'successMessage' => 'Retur '.$retur->linkItem->nama_barang.' Disetujui',
+        ]);
+      }
+
+      public function tolakRetur($id)
+      {
+        $retur = Retur::where('id', $id)->first();
+
+        Retur::where('id', $id)->update(['status' => '-1']);
+
+        return response()->json([
+          'status_retur'=> $retur->status,
+          'successMessage' => 'Retur '.$retur->linkItem->nama_barang.' Ditolak',
+        ]);
+      }
+
+    
     /**
      * Show the form for creating a new resource.
      *

@@ -36,6 +36,8 @@ Route::prefix('dashboard')->middleware(['auth','notsales'])->group(function() {
   Route::get('/pesanan', [PesananController::class, 'index']);
   
   Route::get('/retur', [ReturController::class, 'index']);
+  Route::get('/retur/terimaRetur/{item:id}', [ReturController::class, 'terimaRetur']);
+  Route::get('/retur/tolakRetur/{item:id}', [ReturController::class, 'tolakRetur']);
 
   Route::get('/produk/stok/edit', [StokController::class, 'index2']);
   Route::resource('/produk/stok', StokController::class)->except('destroy');

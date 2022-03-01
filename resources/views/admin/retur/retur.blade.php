@@ -27,7 +27,7 @@
     <input type="text" class="form-control " placeholder="Cari Retur...">
   </div>
 
-  <table class="table">
+  <table class="table table-retur">
     <thead>
       <tr>
         <th scope="col">id retur</th>
@@ -45,46 +45,60 @@
     <tbody>
       @foreach ($returs as $retur)
         <tr>
-          <td>{{ $retur->id }}</td>
-          <td>{{ $retur->linkItem->nama_barang }}</td>
-          <td>{{ $retur->linkToko->nama }}</td>
-          <td>{{ $retur->linkSales->nama }}i</td>
-          <td>{{ $retur->quantity }}</td>
-          <td>{{ $retur->alasan }}</td>
-          @if ($retur->status == '-1')
-            <td>Ditolak</td>
-          @elseif ($retur->status == '0')
-            <td>Belum melakukan tindakan</td>
+          <td>{{ $retur->id ?? null }}</td>
+          <td>{{ $retur->linkItem->nama_barang ?? null }}</td>
+          <td>{{ $retur->linkToko->nama ?? null }}</td>
+          <td>{{ $retur->linkSales->nama ?? null }}i</td>
+          <td>{{ $retur->quantity ?? null }}</td>
+          <td>{{ $retur->alasan ?? null }}</td>
+
+          @if (isset($retur->status))
+            @if ($retur->status == '-1')
+              <td class="status_retur">Ditolak</td>
+            @elseif ($retur->status == '0')
+              <td class="status_retur">Belum melakukan tindakan</td>
+            @else
+              <td class="status_retur">Disetujui</td>
+            @endif
           @else
-            <td>Disetujui</td>
+            <td>no data</td>
           @endif
 
-          @if ($retur->tindakan_selanjutnya == '0')
-            <td>Tukar barang</td>
+          @if (isset($retur->tindakan_selanjutnya))
+            @if ($retur->tindakan_selanjutnya == '0')
+              <td>Tukar barang</td>
+            @else
+              <td>Lainnya</td>
+            @endif
           @else
-            <td>Lainnya</td>
+            <td>no data</td>
           @endif
 
-          <td>{{ $nama_admin }}</td>
+          <td>{{ $nama_admin ?? null }}</td>
 
-          @if ($retur->status == '-1')
-            <td>
-              <button class="btn btn-success">Terima</button>
-            </td>
-          @elseif ($retur->status == '0')
-            <td>
-              <button class="btn btn-success">Terima</button>
-              <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#exampleModal">
+          @if (isset($retur->status))
+            @if ($retur->status == '-1')
+              <td>
+                <button data-id="{{ $retur->id }}" class="btn btn-success statusRetur-btn">Terima</button>
+              </td>
+            @elseif ($retur->status == '0')
+              <td>
+                <button data-id="{{ $retur->id }}" class="btn btn-success statusRetur-btn">Terima</button>
+                <button data-id="{{ $retur->id }}" class="btn btn-danger statusRetur-btn">Tolak</button>
+                {{-- <button data-id="{{ $retur->id }}" type="button" class="btn btn-danger"
+                data-bs-toggle="modal" data-bs-target="#exampleModal">
                 Tolak
-              </button>
-            </td>
+              </button> --}}
+              </td>
+            @else
+              <td>
+                <button data-id="{{ $retur->id }}" class="btn btn-danger statusRetur-btn">Tolak</button>
+              </td>
+            @endif
           @else
-            <td>
-              <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#exampleModal">
-                Tolak
-              </button>
-            </td>
+            <td>no data</td>
           @endif
+
         </tr>
       @endforeach
     </tbody>
