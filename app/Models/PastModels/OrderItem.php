@@ -23,7 +23,7 @@ class OrderItem extends Model
     protected $guarded = [
       'id'
     ];
->>>>>>> origin/master
+
     public function linkOrder()
     { 
         return $this->belongsTo(Order::class, 'id', 'order_id');
@@ -34,6 +34,4 @@ class OrderItem extends Model
     }
 <<<<<<< HEAD
 }*/
-=======
-}*/
->>>>>>> origin/master
+

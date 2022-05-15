@@ -4,7 +4,7 @@
 <<<<<<< HEAD:app/Models/PastModels/MetodePembayaran.php
 
 =======
->>>>>>> origin/master:app/Models/MetodePembayaran.php
+
 use App\Models\Invoice;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -19,6 +19,6 @@ class MetodePembayaran extends Model
     }
 <<<<<<< HEAD:app/Models/PastModels/MetodePembayaran.php
 }*/
-=======
-}*/
->>>>>>> origin/master:app/Models/MetodePembayaran.php
+
+
+

@@ -4,7 +4,7 @@
 <<<<<<< HEAD
 
 =======
->>>>>>> origin/master
+
 use App\Models\Toko;
 use App\Models\User;
 use App\Models\Invoice;

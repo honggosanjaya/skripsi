@@ -3,8 +3,6 @@
 /*namespace App\Models;
 <<<<<<< HEAD:app/Models/PastModels/Toko.php
 
-=======
->>>>>>> origin/master:app/Models/Toko.php
 use App\Models\JenisToko;
 use App\Models\Trip;
 use App\Models\Order;
@@ -38,6 +36,4 @@ class Toko extends Model
     }
 <<<<<<< HEAD:app/Models/PastModels/Toko.php
 }*/
-=======
-}*/
->>>>>>> origin/master:app/Models/Toko.php
+
