@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Models;
+/*namespace App\Models;
 
 use App\Models\Item;
 use App\Models\Toko;
@@ -22,4 +22,4 @@ class History extends Model
     public function linkItem(){
       return $this->belongsTo(Item::class, 'id', 'item_id');
     }
-}
+}*/

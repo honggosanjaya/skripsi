@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Models;
+/*namespace App\Models;
 
 use App\Models\Toko;
 use App\Models\User;
@@ -23,3 +23,4 @@ class Trip extends Model
         return $this->hasOne(User::class, 'id', 'sales_id');
     }
 }
+*/

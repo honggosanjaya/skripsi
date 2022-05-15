@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Models;
+/*namespace App\Models;
 
 use App\Models\Invoice;
 use Illuminate\Database\Eloquent\Model;
@@ -17,4 +17,4 @@ class MetodePembayaran extends Model
     public function linkInvoice(){
       return $this->hasMany(Invoice::class, 'metodepembayaran_id');
     }
-}
+}*/

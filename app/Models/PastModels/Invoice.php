@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Models;
+/*namespace App\Models;
 
 use App\Models\Order;
 use App\Models\Pembayaran;
@@ -27,4 +27,4 @@ class Invoice extends Model
     public function linkmetodepembayaran(){
       return $this->belongsTo(MetodePembayaran::class, 'metodepembayaran_id');
     }
-}
+}*/

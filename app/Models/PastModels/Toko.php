@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Models;
+/*namespace App\Models;
 
 use App\Models\JenisToko;
 use App\Models\Trip;
@@ -40,4 +40,4 @@ class Toko extends Model
     {
         return $this->hasMany(Retur::class, 'toko_id', 'id');
     }
-}
+}*/

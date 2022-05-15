@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Models;
+/*namespace App\Models;
 
 use App\Models\Toko;
 use App\Models\User;
@@ -33,3 +33,4 @@ class Order extends Model
       return $this->belongsTo(User::class, 'sales_id','id');
     }
 }
+*/

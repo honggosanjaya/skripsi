@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Models;
+/*namespace App\Models;
 
 use App\Models\Invoice;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -17,3 +17,4 @@ class Pembayaran extends Model
         return $this->belongsTo(Invoice::class, 'id', 'invoice_id');
     }
 }
+*/

@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Models;
+/*namespace App\Models;
 
 use App\Models\Toko;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -16,4 +16,4 @@ class JenisToko extends Model
     {
         return $this->hasMany(Toko::class, 'jenis_toko_id', 'id');
     }
-}
+}*/
