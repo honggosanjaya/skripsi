@@ -15,13 +15,13 @@ class CreateTripsTable extends Migration
     {
         Schema::create('trips', function (Blueprint $table) {
             $table->id();
-            $table->bigInteger('toko_id');
-            $table->bigInteger('sales_id');
-            $table->text('alasan_menolak')->nullable();
-            $table->string('koordinat', 255)->nullable();
+            $table->bigInteger('id_customer');
+            $table->bigInteger('id_staff');
+            $table->text('alasan_penolakan')->nullable();
+            $table->string('koordinat',255);
             $table->timestamp('waktu_masuk')->nullable();
             $table->timestamp('waktu_keluar')->nullable();
-            $table->enum('status', ['0','1','2'])->comment('0:Belum Effective Call, 1:Effective Call, 2:Effective Call dan sudah beli');
+            $table->bigInteger('status');
             $table->timestamps();
         });
     }

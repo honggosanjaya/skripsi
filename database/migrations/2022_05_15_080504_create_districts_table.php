@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreatePembayaransTable extends Migration
+class CreateDistrictsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,11 +13,11 @@ class CreatePembayaransTable extends Migration
      */
     public function up()
     {
-        Schema::create('pembayarans', function (Blueprint $table) {
+        Schema::create('districts', function (Blueprint $table) {
             $table->id();
-            $table->bigInteger('invoice_id');
-            $table->double('harga_yang_dibayarkan');
-            $table->timestamp('waktu_pembayaran');
+            $table->bigInteger('id_parent')->nullable();
+            $table->string('nama',255);
+            $table->timestamps();
         });
     }
 
@@ -28,6 +28,6 @@ class CreatePembayaransTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('pembayarans');
+        Schema::dropIfExists('districts');
     }
 }

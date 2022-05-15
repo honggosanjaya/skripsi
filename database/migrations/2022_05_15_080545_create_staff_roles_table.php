@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class AddStatusProdukToItemsTable extends Migration
+class CreateStaffRolesTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,8 +13,11 @@ class AddStatusProdukToItemsTable extends Migration
      */
     public function up()
     {
-        Schema::table('items', function (Blueprint $table) {
-            $table->string('status_produk', 255);
+        Schema::create('staff_roles', function (Blueprint $table) {
+            $table->id();
+            $table->string('nama',255);
+            $table->text('detail')->nullable();
+            $table->timestamps();
         });
     }
 
@@ -25,8 +28,6 @@ class AddStatusProdukToItemsTable extends Migration
      */
     public function down()
     {
-        Schema::table('items', function (Blueprint $table) {
-            $table->dropColumn('status_produk');
-        });
+        Schema::dropIfExists('staff_roles');
     }
 }

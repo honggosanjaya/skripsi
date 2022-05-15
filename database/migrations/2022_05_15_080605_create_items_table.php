@@ -15,10 +15,15 @@ class CreateItemsTable extends Migration
     {
         Schema::create('items', function (Blueprint $table) {
             $table->id();
-            $table->string('nama_barang', 255);
-            $table->integer('stok');
-            $table->string('satuan', 255);
+            $table->string('nama',255);
+            $table->string('kode_barang',20);
+            $table->integer('stok')->default(0);
+            $table->integer('min_stok')->default(0);
+            $table->integer('max_stok')->default(0);
+            $table->integer('max_pengadaan')->default(0);
+            $table->string('satuan',30);
             $table->double('harga_satuan');
+            $table->bigInteger('status');
             $table->timestamps();
         });
     }

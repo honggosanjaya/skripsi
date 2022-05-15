@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class AlterTableToko extends Migration
+class CreateCustomerTypesTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,8 +13,11 @@ class AlterTableToko extends Migration
      */
     public function up()
     {
-        Schema::table('tokos', function (Blueprint $table) {
-            $table->renameColumn('`durasi kunjungan (satuan hari)`','durasi_kunjungan');
+        Schema::create('customer_types', function (Blueprint $table) {
+            $table->id();
+            $table->string('nama',255);
+            $table->double('diskon');
+            $table->text('keterangan')->nullable();
         });
     }
 
@@ -25,8 +28,6 @@ class AlterTableToko extends Migration
      */
     public function down()
     {
-        Schema::table('tokos', function (Blueprint $table) {
-            //
-        });
+        Schema::dropIfExists('customer_types');
     }
 }

@@ -15,13 +15,17 @@ class CreateRetursTable extends Migration
     {
         Schema::create('returs', function (Blueprint $table) {
             $table->id();
-            $table->bigInteger('item_id');
-            $table->bigInteger('sales_id');
-            $table->bigInteger('toko_id');
-            $table->integer('quantity');
+            $table->bigInteger('id_customer');
+            $table->bigInteger('id_staff_pengaju');
+            $table->bigInteger('id_staff_pengonfirmasi')->nullable();
+            $table->bigInteger('id_item');
+            $table->bigInteger('id_invoice')->nullable();
+            $table->string('no_retur',20);
+            $table->integer('kuantitas');
+            $table->double('harga_satuan');
+            $table->bigInteger('tipe_retur');
             $table->text('alasan');
-            $table->enum('status', ['-1','0', '1'])->default('0')->index('status')->comment('-1: ditolak, 0:belum melakukan tindakan, 1:disetujui');
-            $table->enum('tindakan_selanjutnya', ['0', '1'])->default('0')->index('tindakan_selanjutnya')->comment('0:tukar barang, 1:lainnya');
+            $table->bigInteger('status');
             $table->timestamps();
         });
     }

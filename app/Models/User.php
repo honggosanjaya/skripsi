@@ -40,7 +40,7 @@ class User extends Authenticatable
     ];
 
 
-    public function linkTrip()
+    /*public function linkTrip()
     { 
       return $this->hasMany(Trip::class, 'sales_id');
     }
@@ -51,5 +51,5 @@ class User extends Authenticatable
     public function linkRetur()
     {
       return $this->hasMany(Retur::class, 'sales_id');
-    }
+    }*/
 }

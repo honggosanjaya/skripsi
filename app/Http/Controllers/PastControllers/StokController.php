@@ -19,7 +19,11 @@ class StokController extends Controller
     public function index()
     {
         return view('admin/produk/produk', [
-          'items' => Item::all()
+          'items' => Item::all(),
+          /* Contoh Logika
+          'testing' => Order::with(['linkOrderTrack'=>function($q){
+            $q->whereNotNull('waktu_diteruskan')->whereNull('waktu_dikonfirmasi');
+        }]);*/
         ]);
     }
 
