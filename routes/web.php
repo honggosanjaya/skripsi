@@ -92,3 +92,7 @@ Route::get('/check', function () {
 })->middleware(['auth','supervisor']);
 
 require __DIR__.'/auth.php';
+
+Route::get('/sales/{path}', function () {
+  return view('sales');
+})->where('path', '.*');
