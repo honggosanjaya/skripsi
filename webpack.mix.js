@@ -5,7 +5,8 @@ const mix = require('laravel-mix');
 mix
   .js('resources/js/bootstrap.js', 'public/js/bootstrap.js')
   .sass('resources/sass/app.scss', 'public/css/bootstrap.css')
-  .sass('resources/sass/dashboard.scss', 'public/css/dashboard.css');
+  .sass('resources/sass/dashboard.scss', 'public/css/dashboard.css')
+  .sass('resources/sass/sales.scss', 'public/css/sales.css');
 // react
 mix
   .js('resources/js/app.js', 'public/js/react.js')
@@ -27,6 +28,7 @@ mix
       'resources/js/eventHandle.js',
       'resources/js/profile.js',
       'resources/js/product.js',
+      'resources/js/retur.js',
     ]
     , 'public/js/main.js'
   );

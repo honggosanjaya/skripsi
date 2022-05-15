@@ -24,25 +24,25 @@
       </tr>
     </thead>
     <tbody>
-      @foreach ($tokos as $toko)
+      @foreach ($invoices as $invoice)
         <tr>
           <th scope="row">{{ $loop->iteration }}</th>
-          <td>{{ $toko->linkOrder[0]->id }}</td>
-          <td>{{ $toko->nama }}</td>
-          <td>{{ $toko->linkJenisToko->nama }}</td>
-          @if (isset($toko->linkTrip[0]))
-            <td>{{ $toko->linkTrip[0]->linkSales->nama }}</td>
+          <td>{{ $invoice->linkOrder->id }}</td>
+          <td>{{ $invoice->linkOrder->linkToko->nama }}</td>
+          <td>{{ $invoice->linkOrder->linkToko->linkJenisToko->nama }}</td>
+          @if (isset($invoice->linkOrder->linksales->nama))
+            <td>{{ $invoice->linkOrder->linksales->nama }}</td>
           @else
             <td>Ini kosong bos</td>
           @endif
           <td>
-            {{ $toko->linkOrder[0]->linkInvoice->harga_total }}
+            {{ $invoice->harga_total }}
           </td>
-          <td>{{ $toko->linkOrder[0]->linkInvoice->linkmetodepembayaran->nama }}</td>
+          <td>{{ $invoice->linkmetodepembayaran->nama }}</td>
 
-          @if ($toko->linkOrder[0]->linkInvoice->status_pelunasan == '0')
+          @if ($invoice->status_pelunasan == '0')
             <td>Belum Lunas</td>
-          @elseif ($toko->linkOrder[0]->linkInvoice->status_pelunasan == '1')
+          @elseif ($invoice->status_pelunasan == '1')
             <td>Setengah Lunas</td>
           @else
             <td>Lunas</td>

@@ -2,29 +2,29 @@
 
 namespace App\Models;
 
+use App\Models\Retur;
 use App\Models\Order;
-use App\Models\Pembayaran;
-use App\Models\MetodePembayaran;
-use Illuminate\Database\Eloquent\Model;
+use App\Models\Event;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
 
 class Invoice extends Model
 {
     use HasFactory;
 
     protected $guarded = [
-      'id'
-    ];
-
-    public function linkPembayaran(){
-      return $this->hasMany(Pembayaran::class, 'invoice_id');
+        'id'
+      ];
+  
+    public function linkRetur(){
+        return $this->belongsTo(Retur::class,'id_invoice','id');
     }
 
     public function linkOrder(){
-      return $this->hasOne(Order::class, 'id', 'order_id');
+        return $this->belongsTo(Order::class,'id','id_order');
     }
 
-    public function linkmetodepembayaran(){
-      return $this->belongsTo(MetodePembayaran::class, 'metodepembayaran_id');
+    public function linkEvent(){
+        return $this->hasMany(Event::class,'id','id_event');
     }
 }

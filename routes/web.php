@@ -3,6 +3,8 @@
 use App\Http\Controllers\ItemController;
 use App\Http\Controllers\PesananController;
 use App\Http\Controllers\ProfilController;
+use App\Http\Controllers\ReturController;
+use App\Http\Controllers\StokController;
 use App\Http\Controllers\SupervisorController;
 use App\Http\Controllers\UbahPasswordController;
 use Illuminate\Support\Facades\Route;
@@ -33,11 +35,13 @@ Route::prefix('dashboard')->middleware(['auth','notsales'])->group(function() {
   
   Route::get('/pesanan', [PesananController::class, 'index']);
   
-  Route::get('/retur', function() {
-    return view('admin/retur');
-  });
+  Route::get('/retur', [ReturController::class, 'index']);
+  Route::get('/retur/terimaRetur/{item:id}', [ReturController::class, 'terimaRetur']);
+  Route::get('/retur/tolakRetur/{item:id}', [ReturController::class, 'tolakRetur']);
 
-  Route::resource('/produk', ItemController::class);
+  Route::get('/produk/stok/edit', [StokController::class, 'index2']);
+  Route::resource('/produk/stok', StokController::class)->except('destroy');
+  Route::resource('/produk', ItemController::class)->except('destroy');
   Route::get('/produk/ubahstatus/{item:id}', [ItemController::class, 'ubahstatus']);
   
   Route::prefix('profil')->group(function() {
@@ -88,3 +92,7 @@ Route::get('/check', function () {
 })->middleware(['auth','supervisor']);
 
 require __DIR__.'/auth.php';
+
+Route::get('/sales/{path}', function () {
+  return view('sales');
+})->where('path', '.*');

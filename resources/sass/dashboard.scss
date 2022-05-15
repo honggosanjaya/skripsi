@@ -201,3 +201,24 @@ main {
         color: #b8b9bc;
     }
 }
+
+.stok-page {
+    .product_wrapper {
+        background-color: #fff;
+        padding: 16px;
+        h3 {
+            font-size: 1.1rem;
+        }
+        .satuan {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            right: 2rem;
+        }
+    }
+    .ubahStok-btn {
+        position: fixed;
+        bottom: 1rem;
+        right: 1rem;
+    }
+}
