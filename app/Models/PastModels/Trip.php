@@ -3,8 +3,7 @@
 /*namespace App\Models;
 <<<<<<< HEAD
 
-=======
->>>>>>> origin/master
+
 use App\Models\Toko;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -38,6 +37,4 @@ class Trip extends Model
 }
 <<<<<<< HEAD
 */
-=======
-*/
->>>>>>> origin/master
+
