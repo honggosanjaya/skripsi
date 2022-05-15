@@ -1,6 +1,7 @@
 <?php
 
 /*namespace App\Models;
+<<<<<<< HEAD
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -13,6 +14,16 @@ class OrderItem extends Model
       'id'
     ];
 
+=======
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
+class OrderItem extends Model
+{
+    use HasFactory;
+    protected $guarded = [
+      'id'
+    ];
+>>>>>>> origin/master
     public function linkOrder()
     { 
         return $this->belongsTo(Order::class, 'id', 'order_id');
@@ -21,4 +32,8 @@ class OrderItem extends Model
     {
         return $this->belongsTo(Item::class, 'id', 'item_id')->with(['rellicense','relagent']);
     }
+<<<<<<< HEAD
 }*/
+=======
+}*/
+>>>>>>> origin/master

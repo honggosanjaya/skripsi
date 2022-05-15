@@ -1,7 +1,6 @@
 <?php
 
 /*namespace App\Models;
-
 use App\Models\Item;
 use App\Models\Toko;
 use Illuminate\Database\Eloquent\Model;

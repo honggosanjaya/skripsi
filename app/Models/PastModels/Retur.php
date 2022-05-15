@@ -1,6 +1,7 @@
 <?php
 
 /*namespace App\Models;
+<<<<<<< HEAD
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -9,6 +10,13 @@ class Retur extends Model
 {
     use HasFactory;
 
+=======
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
+class Retur extends Model
+{
+    use HasFactory;
+>>>>>>> origin/master
     protected $guarded = [
       'id'
     ];
@@ -24,4 +32,8 @@ class Retur extends Model
     {
       return $this->belongsTo(Toko::class, 'id', 'toko_id');
     }
+<<<<<<< HEAD
 }*/
+=======
+}*/
+>>>>>>> origin/master
