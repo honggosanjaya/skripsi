@@ -20,4 +20,4 @@ require("./bootstrap");
  */
 
 // register React components
-require("./components/App");
+//require("./components/App");
