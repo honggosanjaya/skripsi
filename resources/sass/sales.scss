@@ -1,6 +1,8 @@
 @import "./variables";
 @import "./mixin";
 @import "./modifBoostrap";
+// font untuk logo tulisan salesMan
+@import url("https://fonts.googleapis.com/css2?family=Caveat:wght@400;500;600;700&display=swap");
 
 .loader {
     position: fixed;
@@ -48,6 +50,10 @@ body {
     background-color: $light;
 }
 
+textarea {
+    height: 100px;
+}
+
 .text-elipsis {
     white-space: nowrap;
     display: inline-block;
@@ -73,6 +79,64 @@ body {
 
 .page_container {
     padding: 0 0.7rem 2rem;
+}
+
+.avatar_pp {
+    border-radius: 50%;
+    width: 50px;
+    height: 50px;
+}
+
+// ================ HEADER ===================
+.header_mobile {
+    background-color: lawngreen;
+    padding: 1rem;
+
+    .iconify {
+        font-size: 2rem;
+    }
+
+    .page_title {
+        font-family: "Caveat", cursive;
+        font-size: 1.5rem;
+    }
+}
+
+// ============== MODAL ================
+
+// ============== TRIP =================
+
+.satuan {
+    font-size: 1rem;
+    position: absolute;
+    right: 1rem;
+    top: 50%;
+    transform: translateY(-50%);
+}
+
+.preview_tempatUsaha {
+    max-width: 100%;
+}
+
+.trip_aksi {
+    float: right;
+}
+
+// ============== ORDER ================
+.customer_info {
+    max-height: 150px;
+    div:nth-child(2) {
+        max-height: 150px;
+        border: 1px solid #000;
+        overflow: auto;
+        h1 {
+            font-size: 1.2rem;
+        }
+        h2 {
+            font-size: 1rem;
+            font-weight: normal;
+        }
+    }
 }
 
 // ============== Product ==============

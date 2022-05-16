@@ -6,7 +6,7 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
-  <title>Sales</title>
+  <title>Salesman</title>
   <link href=" {{ mix('css/bootstrap.css') }}" rel="stylesheet">
   <link href=" {{ mix('css/sales.css') }}" rel="stylesheet">
   {{-- icon --}}
