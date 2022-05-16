@@ -48,7 +48,6 @@ class RegisteredUserController extends Controller
             $request->foto_profil= $filename;
             $file=$request->file('foto_profil')->storeAs('staff', $filename);
         }
-        dd($request->foto_profil);
         $request->validate([
             'nama' => ['required', 'string', 'max:255'],
             'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
