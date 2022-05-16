@@ -15,6 +15,6 @@ class StaffRole extends Model
       ];
   
     public function linkStaff(){
-        return $this->belongsTo(Staff::class,'role','id');
+        return $this->hasMany(Staff::class,'role','id');
     }
 }

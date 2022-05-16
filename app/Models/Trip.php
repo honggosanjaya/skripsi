@@ -17,14 +17,14 @@ class Trip extends Model
       ];
   
     public function linkStaff(){
-        return $this->hasMany(Staff::class,'id','id_staff');
+        return $this->belongsTo(Staff::class,'id','id_staff');
     }
 
     public function linkStatus(){
-        return $this->hasMany(Status::class,'id','status');
+        return $this->belongsTo(Status::class,'id','status');
     }
 
     public function linkCustomer(){
-        return $this->hasMany(Customer::class,'id','id_customer');
+        return $this->belongsTo(Customer::class,'id','id_customer');
     }
 }

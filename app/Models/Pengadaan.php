@@ -16,7 +16,7 @@ class Pengadaan extends Model
       ];
   
     public function linkStaff(){
-        return $this->hasMany(Staff::class,'id','id_staff');
+        return $this->belongsTo(Staff::class,'id','id_staff');
     }
 
     public function linkItem(){

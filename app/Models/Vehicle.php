@@ -15,6 +15,6 @@ class Vehicle extends Model
       ];
   
     public function linkOrderTrack(){
-        return $this->belongsTo(OrderTrack::class,'id_vehicle','id');
+        return $this->hasMany(OrderTrack::class,'id_vehicle','id');
     }
 }
