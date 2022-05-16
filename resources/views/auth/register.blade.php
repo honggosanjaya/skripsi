@@ -13,7 +13,7 @@
         <!-- Validation Errors -->
         <x-auth-validation-errors class="mb-4" :errors="$errors" />
 
-        <form method="POST" action="{{ route('register') }}">
+        <form method="POST" action="{{ route('register') }}" enctype="multipart/form-data" >
             @csrf
 
             <!-- Name -->
@@ -27,7 +27,7 @@
             <div class="mt-4">
                 <x-label for="nomor_telepon" :value="__('Nomor Telepon')" />
 
-                <x-input id="nomor_telepon" class="block mt-1 w-full" type="text" name="nomor_telepon" :value="old('nomor_telepon')" required autofocus />
+                <x-input id="nomor_telepon" class="block mt-1 w-full" type="text" name="telepon" :value="old('nomor_telepon')" required autofocus />
             </div>
 
             <!-- Role -->
@@ -35,9 +35,9 @@
                 <x-label for="role" :value="__('Role')" />
 
                 <select class="form-select" name="role">
-                    <option value="0">Sales</option>
-                    <option value="1">Admin</option>   
-                    <option value="2">Supervisor</option>                     
+                    @foreach ($roles as $role)
+                        <option value="{{$role->id}}" title="{{$role->detail}}">{{$role->nama}}</option>
+                    @endforeach
                 </select>
             </div>
 
@@ -67,6 +67,29 @@
                                 type="password"
                                 name="password_confirmation" required />
             </div>
+            <img class="img-preview img-fluid mb-3 col-sm-5" style="margin: 20px auto 10px">
+            <div class="mt-4">
+                <x-label for="foto_profil" :value="__('Foto Profil')" />
+
+                <x-input id="foto_profil" class="block mt-1 w-full" type="file" name="foto_profil" onchange="previewImage()"/>
+            </div>
+            <script>
+                previewImage = function(){
+  
+                    const image = document.querySelector('#foto_profil');
+                    const imgPreview = document.querySelector('.img-preview');
+
+                    imgPreview.style.display = 'block';
+
+                    const oFReader = new FileReader();
+                    oFReader.readAsDataURL(image.files[0]);
+
+                    oFReader.onload = function(oFREvent){
+                        imgPreview.src = oFREvent.target.result;
+                    }
+
+                }
+            </script>
             
 
             <div class="flex items-center justify-end mt-4">
