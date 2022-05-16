@@ -27,14 +27,14 @@ class Item extends Model
     }
 
     public function linkStatus(){
-        return $this->hasMany(Status::class,'id','status');
+        return $this->belongsTo(Status::class,'id','status');
     }
 
     public function linkOrderItem(){
-        return $this->belongsTo(OrderItem::class,'id_item','id');
+        return $this->hasMany(OrderItem::class,'id_item','id');
     }
 
     public function linkRetur(){
-        return $this->belongsTo(Retur::class,'id_item','id');
+        return $this->hasMany(Retur::class,'id_item','id');
     }
 }

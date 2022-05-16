@@ -23,23 +23,23 @@ class Staff extends Model
       ];
   
     public function linkEvent(){
-        return $this->belongsTo(Event::class,'id_staff','id');
+        return $this->hasMany(Event::class,'id_staff','id');
     }
 
     public function linkTrip(){
-        return $this->belongsTo(Trip::class,'id_staff','id');
+        return $this->hasMany(Trip::class,'id_staff','id');
     }
 
     public function linkPengadaan(){
-        return $this->belongsTo(Pengadaan::class,'id_staff','id');
+        return $this->hasMany(Pengadaan::class,'id_staff','id');
     }
 
     public function linkStaffRole(){
-        return $this->hasMany(StaffRole::class,'id','role');
+        return $this->belongsTo(StaffRole::class,'id','role');
     }
 
     public function linkCustomer(){
-        return $this->belongsTo(Customer::class,'id_staff','id');
+        return $this->hasMany(Customer::class,'id_staff','id');
     }
 
     public function linkStaffPengonfirmasi(){
@@ -51,18 +51,18 @@ class Staff extends Model
     }
 
     public function linkOrder(){
-        return $this->belongsTo(Order::class,'id_staff','id');
+        return $this->hasMany(Order::class,'id_staff','id');
     }
 
     public function linkStatus(){
-        return $this->hasMany(Status::class,'id','status');
+        return $this->belongsTo(Status::class,'id','status');
     }
 
     public function linkReturPengaju(){
-        return $this->belongsTo(Retur::class,'id_staff_pengaju','id');
+        return $this->hasMany(Retur::class,'id_staff_pengaju','id');
     }
 
     public function linkReturPengonfirmasi(){
-        return $this->belongsTo(Retur::class,'id_staff_pengonfirmasi','id');
+        return $this->hasMany(Retur::class,'id_staff_pengonfirmasi','id');
     }
 }

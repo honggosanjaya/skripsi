@@ -23,31 +23,31 @@ class Customer extends Model
       ];
   
     public function linkStaff(){
-        return $this->hasMany(Staff::class,'id','id_staff');
+        return $this->belongsTo(Staff::class,'id','id_staff');
     }
 
     public function linkRetur(){
-        return $this->belongsTo(Retur::class,'id_customer','id');
+        return $this->hasMany(Retur::class,'id_customer','id');
     }
 
     public function linkTrip(){
-        return $this->belongsTo(Trip::class,'id_customer','id');
+        return $this->hasMany(Trip::class,'id_customer','id');
     }
 
     public function linkHistory(){
-        return $this->belongsTo(History::class,'id_customer','id');
+        return $this->hasMany(History::class,'id_customer','id');
     }
 
     public function linkCustomerType(){
-        return $this->hasMany(CustomerType::class,'id','id_jenis');
+        return $this->belongsTo(CustomerType::class,'id','id_jenis');
     }
 
     public function linkDistrict(){
-        return $this->hasMany(District::class,'id','id_wilayah');
+        return $this->belongsTo(District::class,'id','id_wilayah');
     }
 
     public function linkOrder(){
-        return $this->belongsTo(Order::class,'id_customer','id');
+        return $this->hasMany(Order::class,'id_customer','id');
     }
 
     public function linkStatus(){
@@ -55,6 +55,6 @@ class Customer extends Model
     }
 
     public function linkReturType(){
-        return $this->hasMany(ReturType::class,'id','tipe_retur');
+        return $this->belongsTo(ReturType::class,'id','tipe_retur');
     }
 }

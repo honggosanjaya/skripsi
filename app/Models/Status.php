@@ -22,7 +22,7 @@ class Status extends Model
       ];
   
     public function linkTrip(){
-        return $this->belongsTo(Trip::class,'status','id');
+        return $this->hasMany(Trip::class,'status','id');
     }
 
     public function linkCustomer(){
@@ -30,26 +30,26 @@ class Status extends Model
     }
 
     public function linkStaff(){
-        return $this->belongsTo(Staff::class,'status','id');
+        return $this->hasMany(Staff::class,'status','id');
     }
 
     public function linkItem(){
-        return $this->belongsTo(Item::class,'status','id');
+        return $this->hasMany(Item::class,'status','id');
     }
 
     public function linkRetur(){
-        return $this->belongsTo(Retur::class,'status','id');
+        return $this->hasMany(Retur::class,'status','id');
     }
 
     public function linkOrder(){
-        return $this->belongsTo(Order::class,'status','id');
+        return $this->hasMany(Order::class,'status','id');
     }
 
     public function linkEvent(){
-        return $this->belongsTo(Event::class,'status','id');
+        return $this->hasMany(Event::class,'status','id');
     }
 
     public function linkOrderTrack(){
-        return $this->belongsTo(OrderTrack::class,'status','id');
+        return $this->hasMany(OrderTrack::class,'status','id');
     }
 }
