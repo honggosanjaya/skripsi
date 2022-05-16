@@ -23,8 +23,13 @@
       <h1 class="mb-3 fs-6">Admin</h1>
       <ul class="p-0">
         <li class="mb-3">
+          <a class="" href="">
+            <i class="bi bi-truck me-2"></i><span>Data Customer</span>
+          </a>
+        </li>
+        <li class="mb-3">
           <a class="{{ Request::is('dashboard/pesanan*') ? 'active' : '' }}" href="/dashboard/pesanan">
-            <i class="bi bi-truck me-2"></i><span>Pesanan</span>
+            <i class="bi bi-bag-check-fill me-2"></i><span>Pesanan</span>
           </a>
         </li>
         <li class="mb-3">
@@ -33,8 +38,18 @@
           </a>
         </li>
         <li class="mb-3">
+          <a class="" href="">
+            <i class="bi bi-bag-check-fill me-2"></i><span>Penjualan</span>
+          </a>
+        </li>
+        <li class="mb-3">
           <a class="{{ Request::is('dashboard/produk*') ? 'active' : '' }}" href="/dashboard/produk/stok">
-            <i class="bi bi-bag-check-fill me-2"></i><span>Produk</span>
+            <i class="bi bi-bag-check-fill me-2"></i><span>Stok</span>
+          </a>
+        </li>
+        <li class="mb-3">
+          <a class="" href="">
+            <i class="bi bi-bag-check-fill me-2"></i><span>Kendaraan</span>
           </a>
         </li>
       </ul>
@@ -45,8 +60,60 @@
       <h1 class="mb-3 fs-6">Supervisor</h1>
       <ul class="p-0">
         <li class="mb-3">
+          <a class="" href="">
+            <i class="bi bi-calendar3-event me-2"></i><span>Event</span>
+          </a>
+        </li>
+        <li class="mb-3">
           <a class="{{ Request::is('dashboard/pengguna*') ? 'active' : '' }}" href="/dashboard/pengguna">
-            <i class="bi bi-calendar3-event me-2"></i><span>Atur Pengguna</span>
+            <i class="bi bi-calendar3-event me-2"></i><span>Data Staf</span>
+          </a>
+        </li>
+        <li class="mb-3">
+          <a class="" href="">
+            <i class="bi bi-bag-check-fill me-2"></i><span>Penjualan</span>
+          </a>
+        </li>
+        <li class="mb-3">
+          <a class="" href="">
+            <i class="bi bi-calendar3-event me-2"></i><span>Kinerja Salesman</span>
+          </a>
+        </li>
+        <li class="mb-3">
+          <a class="" href="">
+            <i class="bi bi-calendar3-event me-2"></i><span>Limit Pembelian</span>
+          </a>
+        </li>
+        <li class="mb-3">
+          <a class="" href="">
+            <i class="bi bi-calendar3-event me-2"></i><span>Wilayah</span>
+          </a>
+        </li>
+        <li class="mb-3">
+          <a class="" href="">
+            <i class="bi bi-calendar3-event me-2"></i><span>Jenis Customer</span>
+          </a>
+        </li>
+      </ul>
+    @endcan
+
+    @can('Owner')
+      <hr class="my-4" />
+      <h1 class="mb-3 fs-6">Owner</h1>
+      <ul class="p-0">
+        <li class="mb-3">
+          <a class="" href="">
+            <i class="bi bi-calendar3-event me-2"></i><span>Penjualan</span>
+          </a>
+        </li>
+        <li class="mb-3">
+          <a class="" href="">
+            <i class="bi bi-calendar3-event me-2"></i><span>Kinerja Salesman</span>
+          </a>
+        </li>
+        <li class="mb-3">
+          <a class="" href="">
+            <i class="bi bi-calendar3-event me-2"></i><span>Data Supervisor</span>
           </a>
         </li>
       </ul>

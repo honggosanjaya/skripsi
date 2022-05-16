@@ -1,23 +1,27 @@
 import React from 'react';
 import ReactDOM from "react-dom";
 import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
-import ProdukContextProvider from '../contexts/ProdukContext';
+import OrderSalesContextProvider from '../contexts/OrderSalesContext';
 
 // Sales Page
 import NotFound from './reuse/NotFound';
-import Produk from './sales/Produk';
-import Keranjang from './sales/Keranjang';
+import DashboardSales from './sales/DashboardSales';
+import KeranjangSales from './sales/KeranjangSales';
+import OrderSales from './sales/OrderSales';
+import TripSales from './sales/TripSales';
+
 
 function App() {
   return (
     <Router basename='/sales'>
       <Switch>
-
-        <Route exact path={["/produk", "/produk/keranjang"]}>
-          <ProdukContextProvider>
-            <Route exact path="/produk" component={Produk} />
-            <Route path="/produk/keranjang" component={Keranjang} />
-          </ProdukContextProvider>
+        <Route exact path="/makan" component={DashboardSales} />
+        <Route exact path="/trip" component={TripSales} />
+        <Route exact path={["/order", "/order/keranjang"]}>
+          <OrderSalesContextProvider>
+            <Route exact path="/order" component={OrderSales} />
+            <Route path="/order/keranjang" component={KeranjangSales} />
+          </OrderSalesContextProvider>
         </Route>
 
         <Route path="*" component={NotFound} />
