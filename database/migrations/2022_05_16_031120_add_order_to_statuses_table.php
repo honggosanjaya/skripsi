@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateCustomerTypesTable extends Migration
+class AddOrderToStatusesTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,11 +13,8 @@ class CreateCustomerTypesTable extends Migration
      */
     public function up()
     {
-        Schema::create('customer_types', function (Blueprint $table) {
-            $table->id();
-            $table->string('nama',255);
-            $table->double('diskon');
-            $table->text('keterangan')->nullable();
+        Schema::table('statuses', function (Blueprint $table) {
+            $table->integer('order')->nullable();
         });
     }
 
@@ -28,6 +25,8 @@ class CreateCustomerTypesTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('customer_types');
+        Schema::table('statuses', function (Blueprint $table) {
+            //
+        });
     }
 }
