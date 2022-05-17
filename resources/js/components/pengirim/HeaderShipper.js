@@ -2,7 +2,7 @@ import React, { Fragment, useContext } from 'react';
 import { Link, useHistory } from "react-router-dom";
 import urlAsset from '../../config';
 
-const HeaderSales = ({ title, isDashboard, isOrder }) => {
+const HeaderShipper = ({ title, isDashboard }) => {
   const history = useHistory();
 
   const goback = () => {
@@ -18,7 +18,6 @@ const HeaderSales = ({ title, isDashboard, isOrder }) => {
             </button>
             <h1 className='page_title'>{title}</h1>
           </div>
-          {isOrder && <span className="iconify" data-icon="clarity:shopping-cart-solid"></span>}
         </Fragment>
       }
       {isDashboard &&
@@ -33,9 +32,8 @@ const HeaderSales = ({ title, isDashboard, isOrder }) => {
   );
 }
 
-export default HeaderSales;
+export default HeaderShipper;
 
-HeaderSales.defaultProps = {
-  isDashboard: false,
-  isOrder: false
+HeaderShipper.defaultProps = {
+  isDashboard: false
 }

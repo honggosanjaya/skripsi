@@ -7,13 +7,13 @@
       {{-- active sign --}}
       <div class="active_indicator"></div>
       <div class="admin-name ms-2">
-        <h4 class="mb-0 fs-6">{{ auth()->user()->nama }}</h4>
-        @if (auth()->user()->role === "1")
+        {{-- <h4 class="mb-0 fs-6">{{ auth()->user()->nama }}</h4>
+        @if (auth()->user()->role === '1')
         <small>Admin</small>
         @else
         <small>Supervisor</small>
-        @endif
-        
+        @endif --}}
+
       </div>
     </div>
   </a>
@@ -22,9 +22,9 @@
       @csrf
       <button class="btn btn-danger d-block w-100">Log Out</button>
     </form>
-    
-    <a href="/dashboard/profil/ubahpasswordlama/{{ auth()->user()->id }}" class="btn btn-primary d-block w-100 mt-3">Ubah Password</a>
-    <a href="/dashboard/profil/ubah/{{ auth()->user()->id }}" class="btn btn-warning d-block w-100 mt-3">Ubah Profil</a>
+
+    {{-- <a href="/dashboard/profil/ubahpasswordlama/{{ auth()->user()->id }}" class="btn btn-primary d-block w-100 mt-3">Ubah Password</a>
+    <a href="/dashboard/profil/ubah/{{ auth()->user()->id }}" class="btn btn-warning d-block w-100 mt-3">Ubah Profil</a> --}}
   </ul>
 
 </header>

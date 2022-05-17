@@ -97,27 +97,27 @@
       </ul>
     @endcan
 
-    @can('Owner')
-      <hr class="my-4" />
-      <h1 class="mb-3 fs-6">Owner</h1>
-      <ul class="p-0">
-        <li class="mb-3">
-          <a class="" href="">
-            <i class="bi bi-calendar3-event me-2"></i><span>Penjualan</span>
-          </a>
-        </li>
-        <li class="mb-3">
-          <a class="" href="">
-            <i class="bi bi-calendar3-event me-2"></i><span>Kinerja Salesman</span>
-          </a>
-        </li>
-        <li class="mb-3">
-          <a class="" href="">
-            <i class="bi bi-calendar3-event me-2"></i><span>Data Supervisor</span>
-          </a>
-        </li>
-      </ul>
-    @endcan
+    {{-- @can('Owner') --}}
+    <hr class="my-4" />
+    <h1 class="mb-3 fs-6">Owner</h1>
+    <ul class="p-0">
+      <li class="mb-3">
+        <a class="" href="">
+          <i class="bi bi-calendar3-event me-2"></i><span>Penjualan</span>
+        </a>
+      </li>
+      <li class="mb-3">
+        <a class="" href="">
+          <i class="bi bi-calendar3-event me-2"></i><span>Kinerja Salesman</span>
+        </a>
+      </li>
+      <li class="mb-3">
+        <a class="" href="">
+          <i class="bi bi-calendar3-event me-2"></i><span>Data Supervisor</span>
+        </a>
+      </li>
+    </ul>
+    {{-- @endcan --}}
 
   </div>
 </div>
