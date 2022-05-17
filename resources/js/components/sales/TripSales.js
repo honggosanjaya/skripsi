@@ -27,7 +27,7 @@ const TripSales = () => {
 
     axios({
       method: "post",
-      url: `${appUrl}/api/tripCustomer`,
+      url: `${window.location.origin}/api/tripCustomer`,
       data: {
         nama: namaCust,
         id_jenis: jenis,
@@ -51,7 +51,7 @@ const TripSales = () => {
             console.log(formData);
             axios({
               method: "post",
-              url: `${appUrl}/api/tripCustomer/foto/${response.data.data.id}`,
+              url: `${window.location.origin}/api/tripCustomer/foto/${response.data.data.id}`,
               formData,
               headers: {
                 Accept: "application/json",
