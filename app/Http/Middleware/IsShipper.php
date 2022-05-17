@@ -5,7 +5,7 @@ namespace App\Http\Middleware;
 use Closure;
 use Illuminate\Http\Request;
 
-class IsExceptSales
+class IsShipper
 {
     /**
      * Handle an incoming request.
@@ -16,8 +16,17 @@ class IsExceptSales
      */
     public function handle(Request $request, Closure $next)
     {
-        if(auth()->user()->role == 1 || auth()->user()->role == 2){
+        if( $request->session()->get('role') == 'shipper'){
             return $next($request);
+        }
+        elseif( $request->session()->get('role') == null){
+            Auth::guard('web')->logout();
+ 
+            $request->session()->invalidate();
+        
+            $request->session()->regenerateToken();
+
+            return redirect('/login');
         }
         abort(403);
     }

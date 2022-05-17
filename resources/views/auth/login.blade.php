@@ -10,6 +10,12 @@
         <button type="button" class="btn btn-close" data-bs-dismiss="alert" aria-label="Close">X</button>
         </div>
         @endif
+        @if(session()->has('error'))
+        <div class="alert alert-danger alert-dismissible fade show text-center" role="alert">
+        {{ session('error') }}
+        <button type="button" class="btn btn-close" data-bs-dismiss="alert" aria-label="Close">X</button>
+        </div>
+        @endif
 
         
 
