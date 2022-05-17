@@ -18,7 +18,7 @@
       </li>
     </ul>
 
-    {{-- @can('admin') --}}
+    @can('administrasi')
     <hr class="my-4" />
     <h1 class="mb-3 fs-6">Admin</h1>
     <ul class="p-0">
@@ -53,9 +53,9 @@
         </a>
       </li>
     </ul>
-    {{-- @endcan --}}
+    @endcan
 
-    {{-- @can('supervisor') --}}
+    @can('supervisor')
     <hr class="my-4" />
     <h1 class="mb-3 fs-6">Supervisor</h1>
     <ul class="p-0">
@@ -95,9 +95,9 @@
         </a>
       </li>
     </ul>
-    {{-- @endcan --}}
+    @endcan
 
-    {{-- @can('Owner') --}}
+    @can('owner')
     <hr class="my-4" />
     <h1 class="mb-3 fs-6">Owner</h1>
     <ul class="p-0">
@@ -117,7 +117,7 @@
         </a>
       </li>
     </ul>
-    {{-- @endcan --}}
+    @endcan
 
   </div>
 </div>
