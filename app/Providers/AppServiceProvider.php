@@ -28,8 +28,8 @@ class AppServiceProvider extends ServiceProvider
         
         Gate::define('administrasi', function(User $user){
             $value = 0;
-            $role_value = $user->role;
-            if($role_value == 1){
+            $role_value = session('role');
+            if($role_value == "administrasi"){
                 $value = $role_value;
             }            
             return $value;
@@ -37,8 +37,16 @@ class AppServiceProvider extends ServiceProvider
 
         Gate::define('supervisor', function(User $user){
             $value = 0;
-            $role_value = $user->role;
-            if($role_value == 2){
+            $role_value = session('role');
+            if($role_value == "supervisor"){
+                $value = $role_value;
+            }            
+            return $value;
+        });
+        Gate::define('owner', function(User $user){
+            $value = 0;
+            $role_value = session('role');
+            if($role_value == "owner"){
                 $value = $role_value;
             }            
             return $value;

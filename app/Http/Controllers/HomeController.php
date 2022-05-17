@@ -9,7 +9,7 @@ class HomeController extends Controller
     public function indexOwner()
     {
         $role='indexOwner';
-        return view('welcome',compact('role'));
+        return view('owner/dashboard',compact('role'));
     }
     public function indexSupervisor()
     {

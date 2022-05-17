@@ -12,15 +12,15 @@
     <h1 class="mb-3 fs-6">Dashboard</h1>
     <ul class="p-0">
       <li class="mb-3">
-        <a class="{{ Request::is('dashboard') ? 'active' : '' }}" href="/dashboard">
+        <a class="{{ Request::is('dashboard') ? 'active' : '' }}" href="/{{ auth()->user()->linkStaff->linkStaffRole->nama }}">
           <i class="bi bi-speedometer2 me-2"></i><span>Dashboard</span>
         </a>
       </li>
     </ul>
 
-    {{-- @can('admin') --}}
+    @can('administrasi')
     <hr class="my-4" />
-    <h1 class="mb-3 fs-6">Admin</h1>
+    <h1 class="mb-3 fs-6">Administrasi</h1>
     <ul class="p-0">
       <li class="mb-3">
         <a class="" href="">
@@ -53,9 +53,9 @@
         </a>
       </li>
     </ul>
-    {{-- @endcan --}}
+    @endcan
 
-    {{-- @can('supervisor') --}}
+    @can('supervisor')
     <hr class="my-4" />
     <h1 class="mb-3 fs-6">Supervisor</h1>
     <ul class="p-0">
@@ -95,9 +95,9 @@
         </a>
       </li>
     </ul>
-    {{-- @endcan --}}
+    @endcan
 
-    {{-- @can('Owner') --}}
+    @can('owner')
     <hr class="my-4" />
     <h1 class="mb-3 fs-6">Owner</h1>
     <ul class="p-0">
@@ -117,7 +117,7 @@
         </a>
       </li>
     </ul>
-    {{-- @endcan --}}
+    @endcan
 
   </div>
 </div>
