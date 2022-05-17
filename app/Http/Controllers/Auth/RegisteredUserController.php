@@ -22,13 +22,12 @@ class RegisteredUserController extends Controller
      */
     public function create()
     {
-        // if (condition) {
-        //     $roles = StaffRole::find(2);
-        // } else {
-        //     $roles = StaffRole::get()->except([1,2]);
-        // }
+        if (session('role') == 'owner') {
+            $roles = StaffRole::where('id',2)->get();
+        } else {
+            $roles = StaffRole::get()->except([1,2]);
+        }
         
-        $roles = StaffRole::get()->except([1,2]);
         return view('auth.register',compact('roles'));
     }
 
@@ -42,12 +41,6 @@ class RegisteredUserController extends Controller
      */
     public function store(Request $request)
     {
-        if($request->file('foto_profil')){
-            $file= $request->file('foto_profil');
-            $filename=  date('Y-m-d').'-'.$request->nama.'-'.$request->email.'.'.$file->getClientOriginalExtension();
-            $request->foto_profil= $filename;
-            $file=$request->file('foto_profil')->storeAs('staff', $filename);
-        }
         $request->validate([
             'nama' => ['required', 'string', 'max:255'],
             'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
@@ -57,6 +50,13 @@ class RegisteredUserController extends Controller
             'role' => ['required'],
         ]);
 
+        if($request->file('foto_profil')){
+            $file= $request->file('foto_profil');
+            $filename=  date('Y-m-d').'-'.$request->nama.'-'.$request->email.'.'.$file->getClientOriginalExtension();
+            $request->foto_profil= $filename;
+            $file=$request->file('foto_profil')->storeAs('staff', $filename);
+        }
+       
         $staff= Staff::insertGetId([
             'nama' => $request->nama,
             'email' => $request->email,
@@ -66,6 +66,13 @@ class RegisteredUserController extends Controller
             'status' => 8,
             'foto_profil'=> $request->foto_profil
         ]);
+
+        if (Staff::where('role',2)->where('status',8)->count()>1) {
+            //jika spv sudah ada dan masih aktif maka status yang baru di non aktifkan
+            $inactive=Staff::find($staff);
+            $inactive->status=9;
+            $inactive->save();
+        }
         
         $user = User::create([
             'id_users' => $staff,
@@ -78,6 +85,6 @@ class RegisteredUserController extends Controller
 
         // Auth::login($user);
 
-        return redirect('/register')->with('success','Registration successfull! Please Login');
+        return redirect('/register')->with('success','Registration successfull!');
     }
 }

@@ -1,12 +1,6 @@
 <?php
 
-use App\Http\Controllers\ItemController;
-use App\Http\Controllers\PesananController;
-use App\Http\Controllers\ProfilController;
-use App\Http\Controllers\ReturController;
-use App\Http\Controllers\StokController;
-use App\Http\Controllers\SupervisorController;
-use App\Http\Controllers\UbahPasswordController;
+use App\Http\Controllers\HomeController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -24,5 +18,23 @@ Route::get('/', function () {
     return view('welcome');
 });
 
+Route::prefix('owner')->middleware('owner')->group(function() {
+  Route::get('/', [HomeController::class, 'indexOwner']);
+});
+Route::prefix('supervisor')->middleware('supervisor')->group(function() {
+  Route::get('/', [HomeController::class, 'indexSupervisor']);
+});
+Route::prefix('salesman')->middleware('salesman')->group(function() {
+  Route::get('/', [HomeController::class, 'indexSalesman']);
+});
+Route::prefix('shipper')->middleware('shipper')->group(function() {
+  Route::get('/', [HomeController::class, 'indexShipper']);
+});
+Route::prefix('administrasi')->middleware('administrasi')->group(function() {
+  Route::get('/', [HomeController::class, 'indexAdministrasi']);
+});
+Route::prefix('customer')->middleware('customer')->group(function() {
+  Route::get('/', [HomeController::class, 'indexCustomer']);
+});
 
 require __DIR__.'/auth.php';

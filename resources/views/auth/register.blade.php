@@ -4,6 +4,12 @@
 
 <x-guest-layout>
     <x-auth-card>
+        @if(session()->has('success'))
+            <div class="alert alert-success alert-dismissible fade show" role="alert">
+                {{ session('success') }}
+                <button type="button" class="btn btn-close" data-bs-dismiss="alert" aria-label="Close">X</button>
+            </div>
+        @endif
         <x-slot name="logo">
             <a href="/">
                 <x-application-logo class="w-20 h-20 fill-current text-gray-500" />

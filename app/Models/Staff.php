@@ -35,7 +35,7 @@ class Staff extends Model
     }
 
     public function linkStaffRole(){
-        return $this->belongsTo(StaffRole::class,'id','role');
+        return $this->hasOne(StaffRole::class,'id','role');
     }
 
     public function linkCustomer(){

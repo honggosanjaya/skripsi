@@ -5,7 +5,7 @@ namespace App\Http\Middleware;
 use Closure;
 use Illuminate\Http\Request;
 
-class IsSupervisor
+class IsAdministrasi
 {
     /**
      * Handle an incoming request.
@@ -16,7 +16,7 @@ class IsSupervisor
      */
     public function handle(Request $request, Closure $next)
     {
-        if( $request->session()->get('role') == 'supervisor'){
+        if( $request->session()->get('role') == 'administrasi'){
             return $next($request);
         }
         elseif( $request->session()->get('role') == null){
