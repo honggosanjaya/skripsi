@@ -1,3 +1,4 @@
+import axios from 'axios';
 import React, { Component, useState } from 'react';
 import HeaderSales from './HeaderSales';
 
@@ -24,11 +25,8 @@ const TripSales = () => {
     let formData = new FormData();
     formData.append("foto", file);
 
-
-    axios({
-      method: "post",
-      url: `${window.location.origin}/api/tripCustomer`,
-      data: {
+    axios.all([
+      axios.post(`${window.location.origin}/api/tripCustomer`, {
         nama: namaCust,
         id_jenis: jenis,
         id_wilayah: wilayah,
@@ -38,33 +36,22 @@ const TripSales = () => {
         telepon: telepon,
         durasi_kunjungan: durasiTrip,
         counter_to_effective_call: totalTrip,
-      },
-      headers: {
-        Accept: "application/json",
-      },
-    })
-      .then((response) => {
-        console.log(response);
-        if (response.data.status == 'success') {
-          if (file !== null) {
-            console.log('ada foto')
-            console.log(formData);
-            axios({
-              method: "post",
-              url: `${window.location.origin}/api/tripCustomer/foto/${response.data.data.id}`,
-              formData,
-              headers: {
-                Accept: "application/json",
-              },
-            })
-              .then((response2) => {
-                console.log(formData);
-                console.log(response2);
-                console.log(response2.data.status);
-              })
-          }
+      }, {
+        headers: {
+          Accept: "application/json",
+        },
+      }),
+      axios.post(`${window.location.origin}/api/tripCustomer/foto`,
+        formData, {
+        headers: {
+          Accept: "application/json",
         }
       })
+    ])
+      .then(axios.spread((data1, data2) => {
+        console.log(data1);
+        console.log(data2);
+      }))
       .catch((error) => {
         console.log(error.message);
       });
