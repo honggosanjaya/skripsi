@@ -53,7 +53,7 @@ class RegisteredUserController extends Controller
         ]);
 
         if (StaffRole::find($request->role)->nama=='owner') {
-            if (StaffRole::where('nama','owner')->count()>0) {
+            if (Staff::where('role',1)->count()>0) {
                 return redirect('/registerowner')->with('error','Maaf Untuk Role Owner Hanya Diperbolehkan Ada 1, Penambahan Untuk Role Ini DILARANG');
             }
         }

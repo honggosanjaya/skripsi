@@ -2,7 +2,7 @@ import React, { useContext, useEffect, useState } from 'react';
 import KeranjangDB from './KeranjangDB';
 import { convertPrice } from "../reuse/HelperFunction";
 
-const Keranjang = () => {
+const KeranjangSales = () => {
   const [produks, setProduks] = useState(null);
 
   const getAllProduks = () => {
@@ -122,5 +122,5 @@ const Keranjang = () => {
   );
 }
 
-export default Keranjang;
+export default KeranjangSales;
 

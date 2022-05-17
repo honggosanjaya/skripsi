@@ -1,4 +1,5 @@
 import React, { Component, useState, useEffect } from 'react';
+import { splitCharacter } from '../reuse/HelperFunction';
 import HeaderSales from './HeaderSales';
 
 const DashboardSales = () => {
@@ -6,13 +7,11 @@ const DashboardSales = () => {
     <main className="page_main">
       <HeaderSales isDashboard={true} />
       <div className="page_container pt-4">
-        <h1>Selamat datang {nama}</h1>
-
-
+        <div className="word d-flex justify-content-center">
+          {splitCharacter("salesman")}
+        </div>
         <button className='btn btn-primary w-100' data-bs-toggle="modal" data-bs-target="#cariDataCustomer">Trip</button>
         <button className='btn btn-success w-100 mt-4' data-bs-toggle="modal" data-bs-target="#cariDataCustomer">Order</button>
-
-
       </div>
 
       {/* Modal */}

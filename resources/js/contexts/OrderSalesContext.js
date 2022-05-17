@@ -1,8 +1,8 @@
 import React, { createContext, useState } from 'react';
 
-export const ProdukContext = createContext();
+export const OrderSalesContext = createContext();
 
-const ProdukContextProvider = (props) => {
+const OrderSalesContextProvider = (props) => {
   const produks = [
     { "id": 1, "nama": "Sapu Apik", "harga": 10000 },
     { "id": 2, "nama": "Sepatu Apik", "harga": 300000 },
@@ -11,10 +11,10 @@ const ProdukContextProvider = (props) => {
 
 
   return (
-    <ProdukContext.Provider value={{ produks }}>
+    <OrderSalesContext.Provider value={{ produks }}>
       {props.children}
-    </ProdukContext.Provider>
+    </OrderSalesContext.Provider>
   );
 }
 
-export default ProdukContextProvider;
+export default OrderSalesContextProvider;
