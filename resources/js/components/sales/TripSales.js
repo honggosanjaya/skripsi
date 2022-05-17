@@ -13,7 +13,7 @@ const TripSales = () => {
   const [telepon, setTelepon] = useState('');
   const [durasiTrip, setDurasiTrip] = useState('');
   const [totalTrip, setTotalTrip] = useState('');
-  const [file, setFile] = useState();
+  const [file, setFile] = useState(null);
   const [prevImage, setPrevImage] = useState('');
   const [imagePreviewUrl, setImagePreviewUrl] = useState('');
   const [error, setError] = useState(null);
@@ -23,32 +23,50 @@ const TripSales = () => {
     e.preventDefault();
     let formData = new FormData();
     formData.append("foto", file);
-    console.log(formData);
+
+
     axios({
       method: "post",
-      url: `${appUrl}/api/tripCustomer`,
+      url: `${window.location.origin}/api/tripCustomer`,
       data: {
         nama: namaCust,
-        // id_jenis: jenis,
-        // id_wilayah: wilayah,
-        // alamat_utama: alamatUtama,
-        // alamat_nomor: alamatNomor,
-        // keterangan_alamat: ketAlamat,
-        // telepon: telepon,
-        // durasi_kunjungan: durasiTrip,
-        // counter_to_effective_call: totalTrip,
-        // foto: file
+        id_jenis: jenis,
+        id_wilayah: wilayah,
+        alamat_utama: alamatUtama,
+        alamat_nomor: alamatNomor,
+        keterangan_alamat: ketAlamat,
+        telepon: telepon,
+        durasi_kunjungan: durasiTrip,
+        counter_to_effective_call: totalTrip,
       },
       headers: {
         Accept: "application/json",
-        // "Content-Type": "multipart/form-data",
       },
     })
       .then((response) => {
-
+        console.log(response);
+        if (response.data.status == 'success') {
+          if (file !== null) {
+            console.log('ada foto')
+            console.log(formData);
+            axios({
+              method: "post",
+              url: `${window.location.origin}/api/tripCustomer/foto/${response.data.data.id}`,
+              formData,
+              headers: {
+                Accept: "application/json",
+              },
+            })
+              .then((response2) => {
+                console.log(formData);
+                console.log(response2);
+                console.log(response2.data.status);
+              })
+          }
+        }
       })
       .catch((error) => {
-
+        console.log(error.message);
       });
   }
 
