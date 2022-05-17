@@ -3,9 +3,10 @@ import HeaderSales from './HeaderSales';
 
 
 const TripSales = () => {
+  const appUrl = process.env.MIX_APP_URL;
   const [namaCust, setNamaCust] = useState('');
-  const [jenisCust, setJenisCust] = useState('');
-  const [wilayah, setWilayah] = useState('');
+  const [jenis, setJenis] = useState('1');
+  const [wilayah, setWilayah] = useState('2');
   const [alamatUtama, setAlamatUtama] = useState('');
   const [alamatNomor, setAlamatNomor] = useState('');
   const [ketAlamat, setKetAlamat] = useState('');
@@ -15,6 +16,41 @@ const TripSales = () => {
   const [file, setFile] = useState();
   const [prevImage, setPrevImage] = useState('');
   const [imagePreviewUrl, setImagePreviewUrl] = useState('');
+  const [error, setError] = useState(null);
+  const [success, setSuccess] = useState(null);
+
+  const kirimCustomer = (e) => {
+    e.preventDefault();
+    let formData = new FormData();
+    formData.append("foto", file);
+    console.log(formData);
+    axios({
+      method: "post",
+      url: `${appUrl}/api/tripCustomer`,
+      data: {
+        nama: namaCust,
+        // id_jenis: jenis,
+        // id_wilayah: wilayah,
+        // alamat_utama: alamatUtama,
+        // alamat_nomor: alamatNomor,
+        // keterangan_alamat: ketAlamat,
+        // telepon: telepon,
+        // durasi_kunjungan: durasiTrip,
+        // counter_to_effective_call: totalTrip,
+        // foto: file
+      },
+      headers: {
+        Accept: "application/json",
+        // "Content-Type": "multipart/form-data",
+      },
+    })
+      .then((response) => {
+
+      })
+      .catch((error) => {
+
+      });
+  }
 
   const handleImageChange = (e) => {
     e.preventDefault();
@@ -42,45 +78,71 @@ const TripSales = () => {
       <HeaderSales title="Trip" />
 
       <div className="page_container pt-4">
-        <form>
+        <form onSubmit={kirimCustomer}>
           <div className="mb-3">
             <label className="form-label">Nama Customer</label>
-            <input type="text" className="form-control" value={namaCust} onChange={setNamaCust} />
-          </div>
-          <div className="mb-3">
-            <label className="form-label">Jenis Customer</label>
-            <input type="text" className="form-control" value={jenisCust} onChange={setJenisCust} />
-          </div>
-          <div className="mb-3">
-            <label className="form-label">Wilayah</label>
-            <input type="text" className="form-control" value={wilayah} onChange={setWilayah} />
+            <input type="text" className="form-control"
+              value={namaCust || ''}
+              onChange={(e) => setNamaCust(e.target.value)} />
           </div>
           <div className="mb-3">
             <label className="form-label">Alamat Utama</label>
-            <input type="text" className="form-control" value={alamatUtama} onChange={setAlamatUtama} />
+            <input type="text" className="form-control"
+              value={alamatUtama}
+              onChange={(e) => setAlamatUtama(e.target.value)} />
           </div>
           <div className="mb-3">
             <label className="form-label">Alamat Nomor</label>
-            <input type="text" className="form-control" value={alamatNomor} onChange={setAlamatNomor} />
+            <input type="text" className="form-control"
+              value={alamatNomor}
+              onChange={(e) => setAlamatNomor(e.target.value)} />
+          </div>
+
+          <div className="mb-3">
+            <label className="form-label">Jenis Customer</label>
+            <select
+              value={jenis}
+              onChange={(e) => setJenis(e.target.value)}>
+              <option value="1">Satu</option>
+              <option value="2">dua</option>
+            </select>
           </div>
           <div className="mb-3">
+            <label className="form-label">Wilayah</label>
+            <select
+              value={wilayah}
+              onChange={(e) => setWilayah(e.target.value)}>
+              <option value="1">Satu</option>
+              <option value="2">dua</option>
+            </select>
+          </div>
+
+          <div className="mb-3">
             <label className="form-label">Keterangan Alamat</label>
-            <textarea className="form-control" value={ketAlamat} onChange={setKetAlamat}></textarea>
+            <textarea className="form-control"
+              value={ketAlamat}
+              onChange={(e) => setKetAlamat(e.target.value)}></textarea>
           </div>
           <div className="mb-3">
             <label className="form-label">Telepon</label>
-            <input type="text" className="form-control" value={telepon} onChange={setTelepon} />
+            <input type="text" className="form-control"
+              value={telepon}
+              onChange={(e) => setTelepon(e.target.value)} />
           </div>
           <div className="mb-3">
             <label className="form-label">Durasi Trip</label>
             <div className="position-relative">
-              <input type="text" className="form-control" value={durasiTrip} onChange={setDurasiTrip} />
+              <input type="text" className="form-control"
+                value={durasiTrip}
+                onChange={(e) => setDurasiTrip(e.target.value)} />
               <span className='satuan'>Hari</span>
             </div>
           </div>
           <div className="mb-3">
-            <label className="form-label">Total Trip</label>
-            <input type="text" className="form-control" value={totalTrip} readOnly disabled />
+            <label className="form-label">Total</label>
+            <input type="text" className="form-control"
+              value={totalTrip}
+              onChange={(e) => setTotalTrip(e.target.value)} />
           </div>
 
           <div className="mb-5">
@@ -88,7 +150,7 @@ const TripSales = () => {
             {$imagePreview}
             <input
               type="file"
-              name="file"
+              name="foto"
               id="file"
               accept="image/png, image/jpeg"
               onChange={handleImageChange} />
