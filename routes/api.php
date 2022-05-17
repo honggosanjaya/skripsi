@@ -20,3 +20,5 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 });
 
 Route::post('/tripCustomer', [CustomerController::class, 'simpanCustomerApi']);
+Route::post('/tripCustomer/foto/{id}', [CustomerController::class, 'simpanCustomerFotoApi']);
+Route::post('/salesUbahCustomer', [CustomerController::class, 'ubahCustomerApi']);
