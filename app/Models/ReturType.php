@@ -15,6 +15,6 @@ class ReturType extends Model
       ];
   
     public function linkRetur(){
-        return $this->belongsTo(Retur::class,'tipe_retur','id');
+        return $this->hasMany(Retur::class,'tipe_retur','id');
     }
 }

@@ -1,0 +1,32 @@
+@import url("https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap");
+@import "./variables";
+@import "./modifBoostrap";
+@import url("https://fonts.googleapis.com/css2?family=Caveat:wght@400;500;600;700&display=swap");
+
+#testing {
+    max-width: 375px;
+    margin-left: 5%;
+}
+
+.header_mobile {
+    background-color: lawngreen;
+    padding: 1rem;
+  
+    .iconify {
+        font-size: 2rem;
+    }
+  
+    .page_title {
+        font-family: "Caveat", cursive;
+        font-size: 1.5rem;
+    }
+  }
+
+.set-header {
+    margin-left: auto;
+}
+
+#set-position{
+    margin-bottom: 12px;
+    margin-right: 8px;
+}

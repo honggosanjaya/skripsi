@@ -15,6 +15,6 @@ class CustomerType extends Model
       ];
   
     public function linkCustomer(){
-        return $this->belongsTo(Customer::class,'id_jenis','id');
+        return $this->hasMany(Customer::class,'id_jenis','id');
     }
 }

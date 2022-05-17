@@ -15,6 +15,6 @@ class District extends Model
       ];
   
     public function linkCustomer(){
-        return $this->belongsTo(Customer::class,'id_wilayah','id');
+        return $this->hasMany(Customer::class,'id_wilayah','id');
     }
 }

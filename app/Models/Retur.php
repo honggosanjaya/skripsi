@@ -20,30 +20,30 @@ class Retur extends Model
       ];
   
     public function linkItem(){
-        return $this->hasMany(Item::class,'id','id_item');
+        return $this->belongsTo(Item::class,'id','id_item');
     }
 
     public function linkStaffPengaju(){
-        return $this->hasMany(Staff::class,'id','id_staff_pengaju');
+        return $this->belongsTo(Staff::class,'id','id_staff_pengaju');
     }
 
     public function linkStaffPengonfirmasi(){
-        return $this->hasMany(Staff::class,'id','id_staff_pengonfirmasi');
+        return $this->belongsTo(Staff::class,'id','id_staff_pengonfirmasi');
     }
 
     public function linkCustomer(){
-        return $this->hasMany(Customer::class,'id','id_customer');
+        return $this->belongsTo(Customer::class,'id','id_customer');
     }
 
     public function linkInvoice(){
-        return $this->hasMany(Invoice::class,'id','id_invoice');
+        return $this->belongsTo(Invoice::class,'id','id_invoice');
     }
 
     public function linkReturType(){
-        return $this->hasMany(ReturType::class,'id','tipe_retur');
+        return $this->belongsTo(ReturType::class,'id','tipe_retur');
     }
 
     public function linkStatus(){
-        return $this->hasMany(Status::class,'id','status');
+        return $this->belongsTo(Status::class,'id','status');
     }
 }

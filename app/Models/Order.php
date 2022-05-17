@@ -20,26 +20,26 @@ class Order extends Model
       ];
   
     public function linkStaff(){
-        return $this->hasMany(Staff::class,'id','id_staff');
+        return $this->belongsTo(Staff::class,'id','id_staff');
     }
 
     public function linkOrderItem(){
-        return $this->belongsTo(OrderItem::class,'id_order','id');
+        return $this->hasMany(OrderItem::class,'id_order','id');
     }
 
     public function linkCustomer(){
-        return $this->hasMany(Customer::class,'id','id_customer');
+        return $this->belongsTo(Customer::class,'id','id_customer');
     }
 
     public function linkOrderTrack(){
-        return $this->belongsTo(OrderTrack::class,'id_order','id');
+        return $this->hasOne(OrderTrack::class,'id_order','id');
     }
 
     public function linkInvoice(){
-        return $this->belongsTo(Invoice::class,'id_order','id');
+        return $this->hasOne(Invoice::class,'id_order','id');
     }
 
     public function linkStatus(){
-        return $this->hasMany(Status::class,'id','status');
+        return $this->belongsTo(Status::class,'id','status');
     }
 }

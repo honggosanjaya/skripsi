@@ -17,7 +17,7 @@ class Invoice extends Model
       ];
   
     public function linkRetur(){
-        return $this->belongsTo(Retur::class,'id_invoice','id');
+        return $this->hasMany(Retur::class,'id_invoice','id');
     }
 
     public function linkOrder(){
@@ -25,6 +25,6 @@ class Invoice extends Model
     }
 
     public function linkEvent(){
-        return $this->hasMany(Event::class,'id','id_event');
+        return $this->belongsTo(Event::class,'id','id_event');
     }
 }

@@ -33,9 +33,40 @@ class AuthenticatedSessionController extends Controller
 
         $request->session()->regenerate();
 
-        if(auth()->user()->role==0){
-            return redirect()->intended('/testing');
+        if (auth()->user()->tabel=='staffs') {
+            $role=User::with('linkStaff.linkStaffRole')->find(auth()->user()->id)->linkStaff->linkStaffRole->nama;
+        } else {
+            $role='customer';
         }
+        
+        $request->session()->put('role', $role);
+
+        if(User::with('linkStaff.linkStaffRole')->find(auth()->user()->id)->linkStaff->status==9){
+            Auth::guard('web')->logout();
+            $request->session()->invalidate();
+            $request->session()->regenerateToken();
+
+            return redirect('/login')->with('error','Status Anda Dinyatakan Tidak Aktif Hubungi Supervisor Atau Owner Untuk Keterangan Lebih Lanjut');
+        }
+        if($request->session()->get('role')=='owner'){
+            return redirect()->intended('/owner');
+        }
+        if($request->session()->get('role')=='supervisor'){
+            return redirect()->intended('/supervisor');
+        }
+        if($request->session()->get('role')=='salesman'){
+            return redirect()->intended('/salesman');
+        }
+        if($request->session()->get('role')=='shipper'){
+            return redirect()->intended('/shipper');
+        }
+        if($request->session()->get('role')=='administrasi'){
+            return redirect()->intended('/administrasi');
+        }
+        if($request->session()->get('role')=='customer'){
+            return redirect()->intended('/customer');
+        }
+        return view('/');
 
         return redirect()->intended(RouteServiceProvider::HOME);
     }

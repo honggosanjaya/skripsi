@@ -4,6 +4,18 @@
 
 <x-guest-layout>
     <x-auth-card>
+        @if(session()->has('success'))
+            <div class="alert alert-success alert-dismissible fade show" role="alert">
+                {{ session('success') }}
+                <button type="button" class="btn btn-close" data-bs-dismiss="alert" aria-label="Close">X</button>
+            </div>
+        @endif
+        @if(session()->has('error'))
+        <div class="alert alert-danger alert-dismissible fade show text-center" role="alert">
+        {{ session('error') }}
+        <button type="button" class="btn btn-close" data-bs-dismiss="alert" aria-label="Close">X</button>
+        </div>
+        @endif
         <x-slot name="logo">
             <a href="/">
                 <x-application-logo class="w-20 h-20 fill-current text-gray-500" />
@@ -12,8 +24,11 @@
 
         <!-- Validation Errors -->
         <x-auth-validation-errors class="mb-4" :errors="$errors" />
-
-        <form method="POST" action="{{ route('register') }}" enctype="multipart/form-data" >
+            @if (session('role') == null)
+                <form method="POST" action="{{ route('registerowner') }}" enctype="multipart/form-data" >
+            @else
+                <form method="POST" action="{{ route('register') }}" enctype="multipart/form-data" >
+            @endif
             @csrf
 
             <!-- Name -->

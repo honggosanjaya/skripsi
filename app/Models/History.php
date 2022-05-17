@@ -16,7 +16,7 @@ class History extends Model
       ];
   
     public function linkCustomer(){
-        return $this->hasMany(Customer::class,'id','id_customer');
+        return $this->belongsTo(Customer::class,'id','id_customer');
     }
 
     public function linkItem(){

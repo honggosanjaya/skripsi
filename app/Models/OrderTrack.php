@@ -30,10 +30,10 @@ class OrderTrack extends Model
     }
 
     public function linkStatus(){
-        return $this->hasMany(Status::class,'id','status');
+        return $this->belongsTo(Status::class,'id','status');
     }
 
     public function linkVehicle(){
-        return $this->hasMany(Vehicle::class,'id','id_vehicle');
+        return $this->belongsTo(Vehicle::class,'id','id_vehicle');
     }
 }

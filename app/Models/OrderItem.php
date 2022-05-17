@@ -16,10 +16,10 @@ class OrderItem extends Model
       ];
   
     public function linkItem(){
-        return $this->hasMany(Item::class,'id','id_item');
+        return $this->belongsTo(Item::class,'id','id_item');
     }
 
     public function linkOrder(){
-        return $this->hasMany(Order::class,'id','id_order');
+        return $this->belongsTo(Order::class,'id','id_order');
     }
 }

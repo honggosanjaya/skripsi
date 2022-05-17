@@ -6,7 +6,7 @@ use Closure;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
-class IsSupervisor
+class IsSalesman
 {
     /**
      * Handle an incoming request.
@@ -17,7 +17,7 @@ class IsSupervisor
      */
     public function handle(Request $request, Closure $next)
     {
-        if( $request->session()->get('role') == 'supervisor'){
+        if( $request->session()->get('role') == 'salesman'){
             return $next($request);
         }
         elseif( $request->session()->get('role') == null){
