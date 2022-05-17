@@ -94,6 +94,9 @@ class RegisteredUserController extends Controller
 
         // Auth::login($user);
 
+        if (StaffRole::find($request->role)->nama=='owner') {
+            return redirect('/login')->with('success','Registration successfull!');
+        }
         return redirect('/register')->with('success','Registration successfull!');
     }
 }
