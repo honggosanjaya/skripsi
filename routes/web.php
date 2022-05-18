@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\HomeController;
+use App\Http\Controllers\ItemController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -35,6 +36,7 @@ Route::prefix('administrasi')->middleware('administrasi')->group(function() {
 });
 Route::prefix('customer')->middleware('customer')->group(function() {
   Route::get('/', [HomeController::class, 'indexCustomer']);
+  Route::get('/produk', [ItemController::class, 'index']);
 });
 
 require __DIR__.'/auth.php';
