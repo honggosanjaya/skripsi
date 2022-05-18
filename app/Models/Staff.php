@@ -55,7 +55,7 @@ class Staff extends Model
     }
 
     public function linkStatus(){
-        return $this->belongsTo(Status::class,'id','status');
+        return $this->hasOne(Status::class,'id','status');
     }
 
     public function linkReturPengaju(){

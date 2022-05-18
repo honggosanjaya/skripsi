@@ -13,27 +13,32 @@ import TripSales from './sales/TripSales';
 
 // Shipper Page
 import DashboardShipper from './pengirim/DashboardShipper';
+import LoginReact from './reuse/LoginReact';
+import AuthContextProvider from '../contexts/AuthContext';
 
 
 function App() {
   return (
     <Router>
-      <Switch>
-        <Route exact path="/sales/dashboard" component={DashboardSales} />
-        <Route exact path="/sales/trip" component={TripSales} />
-        <Route exact path={["/sales/order", "/sales/order/keranjang"]}>
-          <OrderSalesContextProvider>
-            <Route exact path="/sales/order" component={OrderSales} />
-            <Route path="/sales/order/keranjang" component={KeranjangSales} />
-          </OrderSalesContextProvider>
-        </Route>
+      <AuthContextProvider>
+        <Switch>
+          <Route path="/spa/login" component={LoginReact} />
 
-        <Route exact path="/shipper/dashboard" component={DashboardShipper} />
+          <Route exact path="/salesman" component={DashboardSales} />
+          <Route exact path="/salesman/trip" component={TripSales} />
+          <Route exact path={["/salesman/order", "/salesman/order/keranjang"]}>
+            <OrderSalesContextProvider>
+              <Route exact path="/salesman/order" component={OrderSales} />
+              <Route path="/salesman/order/keranjang" component={KeranjangSales} />
+            </OrderSalesContextProvider>
+          </Route>
 
-        <Route path="*" component={NotFound} />
-      </Switch>
+          <Route exact path="/shipper" component={DashboardShipper} />
+
+          <Route path="*" component={NotFound} />
+        </Switch>
+      </AuthContextProvider>
     </Router>
-
   )
 }
 

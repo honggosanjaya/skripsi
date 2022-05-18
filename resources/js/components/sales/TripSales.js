@@ -1,9 +1,9 @@
+import axios from 'axios';
 import React, { Component, useState } from 'react';
 import HeaderSales from './HeaderSales';
 
 
 const TripSales = () => {
-  const appUrl = process.env.MIX_APP_URL;
   const [namaCust, setNamaCust] = useState('');
   const [jenis, setJenis] = useState('1');
   const [wilayah, setWilayah] = useState('2');
@@ -24,10 +24,12 @@ const TripSales = () => {
     let formData = new FormData();
     formData.append("foto", file);
 
-
     axios({
       method: "post",
-      url: `${appUrl}/api/tripCustomer`,
+      url: `${window.location.origin}/api/tripCustomer`,
+      headers: {
+        Accept: "application/json",
+      },
       data: {
         nama: namaCust,
         id_jenis: jenis,
@@ -38,34 +40,22 @@ const TripSales = () => {
         telepon: telepon,
         durasi_kunjungan: durasiTrip,
         counter_to_effective_call: totalTrip,
-      },
-      headers: {
-        Accept: "application/json",
-      },
+      }
     })
-      .then((response) => {
-        console.log(response);
-        if (response.data.status == 'success') {
-          if (file !== null) {
-            console.log('ada foto')
-            console.log(formData);
-            axios({
-              method: "post",
-              url: `${appUrl}/api/tripCustomer/foto/${response.data.data.id}`,
-              formData,
-              headers: {
-                Accept: "application/json",
-              },
-            })
-              .then((response2) => {
-                console.log(formData);
-                console.log(response2);
-                console.log(response2.data.status);
-              })
-          }
-        }
+      .then(response => {
+        console.log(response.data.data);
+        return response.data.data;
       })
-      .catch((error) => {
+      .then(dataSatu => axios.post(`${window.location.origin}/api/tripCustomer/foto/${dataSatu.id}`,
+        formData, {
+        headers: {
+          Accept: "application/json",
+        }
+      }))
+      .then(response => {
+        console.log(response.data.data);
+      })
+      .catch(error => {
         console.log(error.message);
       });
   }
