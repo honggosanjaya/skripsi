@@ -11,6 +11,7 @@ mix
 // react
 mix
   .js('resources/js/app.js', 'public/js/react.js')
+  .js('resources/js/reactView.js', 'public/js/react.js')
   .react()
 
 

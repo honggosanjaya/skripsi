@@ -36,8 +36,8 @@ class CustomerController extends Controller
     }
 
 
-    // public function simpanCustomerFotoApi(Request $request, $id){
-    public function simpanCustomerFotoApi(Request $request){
+    public function simpanCustomerFotoApi(Request $request, $id){
+    // public function simpanCustomerFotoApi(Request $request){
       $validator = Validator::make($request->all(), [
         'foto' => 'nullable|image|mimes:jpg,bmp,png'
       ]);
@@ -49,7 +49,7 @@ class CustomerController extends Controller
         ]);
       }
 
-      $customer = Customer::find(51);
+      $customer = Customer::find($id);
       // if ($request->foto && $request->foto->isValid()) {
       if ($request->foto) {
         $file_name = time() . '.' . $request->foto->extension();
