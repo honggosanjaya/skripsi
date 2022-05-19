@@ -34,7 +34,7 @@ Route::prefix('supervisor')->middleware('supervisor')->group(function() {
   Route::get('/jenis/ubah/{customertype:id}', [CustomerTypeController::class, 'edit']);
   Route::put('/jenis/ubahjenis/{customertype:id}', [CustomerTypeController::class, 'update']);
 
-  
+
 });
 Route::prefix('salesman')->middleware('salesman')->group(function() {
   Route::get('/', [HomeController::class, 'indexSalesman']);
@@ -47,7 +47,10 @@ Route::prefix('administrasi')->middleware('administrasi')->group(function() {
 });
 Route::prefix('customer')->middleware('customer')->group(function() {
   Route::get('/', [HomeController::class, 'indexCustomer']);
+
+  //Route untuk produk
   Route::get('/produk', [ItemController::class, 'index']);
+  Route::get('/produk/cari', [ItemController::class, 'search']);
 });
 
 require __DIR__.'/auth.php';
