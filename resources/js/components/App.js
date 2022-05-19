@@ -10,6 +10,7 @@ import DashboardSales from './sales/DashboardSales';
 import KeranjangSales from './sales/KeranjangSales';
 import OrderSales from './sales/OrderSales';
 import TripSales from './sales/TripSales';
+import TripSalesId from './sales/TripSales';
 
 // Shipper Page
 import DashboardShipper from './pengirim/DashboardShipper';
@@ -26,6 +27,7 @@ function App() {
 
           <Route exact path="/salesman" component={DashboardSales} />
           <Route exact path="/salesman/trip" component={TripSales} />
+          <Route exact path="/salesman/trip/:id" component={TripSalesId} />
           <Route exact path={["/salesman/order", "/salesman/order/keranjang"]}>
             <OrderSalesContextProvider>
               <Route exact path="/salesman/order" component={OrderSales} />

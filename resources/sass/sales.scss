@@ -143,6 +143,13 @@ textarea {
 }
 
 // ============== MODAL ================
+.box-list-customer{
+    max-height: 300px;
+    overflow: auto;
+    .row{
+        flex-grow: 1;
+    }
+}
 
 // ============== TRIP =================
 

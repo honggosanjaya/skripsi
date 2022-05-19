@@ -42,4 +42,7 @@ class User extends Authenticatable
     public function linkStaff(){
         return $this->hasOne(Staff::class,'id','id_users');
     }
+    public function linkCustomer(){
+        return $this->hasOne(Customer::class,'id','id_users');
+    }
 }
