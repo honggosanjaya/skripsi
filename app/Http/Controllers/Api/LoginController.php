@@ -19,6 +19,14 @@ class LoginController extends Controller
         'password' => ['required', 'string', 'max:255']
       ]);
 
+      $role=User::with('linkStaff.linkStaffRole')->where('email',$request->email)->first()->linkStaff->linkStaffRole->nama;
+
+    
+    
+    $request->session()->put('role', $role);
+    $request->session()->put('id_staff', User::where('email',$request->email)->first()->id);
+    // dd(session('role'));
+
       if ($validator->fails()){
         return response()->json([
           'validate_err' => $validator->errors()
@@ -29,13 +37,19 @@ class LoginController extends Controller
       if (!$user || !Hash::check($request->password, $user->password)){
         return response() -> json([
           'status' => 'fail',
-          'message' => 'Unauthorised access'
+          'message' => 'email atau password anda salah'
+        ], 401);
+      }
+      if ($user->linkStaff->status==9){
+        return response() -> json([
+          'status' => 'fail',
+          'message' => 'akun sudah tidak aktif'
         ], 401);
       }
 
       $detail_user = Staff::find($user->id_users);
 
-      
+      $request->session()->put('role', $detail_user->linkStaffRole->nama);
 
       return response()->json([
         'data' => $detail_user,

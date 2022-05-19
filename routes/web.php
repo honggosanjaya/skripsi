@@ -36,12 +36,12 @@ Route::prefix('supervisor')->middleware('supervisor')->group(function() {
 
 
 });
-Route::prefix('salesman')->middleware('salesman')->group(function() {
-  Route::get('/', [HomeController::class, 'indexSalesman']);
-});
-Route::prefix('shipper')->middleware('shipper')->group(function() {
-  Route::get('/', [HomeController::class, 'indexShipper']);
-});
+// Route::prefix('salesman')->middleware('salesman')->group(function() {
+//   Route::get('/', [HomeController::class, 'indexSalesman']);
+// });
+// Route::prefix('shipper')->middleware('shipper')->group(function() {
+//   Route::get('/', [HomeController::class, 'indexShipper']);
+// });
 Route::prefix('administrasi')->middleware('administrasi')->group(function() {
   Route::get('/', [HomeController::class, 'indexAdministrasi']);
 });

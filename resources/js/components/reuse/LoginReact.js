@@ -64,9 +64,9 @@ const LoginReact = () => {
         }
       })
       .catch((error) => {
-        console.log(error.message);
+        console.log(error.response.data.message);
         if (error.response.status === 401) {
-          setError("email atau password anda salah");
+          setError(error.response.data.message);
         } else {
           setError(error.message);
         }
@@ -78,7 +78,12 @@ const LoginReact = () => {
     <main className='page_main login_page'>
       <div className="page_container pt-5">
         <h1 className='heading-1'>Selamat Datang</h1>
-        <h2 className='heading-2 mb-5'>Aplikasi web salesMan <br /> UD Mandiri</h2>
+        <h2 className='heading-2 '>Aplikasi web salesMan <br /> UD Mandiri</h2>
+        <p className='mb-3 text-center'> 
+          halaman login khusus untuk salesman dan tenaga pengirim, untuk staff lain silahkan melalui link ini 
+          <a href="/login" class="custom-form-input"> link</a>
+        </p>
+        
 
         {error &&
           <div className="alert alert-danger alert-dismissible fade show" role="alert">
