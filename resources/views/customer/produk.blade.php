@@ -26,7 +26,8 @@
         <span class="iconify" data-icon="clarity:shopping-cart-solid"></span>
     </header>-->
     <header class='header_mobile d-flex justify-content-between align-items-center'>
-        <h1 class='page_title'>salesMan</h1>
+        <i class="bi bi-arrow-left fs-4"></i>
+        <h1 class="page_title">salesMan</h1>
         <div class="set-header">
 
         <span class="iconify" id="set-cart-position" data-icon="clarity:shopping-cart-solid"></span>
@@ -49,32 +50,38 @@
     </header>
 
     <div class="container">
-        <h1>Ini dashboard customer</h1>
+        <div class="mt-3 search-box">
+            <form method="GET" action="/dashboard/pengguna/cari">
+              <div class="input-group w-75">
+                <input type="text" class="form-control" name="cari" placeholder="Cari Produk..."
+                value="{{ request('cari') }}">
+                <button type="submit" class="btn btn-primary">Cari</button>   
+                <i class="bi bi-funnel-fill fs-3"></i>
+              </div>
+              
+            </form>    
+          </div>
+            
+            <div class="row">
+                @foreach($items as $item)
+                <div class="col-6 my-2">
+                    <div class="card" style="width: 10rem;">
+                        <img src="..." class="card-img-top" width="100px" height="100px">
+                        <div class="card-body">
+                          <h5 class="card-title">{{ $item->nama }}</h5>
+                          <h5 class="card-title">{{ $item->harga_satuan }}/{{ $item->satuan }}</h5>
+                          <p><b>Stok</b> : {{ $item->stok }}</p>
+                          <button class="btn btn-primary btn-square py-1 px-2">-</button>
+                          <input type="number" class="col-4">
+                          <button class="btn btn-primary btn-square py-1 px-2">+</button>
+                        </div>
+                      </div>
+                </div>
+                @endforeach
 
-        <p class="fw-bold">Produk Favorit Bulan Mei</p>
-    
-        <table border="1" class="table table-bordered">
-            <thead>
-                <tr>
-                    <th scope="col">Kode Barang</th>
-                    <th scope="col">Nama Barang</th>
-                    <th scope="col">Penjualan</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr>
-                    <td>K001</td>
-                    <td>Sapu</td>
-                    <td>5000000</td>
-                </tr>
-                <tr>
-                    <td>K002</td>
-                    <td>Lidi</td>
-                    <td>6000000</td>
-                </tr>
-            </tbody>
-        </table>
-    
+                
+            </div>
+        
     </div>
 
     <footer class='footer_mobile d-flex justify-content-between align-items-center'>
