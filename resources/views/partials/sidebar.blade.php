@@ -90,7 +90,7 @@
         </a>
       </li>
       <li class="mb-3">
-        <a class="" href="">
+        <a class="{{ Request::is('supervisor/jenis*') ? 'active' : '' }}" href="/supervisor/jenis">
           <i class="bi bi-person-check me-2"></i><span>Jenis Customer</span>
         </a>
       </li>

@@ -17,6 +17,7 @@
       </div>
     </div>
   </a>
+  @yield('breadcrumbs')
   <ul class="dropdown-menu p-3" aria-labelledby="navbarDropdown">
     <form method="POST" action="{{ route('logout') }}">
       @csrf
