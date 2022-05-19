@@ -57,6 +57,7 @@ class CustomerController extends Controller
     public function simpanCustomerApi(Request $request){
       $rules = [
         'nama' => ['required', 'string', 'max:255'],
+        'email' => ['string', 'email', 'max:255', 'unique:users'],
         'id_jenis' => ['required'],
         'id_wilayah' => ['required'],
         'alamat_utama' => ['required', 'string', 'max:255'],
@@ -75,7 +76,7 @@ class CustomerController extends Controller
         return response()->json($validator->errors(),400);
       }
       if ($request->id==null) {
-        $customer = Customer::insertGetId($data);
+        $customer = Customer::insertGetId($data+['koordinat' =>  $request->koordinat]);
         $id=$customer;
         if ($request->email!=null) {
           $user = User::create([
