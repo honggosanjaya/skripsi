@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\CustomerTypeController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\ItemController;
 use Illuminate\Support\Facades\Route;
@@ -24,6 +25,16 @@ Route::prefix('owner')->middleware('owner')->group(function() {
 });
 Route::prefix('supervisor')->middleware('supervisor')->group(function() {
   Route::get('/', [HomeController::class, 'indexSupervisor']);
+
+  //Route untuk jenis customer
+  Route::get('/jenis', [CustomerTypeController::class, 'index']);
+  Route::get('/jenis/cari', [CustomerTypeController::class, 'search']);
+  Route::get('/jenis/tambah', [CustomerTypeController::class, 'create']);
+  Route::post('/jenis/tambahjenis', [CustomerTypeController::class, 'store']);
+  Route::get('/jenis/ubah/{customertype:id}', [CustomerTypeController::class, 'edit']);
+  Route::put('/jenis/ubahjenis/{customertype:id}', [CustomerTypeController::class, 'update']);
+
+  
 });
 Route::prefix('salesman')->middleware('salesman')->group(function() {
   Route::get('/', [HomeController::class, 'indexSalesman']);
