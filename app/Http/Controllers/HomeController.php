@@ -24,7 +24,7 @@ class HomeController extends Controller
     public function indexAdministrasi()
     {
         $role='indexAdministrasi';
-        return view('admin/dashboard',compact('role'));
+        return view('administrasi/dashboard',compact('role'));
     }
     public function indexShipper()
     {
