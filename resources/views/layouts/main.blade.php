@@ -12,6 +12,7 @@
 
   <!-- Custom CSS -->
   <link href=" {{ mix('css/dashboard.css') }}" rel="stylesheet">
+  <link href=" {{ mix('css/supervisor.css') }}" rel="stylesheet">
   <title>Dashboard Manajemen Sales</title>
 </head>
 

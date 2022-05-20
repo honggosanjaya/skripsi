@@ -46,13 +46,17 @@ Route::prefix('supervisor')->middleware('supervisor')->group(function() {
 // });
 Route::prefix('administrasi')->middleware('administrasi')->group(function() {
   Route::get('/', [HomeController::class, 'indexAdministrasi']);
+
+  //Route untuk riwayat stok
   Route::get('/stok', [ItemController::class, 'indexAdministrasi']);
   Route::get('/stok/cari', [ItemController::class, 'cariStok']);
   Route::get('/stok/riwayat', [ItemController::class, 'riwayatAdministrasi']);
   Route::get('/stok/riwayat/cari', [ItemController::class, 'cariRiwayat']);
 
+  //Route untuk produk
   Route::resource('/stok/produk', ItemController::class);
 
+  //Route untuk pengadaan
   Route::get('/stok/pengadaan', [ItemController::class, 'productList'])->name('products.list');
   Route::get('/stok/pengadaan/cart', [CartController::class, 'cartList'])->name('cart.list');
   Route::post('/stok/pengadaan/cart', [CartController::class, 'addToCart'])->name('cart.store');

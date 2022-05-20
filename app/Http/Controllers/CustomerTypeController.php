@@ -14,8 +14,9 @@ class CustomerTypeController extends Controller
 {
     public function index()
     {
+        $jenises = DB::table('customer_types')->paginate(5);
         return view('supervisor/jeniscustomer.index',[
-            'jenises' => CustomerType::all()            
+            'jenises' => $jenises            
         ]);
     }
 
@@ -48,7 +49,7 @@ class CustomerTypeController extends Controller
             'keterangan' => $request->keterangan
         ]); 
         
-        return redirect('/supervisor/jenis')->with('addJenisSuccess','Tambah user berhasil');
+        return redirect('/supervisor/jenis')->with('addJenisSuccess','Tambah Jenis Customer berhasil');
     }
 
     public function edit(CustomerType $customertype)
