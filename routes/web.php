@@ -50,6 +50,15 @@ Route::prefix('administrasi')->middleware('administrasi')->group(function() {
   Route::get('/stok/cari', [ItemController::class, 'cariStok']);
   Route::get('/stok/riwayat', [ItemController::class, 'riwayatAdministrasi']);
   Route::get('/stok/riwayat/cari', [ItemController::class, 'cariRiwayat']);
+
+  Route::resource('/stok/produk', ItemController::class);
+
+  Route::get('/stok/pengadaan', [ItemController::class, 'productList'])->name('products.list');
+  Route::get('/stok/pengadaan/cart', [CartController::class, 'cartList'])->name('cart.list');
+  Route::post('/stok/pengadaan/cart', [CartController::class, 'addToCart'])->name('cart.store');
+  Route::post('/stok/pengadaan/update-cart', [CartController::class, 'updateCart'])->name('cart.update');
+  Route::post('/stok/pengadaan/remove', [CartController::class, 'removeCart'])->name('cart.remove');
+  Route::post('/stok/pengadaan/clear', [CartController::class, 'clearAllCart'])->name('cart.clear');
 });
 
 Route::prefix('customer')->middleware('customer')->group(function() {
