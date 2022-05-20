@@ -1,9 +1,6 @@
 <?php
 
 /*namespace App\Models;
-<<<<<<< HEAD:app/Models/PastModels/Pembayaran.php
-
-
 use App\Models\Invoice;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -16,6 +13,4 @@ class Pembayaran extends Model
         return $this->belongsTo(Invoice::class, 'id', 'invoice_id');
     }
 }
-<<<<<<< HEAD:app/Models/PastModels/Pembayaran.php
 */
-
