@@ -70,7 +70,7 @@
           <td>{{ $item->max_stok }}</td>
           <td>{{ $item->max_pengadaan }}</td>
           <td>{{ $item->harga_satuan }}</td>
-          <td>masih coba cari cara</td>
+          <td>{{ $item->linkStatus->nama }}</td>
           
         </tr>
         @endforeach

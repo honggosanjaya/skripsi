@@ -11,12 +11,7 @@
 @section('main_content')
   <div class="p-4">
     <a class="btn btn-primary mt-2 mb-3" href="/supervisor/jenis"><i class="bi bi-arrow-left-short fs-5"></i>Kembali</a>
-    @if(session()->has('addJenisSuccess'))
-            <div class="alert alert-success alert-dismissible fade show" role="alert">
-                {{ session('addJenisSuccess') }}
-                <button type="button" class="btn btn-close" data-bs-dismiss="alert" aria-label="Close">X</button>
-            </div>
-        @endif
+    
     <form class="form_jenis" method="POST" action="/supervisor/jenis/tambahjenis">
       @csrf
       <div class="mb-3">

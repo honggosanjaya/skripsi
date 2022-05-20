@@ -197,7 +197,7 @@ class ItemController extends Controller
     public function cariStok()
     {
         $items = DB::table('items')->where(strtolower('nama'),'like','%'.request('cari').'%')->get();
-       
+               
         return view('administrasi/stok.index',[
             'items' => $items
         ]);
@@ -205,6 +205,8 @@ class ItemController extends Controller
 
     public function riwayatAdministrasi()
     {
+        $getter = DB::table('pengadaans')->select('sum(harga_total) as harga')->groupBy('no_nota');
+        dd($getter);
         return view('administrasi/stok/riwayat.index',[
             'pengadaans' => Pengadaan::all()
         ]);

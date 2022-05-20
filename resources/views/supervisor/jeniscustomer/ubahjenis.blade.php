@@ -29,7 +29,7 @@
       <div class="mb-3">
         <label for="diskon" class="form-label">Diskon (0-100)</label>
         <input type="number" class="form-control @error('diskon') is-invalid @enderror" id="diskon" name="diskon"
-          value="{{ old('diskon', $customertype->diskon) }}">
+          value="{{ old('diskon', $customertype->diskon) }}" min="0" max="100" step=".01">
         @error('diskon')
           <div class="invalid-feedback">
             {{ $message }}
