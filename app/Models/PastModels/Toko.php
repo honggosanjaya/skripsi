@@ -1,8 +1,7 @@
 <?php
 
-/*namespace App\Models;
-<<<<<<< HEAD:app/Models/PastModels/Toko.php
-
+/*
+namespace App\Models;
 use App\Models\JenisToko;
 use App\Models\Trip;
 use App\Models\Order;
@@ -34,6 +33,5 @@ class Toko extends Model
     {
         return $this->hasMany(Retur::class, 'toko_id', 'id');
     }
-<<<<<<< HEAD:app/Models/PastModels/Toko.php
 }*/
 
