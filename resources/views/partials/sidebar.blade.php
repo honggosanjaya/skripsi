@@ -43,7 +43,7 @@
         </a>
       </li>
       <li class="mb-3">
-        <a class="{{ Request::is('dashboard/produk*') ? 'active' : '' }}" href="/dashboard/produk/stok">
+        <a class="{{ Request::is('administrasi/stok*') ? 'active' : '' }}" href="/administrasi/stok">
           <i class="bi bi-box me-2"></i><span>Stok</span>
         </a>
       </li>
