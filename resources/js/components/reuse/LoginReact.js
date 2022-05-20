@@ -66,11 +66,8 @@ const LoginReact = () => {
         }
       })
       .catch((error) => {
-<<<<<<< HEAD
         setIsLoading(false);
-=======
         console.log(error.response.data.message);
->>>>>>> c9650fc6efeb87390bfd9683cae7294551e186eb
         if (error.response.status === 401) {
           setError(error.response.data.message);
         } else {
@@ -85,18 +82,15 @@ const LoginReact = () => {
       <div className="page_container pt-5">
         {isLoading && <LoadingIndicator />}
         <h1 className='heading-1'>Selamat Datang</h1>
-<<<<<<< HEAD
-        <h2 className='heading-2 mb-5'>Aplikasi web salesMan <br /> UD Mandiri</h2>
-=======
         <h2 className='heading-2 '>Aplikasi web salesMan <br /> UD Mandiri</h2>
-        <p className='mb-3 text-center'> 
-          halaman login khusus untuk salesman dan tenaga pengirim, untuk staff lain silahkan melalui link ini 
+        <p className='mb-3 text-center'>
+          halaman login khusus untuk salesman dan tenaga pengirim, untuk staff lain silahkan melalui link ini
           <a href="/login" class="custom-form-input"> link</a>
         </p>
-        
 
->>>>>>> c9650fc6efeb87390bfd9683cae7294551e186eb
-        {error &&
+
+        {
+          error &&
           <div className="alert alert-danger alert-dismissible fade show" role="alert">
             <p className='text-center mb-0'>{error}</p>
             <button type="button" className="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
@@ -140,8 +134,8 @@ const LoginReact = () => {
           <button type="submit" className="btn btn-primary w-100 my-4">MASUK</button>
           <p className="hyperlink"><Link to="#" className="lupa_sandi">Lupa Password?</Link></p>
         </form>
-      </div>
-    </main>
+      </div >
+    </main >
   );
 }
 

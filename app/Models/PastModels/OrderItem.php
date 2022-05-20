@@ -1,8 +1,6 @@
 <?php
 
 /*namespace App\Models;
-<<<<<<< HEAD
-
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
@@ -14,7 +12,6 @@ class OrderItem extends Model
       'id'
     ];
 
-=======
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 class OrderItem extends Model
@@ -32,6 +29,5 @@ class OrderItem extends Model
     {
         return $this->belongsTo(Item::class, 'id', 'item_id')->with(['rellicense','relagent']);
     }
-<<<<<<< HEAD
 }*/
 
