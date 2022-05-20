@@ -53,7 +53,7 @@ const DashboardSales = () => {
               </div>
             </div>
           </div>
-          </Accordion.Header>
+        </Accordion.Header>
         <Accordion.Body>
           <h5> Keterangan alamat</h5>
           {data.keterangan_alamat}
@@ -89,21 +89,21 @@ const DashboardSales = () => {
               <form onSubmit={cariCustomer}>
                 <div className="mb-3">
                   <label className="form-label">Nama Customer</label>
-                  <input type="text" value={namaCust || ''}  onChange={(e) => setNamaCust(e.target.value)} className="form-control" />
+                  <input type="text" value={namaCust || ''} onChange={(e) => setNamaCust(e.target.value)} className="form-control" />
                 </div>
                 <div className="mb-3">
                   <label className="form-label">Alamat Utama</label>
-                  <input type="text"  value={alamatUtama || ''}  onChange={(e) => setAlamatUtama(e.target.value)} className="form-control" />
+                  <input type="text" value={alamatUtama || ''} onChange={(e) => setAlamatUtama(e.target.value)} className="form-control" />
                 </div>
                 <button type="submit" className="btn btn-primary">Search</button>
               </form>
-              <div className="box-list-customer mt-5"> 
-              <h1 className={`d-block text-center ${dataShow == 'active' ? '' : 'd-none'}`}>
-                Data Not Found
-              </h1>
-              <Accordion defaultActiveKey="0">
-                {showListCustomer}
-              </Accordion>
+              <div className="box-list-customer mt-5">
+                <h1 className={`d-block text-center ${dataShow == 'active' ? '' : 'd-none'}`}>
+                  Data Not Found
+                </h1>
+                <Accordion defaultActiveKey="0">
+                  {showListCustomer}
+                </Accordion>
               </div>
               <a type="button" href="/salesman/trip/" className={`btn btn-primary d-block ${addButton == 'active' ? '' : 'd-none'}`}>masih belum menemukan silahkan tambah baru</a>
             </div>

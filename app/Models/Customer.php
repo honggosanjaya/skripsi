@@ -24,7 +24,7 @@ class Customer extends Model
       ];
   
     public function linkStaff(){
-        return $this->belongsTo(Staff::class,'id','id_staff');
+        return $this->belongsTo(Staff::class,'id_staff','id');
     }
 
     public function linkRetur(){
@@ -40,11 +40,11 @@ class Customer extends Model
     }
 
     public function linkCustomerType(){
-        return $this->belongsTo(CustomerType::class,'id','id_jenis');
+        return $this->belongsTo(CustomerType::class,'id_jenis','id');
     }
 
     public function linkDistrict(){
-        return $this->hasOne(District::class,'id','id_wilayah');
+        return $this->belongsTo(District::class,'id_wilayah','id');
     }
 
     public function linkOrder(){
@@ -52,11 +52,15 @@ class Customer extends Model
     }
 
     public function linkStatus(){
-        return $this->hasMany(Status::class,'id','status');
+        return $this->belongsTo(Status::class,'status','id');
+    }
+
+    public function linkStatusLimit(){
+      return $this->belongsTo(Status::class,'status_limit_pembelian','id');
     }
 
     public function linkReturType(){
-        return $this->belongsTo(ReturType::class,'id','tipe_retur');
+        return $this->belongsTo(ReturType::class,'tipe_retur','id');
     }
     public function getFullAlamatAttribute()
     {
