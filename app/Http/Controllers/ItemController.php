@@ -5,8 +5,11 @@ namespace App\Http\Controllers;
 use App\Models\Item;
 use App\Models\Pengadaan;
 use App\Models\Status;
+use Barryvdh\DomPDF\Facade\Pdf as FacadePdf;
+use Barryvdh\DomPDF\PDF as DomPDFPDF;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use PDF;
 
 class ItemController extends Controller
 {
@@ -241,5 +244,25 @@ class ItemController extends Controller
             'total_harga' => $total,
             'detail' => $pengadaan
         ]);
+    }
+
+    public function cetakPDF(Pengadaan $pengadaan)
+    {
+      
+        $pengadaans = Pengadaan::join('items','pengadaans.id_item','=','items.id')
+        ->where('no_pengadaan','=',$pengadaan->no_pengadaan)
+        ->get();
+
+        $total = Pengadaan::selectRaw('SUM(harga_total) as harga')
+        ->where('no_pengadaan','=',$pengadaan->no_pengadaan)
+        ->get();
+
+        $pdf = FacadePdf::loadview('administrasi/stok/riwayat.detail-pdf',[
+          'pengadaans' => $pengadaans,
+            'total_harga' => $total,
+            'detail' => $pengadaan
+        ]);
+
+        return $pdf->download('laporan-NPB-pdf.pdf');
     }
 }
