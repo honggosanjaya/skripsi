@@ -40,13 +40,14 @@ class AuthenticatedSessionController extends Controller
         }
         
         $request->session()->put('role', $role);
+        if ($role=='staff') {
+            if(User::with('linkStaff.linkStaffRole')->find(auth()->user()->id)->linkStaff->status==9){
+                Auth::guard('web')->logout();
+                $request->session()->invalidate();
+                $request->session()->regenerateToken();
 
-        if(User::with('linkStaff.linkStaffRole')->find(auth()->user()->id)->linkStaff->status==9){
-            Auth::guard('web')->logout();
-            $request->session()->invalidate();
-            $request->session()->regenerateToken();
-
-            return redirect('/login')->with('error','Status Anda Dinyatakan Tidak Aktif Hubungi Supervisor Atau Owner Untuk Keterangan Lebih Lanjut');
+                return redirect('/login')->with('error','Status Anda Dinyatakan Tidak Aktif Hubungi Supervisor Atau Owner Untuk Keterangan Lebih Lanjut');
+            }
         }
         if($request->session()->get('role')=='owner'){
             return redirect()->intended('/owner');
@@ -55,10 +56,20 @@ class AuthenticatedSessionController extends Controller
             return redirect()->intended('/supervisor');
         }
         if($request->session()->get('role')=='salesman'){
-            return redirect()->intended('/salesman');
+            Auth::guard('web')->logout();
+
+            $request->session()->invalidate();
+
+            $request->session()->regenerateToken();
+            return redirect()->intended('/spa/login');
         }
         if($request->session()->get('role')=='shipper'){
-            return redirect()->intended('/shipper');
+            Auth::guard('web')->logout();
+
+            $request->session()->invalidate();
+
+            $request->session()->regenerateToken();
+            return redirect()->intended('/spa/login');
         }
         if($request->session()->get('role')=='administrasi'){
             return redirect()->intended('/administrasi');

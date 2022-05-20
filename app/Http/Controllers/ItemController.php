@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Item;
 use App\Models\Status;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class ItemController extends Controller
 {
@@ -166,5 +167,21 @@ class ItemController extends Controller
     public function destroy($id)
     {
         //
+    }
+
+    public function customerIndex()
+    {
+        return view('customer/produk',[
+            'items' => Item::all()
+        ]);
+    }
+
+    public function customerSearch()
+    {
+        $items = DB::table('items')->where(strtolower('nama'),'like','%'.request('cari').'%')->get();
+       
+        return view('customer/produk',[
+            'items' => $items
+        ]);
     }
 }

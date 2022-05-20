@@ -1,8 +1,71 @@
 import React, { Component, useState, useEffect } from 'react';
 import { splitCharacter } from '../reuse/HelperFunction';
 import HeaderSales from './HeaderSales';
+import { Accordion } from 'react-bootstrap';
 
 const DashboardSales = () => {
+  const [namaCust, setNamaCust] = useState('');
+  const [alamatUtama, setAlamatUtama] = useState('');
+  const [listCustomer, setListCustomer] = useState([]);
+  const [addButton, setAddButton] = useState('');
+  const [dataShow, setDataShow] = useState('inactive');
+
+  const cariCustomer = (e) => {
+    e.preventDefault();
+    axios({
+      method: "post",
+      url: `${window.location.origin}/api/cariCustomer`,
+      headers: {
+        Accept: "application/json",
+      },
+      data: {
+        nama: namaCust,
+        alamat_utama: alamatUtama,
+      }
+    })
+      .then(response => {
+        console.log(response.data.data);
+        setListCustomer(response.data.data)
+        setAddButton('active')
+        setDataShow('inactive')
+        return response.data.data;
+      })
+      .catch(error => {
+        setDataShow('active')
+        setAddButton('active')
+        console.log(error.message);
+      });
+  }
+  const showListCustomer = listCustomer.map((data, index) => {
+    return (
+      <Accordion.Item eventKey={data.id}>
+        <Accordion.Header>
+          <div className="container-fluid">
+            <div className="row">
+              <div className="col-5">
+                {data.nama}
+              </div>
+              <div className="col-4">
+                {data.full_alamat}
+              </div>
+              <div className="col-3">
+                {data.id_wilayah}
+              </div>
+            </div>
+          </div>
+          </Accordion.Header>
+        <Accordion.Body>
+          <h5> Keterangan alamat</h5>
+          {data.keterangan_alamat}
+          <div className="action d-flex justify-content-between mt-3">
+            <button type="button" class="btn btn-primary">gambar</button>
+            <a type="button" href={`/salesman/trip/${data.id}`} class="btn btn-success">trip</a>
+          </div>
+        </Accordion.Body>
+      </Accordion.Item>
+    );
+  });
+
   return (
     <main className="page_main">
       <HeaderSales isDashboard={true} />
@@ -23,17 +86,26 @@ const DashboardSales = () => {
               <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div className="modal-body">
-              <form>
+              <form onSubmit={cariCustomer}>
                 <div className="mb-3">
                   <label className="form-label">Nama Customer</label>
-                  <input type="text" className="form-control" />
+                  <input type="text" value={namaCust || ''}  onChange={(e) => setNamaCust(e.target.value)} className="form-control" />
                 </div>
                 <div className="mb-3">
                   <label className="form-label">Alamat Utama</label>
-                  <input type="text" className="form-control" />
+                  <input type="text"  value={alamatUtama || ''}  onChange={(e) => setAlamatUtama(e.target.value)} className="form-control" />
                 </div>
                 <button type="submit" className="btn btn-primary">Search</button>
               </form>
+              <div className="box-list-customer mt-5"> 
+              <h1 className={`d-block text-center ${dataShow == 'active' ? '' : 'd-none'}`}>
+                Data Not Found
+              </h1>
+              <Accordion defaultActiveKey="0">
+                {showListCustomer}
+              </Accordion>
+              </div>
+              <a type="button" href="/salesman/trip/" className={`btn btn-primary d-block ${addButton == 'active' ? '' : 'd-none'}`}>masih belum menemukan silahkan tambah baru</a>
             </div>
 
           </div>
