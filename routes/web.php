@@ -46,9 +46,10 @@ Route::prefix('supervisor')->middleware('supervisor')->group(function() {
 // });
 Route::prefix('administrasi')->middleware('administrasi')->group(function() {
   Route::get('/', [HomeController::class, 'indexAdministrasi']);
-  Route::get('/stok', function () {
-    return view('administrasi.stok.stok');
-  });
+  Route::get('/stok', [ItemController::class, 'indexAdministrasi']);
+  Route::get('/stok/cari', [ItemController::class, 'cariStok']);
+  Route::get('/stok/riwayat', [ItemController::class, 'riwayatAdministrasi']);
+  Route::get('/stok/riwayat/cari', [ItemController::class, 'cariRiwayat']);
 
   Route::resource('/stok/produk', ItemController::class);
 
