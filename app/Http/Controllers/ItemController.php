@@ -188,15 +188,16 @@ class ItemController extends Controller
 
     public function indexAdministrasi()
     {
+        $items = Item::paginate(3);
         return view('administrasi/stok.index',[
-            'items' => Item::all()
+            'items' => $items
         ]);
         
     }
 
     public function cariStok()
     {
-        $items = DB::table('items')->where(strtolower('nama'),'like','%'.request('cari').'%')->get();
+        $items = Item::where(strtolower('nama'),'like','%'.request('cari').'%')->paginate(5);
                
         return view('administrasi/stok.index',[
             'items' => $items
@@ -205,20 +206,40 @@ class ItemController extends Controller
 
     public function riwayatAdministrasi()
     {
-        $getter = DB::table('pengadaans')->select('sum(harga_total) as harga')->groupBy('no_nota');
-        dd($getter);
+        $pengadaans = Pengadaan::select('no_pengadaan','no_nota','keterangan','created_at', DB::raw('SUM(harga_total) as harga'))
+        ->groupBy('no_pengadaan','no_nota','keterangan','created_at')->paginate(5);
+        
         return view('administrasi/stok/riwayat.index',[
-            'pengadaans' => Pengadaan::all()
+            'pengadaans' => $pengadaans
         ]);
         
     }
 
     public function cariRiwayat()
     {
-        $pengadaans = DB::table('pengadaans')->where(strtolower('no_nota'),'like','%'.request('cari').'%')->get();
-       
+        $pengadaans = Pengadaan::select('no_pengadaan','no_nota','keterangan','created_at', DB::raw('SUM(harga_total) as harga'))
+        ->where(strtolower('no_nota'),'like','%'.request('cari').'%')
+        ->groupBy('no_pengadaan','no_nota','keterangan','created_at')->paginate(5);
+        
         return view('administrasi/stok/riwayat.index',[
             'pengadaans' => $pengadaans
+        ]);
+    }
+
+    public function cariRiwayatDetail(Pengadaan $pengadaan)
+    {
+        $pengadaans = Pengadaan::join('items','pengadaans.id_item','=','items.id')
+        ->where('no_pengadaan','=',$pengadaan->no_pengadaan)
+        ->get();
+
+        $total = Pengadaan::selectRaw('SUM(harga_total) as harga')
+        ->where('no_pengadaan','=',$pengadaan->no_pengadaan)
+        ->get();
+
+        return view('administrasi/stok/riwayat.detail',[
+            'pengadaans' => $pengadaans,
+            'total_harga' => $total,
+            'detail' => $pengadaan
         ]);
     }
 }

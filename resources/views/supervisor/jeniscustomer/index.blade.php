@@ -17,6 +17,15 @@
 </div>
             
 @endif
+@if(session()->has('updateJenisSuccess'))
+<div id="hideMeAfter3Seconds">
+  <div class="alert alert-success alert-dismissible fade show mt-4" role="alert" >
+    {{ session('updateJenisSuccess') }}
+    <button type="button" class="btn btn-close" data-bs-dismiss="alert"></button>
+</div>
+</div>
+            
+@endif
 <div class="container">
   <div class="row">
     <div class="col-5">
@@ -50,7 +59,6 @@
     </tr>
   </thead>
   <tbody>
-    
     @foreach ($jenises as $jenis)
     <tr>
       <th scope="row">{{ ($jenises->currentPage() - 1) * $jenises->perPage() + $loop->iteration }}</th>

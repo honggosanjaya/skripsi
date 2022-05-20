@@ -52,6 +52,7 @@ Route::prefix('administrasi')->middleware('administrasi')->group(function() {
   Route::get('/stok/cari', [ItemController::class, 'cariStok']);
   Route::get('/stok/riwayat', [ItemController::class, 'riwayatAdministrasi']);
   Route::get('/stok/riwayat/cari', [ItemController::class, 'cariRiwayat']);
+  Route::get('/stok/riwayat/detail/{pengadaan:no_pengadaan}', [ItemController::class, 'cariRiwayatDetail']);
 
   //Route untuk produk
   Route::resource('/stok/produk', ItemController::class);
