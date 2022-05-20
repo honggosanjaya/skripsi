@@ -24,7 +24,7 @@
       <h1 class="mb-3 fs-6">Administrasi</h1>
       <ul class="p-0">
         <li class="mb-3">
-          <a class="" href="">
+          <a class="{{ Request::is('administrasi/datacustomer*') ? 'active' : '' }}" href="/administrasi/datacustomer">
             <i class="bi bi-people-fill me-2"></i><span>Data Customer</span>
           </a>
         </li>
