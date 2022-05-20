@@ -11,7 +11,7 @@
 @section('main_content')
   <div class="p-4">
     <a class="btn btn-primary mt-2 mb-3" href="/supervisor/jenis"><i class="bi bi-arrow-left-short fs-5"></i>Kembali</a>
-    <form class="form_jenis" method="POST" action="/supervisor/jenis/ubahjenis/{{ $customertype->id }}"
+    <form id="form_jenis" class="form_jenis" method="POST" action="/supervisor/jenis/ubahjenis/{{ $customertype->id }}"
         enctype="multipart/form-data">
         @method('put')
         @csrf
@@ -49,8 +49,8 @@
         @enderror
       </div>
 
-      <button type="submit" class="btn btn-primary">Simpan</button>
-      <a href="/supervisor/jenis" class="batalkanAksi_btn btn btn-danger ms-3">Batal</a>
+      <button type="submit" class="simpan_btn btn btn-primary">Simpan</button>
+      
     </form>
   </div>
 @endsection

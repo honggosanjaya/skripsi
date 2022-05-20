@@ -1,10 +1,15 @@
-@extends('layouts/main')
-
-@section('main_content')
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Document</title>
+</head>
+<body>
+ 
   
   <div class="container">
-
-    <a class="btn btn-primary mt-4" href="/administrasi/stok/riwayat"><i class="bi bi-arrow-left-short fs-5"></i>Kembali</a>
 
     <table class="table table-bordered mt-4">
       <thead>
@@ -27,7 +32,7 @@
         </tr>
         @endforeach
         <tr>
-            <td><a class="btn btn-primary" href="/administrasi/stok/riwayat/detail/{{ $detail->no_pengadaan }}/cetak-pdf">Unduh NPB</a></td>
+            <td></td>
             <td></td>
             <td></td>
             <td class="fw-bold">Total</td>
@@ -55,4 +60,7 @@
   
 
   
-@endsection
+
+</body>
+</html>
+

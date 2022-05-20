@@ -14,7 +14,7 @@ class CustomerTypeController extends Controller
 {
     public function index()
     {
-        $jenises = DB::table('customer_types')->paginate(5);
+        $jenises = CustomerType::paginate(5);
         return view('supervisor/jeniscustomer.index',[
             'jenises' => $jenises            
         ]);
@@ -22,7 +22,7 @@ class CustomerTypeController extends Controller
 
     public function search()
     {
-        $jenises = DB::table('customer_types')->where(strtolower('nama'),'like','%'.request('cari').'%')->get();
+        $jenises =  CustomerType::where(strtolower('nama'),'like','%'.request('cari').'%')->paginate(5);
        
         return view('supervisor/jeniscustomer.index',[
             'jenises' => $jenises
@@ -70,6 +70,6 @@ class CustomerTypeController extends Controller
         CustomerType::Where('id', $customertype->id)
             ->update($rules);
 
-        return redirect('/supervisor/jenis')->with('updateDataSuccess','Update Jenis Customer '. $customertype->nama .' Berhasil');        
+        return redirect('/supervisor/jenis')->with('updateJenisSuccess','Update Jenis Customer '. $customertype->nama .' Berhasil');        
     }
 }
