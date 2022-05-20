@@ -61,7 +61,7 @@
       <tbody>
         @foreach ($items as $item)
         <tr>
-          <th scope="row">{{ $loop->iteration }}</th>
+          <th scope="row">{{ ($items->currentPage() - 1) * $items->perPage() + $loop->iteration }}</th>
           <td>{{ $item->kode_barang }}</td>
           <td>{{ $item->nama }}</td>
           <td>{{ $item->stok }}</td>
@@ -70,12 +70,16 @@
           <td>{{ $item->max_stok }}</td>
           <td>{{ $item->max_pengadaan }}</td>
           <td>{{ $item->harga_satuan }}</td>
-          <td>masih coba cari cara</td>
+          <td>{{ $item->linkStatus->nama }}</td>
           
         </tr>
         @endforeach
       </tbody>
     </table>
+
+    <div class="d-flex flex-row mt-4">
+      {{ $items->links() }}
+    </div>
   </div>
   
   

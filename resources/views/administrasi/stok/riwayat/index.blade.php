@@ -4,7 +4,7 @@
   
   <div class="container">
 
-    
+    <a class="btn btn-primary mt-4" href="/administrasi/stok"><i class="bi bi-arrow-left-short fs-5"></i>Kembali</a>
 
     <div class="row my-3">
       <div class="col-5">
@@ -41,7 +41,7 @@
           <td>{{ $pengadaan->created_at }}</td>
           <td>{{ $pengadaan->no_nota }}</td>
           <td>{{ $pengadaan->keterangan }}</td>
-          <td>Belum</td>
+          <td>{{ $pengadaan->harga }}</td>
           <td>
             <a href="/administrasi/stok/riwayat/detail/{{ $pengadaan->no_pengadaan }}" class="btn btn-primary">Detail</a>
           </td>
@@ -49,6 +49,9 @@
         @endforeach
       </tbody>
     </table>
+    <div class="d-flex flex-row mt-4">
+      {{ $pengadaans->links() }}
+    </div>
   </div>
   
   

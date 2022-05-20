@@ -8,7 +8,24 @@
 </ol>
 @endsection
 @section('main_content')
-
+@if(session()->has('addJenisSuccess'))
+<div id="hideMeAfter3Seconds">
+  <div class="alert alert-success alert-dismissible fade show mt-4" role="alert" >
+    {{ session('addJenisSuccess') }}
+    <button type="button" class="btn btn-close" data-bs-dismiss="alert"></button>
+</div>
+</div>
+            
+@endif
+@if(session()->has('updateJenisSuccess'))
+<div id="hideMeAfter3Seconds">
+  <div class="alert alert-success alert-dismissible fade show mt-4" role="alert" >
+    {{ session('updateJenisSuccess') }}
+    <button type="button" class="btn btn-close" data-bs-dismiss="alert"></button>
+</div>
+</div>
+            
+@endif
 <div class="container">
   <div class="row">
     <div class="col-5">
@@ -44,7 +61,7 @@
   <tbody>
     @foreach ($jenises as $jenis)
     <tr>
-      <th scope="row">{{ $loop->iteration }}</th>
+      <th scope="row">{{ ($jenises->currentPage() - 1) * $jenises->perPage() + $loop->iteration }}</th>
       <td>{{ $jenis->nama }}</td>
       <td>{{ $jenis->diskon }}</td>
       <td>{{ $jenis->keterangan }}</td>
@@ -56,4 +73,9 @@
     @endforeach
   </tbody>
 </table>
+
+<div class="d-flex flex-row mt-4">
+  {{ $jenises->links() }}
+</div>
+
 @endsection

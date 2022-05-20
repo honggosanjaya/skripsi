@@ -26,8 +26,8 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-      Paginator::useBootstrap();
-        
+        Paginator::useBootstrap();
+
         Gate::define('administrasi', function(User $user){
             $value = 0;
             $role_value = session('role');

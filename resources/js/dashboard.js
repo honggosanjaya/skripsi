@@ -1,14 +1,22 @@
 // CommonJS
 const Swal = require('sweetalert2')
 $(document).ready(function () {
-  $('.batalkanAksi_btn').click(function () {
-    confirm('apakah anda yakin? perubahan akan terbuang');
+  $(document).on('click', '.simpan_btn', function(e) {
+    e.preventDefault()
+    Swal.fire({
+      title: 'Apakah anda yakin untuk menyimpan data ?',
+      showDenyButton: true,      
+      confirmButtonText: 'Ya',
+      denyButtonText: `Tidak`,
+    }).then((result) => {
+      if (result.isConfirmed) {
+        console.log('testing')
+        $('#form_jenis').submit()
+                
+      } else if (result.isDenied) {
+        Swal.fire('Changes are not saved', '', 'info')
+      }
+    })
   })
 });
 
-// Swal.fire({
-//     title: 'Error!',
-//     text: 'Do you want to continue',
-//     icon: 'error',
-//     confirmButtonText: 'Cool'
-//   })
