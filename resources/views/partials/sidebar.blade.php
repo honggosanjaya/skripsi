@@ -12,47 +12,48 @@
     <h1 class="mb-3 fs-6">Dashboard</h1>
     <ul class="p-0">
       <li class="mb-3">
-        <a class="{{ Request::is('dashboard') ? 'active' : '' }}" href="/{{ auth()->user()->linkStaff->linkStaffRole->nama }}">
+        <a class="{{ Request::is('dashboard') ? 'active' : '' }}"
+          href="/{{ auth()->user()->linkStaff->linkStaffRole->nama }}">
           <i class="bi bi-speedometer2 me-2"></i><span>Dashboard</span>
         </a>
       </li>
     </ul>
 
     @can('administrasi')
-    <hr class="my-4" />
-    <h1 class="mb-3 fs-6">Administrasi</h1>
-    <ul class="p-0">
-      <li class="mb-3">
-        <a class="" href="">
-          <i class="bi bi-people-fill me-2"></i><span>Data Customer</span>
-        </a>
-      </li>
-      <li class="mb-3">
-        <a class="{{ Request::is('dashboard/pesanan*') ? 'active' : '' }}" href="/dashboard/pesanan">
-          <i class="bi bi-card-list me-2"></i><span>Pesanan</span>
-        </a>
-      </li>
-      <li class="mb-3">
-        <a class="{{ Request::is('dashboard/retur*') ? 'active' : '' }}" href="/dashboard/retur">
-          <i class="bi bi-arrow-return-left me-2"></i><span>Retur</span>
-        </a>
-      </li>
-      <li class="mb-3">
-        <a class="" href="">
-          <i class="bi bi-cash me-2"></i><span>Penjualan</span>
-        </a>
-      </li>
-      <li class="mb-3">
-        <a class="{{ Request::is('administrasi/stok*') ? 'active' : '' }}" href="/administrasi/stok">
-          <i class="bi bi-box me-2"></i><span>Stok</span>
-        </a>
-      </li>
-      <li class="mb-3">
-        <a class="" href="">
-          <i class="bi bi-truck me-2"></i><span>Kendaraan</span>
-        </a>
-      </li>
-    </ul>
+      <hr class="my-4" />
+      <h1 class="mb-3 fs-6">Administrasi</h1>
+      <ul class="p-0">
+        <li class="mb-3">
+          <a class="" href="">
+            <i class="bi bi-people-fill me-2"></i><span>Data Customer</span>
+          </a>
+        </li>
+        <li class="mb-3">
+          <a class="{{ Request::is('dashboard/pesanan*') ? 'active' : '' }}" href="/dashboard/pesanan">
+            <i class="bi bi-card-list me-2"></i><span>Pesanan</span>
+          </a>
+        </li>
+        <li class="mb-3">
+          <a class="{{ Request::is('dashboard/retur*') ? 'active' : '' }}" href="/dashboard/retur">
+            <i class="bi bi-arrow-return-left me-2"></i><span>Retur</span>
+          </a>
+        </li>
+        <li class="mb-3">
+          <a class="" href="">
+            <i class="bi bi-cash me-2"></i><span>Penjualan</span>
+          </a>
+        </li>
+        <li class="mb-3">
+          <a class="{{ Request::is('administrasi/stok*') ? 'active' : '' }}" href="/administrasi/stok">
+            <i class="bi bi-box me-2"></i><span>Stok</span>
+          </a>
+        </li>
+        <li class="mb-3">
+          <a class="" href="">
+            <i class="bi bi-truck me-2"></i><span>Kendaraan</span>
+          </a>
+        </li>
+      </ul>
     @endcan
 
     @can('supervisor')
@@ -98,25 +99,25 @@
     @endcan
 
     @can('owner')
-    <hr class="my-4" />
-    <h1 class="mb-3 fs-6">Owner</h1>
-    <ul class="p-0">
-      <li class="mb-3">
-        <a class="" href="">
-          <i class="bi bi-cash me-2"></i><span>Penjualan</span>
-        </a>
-      </li>
-      <li class="mb-3">
-        <a class="" href="">
-          <i class="bi bi-graph-up me-2"></i><span>Kinerja Salesman</span>
-        </a>
-      </li>
-      <li class="mb-3">
-        <a class="" href="">
-          <i class="bi bi-people-fill me-2"></i><span>Data Supervisor</span>
-        </a>
-      </li>
-    </ul>
+      <hr class="my-4" />
+      <h1 class="mb-3 fs-6">Owner</h1>
+      <ul class="p-0">
+        <li class="mb-3">
+          <a class="" href="">
+            <i class="bi bi-cash me-2"></i><span>Penjualan</span>
+          </a>
+        </li>
+        <li class="mb-3">
+          <a class="" href="">
+            <i class="bi bi-graph-up me-2"></i><span>Kinerja Salesman</span>
+          </a>
+        </li>
+        <li class="mb-3">
+          <a class="" href="">
+            <i class="bi bi-people-fill me-2"></i><span>Data Supervisor</span>
+          </a>
+        </li>
+      </ul>
     @endcan
 
   </div>

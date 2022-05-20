@@ -72,7 +72,8 @@ class RegisteredUserController extends Controller
             'telepon' => $request->telepon,
             'role' => $request->role,
             'status' => 8,
-            'foto_profil'=> $request->foto_profil
+            'foto_profil'=> $request->foto_profil,
+            'created_at'=>now()
         ]);
         if (Staff::with('linkStaffRole')->find($staff)->linkStaffRole->nama=="supervisor") {
             if (Staff::where('role',2)->where('status',8)->count()>1) {

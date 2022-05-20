@@ -18,6 +18,7 @@ class Customer extends Model
 {
     use HasFactory;
 
+    protected $appends = ['full_alamat','image_url'];
     protected $guarded = [
         'id'
       ];
@@ -43,7 +44,7 @@ class Customer extends Model
     }
 
     public function linkDistrict(){
-        return $this->belongsTo(District::class,'id','id_wilayah');
+        return $this->hasOne(District::class,'id','id_wilayah');
     }
 
     public function linkOrder(){
@@ -56,5 +57,13 @@ class Customer extends Model
 
     public function linkReturType(){
         return $this->belongsTo(ReturType::class,'id','tipe_retur');
+    }
+    public function getFullAlamatAttribute()
+    {
+        return "{$this->alamat_utama} {$this->alamat_nomor}";
+    }
+    public function getImageUrlAttribute()
+    {
+        return asset('storage/customer/'.$this->foto);
     }
 }

@@ -3,6 +3,8 @@
 use App\Http\Controllers\CustomerTypeController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\ItemController;
+use App\Http\Controllers\CartController;
+use App\Http\Controllers\OrderController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -36,12 +38,12 @@ Route::prefix('supervisor')->middleware('supervisor')->group(function() {
 
 
 });
-Route::prefix('salesman')->middleware('salesman')->group(function() {
-  Route::get('/', [HomeController::class, 'indexSalesman']);
-});
-Route::prefix('shipper')->middleware('shipper')->group(function() {
-  Route::get('/', [HomeController::class, 'indexShipper']);
-});
+// Route::prefix('salesman')->middleware('salesman')->group(function() {
+//   Route::get('/', [HomeController::class, 'indexSalesman']);
+// });
+// Route::prefix('shipper')->middleware('shipper')->group(function() {
+//   Route::get('/', [HomeController::class, 'indexShipper']);
+// });
 Route::prefix('administrasi')->middleware('administrasi')->group(function() {
   Route::get('/', [HomeController::class, 'indexAdministrasi']);
   Route::get('/stok', [ItemController::class, 'indexAdministrasi']);
@@ -49,12 +51,13 @@ Route::prefix('administrasi')->middleware('administrasi')->group(function() {
   Route::get('/stok/riwayat', [ItemController::class, 'riwayatAdministrasi']);
   Route::get('/stok/riwayat/cari', [ItemController::class, 'cariRiwayat']);
 });
+
 Route::prefix('customer')->middleware('customer')->group(function() {
   Route::get('/', [HomeController::class, 'indexCustomer']);
 
   //Route untuk produk
-  Route::get('/produk', [ItemController::class, 'index']);
-  Route::get('/produk/cari', [ItemController::class, 'search']);
+  Route::get('/produk', [ItemController::class, 'customerIndex']);
+  Route::get('/produk/cari', [ItemController::class, 'customerSearch']);
 });
 
 require __DIR__.'/auth.php';

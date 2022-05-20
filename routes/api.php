@@ -20,6 +20,10 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
 
+Route::post('/cariCustomer', [CustomerController::class, 'cariCustomerApi']);
+Route::get('/dataFormTrip', [CustomerController::class, 'dataFormTripApi']);
+
+Route::get('/tripCustomer/{id}', [CustomerController::class, 'dataCustomerApi']);
 Route::post('/tripCustomer', [CustomerController::class, 'simpanCustomerApi']);
 Route::post('/tripCustomer/foto/{id}', [CustomerController::class, 'simpanCustomerFotoApi']);
 
