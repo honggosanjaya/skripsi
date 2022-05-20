@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import { useHistory } from "react-router";
 import axios from 'axios';
 import { AuthContext } from '../../contexts/AuthContext';
+import LoadingIndicator from './LoadingIndicator';
 
 const LoginReact = () => {
   const history = useHistory();
@@ -10,7 +11,7 @@ const LoginReact = () => {
   const [hiddenPassword, setHiddenPassword] = useState(true);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  // const [isLoading, setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   const [errorValidasi, setErrorValidasi] = useState([]);
   const [error, setError] = useState('');
 
@@ -28,7 +29,7 @@ const LoginReact = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    // setIsLoading(true);
+    setIsLoading(true);
     setErrorValidasi([]);
     setError('');
 
@@ -45,9 +46,9 @@ const LoginReact = () => {
     })
       .then((response) => {
         console.log(response);
+        setIsLoading(false);
+        setError('');
         if (response.data.status == 'success') {
-          // setIsLoading(false);
-          setError('');
           setErrorValidasi([]);
           setToken(response.data.token);
           setIsAuth(true);
@@ -56,7 +57,8 @@ const LoginReact = () => {
           } else if (response.data.data.role == 'shipper') {
             history.push('/shipper');
           } else {
-            setError('Woi kamu gak masuk sini');
+            // setError('Woi kamu gak masuk sini');
+            // push ke laravel
           }
         }
         else {
@@ -64,7 +66,11 @@ const LoginReact = () => {
         }
       })
       .catch((error) => {
+<<<<<<< HEAD
+        setIsLoading(false);
+=======
         console.log(error.response.data.message);
+>>>>>>> c9650fc6efeb87390bfd9683cae7294551e186eb
         if (error.response.status === 401) {
           setError(error.response.data.message);
         } else {
@@ -77,7 +83,11 @@ const LoginReact = () => {
   return (
     <main className='page_main login_page'>
       <div className="page_container pt-5">
+        {isLoading && <LoadingIndicator />}
         <h1 className='heading-1'>Selamat Datang</h1>
+<<<<<<< HEAD
+        <h2 className='heading-2 mb-5'>Aplikasi web salesMan <br /> UD Mandiri</h2>
+=======
         <h2 className='heading-2 '>Aplikasi web salesMan <br /> UD Mandiri</h2>
         <p className='mb-3 text-center'> 
           halaman login khusus untuk salesman dan tenaga pengirim, untuk staff lain silahkan melalui link ini 
@@ -85,13 +95,13 @@ const LoginReact = () => {
         </p>
         
 
+>>>>>>> c9650fc6efeb87390bfd9683cae7294551e186eb
         {error &&
           <div className="alert alert-danger alert-dismissible fade show" role="alert">
             <p className='text-center mb-0'>{error}</p>
             <button type="button" className="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
           </div>
         }
-
         <form onSubmit={handleSubmit}>
           <div className="mb-3">
             <label htmlFor="email">Email</label>
@@ -128,7 +138,7 @@ const LoginReact = () => {
 
 
           <button type="submit" className="btn btn-primary w-100 my-4">MASUK</button>
-          <p className="hyperlink"><Link to="#" className="lupa_sandi">Lupa Kata Sandi?</Link></p>
+          <p className="hyperlink"><Link to="#" className="lupa_sandi">Lupa Password?</Link></p>
         </form>
       </div>
     </main>

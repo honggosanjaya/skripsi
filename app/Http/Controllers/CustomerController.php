@@ -140,14 +140,13 @@ class CustomerController extends Controller
       }
 
       $customer = Customer::find($id);
-      // if ($request->foto && $request->foto->isValid()) {
+
       if ($request->foto) {
         $file_name = time() . '.' . $request->foto->extension();
         $request->foto->move(public_path('storage/customer'), $file_name);
         $customer->foto = $file_name;
       }    
       $customer->update();
-      // dd($request);
 
       return response()->json([
         'data' => $customer,
