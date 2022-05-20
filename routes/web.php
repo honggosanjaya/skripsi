@@ -4,6 +4,7 @@ use App\Http\Controllers\CustomerTypeController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\ItemController;
 use App\Http\Controllers\CartController;
+use App\Http\Controllers\CustomerController;
 use App\Http\Controllers\OrderController;
 use Illuminate\Support\Facades\Route;
 
@@ -35,8 +36,6 @@ Route::prefix('supervisor')->middleware('supervisor')->group(function() {
   Route::post('/jenis/tambahjenis', [CustomerTypeController::class, 'store']);
   Route::get('/jenis/ubah/{customertype:id}', [CustomerTypeController::class, 'edit']);
   Route::put('/jenis/ubahjenis/{customertype:id}', [CustomerTypeController::class, 'update']);
-
-
 });
 // Route::prefix('salesman')->middleware('salesman')->group(function() {
 //   Route::get('/', [HomeController::class, 'indexSalesman']);
@@ -46,18 +45,27 @@ Route::prefix('supervisor')->middleware('supervisor')->group(function() {
 // });
 Route::prefix('administrasi')->middleware('administrasi')->group(function() {
   Route::get('/', [HomeController::class, 'indexAdministrasi']);
-  Route::get('/stok', function () {
-    return view('administrasi.stok.stok');
+
+  Route::prefix('stok')->group(function(){
+    Route::get('/', function () {
+      return view('administrasi.stok.stok');
+    });
+    Route::resource('/produk', ItemController::class);
+    Route::get('/pengadaan', [ItemController::class, 'productList'])->name('products.list');
+    Route::get('/pengadaan/cart', [CartController::class, 'cartList'])->name('cart.list');
+    Route::post('/pengadaan/cart', [CartController::class, 'addToCart'])->name('cart.store');
+    Route::post('/pengadaan/update-cart', [CartController::class, 'updateCart'])->name('cart.update');
+    Route::post('/pengadaan/remove', [CartController::class, 'removeCart'])->name('cart.remove');
+    Route::post('/pengadaan/clear', [CartController::class, 'clearAllCart'])->name('cart.clear');
   });
 
-  Route::resource('/stok/produk', ItemController::class);
-
-  Route::get('/stok/pengadaan', [ItemController::class, 'productList'])->name('products.list');
-  Route::get('/stok/pengadaan/cart', [CartController::class, 'cartList'])->name('cart.list');
-  Route::post('/stok/pengadaan/cart', [CartController::class, 'addToCart'])->name('cart.store');
-  Route::post('/stok/pengadaan/update-cart', [CartController::class, 'updateCart'])->name('cart.update');
-  Route::post('/stok/pengadaan/remove', [CartController::class, 'removeCart'])->name('cart.remove');
-  Route::post('/stok/pengadaan/clear', [CartController::class, 'clearAllCart'])->name('cart.clear');
+  Route::get('/datacustomer', [CustomerController::class, 'administrasiIndex']);
+  Route::get('/datacustomer/create', [CustomerController::class, 'administrasiCreate']);
+  Route::post('/datacustomer/tambahcustomer', [CustomerController::class, 'administrasiStore']);
+  Route::get('/datacustomer/ubah/{customer:id}', [CustomerController::class, 'administrasiEdit']);
+  Route::put('/datacustomer/ubahcustomer/{customer:id}', [CustomerController::class, 'administrasiUpdate']);
+  Route::get('/datacustomer/{customer:id}', [CustomerController::class, 'administrasiShow']);
+  Route::post('/datacustomer/ubahstatus/{customer:id}', [CustomerController::class, 'administrasiEditStatusCustomer']);
 });
 
 Route::prefix('customer')->middleware('customer')->group(function() {
