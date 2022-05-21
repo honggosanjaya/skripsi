@@ -18,8 +18,36 @@ class ItemController extends Controller
       $products = Item::all();
       return view('administrasi.stok.pengadaan.index', [
         "products" => $products,
-        "title" => "Stok Marketing - Pengadaan"
+        "title" => "Stok Marketing - Pengadaan",
       ]);
+  }
+
+  public function simpanDataPengadaan(Request $request)
+  {
+    $cartItems = \Cart::getContent();
+
+    $data = [];
+    foreach($cartItems as $item){
+      array_push($data,[
+        'id_item' => $item->id,
+        'id_staff' => auth()->user()->id,
+        'no_pengadaan' => (Pengadaan::orderBy("no_pengadaan", "DESC")->first()->no_pengadaan ?? 0) + 1,
+        'no_nota' => $request->no_nota,
+        'kuantitas' => $item->quantity,
+        'harga_total' => $request->harga_total,
+        'keterangan' => $request->keterangan,
+      ]);
+    }
+
+    $rules = ([
+      'no_nota' => ['required', 'max:20'],
+      'harga_total' => ['required'],
+      'keterangan' => ['required', 'string', 'max:255'],
+    ]);
+
+    $request->validate($rules);
+
+    Pengadaan::insert($data);
   }
 
     /**
