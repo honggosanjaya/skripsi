@@ -30,6 +30,8 @@ Route::post('/tripCustomer/foto/{id}', [CustomerController::class, 'simpanCustom
 
 Route::group(['middleware' => 'auth:sanctum'], function(){
   Route::post('v1/logout', [LoginController::class, 'logoutApi']);
+
+  
 });
 
 Route::post('v1/login', [LoginController::class, 'index']);

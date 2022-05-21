@@ -32,7 +32,7 @@
       <tbody>
         @foreach ($customers as $customer)
           <tr onclick="window.location='/administrasi/datacustomer/{{ $customer->id }}';">
-            <td class="text-center">{{ $loop->iteration }}</td>
+            <th scope="row">{{ ($customers->currentPage() - 1) * $customers->perPage() + $loop->iteration }}</th>
             <td>{{ $customer->nama }}</td>
             <td>{{ $customer->full_alamat }}</td>
             <td>{{ $customer->email }}</td>

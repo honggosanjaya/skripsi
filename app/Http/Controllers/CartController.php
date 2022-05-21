@@ -9,26 +9,44 @@ class CartController extends Controller
   public function cartList()
   {
       $cartItems = \Cart::getContent();
-      // dd($cartItems);
       return view('administrasi.stok.pengadaan.cart', compact('cartItems'));
   }
 
-
   public function addToCart(Request $request)
   {
-    // dd($request->nama);
+    $cartItem = \Cart::get($request->id);
+
+    if($cartItem !== null){
+      \Cart::update(
+        $request->id,
+        [
+            'quantity' => [
+                'relative' => false,
+                'value' => $request->quantity
+            ],
+        ]
+      );
+
+      if($cartItem->quantity == 0){
+        \Cart::remove($request->id);
+      }
+
+    } else if($cartItem == null){
       \Cart::add([
-          'id' => $request->id,
-          'name' => $request->nama,
-          'price' => $request->harga_satuan,
-          'quantity' => $request->quantity,
-          // sisanya
-          'attributes' => array(
-              'gambar' => $request->gambar,
-          )
+        'id' => $request->id,
+        'name' => $request->nama,
+        'price' => $request->harga_satuan,
+        'quantity' => $request->quantity,
+        'attributes' => array(
+          'kode_barang' => $request->kode_barang,
+          'satuan' => $request->satuan,
+          'max_pengadaan' => $request->max_pengadaan,
+          'total_harga' => $request->total_harga
+        )
       ]);
-      session()->flash('sukses', 'Product is Added to Cart Successfully !');
-      return redirect()->route('products.list');
+    }
+
+      return redirect()->route('products.list')->with('pesanSukses', 'Produk berhasil ditambahkan ke keranjang');
   }
 
   public function updateCart(Request $request)
@@ -42,26 +60,18 @@ class CartController extends Controller
               ],
           ]
       );
-
-      session()->flash('success', 'Item Cart is Updated Successfully !');
-
       return redirect()->route('cart.list');
   }
 
   public function removeCart(Request $request)
   {
       \Cart::remove($request->id);
-      session()->flash('success', 'Item Cart Remove Successfully !');
-
       return redirect()->route('cart.list');
   }
 
   public function clearAllCart()
   {
       \Cart::clear();
-
-      session()->flash('success', 'All Item Cart Clear Successfully !');
-
       return redirect()->route('cart.list');
   }
 }

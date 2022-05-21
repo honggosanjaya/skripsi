@@ -75,7 +75,6 @@
       @enderror
     </div>
 
-
     <div class="my-3">
       <label for="keterangan_alamat" class="form-label">Keterangan Alamat</label>
       <input type="text" class="form-control @error('keterangan_alamat') is-invalid @enderror" id="keterangan_alamat"
@@ -121,7 +120,6 @@
         <input type="number" class="form-control" id="limit_pembelian" name="limit_pembelian"
           value="{{ 200000 }}" step=".01" disabled readonly>
       @endif
-
     </div>
 
     <div class="my-3">
