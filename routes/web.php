@@ -66,6 +66,8 @@ Route::prefix('administrasi')->middleware('administrasi')->group(function() {
     Route::post('/pengadaan/update-cart', [CartController::class, 'updateCart'])->name('cart.update');
     Route::post('/pengadaan/remove', [CartController::class, 'removeCart'])->name('cart.remove');
     Route::post('/pengadaan/clear', [CartController::class, 'clearAllCart'])->name('cart.clear');
+
+    Route::post('/pengadaan/tambahpengadaan', [ItemController::class, 'simpanDataPengadaan']);
   });
 
   Route::get('/datacustomer', [CustomerController::class, 'administrasiIndex']);
@@ -76,6 +78,7 @@ Route::prefix('administrasi')->middleware('administrasi')->group(function() {
   Route::get('/datacustomer/{customer:id}', [CustomerController::class, 'administrasiShow']);
   Route::post('/datacustomer/ubahstatus/{customer:id}', [CustomerController::class, 'administrasiEditStatusCustomer']);
 });
+
 
 Route::prefix('customer')->middleware('customer')->group(function() {
   Route::get('/', [HomeController::class, 'indexCustomer']);
