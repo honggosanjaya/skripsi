@@ -11,7 +11,7 @@ $(document).ready(function () {
     }).then((result) => {
       if (result.isConfirmed) {
         console.log('testing')
-        $('#form_jenis').submit()
+        $('#form_submit').submit()
                 
       } else if (result.isDenied) {
         Swal.fire('Changes are not saved', '', 'info')

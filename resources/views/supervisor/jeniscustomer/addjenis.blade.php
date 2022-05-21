@@ -12,7 +12,7 @@
   <div class="p-4">
     <a class="btn btn-primary mt-2 mb-3" href="/supervisor/jenis"><i class="bi bi-arrow-left-short fs-5"></i>Kembali</a>
     
-    <form id="form_jenis" class="form-jenis" method="POST" action="/supervisor/jenis/tambahjenis">
+    <form id="form_submit" class="form-submit" method="POST" action="/supervisor/jenis/tambahjenis">
       @csrf
       <div class="mb-3">
         <label for="nama_jenis" class="form-label">Nama Jenis Customer</label>
