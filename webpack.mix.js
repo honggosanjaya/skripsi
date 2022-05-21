@@ -36,6 +36,14 @@ mix
     , 'public/js/main.js'
   );
 
+mix
+  .js(
+    [
+      'resources/js/d_customer.js',
+    ]
+    , 'public/js/d_customer.js'
+  );
+
 
 mix.js('resources/js/app.js', 'public/js/app.js')
   .postCss('resources/css/app.css', 'public/css/app.css', [
