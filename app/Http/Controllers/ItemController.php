@@ -293,4 +293,37 @@ class ItemController extends Controller
 
         return $pdf->download('laporan-NPB-pdf.pdf');
     }
+
+    public function filterProdukApi(Request $request)
+    {
+        $items=Item::orderBy('status','ASC');
+        if ($request->nama??null) {
+          $items=$items->where(strtolower('nama'),'like','%'.$request->nama.'%');
+        }
+        if ($request->filter=='price') {
+          $items=$items->orderBy('harga_satuan',$request->order);
+        }
+        if ($request->filter=='nama') {
+          $items=$items->orderBy('nama',$request->order);
+        }
+        if (($request->filterstockmerah??null)==true) {
+          $items=$items->where('stok', '<=', 'min_stok');
+        }
+        
+        $items=$items->get();
+
+        if(!empty($items)){
+          return response()->json([
+            'html'=> view('customer.c_listproduk', compact('items'))->render(),
+            'status' => 'success'
+          ]);
+        }
+        else{
+          return response()->json([
+            'items' => $items,
+            'status' => 'error'
+          ],404);
+        }
+        
+    }
 }

@@ -65,31 +65,62 @@
             </div>
           </div>
           <div class="col-4 mt-2">
-            <i class="bi bi-funnel-fill fs-3"></i>
-          </div>
-        </div>
-        
+            <a href="/filterProduk">
+              
+            </a>
+            <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">
+              <i class="bi bi-funnel-fill fs-3"></i>
+            </button>
             
-            <div class="row">
-                @foreach($items as $item)
-                <div class="col-6 my-2">
-                    <div class="card" style="width: 10rem;">
-                        <img src="..." class="card-img-top" width="100px" height="100px">
-                        <div class="card-body">
-                          <h5 class="card-title">{{ $item->nama }}</h5>
-                          <h5 class="card-title">{{ $item->harga_satuan }}/{{ $item->satuan }}</h5>
-                          
-                          <button class="btn btn-primary btn-square py-1 px-2">-</button>
-                          <input type="number" class="col-4">
-                          <button class="btn btn-primary btn-square py-1 px-2">+</button>
+            <!-- Modal -->
+            <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+              <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                      <h5 class="modal-title" id="exampleModalLabel">Filter</h5>
+                      <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                      <div class="mb-3">
+                        <div class="form-check">
+                          <input class="form-check-input" type="radio" name="filter" id="filterprice" value="price" checked>
+                          <label class="form-check-label" for="filterprice">
+                            price
+                          </label>
+                        </div>
+                        <div class="form-check">
+                          <input class="form-check-input" type="radio" name="filter" id="filternama" value="nama" >
+                          <label class="form-check-label" for="filternama">
+                            nama
+                          </label>
+                        </div>
+                        <hr style="display: block">
+                        <div class="form-check">
+                          <input class="form-check-input" type="radio" name="order" id="asc" value="asc" checked>
+                          <label class="form-check-label" for="asc">
+                            ASC
+                          </label>
+                        </div>
+                        <div class="form-check">
+                          <input class="form-check-input" type="radio" name="order" id="desc" value="desc">
+                          <label class="form-check-label" for="desc">
+                            DESC
+                          </label>
                         </div>
                       </div>
+                    </div>
+                    <div class="modal-footer">
+                      <button type="button" class="btn btn-secondary close-filter-produk" data-bs-dismiss="modal">Close</button>
+                      <button type="button" class="btn btn-primary submit-filter-produk">Save changes</button>
+                    </div>
                 </div>
-                @endforeach
-
-                
+              </div>
             </div>
-        
+          </div>
+        </div>
+        <div id="list-produk">
+          @include('customer.c_listproduk')
+        </div>
     </div>
 
     <footer class='footer_mobile d-flex justify-content-between align-items-center'>
@@ -119,6 +150,7 @@
 
   <script src="{{ mix('js/bootstrap.js') }}"></script>
   <script src="{{ mix('js/main.js') }}"></script>
+  <script src="{{ mix('js/d_customer.js') }}"></script>
   <script src="https://code.iconify.design/2/2.0.3/iconify.min.js"></script>
 </body>
 
