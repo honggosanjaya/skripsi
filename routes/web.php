@@ -5,6 +5,7 @@ use App\Http\Controllers\HomeController;
 use App\Http\Controllers\ItemController;
 use App\Http\Controllers\CartController;
 use App\Http\Controllers\CustomerController;
+use App\Http\Controllers\DistrictController;
 use App\Http\Controllers\OrderController;
 use Illuminate\Support\Facades\Route;
 
@@ -28,6 +29,14 @@ Route::prefix('owner')->middleware('owner')->group(function() {
 });
 Route::prefix('supervisor')->middleware('supervisor')->group(function() {
   Route::get('/', [HomeController::class, 'indexSupervisor']);
+
+  //Route untuk wilayah
+  Route::get('/wilayah', [DistrictController::class, 'index']);
+  Route::get('/wilayah/cari', [DistrictController::class, 'search']);
+  Route::get('/wilayah/tambah', [DistrictController::class, 'create']);
+  Route::post('/wilayah/tambahwilayah', [DistrictController::class, 'store']);
+  Route::get('/wilayah/ubah/{district:id}', [DistrictController::class, 'edit']);
+  Route::put('/wilayah/ubahwilayah/{district:id}', [DistrictController::class, 'update']);
 
   //Route untuk jenis customer
   Route::get('/jenis', [CustomerTypeController::class, 'index']);

@@ -86,7 +86,7 @@
           </a>
         </li>
         <li class="mb-3">
-          <a class="" href="">
+          <a class="{{ Request::is('supervisor/wilayah*') ? 'active' : '' }}" href="/supervisor/wilayah">
             <i class="bi bi-geo-alt me-2"></i><span>Wilayah</span>
           </a>
         </li>
