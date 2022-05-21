@@ -1,6 +1,8 @@
 <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet"/>
 @extends('layouts/main')
-
+@push('CSS')
+<link href=" {{ mix('css/supervisor.css') }}" rel="stylesheet">
+@endpush
 @section('breadcrumbs')
 <ol class="breadcrumb">
   <li class="breadcrumb-item"><a href="/supervisor">Dashboard</a></li>
@@ -48,16 +50,11 @@
 </div>
 
 
-<table class="table">
-  <thead>
+<table class="table table-bordered">
+  <thead class="table-info">
     <tr>
-      <th scope="col">No</th>
       <th scope="col">Kode Event</th>
       <th scope="col">Nama Event</th>
-      <th scope="col">Keterangan</th>
-      <th scope="col">Diskon</th>
-      <th scope="col">Potongan</th>
-      <th scope="col">Minimum Pembelian</th>  
       <th scope="col">Tanggal Mulai</th>
       <th scope="col">Tanggal Selesai</th>
       <th scope="col">PIC</th>
@@ -68,19 +65,15 @@
   </thead>
   <tbody>
     @foreach($events as $event)
-        <tr>
-            <td>{{ ($events->currentPage() - 1) * $events->perPage() + $loop->iteration }}</td>
+        <tr>            
             <td>{{ $event->kode }}</td>
-            <td>{{ $event->nama }}</td>
-            <td>{{ $event->keterangan }}</td>
-            <td>{{ $event->diskon ?? 0 }}</td>
-            <td>{{ $event->potongan ?? 0 }}</td>
-            <td>{{ $event->min_pembelian }}</td>
-            <td>{{ $event->date_start }}</td>
-            <td>{{ $event->date_end }}</td>
+            <td>{{ $event->nama }}</td>         
+            <td>{{ date('d-m-Y', strtotime($event->date_start)) }}</td>
+            <td>{{ date('d-m-Y', strtotime($event->date_end)) }}</td>
             <td>{{ $event->linkStaff->nama }}</td>
             <td>{{ $event->linkStatus->nama }}</td>
-            <td>{{ $event->gambar }}</td>
+            <td><img src="{{ asset('storage/event/'.$event->gambar) }}" class="img-preview img-fluid"
+                width="50px" height="50px"></td>
             <td>
                 <a href="/supervisor/event/ubah/{{ $event->id }}" class="btn btn-warning">Ubah</a>
             </td>

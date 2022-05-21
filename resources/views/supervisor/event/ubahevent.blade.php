@@ -12,8 +12,10 @@
   <div class="p-4">
     <a class="btn btn-primary mt-2 mb-3" href="/supervisor/event"><i class="bi bi-arrow-left-short fs-5"></i>Kembali</a>
     
-    <form id="form_submit" class="form-submit" method="POST" action="/supervisor/event/tambahevent">
+    <form id="form_submit" class="form-submit" method="POST" action="/supervisor/event/ubahevent/{{ $eventStatus->id }}"
+        enctype="multipart/form-data">
       @csrf
+      @method('put')
       <div class="mb-3">
         <label for="kode_event" class="form-label">Kode Event</label>
         <input type="text" class="form-control @error('kode_event') is-invalid @enderror" id="kode_event"
@@ -40,10 +42,10 @@
           <div class="row">
 
               <div class="col-3">
-                <label for="potongan-diskon" class="form-label">Potongan/Diskon</label>
-                <input type="number" class="form-control @error('potongan-diskon') is-invalid @enderror" id="potongan-diskon" name="potongan-diskon"
-                  value="{{ old('potongan-diskon', $eventStatus->diskon) }}" max="100" min="0">
-                @error('potongan-diskon')
+                <label for="potongan_diskon" class="form-label">Potongan/Diskon</label>
+                <input type="number" class="form-control @error('potongan_diskon') is-invalid @enderror" id="potongan_diskon" name="potongan_diskon"
+                  value="{{ old('potongan_diskon', $diskon_potongan) }}" max="100" min="0">
+                @error('potongan_diskon')
                   <div class="invalid-feedback">
                     {{ $message }}
                   </div>
@@ -52,9 +54,14 @@
 
               <div class="col-3">
                 <label></label>
-                <select class="form-select mt-2" id="event-pilih-isian">
-                    <option value="diskon">Diskon</option>
-                    <option value="potongan">Potongan</option>                    
+                <select class="form-select mt-2" id="event_pilih_isian" name="event_pilih_isian">
+                    @if($tipe === "potongan")
+                    <option value="potongan" selected>Potongan</option>
+                    <option value="diskon">Diskon</option>  
+                    @else
+                    <option value="diskon" selected>Diskon</option>
+                    <option value="potongan">Potongan</option> 
+                    @endif                  
                 </select>                
               </div>
 
@@ -103,7 +110,7 @@
             <label for="status" class="form-label">Status Event</label>
             <select class="form-select @error('status') is-invalid @enderror" name="status">
                 @foreach ($selections as $selection)
-                    <option value="{{ $selection->id }}" {{ ( $selection->id === ($eventStatus->status)) ? 'selected' : '' }}>{{ $eventStatus->nama }}</option>
+                    <option value="{{ $selection->id }}" {{ ( $selection->id === ($eventStatus->status)) ? 'selected' : '' }}>{{ $selection->nama }}</option>
                 @endforeach
             </select>
             @error('status')
@@ -113,16 +120,24 @@
             @enderror
         </div>
 
-        <div class="mb-3">
-            <label for="gambar" class="form-label">Gambar Event</label>
-            <img class="img-preview img-fluid mb-3 col-sm-5">
+        <div class="d-flex flex-column mb-3">
+            <label for="gambar" class="form-label">Foto Profil</label>
+            <input type="hidden" name="oldGambar" value="{{ $eventStatus->gambar }}">
+
+            @if ($eventStatus->gambar)
+            <img class="img-preview img-fluid mb-4" src="{{ asset('storage/event/'.$eventStatus->gambar) }}"
+            width="150px" height="150px">
+            @else
+            <img class="img-preview img-fluid">
+            @endif
+       
             <input class="form-control @error('gambar') is-invalid @enderror" type="file" id="gambar" 
             name="gambar" onchange="previewImage()">
-                @error('gambar')
-                <div class="invalid-feedback">
-                    {{ $message }}
-                </div>
-                @enderror   
+            @error('gambar')
+            <div class="invalid-feedback">
+                {{ $message }}
+            </div>
+            @enderror 
           </div>
         
         <div class="mb-3">

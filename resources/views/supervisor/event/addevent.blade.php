@@ -12,7 +12,8 @@
   <div class="p-4">
     <a class="btn btn-primary mt-2 mb-3" href="/supervisor/event"><i class="bi bi-arrow-left-short fs-5"></i>Kembali</a>
     
-    <form id="form_submit" class="form-submit" method="POST" action="/supervisor/event/tambahevent">
+    <form id="form_submit" class="form-submit" method="POST" action="/supervisor/event/tambahevent"
+    enctype="multipart/form-data">
       @csrf
       <div class="mb-3">
         <label for="kode_event" class="form-label">Kode Event</label>
@@ -77,7 +78,7 @@
                 <div class="col-6">
                     <label for="tanggal_mulai" class="form-label">Tanggal Mulai</label>
                     <input type="date" class="form-control @error('tanggal_mulai') is-invalid @enderror" id="tanggal_mulai"
-                    name="tanggal_mulai" value="{{ old('tanggal_mulai') }}">
+                    name="tanggal_mulai">
                     @error('tanggal_mulai')
                     <div class="invalid-feedback">
                     {{ $message }}
