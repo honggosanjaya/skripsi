@@ -40,6 +40,7 @@ class AuthenticatedSessionController extends Controller
         }
         
         $request->session()->put('role', $role);
+        $request->session()->put('id',User::with('linkStaff.linkStaffRole')->find(auth()->user()->id)->id);
         if ($role=='staff') {
             if(User::with('linkStaff.linkStaffRole')->find(auth()->user()->id)->linkStaff->status==9){
                 Auth::guard('web')->logout();
