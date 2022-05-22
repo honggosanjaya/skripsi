@@ -172,6 +172,17 @@ class CustomerController extends Controller
 
     }
 
+    public function administrasiSearch(){
+      $customers =  Customer::where(strtolower('nama'),'like','%'.request('cari').'%')
+        ->orWhere(strtolower('email'),'like','%'.request('cari').'%')
+        ->paginate(5);
+
+      return view('administrasi.dataCustomer.index', [
+        'customers' => $customers,
+        "title" => "Data Customer"
+      ]);
+    }
+
     public function administrasiCreate(){
       return view('administrasi.dataCustomer.create', [
         'customer_types' => CustomerType::all(),

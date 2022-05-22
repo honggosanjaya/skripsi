@@ -228,7 +228,9 @@ class ItemController extends Controller
 
     public function cariStok()
     {
-        $items = Item::where(strtolower('nama'),'like','%'.request('cari').'%')->paginate(5);
+        $items = Item::where(strtolower('nama'),'like','%'.request('cari').'%')
+        ->orWhere(strtolower('kode_barang'),'like','%'.request('cari').'%')
+        ->paginate(5);
                
         return view('administrasi/stok.index',[
             'items' => $items

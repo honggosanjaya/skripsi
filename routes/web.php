@@ -105,6 +105,7 @@ Route::prefix('administrasi')->middleware('administrasi')->group(function() {
   });
 
   Route::get('/datacustomer', [CustomerController::class, 'administrasiIndex']);
+  Route::get('/datacustomer/cari', [CustomerController::class, 'administrasiSearch']);
   Route::get('/datacustomer/create', [CustomerController::class, 'administrasiCreate']);
   Route::post('/datacustomer/tambahcustomer', [CustomerController::class, 'administrasiStore']);
   Route::get('/datacustomer/ubah/{customer:id}', [CustomerController::class, 'administrasiEdit']);

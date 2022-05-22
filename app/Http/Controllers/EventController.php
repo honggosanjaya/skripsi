@@ -17,7 +17,9 @@ class EventController extends Controller
     }
 
     public function search(){
-        $events = Event::where(strtolower('nama'),'like','%'.request('cari').'%')->paginate(5);
+        $events = Event::where(strtolower('nama'),'like','%'.request('cari').'%')
+        ->orWhere(strtolower('kode'),'like','%'.request('cari').'%')
+        ->paginate(5);
                
         return view('supervisor/event.index',[
             'events' => $events
