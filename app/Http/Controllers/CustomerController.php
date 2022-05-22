@@ -69,6 +69,13 @@ class CustomerController extends Controller
         'durasi_kunjungan' => ['required', 'integer'],
       ];
       
+      if ($request->id==null){
+        $rules['email'] = ['string', 'email', 'max:255', 'unique:users'];
+      }
+      if (Customer::find($request->id)->email == null) {
+        $rules['email'] = ['string', 'email', 'max:255', 'unique:users'];
+      }
+      
       $validator = Validator::make($request->all(), $rules);
       $data = $request->except(['jam_masuk','alasan_penolakan','status','koordinat'])+['id_staff' => session('id_staff'), 'status' => 3,'created_at' => now()];
       $status = $request->status=='trip'?1:2;
