@@ -31,7 +31,7 @@
         <div class="mt-3 search-box">
           <form method="GET" action="/administrasi/stok/cari">
             <div class="input-group">
-              <input type="text" class="form-control" name="cari" placeholder="Cari Jenis Customer..."
+              <input type="text" class="form-control" name="cari" placeholder="Cari Nama Stok..."
               value="{{ request('cari') }}">
               <button type="submit" class="btn btn-primary">Cari</button>   
             </div>

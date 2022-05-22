@@ -49,7 +49,7 @@
           </a>
         </li>
         <li class="mb-3">
-          <a class="" href="">
+          <a class="{{ Request::is('administrasi/kendaraan*') ? 'active' : '' }}" href="/administrasi/kendaraan">
             <i class="bi bi-truck me-2"></i><span>Kendaraan</span>
           </a>
         </li>
