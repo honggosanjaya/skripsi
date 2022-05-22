@@ -64,19 +64,20 @@ Route::prefix('supervisor')->middleware('supervisor')->group(function() {
 Route::prefix('administrasi')->middleware('administrasi')->group(function() {
   Route::get('/', [HomeController::class, 'indexAdministrasi']);
 
-  //Route untuk riwayat stok
-  Route::get('/stok', [ItemController::class, 'indexAdministrasi']);
-  Route::get('/stok/cari', [ItemController::class, 'cariStok']);
-  Route::get('/stok/riwayat', [ItemController::class, 'riwayatAdministrasi']);
-  Route::get('/stok/riwayat/cari', [ItemController::class, 'cariRiwayat']);
-  Route::get('/stok/riwayat/detail/{pengadaan:no_pengadaan}', [ItemController::class, 'cariRiwayatDetail']);
-  Route::get('/stok/riwayat/detail/{pengadaan:no_pengadaan}/cetak-pdf', [ItemController::class, 'cetakPDF']);
+  
 
 
   Route::prefix('stok')->group(function(){
-    Route::get('/', function () {
-      return view('administrasi.stok.stok');
-    });
+    Route::get('/', [ItemController::class, 'indexAdministrasi']);
+    
+    //Route untuk riwayat stok
+    Route::get('/cari', [ItemController::class, 'cariStok']);
+    Route::get('/riwayat', [ItemController::class, 'riwayatAdministrasi']);
+    Route::get('/riwayat/cari', [ItemController::class, 'cariRiwayat']);
+    Route::get('/riwayat/detail/{pengadaan:no_pengadaan}', [ItemController::class, 'cariRiwayatDetail']);
+    Route::get('/riwayat/detail/{pengadaan:no_pengadaan}/cetak-pdf', [ItemController::class, 'cetakPDF']);
+    
+    //Route untuk pengadaan
     Route::resource('/produk', ItemController::class);
     Route::get('/pengadaan', [ItemController::class, 'productList'])->name('products.list');
     Route::get('/pengadaan/cart', [CartController::class, 'cartList'])->name('cart.list');
