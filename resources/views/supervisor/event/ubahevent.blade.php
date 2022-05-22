@@ -1,5 +1,7 @@
 @extends('layouts/main')
-
+@push('CSS')
+<link href=" {{ mix('css/supervisor.css') }}" rel="stylesheet">
+@endpush
 @section('breadcrumbs')
 <ol class="breadcrumb">
   <li class="breadcrumb-item"><a href="/supervisor">Dashboard</a></li>
@@ -9,6 +11,15 @@
 @endsection
 
 @section('main_content')
+@if(session()->has('error'))
+<div id="hideMeAfter3Seconds">
+  <div class="alert alert-danger alert-dismissible fade show mt-4" role="alert" >
+    {{ session('error') }}
+    <button type="button" class="btn btn-close" data-bs-dismiss="alert"></button>
+</div>
+</div>
+            
+@endif
   <div class="p-4">
     <a class="btn btn-primary mt-2 mb-3" href="/supervisor/event"><i class="bi bi-arrow-left-short fs-5"></i>Kembali</a>
     
@@ -84,7 +95,7 @@
                 <div class="col-6">
                     <label for="tanggal_mulai" class="form-label">Tanggal Mulai</label>
                     <input type="date" class="form-control @error('tanggal_mulai') is-invalid @enderror" id="tanggal_mulai"
-                    name="tanggal_mulai" value="{{ old('tanggal_mulai',$eventStatus->date_start) }}">
+                    name="tanggal_mulai" value="{{ date('Y-m-d',strtotime($eventStatus->date_start)) }}">
                     @error('tanggal_mulai')
                     <div class="invalid-feedback">
                     {{ $message }}
@@ -95,7 +106,7 @@
                 <div class="col-6">
                     <label for="tanggal_selesai" class="form-label">Tanggal Selesai</label>
                     <input type="date" class="form-control @error('tanggal_selesai') is-invalid @enderror" id="tanggal_selesai"
-                    name="tanggal_selesai" value="{{ old('tanggal_selesai', $eventStatus->date_end) }}">
+                    name="tanggal_selesai" value="{{ date('Y-m-d',strtotime($eventStatus->date_end)) }}">
                     @error('tanggal_selesai')
                     <div class="invalid-feedback">
                     {{ $message }}

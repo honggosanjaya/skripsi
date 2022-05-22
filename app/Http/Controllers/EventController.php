@@ -43,13 +43,13 @@ class EventController extends Controller
             'min_pembelian' => 'required',
             'tanggal_mulai' => 'required|date',
             'tanggal_selesai' => 'required|date',
-            'gambar' => 'max:1024',
+            'gambar' => 'max:1024|mimes:jpg,png',
             'keterangan' => 'required'
         ]);
       
         if($request->file('gambar')){
             $file= $request->file('gambar');
-            $filename=  $request->tanggal_mulai.'-'.$request->kode_event.'.'.$file->getClientOriginalExtension();
+            $filename=  $request->kode_event.'.'.$file->getClientOriginalExtension();
             $request->gambar= $filename;
             $file=$request->file('gambar')->storeAs('event', $filename);
         }
@@ -103,6 +103,7 @@ class EventController extends Controller
     public function update(Request $request, Event $event){
         $diskon = null;
         $potongan = null;
+        $foto = '';
 
         $request->validate([
             'kode_event' => 'required|max:50',
@@ -111,20 +112,33 @@ class EventController extends Controller
             'min_pembelian' => 'required',
             'tanggal_mulai' => 'required|date',
             'tanggal_selesai' => 'required|date',
-            'gambar' => 'max:1024',
+            'gambar' => 'max:1024|mimes:jpg,png',
             'keterangan' => 'required'
         ]);
+        
+
+        $searchKodes = Event::get();
+        foreach($searchKodes as $searchKode){
+            if($request->kode_event == $searchKode->kode && $searchKode->id != $event->id){
+                return redirect('/supervisor/event/ubah/'.$event->id)->with('error','Kode sudah ada');
+            }
+        }
 
         if($request->file('gambar')){
             if($request->oldGambar){
                 Storage::delete($request->oldGambar);
             }
             $file= $request->file('gambar');
-            $filename=  $request->tanggal_mulai.'-'.$request->kode_event.'.'.$file->getClientOriginalExtension();
+            $filename=  $request->kode_event.'.'.$file->getClientOriginalExtension();
             $request->gambar= $filename;
+            $foto = $request->gambar;
             $file=$request->file('gambar')->storeAs('event', $filename);
         }
+        else{
+            $foto = $request->oldGambar;
+        }
         
+                
         if($request->event_pilih_isian == "potongan"){
             $potongan = $request->potongan_diskon;
         }
@@ -142,10 +156,10 @@ class EventController extends Controller
         $event->date_start = $request->tanggal_mulai;
         $event->date_end = $request->tanggal_selesai;
         $event->status = $request->status;
-        $event->gambar = $request->gambar;
+        $event->gambar = $foto;
 
         $event->save();        
         
-        return redirect('/supervisor/event')->with('updateEventSuccess','Tambah Event berhasil');
+        return redirect('/supervisor/event')->with('updateEventSuccess','Ubah Event berhasil');
     }
 }
