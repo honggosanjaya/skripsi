@@ -219,7 +219,7 @@ class ItemController extends Controller
 
     public function indexAdministrasi()
     {
-        $items = Item::paginate(3);
+        $items = Item::paginate(5);
         return view('administrasi/stok.index',[
             'items' => $items
         ]);
@@ -283,15 +283,17 @@ class ItemController extends Controller
 
         $total = Pengadaan::selectRaw('SUM(harga_total) as harga')
         ->where('no_pengadaan','=',$pengadaan->no_pengadaan)
-        ->get();
-
+        ->first();
+        
         $pdf = FacadePdf::loadview('administrasi/stok/riwayat.detail-pdf',[
           'pengadaans' => $pengadaans,
             'total_harga' => $total,
-            'detail' => $pengadaan
+            'detail' => $pengadaan            
         ]);
 
         return $pdf->download('laporan-NPB-pdf.pdf');
+
+        
     }
 
     public function filterProdukApi(Request $request)
