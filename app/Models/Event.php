@@ -20,10 +20,10 @@ class Event extends Model
     }
 
     public function linkStatus(){
-        return $this->belongsTo(Status::class,'id','status');
+        return $this->belongsTo(Status::class,'status');
     }
 
     public function linkStaff(){
-        return $this->belongsTo(Staff::class,'id','id_staff');
+        return $this->belongsTo(Staff::class,'id_staff');
     }
 }

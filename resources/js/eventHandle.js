@@ -1,6 +1,6 @@
 window.previewImage = function(){
   
-  const image = document.querySelector('#foto_profil');
+  const image = document.querySelector('#gambar');
   const imgPreview = document.querySelector('.img-preview');
 
   imgPreview.style.display = 'block';
@@ -13,3 +13,23 @@ window.previewImage = function(){
   }
 
 }
+
+if($( "#event_pilih_isian" ).length){
+  if($( "#event_pilih_isian" ).val() === 'potongan'){
+    $( "#potongan_diskon" ).attr('max',null)
+  }
+  else{
+    $( "#potongan_diskon" ).attr('max',100)
+  }
+}
+
+$( "#event_pilih_isian" ).change(function() {
+    $( "#potongan_diskon" ).val(0)
+    if($( "#event_pilih_isian" ).val() === 'potongan'){
+      $( "#potongan_diskon" ).attr('max',null)
+    }
+    else{
+      $( "#potongan_diskon" ).attr('max',100)
+    }
+    
+});

@@ -12,7 +12,8 @@
 
   <!-- Custom CSS -->
   <link href=" {{ mix('css/dashboard.css') }}" rel="stylesheet">
-  <link href=" {{ mix('css/supervisor.css') }}" rel="stylesheet">
+  @stack('CSS')
+  
   <title>Dashboard Manajemen Sales</title>
 </head>
 
@@ -28,6 +29,7 @@
     </div>
   </div>
 
+  @stack('JS')
   <script src="{{ mix('js/bootstrap.js') }}"></script>
   <script src="{{ mix('js/main.js') }}"></script>
 </body>

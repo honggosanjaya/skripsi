@@ -6,6 +6,7 @@ use App\Http\Controllers\ItemController;
 use App\Http\Controllers\CartController;
 use App\Http\Controllers\CustomerController;
 use App\Http\Controllers\DistrictController;
+use App\Http\Controllers\EventController;
 use App\Http\Controllers\OrderController;
 use Illuminate\Support\Facades\Route;
 
@@ -29,6 +30,14 @@ Route::prefix('owner')->middleware('owner')->group(function() {
 });
 Route::prefix('supervisor')->middleware('supervisor')->group(function() {
   Route::get('/', [HomeController::class, 'indexSupervisor']);
+
+  //Route untuk event
+  Route::get('/event', [EventController::class, 'index']);
+  Route::get('/event/cari', [EventController::class, 'search']);
+  Route::get('/event/tambah', [EventController::class, 'create']);
+  Route::post('/event/tambahevent', [EventController::class, 'store']);
+  Route::get('/event/ubah/{event:id}', [EventController::class, 'edit']);
+  Route::put('/event/ubahevent/{event:id}', [EventController::class, 'update']);
 
   //Route untuk wilayah
   Route::get('/wilayah', [DistrictController::class, 'index']);

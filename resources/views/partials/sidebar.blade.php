@@ -61,7 +61,7 @@
       <h1 class="mb-3 fs-6">Supervisor</h1>
       <ul class="p-0">
         <li class="mb-3">
-          <a class="" href="">
+          <a class="{{ Request::is('supervisor/event*') ? 'active' : '' }}" href="/supervisor/event">
             <i class="bi bi-calendar3-event me-2"></i><span id="testing">Event</span>
           </a>
         </li>
