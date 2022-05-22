@@ -16,10 +16,11 @@
     <table class="table table-borderless">
         <tbody>
             <tr>
-                <td><h4 class="mb-4">No Invoice : <span class="text-success">{{ $order->linkInvoice->nomor_invoice }}</span></h4>
+                <td style="width: 55%"><h4 class="mb-4">No Invoice : </h4>
+                    <h5 class="text-success p-0">{{ $order->linkInvoice->nomor_invoice }}</h5>
                     <h5 class="font-weight-normal">Diterbitkan atas nama</h5>
                 </td>
-                <td><h4>Alamat: </h4>
+                <td style="width: 60%"><h4>Alamat: </h4>
                     <h5 class="font-weight-normal">{{ $order->linkCustomer->nama }}</h5>
                     <h5 class="font-weight-normal">{{ $order->linkCustomer->alamat_utama.' '.$order->linkCustomer->alamat_nomor }}</h5>
                     @if($order->linkCustomer->keterangan_alamat)
@@ -37,7 +38,6 @@
             
         </tbody>
     </table>
-    
 	 
 	<table class="table table-bordered mt-4">
         <thead>
