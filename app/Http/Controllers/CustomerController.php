@@ -68,6 +68,7 @@ class CustomerController extends Controller
         'telepon' => ['string', 'max:15'],
         'durasi_kunjungan' => ['required', 'integer'],
       ];
+      
       if ($request->id==null){
         $rules['email'] = ['string', 'email', 'max:255', 'unique:users'];
       }
