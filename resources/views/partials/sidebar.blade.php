@@ -29,7 +29,7 @@
           </a>
         </li>
         <li class="mb-3">
-          <a class="{{ Request::is('dashboard/pesanan*') ? 'active' : '' }}" href="/dashboard/pesanan">
+          <a class="{{ Request::is('administrasi/pesanan*') ? 'active' : '' }}" href="/administrasi/pesanan">
             <i class="bi bi-card-list me-2"></i><span>Pesanan</span>
           </a>
         </li>
