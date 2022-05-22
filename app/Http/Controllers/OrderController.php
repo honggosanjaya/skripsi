@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Order;
 use App\Models\OrderItem;
+use App\Models\OrderTrack;
+use App\Models\Staff;
 use PDF;
 
 class OrderController extends Controller
@@ -43,9 +45,32 @@ class OrderController extends Controller
   
         return $pdf->download('invoice-'.$order->linkInvoice->nomor_invoice.'.pdf');  
         
-        // return view('administrasi/pesanan/detail.cetakInvoice',[
+    }
+
+    public function cetakSJ(Order $order){
+        $items = OrderItem::where('id_order','=',$order->id)->get();
+        $todayDate = date("d-m-Y");
+        $orderTrack = OrderTrack::first();
+                
+        $mengetahui = Staff::select('nama')->where('id','=',$orderTrack->id_staff_pengonfirmasi)->first();
+        $pengirim = Staff::select('nama')->where('id','=',$orderTrack->id_staff_pengirim)->first();
+
+        $pdf = PDF::loadview('administrasi/pesanan/detail.cetakSJ',[
+            'order' => $order,
+            'items' => $items,
+            'date' => $todayDate,
+            'pengirim' => $pengirim,
+            'mengetahui' => $mengetahui            
+          ]);
+  
+        return $pdf->download('SJ-'.date("d-m-Y").'.pdf'); 
+
+        // return view('administrasi/pesanan/detail.cetakSJ', [
         //     'order' => $order,
-        //     'items' => $items
+        //     'items' => $items,
+        //     'date' => $todayDate,
+        //     'pengirim' => $pengirim,
+        //     'mengetahui' => $mengetahui            
         // ]);
     }
 }
