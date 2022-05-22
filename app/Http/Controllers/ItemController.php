@@ -13,6 +13,28 @@ use PDF;
 
 class ItemController extends Controller
 {
+  protected $status = null;
+  protected $error = null;
+  protected $data = null;
+
+  public function getListAllProductAPI()
+  {
+    try {
+      $items = Item::paginate(4);
+      $this->data = $items;
+      $this->status = "success";
+    } catch (QueryException $e) {
+        $this->status = "failed";
+        $this->error = $e;
+    }
+
+    return response()->json([
+      "status" => $this->status,
+      "data" => $this->data,
+      "error" => $this->error
+    ], 200);
+  }
+
   public function productList()
   {
       $products = Item::all();

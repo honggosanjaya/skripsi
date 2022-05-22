@@ -143,10 +143,10 @@ textarea {
 }
 
 // ============== MODAL ================
-.box-list-customer{
+.box-list-customer {
     max-height: 300px;
     overflow: auto;
-    .row{
+    .row {
         flex-grow: 1;
     }
 }
@@ -201,17 +201,67 @@ textarea {
     grid-template-columns: repeat(2, 1fr);
     gap: 0.8rem;
 
+    .inactive_product {
+        position: relative;
+        -webkit-user-select: none; /* Safari */
+        -moz-user-select: none; /* Firefox */
+        -ms-user-select: none; /* IE10+/Edge */
+        user-select: none;
+        &::after {
+            content: "";
+            position: absolute;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            display: inline-block;
+            background: rgba(55, 55, 55, 0.5);
+            border-radius: 8px;
+        }
+    }
+
     .product_card {
         box-shadow: rgba(99, 99, 99, 0.2) 0px 2px 8px 0px;
         border-radius: 8px;
         border: 0;
+        position: relative;
+
+        .badge_stok {
+            position: absolute;
+            top: 0;
+            right: 0;
+            background-color: #eb5757;
+            color: #fff;
+        }
+
+        .inactive_sign {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: #464444;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 10000;
+            p {
+                text-align: center;
+                color: #fff;
+            }
+        }
+        input {
+            max-width: 50%;
+        }
     }
 
     .product_img {
         img {
             border-radius: 8px 8px 0 0;
             width: 100%;
-            max-height: 150px;
+            height: 150px;
             object-fit: cover;
             object-position: center;
         }
@@ -219,6 +269,9 @@ textarea {
 
     .product_desc {
         padding: 0.5rem;
+        .nama_produk {
+            text-transform: capitalize;
+        }
     }
 
     .product_title {

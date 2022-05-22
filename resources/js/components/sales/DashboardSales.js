@@ -58,8 +58,8 @@ const DashboardSales = () => {
           <h5> Keterangan alamat</h5>
           {data.keterangan_alamat}
           <div className="action d-flex justify-content-between mt-3">
-            <button type="button" class="btn btn-primary">gambar</button>
-            <a type="button" href={`/salesman/trip/${data.id}`} class="btn btn-success">trip</a>
+            <button type="button" className="btn btn-primary">gambar</button>
+            <a type="button" href={`/salesman/trip/${data.id}`} className="btn btn-success">trip</a>
           </div>
         </Accordion.Body>
       </Accordion.Item>
