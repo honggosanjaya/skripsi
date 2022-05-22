@@ -24,10 +24,14 @@
 
 <div class="container">
   <div class="row mt-3">
-      <div class="d-flex flex-row justify-content-end">
+      <div class="d-flex flex-row justify-content-between">
+        <a href="/administrasi/pesanan" class="btn btn-primary mx-1"><i class="bi bi-arrow-left-short fs-5"></i>Kembali</a>
+        
+        <div>
         <a href="/administrasi/pesanan/detail/{{ $order->id }}/cetak-memo" class="btn btn-primary mx-1"><i class="bi bi-download px-1"></i>Unduh Memo Persiapan Barang</a>
         <a href="/administrasi/pesanan/detail/{{ $order->id }}/cetak-invoice" class="btn btn-secondary mx-1"><i class="bi bi-download px-1"></i>Unduh Invoice</a>
         <a href="/administrasi/pesanan/detail/{{ $order->id }}/cetak-sj" class="btn btn-success mx-1"><i class="bi bi-download px-1"></i>Unduh Surat Jalan</a>
+        </div>
       </div>    
   </div>
 
