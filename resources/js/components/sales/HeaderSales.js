@@ -1,9 +1,16 @@
-import React, { Fragment, useContext } from 'react';
+import React, { Fragment, useContext, useEffect, useState } from 'react';
 import { Link, useHistory } from "react-router-dom";
 import urlAsset from '../../config';
+import { KeranjangSalesContext } from '../../contexts/KeranjangSalesContext';
 
 const HeaderSales = ({ title, isDashboard, isOrder }) => {
   const history = useHistory();
+  const { produks, getAllProduks } = useContext(KeranjangSalesContext);
+
+  useEffect(() => {
+    getAllProduks();
+  }, [produks])
+
 
   const goback = () => {
     history.go(-1);
@@ -18,7 +25,12 @@ const HeaderSales = ({ title, isDashboard, isOrder }) => {
             </button>
             <h1 className='page_title'>{title}</h1>
           </div>
-          {isOrder && <span className="iconify" data-icon="clarity:shopping-cart-solid"></span>}
+          {isOrder &&
+            <Link to="/salesman/order/keranjang">
+              <span className="iconify" data-icon="clarity:shopping-cart-solid"></span>
+              {produks && <span>{produks.length}</span>}
+            </Link>
+          }
         </Fragment>
       }
       {isDashboard &&

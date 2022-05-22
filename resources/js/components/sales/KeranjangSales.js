@@ -1,16 +1,10 @@
-import React, { useContext, useEffect, useState } from 'react';
-import KeranjangDB from './KeranjangDB';
+import React, { useContext, useEffect, useState, createContext } from 'react';
+import KeranjangDB from '../reuse/KeranjangDB';
 import { convertPrice } from "../reuse/HelperFunction";
+import { KeranjangSalesContext } from '../../contexts/KeranjangSalesContext';
 
 const KeranjangSales = () => {
-  const [produks, setProduks] = useState(null);
-
-  const getAllProduks = () => {
-    const produks = KeranjangDB.getAllProduks();
-    produks.then((response) => {
-      setProduks(response);
-    })
-  }
+  const { produks, setProduks, getAllProduks } = useContext(KeranjangSalesContext);
 
   useEffect(() => {
     getAllProduks();
@@ -61,6 +55,7 @@ const KeranjangSales = () => {
   return (
     <main className="page_main">
       <div className="page_container pt-4">
+        <h1>Keranjang</h1>
         {(produks && produks.length > 0) && produks.map((produk) => (
           <div className="cart_item mb-3" key={produk.id}>
 

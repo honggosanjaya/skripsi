@@ -45,7 +45,7 @@ const LoginReact = () => {
       }
     })
       .then((response) => {
-        console.log(response);
+        console.log(response.data);
         setIsLoading(false);
         setError('');
         if (response.data.status == 'success') {
@@ -85,7 +85,7 @@ const LoginReact = () => {
         <h2 className='heading-2 '>Aplikasi web salesMan <br /> UD Mandiri</h2>
         <p className='mb-3 text-center'>
           halaman login khusus untuk salesman dan tenaga pengirim, untuk staff lain silahkan melalui link ini
-          <a href="/login" class="custom-form-input"> link</a>
+          <a href="/login" className="custom-form-input"> link</a>
         </p>
 
 
@@ -134,8 +134,8 @@ const LoginReact = () => {
           <button type="submit" className="btn btn-primary w-100 my-4">MASUK</button>
           <p className="hyperlink"><Link to="#" className="lupa_sandi">Lupa Password?</Link></p>
         </form>
-      </div >
-    </main >
+      </div>
+    </main>
   );
 }
 
