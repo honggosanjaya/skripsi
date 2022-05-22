@@ -8,9 +8,29 @@
     </div>
   @endif
 
-  <a href="/administrasi/datacustomer/create" class="btn btn-primary">
-    Tambah Customer
-  </a>
+  <div class="container">
+    <div class="row">
+      <div class="col-5">
+        <div class="mt-3 search-box">
+          <form method="GET" action="/administrasi/datacustomer/cari">
+            <div class="input-group">
+              <input type="text" class="form-control" name="cari" placeholder="Cari Customer..."
+              value="{{ request('cari') }}">
+              <button type="submit" class="btn btn-primary">Cari</button>   
+            </div>
+            
+          </form>    
+          
+        </div>
+      </div>
+      <div class="col-4 mt-3">
+        <a href="/administrasi/datacustomer/create" class="btn btn-primary">
+          Tambah Customer
+        </a>
+      </div>
+    </div>
+  </div>
+  
 
   <div class="table-responsive mt-3">
     <table class="table table-hover table-sm">

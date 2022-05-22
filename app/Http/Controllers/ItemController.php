@@ -228,7 +228,9 @@ class ItemController extends Controller
 
     public function cariStok()
     {
-        $items = Item::where(strtolower('nama'),'like','%'.request('cari').'%')->paginate(5);
+        $items = Item::where(strtolower('nama'),'like','%'.request('cari').'%')
+        ->orWhere(strtolower('kode_barang'),'like','%'.request('cari').'%')
+        ->paginate(5);
                
         return view('administrasi/stok.index',[
             'items' => $items
@@ -285,7 +287,7 @@ class ItemController extends Controller
         ->where('no_pengadaan','=',$pengadaan->no_pengadaan)
         ->first();
         
-        $pdf = FacadePdf::loadview('administrasi/stok/riwayat.detail-pdf',[
+        $pdf = PDF::loadview('administrasi/stok/riwayat.detail-pdf',[
           'pengadaans' => $pengadaans,
             'total_harga' => $total,
             'detail' => $pengadaan            

@@ -15,7 +15,9 @@ class VehicleController extends Controller
     }
 
     public function search(){
-        $vehicles =  Vehicle::where(strtolower('nama'),'like','%'.request('cari').'%')->paginate(5);
+        $vehicles =  Vehicle::where(strtolower('nama'),'like','%'.request('cari').'%')
+        ->orWhere(strtolower('kode_kendaraan'),'like','%'.request('cari').'%')
+        ->paginate(5);
        
         return view('administrasi/kendaraan.index',[
             'vehicles' => $vehicles

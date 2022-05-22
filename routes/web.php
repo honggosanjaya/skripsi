@@ -65,6 +65,14 @@ Route::prefix('supervisor')->middleware('supervisor')->group(function() {
 Route::prefix('administrasi')->middleware('administrasi')->group(function() {
   Route::get('/', [HomeController::class, 'indexAdministrasi']);
 
+  //Route untuk pesanan
+  Route::get('/pesanan', [OrderController::class, 'index']);
+  Route::get('/pesanan/cari', [OrderController::class, 'search']);
+  Route::get('/pesanan/detail/{order:id}', [OrderController::class, 'viewDetail']);
+  Route::get('/pesanan/detail/{order:id}/cetak-memo', [OrderController::class, 'cetakMemo']);
+  Route::get('/pesanan/detail/{order:id}/cetak-invoice', [OrderController::class, 'cetakInvoice']);
+  Route::put('/pesanan/detail/{order:id}/cetak-sj', [OrderController::class, 'cetakSJ']);
+
   //Route untuk kendaraan
   Route::get('/kendaraan', [VehicleController::class, 'index']);
   Route::get('/kendaraan/cari', [VehicleController::class, 'search']);
@@ -97,6 +105,7 @@ Route::prefix('administrasi')->middleware('administrasi')->group(function() {
   });
 
   Route::get('/datacustomer', [CustomerController::class, 'administrasiIndex']);
+  Route::get('/datacustomer/cari', [CustomerController::class, 'administrasiSearch']);
   Route::get('/datacustomer/create', [CustomerController::class, 'administrasiCreate']);
   Route::post('/datacustomer/tambahcustomer', [CustomerController::class, 'administrasiStore']);
   Route::get('/datacustomer/ubah/{customer:id}', [CustomerController::class, 'administrasiEdit']);

@@ -16,7 +16,7 @@ class OrderItem extends Model
       ];
   
     public function linkItem(){
-        return $this->belongsTo(Item::class,'id','id_item');
+        return $this->belongsTo(Item::class,'id_item');
     }
 
     public function linkOrder(){
