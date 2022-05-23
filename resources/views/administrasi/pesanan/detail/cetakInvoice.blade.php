@@ -1,6 +1,6 @@
 <html>
 <head>
-	<title>Invoice</title>
+	<title>Invoice - {{ $order->linkInvoice->nomor_invoice }}</title>
   
   <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
 </head>
@@ -65,6 +65,11 @@
             </tr>
         </tbody>
       </table>
+
+      <br><br>
+      <p class="text-right mt-4">Mengetahui,</p>
+      <br><br><br><br>
+      <p class="text-right">{{ $administrasi->nama }}</p>
 
   
     </div>

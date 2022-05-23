@@ -1,6 +1,6 @@
 <html>
 <head>
-	<title>Invoice</title>
+	<title>Surat Jalan - {{ $date }}</title>
   
   <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
 </head>
@@ -15,15 +15,15 @@
 <div class="container">
   <table class="table table-borderless">
     <tr>
-        <td style="width: 70%">
+        <td style="width: 300px">
             <h5>UD. Mandiri</h5>
-            <h6 class="font-weight-normal">Alamat ?</h6>
-            <h6 class="font-weight-normal">Nomor Telepon ?</h6>
+            <h6 class="font-weight-normal">Jalan santoso pojok no 2</h6>
+            <h6 class="font-weight-normal">(0341) - 726025</h6>
         </td>
-        <td style="width: 30%">
-            <h5>Kepada Yth............................................................
-                ..................................................................
-                ..................................................................
+        <td>
+            <h5>Kepada Yth.....................................
+                ............................................
+                ............................................
             </h5>
         </td>
     </tr>
@@ -52,7 +52,7 @@
         </tbody>
       </table>
 
-      
+        <br>
        
         <h5 class="text-right">Malang, {{ $date }}</h5>                          
          
@@ -70,13 +70,13 @@
         </thead>
         <tbody>
             <tr>
-                <td style="padding:6%"></td>
-                <td style="padding:6%"></td>
-                <td style="padding:6%"></td>
+                <td style="padding:5%"></td>
+                <td style="padding:5%"></td>
+                <td style="padding:5%"></td>
             </tr>
             <tr>
-                <td>{{ $order->linkCustomer->nama }}</td>
-                <td>{{ $pengirim->nama }}</td>
+                <td>{{ $order->linkCustomer->nama ?? "" }}</td>
+                <td>{{ $pengirim->nama ?? "" }}</td>
                 <td>{{ $mengetahui->nama }}</td>
             </tr>
         </tbody>
