@@ -10,6 +10,7 @@ use App\Http\Controllers\DistrictController;
 use App\Http\Controllers\EventController;
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\VehicleController;
+use App\Http\Controllers\ReturController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -78,6 +79,9 @@ Route::prefix('administrasi')->middleware('administrasi')->group(function() {
   Route::get('/pesanan/detail/{order:id}/cetak-memo', [OrderController::class, 'cetakMemo']);
   Route::get('/pesanan/detail/{order:id}/cetak-invoice', [OrderController::class, 'cetakInvoice']);
   Route::get('/pesanan/detail/{order:id}/cetak-sj', [OrderController::class, 'cetakSJ']);
+
+  //Route untuk retur
+  Route::get('/retur', [ReturController::class, 'index']);
 
   //Route untuk kendaraan
   Route::get('/kendaraan', [VehicleController::class, 'index']);
