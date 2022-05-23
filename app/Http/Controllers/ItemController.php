@@ -13,6 +13,28 @@ use PDF;
 
 class ItemController extends Controller
 {
+  protected $status = null;
+  protected $error = null;
+  protected $data = null;
+
+  public function getListAllProductAPI()
+  {
+    try {
+      $items = Item::paginate(4);
+      $this->data = $items;
+      $this->status = "success";
+    } catch (QueryException $e) {
+        $this->status = "failed";
+        $this->error = $e;
+    }
+
+    return response()->json([
+      "status" => $this->status,
+      "data" => $this->data,
+      "error" => $this->error
+    ], 200);
+  }
+
   public function productList()
   {
       $products = Item::all();
@@ -24,7 +46,16 @@ class ItemController extends Controller
 
   public function simpanDataPengadaan(Request $request)
   {
-    $cartItems = \Cart::getContent();
+    $cartItems = \Cart::session(auth()->user()->id.$request->route)->getContent();
+
+    $rules = ([
+      'no_nota' => ['required', 'max:20'],
+      'harga_total' => ['required'],
+      'keterangan' => ['required', 'string', 'max:255'],
+    ]);
+
+    $request->validate($rules);
+
 
     $data = [];
     foreach($cartItems as $item){
@@ -36,18 +67,17 @@ class ItemController extends Controller
         'kuantitas' => $item->quantity,
         'harga_total' => $request->harga_total,
         'keterangan' => $request->keterangan,
+        'created_at' => now(),
       ]);
+      $stok = Item::find($item->id);
+      $stok->stok += $item->quantity;
+      $stok->save();
     }
 
-    $rules = ([
-      'no_nota' => ['required', 'max:20'],
-      'harga_total' => ['required'],
-      'keterangan' => ['required', 'string', 'max:255'],
-    ]);
-
-    $request->validate($rules);
-
     Pengadaan::insert($data);
+    \Cart::session(auth()->user()->id.$request->route)->clear();
+
+    return redirect()->route('products.list')->with('pesanSukses', 'Produk berhasil ditambahkan ke database');
   }
 
     /**
@@ -208,7 +238,7 @@ class ItemController extends Controller
         ]);
     }
 
-    public function customerSearch()
+    public function itemSearch()
     {
         $items = DB::table('items')->where(strtolower('nama'),'like','%'.request('cari').'%')->get();
        

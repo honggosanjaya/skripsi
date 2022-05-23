@@ -9,7 +9,7 @@
   @endif
 
   <h1>Pengadaan</h1>
-  <a href="/administrasi/stok/pengadaan/cart" class="btn btn-primary">Keranjang</a>
+  <a href="/administrasi/stok/pengadaan/cart?route=pengadaan" class="btn btn-primary">Keranjang</a>
 
   <div class="table-responsive mt-3">
     <table class="table table-hover table-sm">
@@ -32,7 +32,7 @@
             <td>{{ $product->satuan }}</td>
             <td>{{ $product->max_pengadaan }}</td>
             <td>
-              <form action="{{ route('cart.store') }}" method="POST" enctype="multipart/form-data">
+              <form action="{{ route('cart.store').'?route=pengadaan' }}" method="POST" enctype="multipart/form-data">
                 @csrf
                 <input type="hidden" value="{{ $product->id }}" name="id">
                 <input type="hidden" value="{{ $product->kode_barang }}" name="kode_barang">
@@ -40,14 +40,15 @@
                 <input type="hidden" value="{{ $product->satuan }}" name="satuan">
                 <input type="hidden" value="{{ $product->max_pengadaan }}" name="max_pengadaan">
                 <input type="hidden" value="{{ $product->harga_satuan }}" name="harga_satuan">
-                @if ($cartItem = \Cart::get($product->id) ?? null)
+
+                @if ($cartItem = \Cart::session(auth()->user()->id.'pengadaan')->get($product->id) ?? null)
                   <input type="number" class="form-control" id="quantity" name="quantity" min="0"
                     value="{{ $cartItem->quantity }}">
                 @else
                   <input type="number" class="form-control" id="quantity" name="quantity" min="0">
                 @endif
 
-                @if ($cartItem2 = \Cart::get($product->id) ?? null)
+                @if ($cartItem2 = \Cart::session(auth()->user()->id.'pengadaan')->get($product->id) ?? null)
                   <input type="text" class="form-control" id="total_harga" name="total_harga"
                     value="{{ $cartItem2->attributes->total_harga }}">
                 @else

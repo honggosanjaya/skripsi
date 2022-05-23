@@ -120,7 +120,11 @@ Route::prefix('customer')->middleware('customer')->group(function() {
 
   //Route untuk Customer produk
   Route::get('/produk', [ItemController::class, 'customerIndex']);
-  Route::get('/produk/cari', [ItemController::class, 'customerSearch']);
+  Route::get('/produk/cari', [ItemController::class, 'itemSearch']);
+  //Route untuk cart
+  Route::get('/cart', [CartController::class, 'cartList']);
+  Route::get('/cart/tambahorder', [OrderController::class, 'simpanDataOrderCustomer']);
+
 });
 
 require __DIR__.'/auth.php';
