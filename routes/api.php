@@ -4,7 +4,7 @@ use App\Http\Controllers\Api\LoginController;
 use App\Http\Controllers\CustomerController;
 use App\Http\Controllers\ItemController;
 use App\Http\Controllers\CartController;
-
+use App\Http\Controllers\OrderController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -30,10 +30,15 @@ Route::get('/dataFormTrip', [CustomerController::class, 'dataFormTripApi']);
 Route::get('/tripCustomer/{id}', [CustomerController::class, 'dataCustomerApi']);
 Route::post('/tripCustomer', [CustomerController::class, 'simpanCustomerApi']);
 Route::post('/tripCustomer/foto/{id}', [CustomerController::class, 'simpanCustomerFotoApi']);
-//customer melakukan filter item
+// sales cari produk berdasarkan nama
+Route::get('/products/search/{name}', [ItemController::class, 'searchProductAPI']); 
+//customer dan sales melakukan filter item
 Route::get('/filterProduk', [ItemController::class, 'filterProdukApi']);
 //customer menambahkan data di keranjang
 Route::post('/customer/order/cart', [CartController::class, 'addToCart']);
+
+// sales checkout
+Route::post('/salesman/buatOrder', [OrderController::class, 'simpanDataOrderSalesmanAPI']);
 
 Route::group(['middleware' => 'auth:sanctum'], function(){
   Route::post('v1/logout', [LoginController::class, 'logoutApi']);

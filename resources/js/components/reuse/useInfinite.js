@@ -15,6 +15,7 @@ const useInfinite = (url, per_page) => {
       },
     })
       .then((response) => {
+        console.log(response.data.data);
         return response.data.data.data;
       })
 
@@ -24,7 +25,7 @@ const useInfinite = (url, per_page) => {
     return `${window.location.origin}/${url}?page=${pageIndex}`
   }
 
-  const { data, size: page, setSize: setPage, error } = useSWRInfinite(getKey, fetcher);
+  const { data, size: page, setSize: setPage, error: erorFromInfinite } = useSWRInfinite(getKey, fetcher);
 
   const paginatedData = data?.flat();
 
@@ -34,7 +35,7 @@ const useInfinite = (url, per_page) => {
     data,
     page,
     setPage,
-    error,
+    erorFromInfinite,
     paginatedData,
     isReachedEnd
   };
