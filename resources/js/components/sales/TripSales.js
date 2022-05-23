@@ -3,13 +3,11 @@ import React, { Component, useEffect, useState, useContext } from 'react';
 import HeaderSales from './HeaderSales';
 import { render } from "react-dom";
 import { useNavigate, useParams } from 'react-router-dom'
-import { CustomerContext } from '../../contexts/CustomerContext';
 import { useHistory } from 'react-router-dom';
 
 
 const TripSales = () => {
-  const { id } = useParams()
-  const { setCustomer } = useContext(CustomerContext);
+  const { id } = useParams();
   const history = useHistory();
   const [namaCust, setNamaCust] = useState('');
   const [jenis, setJenis] = useState('1');
@@ -112,7 +110,7 @@ const TripSales = () => {
       setKoordinat(position.coords.latitude + '@' + position.coords.longitude)
     });
     if (id != null) {
-      console.log(id)
+      // console.log(id);
       axios.get(`${window.location.origin}/api/tripCustomer/${id}`).then(response => {
         console.log(response.data.data);
         setNamaCust(response.data.data.nama)
@@ -139,6 +137,7 @@ const TripSales = () => {
       return response.data.data;
     })
   }, [])
+
   useEffect(() => {
     setShowListCustomerType(customerTypeArr?.map((data, index) => {
       return (
@@ -164,7 +163,7 @@ const TripSales = () => {
   }
 
   const handleOrder = () => {
-    history.push('/salesman/order');
+    history.push(`/salesman/order/${id}`);
   }
 
   return (

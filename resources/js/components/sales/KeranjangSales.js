@@ -5,10 +5,21 @@ import { KeranjangSalesContext } from '../../contexts/KeranjangSalesContext';
 
 const KeranjangSales = () => {
   const { produks, setProduks, getAllProduks } = useContext(KeranjangSalesContext);
+  const [errorMessage, setErrorMessage] = useState(null);
+  const [successMessage, setSuccessMessage] = useState(null);
+
+  let subtotal = 0;
 
   useEffect(() => {
     getAllProduks();
   }, [])
+
+  const hapusSemuaProduk = () => {
+    produks.map((produk) => {
+      KeranjangDB.deleteProduk(produk.id);
+      getAllProduks();
+    })
+  }
 
   const handlePilihProdukChange = (item) => {
     const exist = produks.find((x) => x.id === item.id);
@@ -51,11 +62,37 @@ const KeranjangSales = () => {
     getAllProduks();
   }
 
+  const kirimPesanan = (e) => {
+    e.preventDefault();
+    axios({
+      method: "post",
+      url: `${window.location.origin}/api/salesman/buatOrder`,
+      headers: {
+        Accept: "application/json",
+      },
+      data: {
+        keranjang: produks,
+      }
+    })
+      .then(response => {
+        console.log(response);
+        setSuccessMessage(response.data.success_message);
+        hapusSemuaProduk();
+      })
+      .catch(error => {
+        console.log(error.message);
+        setErrorMessage(error.message);
+      });
+  }
+
 
   return (
     <main className="page_main">
+
       <div className="page_container pt-4">
-        <h1>Keranjang</h1>
+        {(produks && produks.length === 0) && <p className='text-danger text-center'>Keranjang Kosong</p>}
+        {(produks && produks.length !== 0) && <button className='btn btn-danger' onClick={hapusSemuaProduk}>Hapus Semua</button>}
+
         {(produks && produks.length > 0) && produks.map((produk) => (
           <div className="cart_item mb-3" key={produk.id}>
 
@@ -97,7 +134,6 @@ const KeranjangSales = () => {
                     +
                   </button>
                 </div>
-
                 <div>{convertPrice(produk.harga)}</div>
               </div>
 
@@ -105,13 +141,23 @@ const KeranjangSales = () => {
                 <button
                   className="btn btn-danger btn_deleteItem"
                   onClick={() => hapusProduk(produk)}>
-                  <span class="iconify " data-icon="bxs:trash"></span>
+                  <span className="iconify " data-icon="bxs:trash"></span>
                 </button>}
             </div>
           </div>
         ))}
 
-        {(produks && produks.length === 0) && <p className='text-danger'>keranjang kosong</p>}
+
+        {produks.length > 0 && <div className="button_bottom d-flex justify-content-between">
+          <div>
+            <p className='mb-0'>Total Pesanan:</p>
+            {produks.map((produk) => {
+              subtotal = subtotal + (produk.jumlah * produk.harga);
+            })}
+            <h1 className='mb-0 fs-4'>{convertPrice(subtotal)}</h1>
+          </div>
+          <button className='btn btn-success' onClick={kirimPesanan}>CHECKOUT</button>
+        </div>}
       </div>
     </main>
   );

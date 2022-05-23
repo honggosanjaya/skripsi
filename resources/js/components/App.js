@@ -15,7 +15,6 @@ import LoginReact from './reuse/LoginReact';
 import AuthContextProvider from '../contexts/AuthContext';
 import Pemesanan from './sales/Pemesanan';
 import KeranjangSalesContextProvider from '../contexts/KeranjangSalesContext';
-import CustomerContextProvider from '../contexts/CustomerContext';
 
 
 function App() {
@@ -27,14 +26,12 @@ function App() {
 
           <KeranjangSalesContextProvider>
             <Route exact path="/salesman" component={DashboardSales} />
-            <CustomerContextProvider>
-              <Route exact path="/salesman/trip" component={TripSales} />
-              <Route exact path="/salesman/trip/:id" component={TripSales} />
-              {/* <Route exact path={["/salesman/order", "/salesman/order/keranjang"]}> */}
-              <Route exact path="/salesman/order" component={Pemesanan} />
-              <Route path="/salesman/order/keranjang" component={KeranjangSales} />
-              {/* </Route> */}
-            </CustomerContextProvider>
+            <Route exact path="/salesman/trip" component={TripSales} />
+            <Route exact path="/salesman/trip/:id" component={TripSales} />
+            {/* <Route exact path={["/salesman/order", "/salesman/order/keranjang"]}> */}
+            <Route exact path="/salesman/order/:idCust" component={Pemesanan} />
+            <Route exact path="/salesman/keranjang" component={KeranjangSales} />
+            {/* </Route> */}
           </KeranjangSalesContextProvider>
 
 
@@ -58,7 +55,7 @@ const fetcher = (url, token) =>
     },
   })
     .then((response) => {
-      console.log(response.data);
+      console.log(response.data.data);
       return response.data.data;
     })
 

@@ -20,7 +20,7 @@ class ItemController extends Controller
   public function getListAllProductAPI()
   {
     try {
-      $items = Item::paginate(4);
+      $items = Item::orderBy("status", "ASC")->paginate(4);
       $this->data = $items;
       $this->status = "success";
     } catch (QueryException $e) {
@@ -33,6 +33,24 @@ class ItemController extends Controller
       "data" => $this->data,
       "error" => $this->error
     ], 200);
+  }
+
+  public function searchProductAPI($name)
+  {
+      try {
+        $items = DB::table('items')->where(strtolower('nama'), 'like', '%'.$name.'%')->orderBy("status", "ASC")->paginate(4);
+        $this->data = $items;
+        $this->status = "success";
+      } catch (QueryException $e) {
+          $this->status = "failed";
+          $this->error = $e;
+      }
+  
+      return response()->json([
+        "status" => $this->status,
+        "data" => $this->data,
+        "error" => $this->error
+      ], 200);
   }
 
   public function productList()
@@ -73,6 +91,8 @@ class ItemController extends Controller
       $stok->stok += $item->quantity;
       $stok->save();
     }
+
+    // dd($data);
 
     Pengadaan::insert($data);
     \Cart::session(auth()->user()->id.$request->route)->clear();

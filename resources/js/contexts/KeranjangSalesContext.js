@@ -14,9 +14,9 @@ const KeranjangSalesContextProvider = (props) => {
     })
   }
 
-  // useEffect(() => {
-  //   getAllProduks();
-  // }, [])
+  useEffect(() => {
+    getAllProduks();
+  }, [])
 
   const defaultContext = {
     produks,
