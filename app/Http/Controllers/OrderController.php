@@ -6,7 +6,6 @@ use Illuminate\Http\Request;
 use App\Models\Order;
 use App\Models\OrderTrack;
 use App\Models\OrderItem;
-use App\Models\OrderTrack;
 use App\Models\Staff;
 use PDF;
 
