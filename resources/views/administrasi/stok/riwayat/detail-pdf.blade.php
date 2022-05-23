@@ -12,6 +12,7 @@
 		}
 	</style>
   <h5 class="mb-4 text-center">Laporan NPB UD. Mandiri</h5>
+  <br>
   <h6 class="mb-4">No Pengadaan : {{ $detail->no_pengadaan }}</h6>
 	 
 	<table class="table table-bordered">
@@ -58,6 +59,11 @@
           </tr>
       </tbody>
   </table>
+
+  <br><br>
+      <p class="text-right mt-4">Mengetahui,</p>
+      <br><br><br><br>
+      <p class="text-right">{{ $administrasi->nama }}</p>
  
 </body>
 </html>

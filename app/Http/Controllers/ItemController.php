@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Item;
 use App\Models\Pengadaan;
 use App\Models\Status;
+use App\Models\Staff;
 use Barryvdh\DomPDF\Facade\Pdf as FacadePdf;
 use Barryvdh\DomPDF\PDF as DomPDFPDF;
 use Illuminate\Http\Request;
@@ -336,11 +337,14 @@ class ItemController extends Controller
         $total = Pengadaan::selectRaw('SUM(harga_total) as harga')
         ->where('no_pengadaan','=',$pengadaan->no_pengadaan)
         ->first();
+
+        $administrasi = Staff::select('nama')->where('id','=',auth()->user()->id_users)->first();
         
         $pdf = PDF::loadview('administrasi/stok/riwayat.detail-pdf',[
           'pengadaans' => $pengadaans,
             'total_harga' => $total,
-            'detail' => $pengadaan            
+            'detail' => $pengadaan,
+            'administrasi' => $administrasi            
         ]);
 
         return $pdf->download('laporan-NPB-pdf.pdf');

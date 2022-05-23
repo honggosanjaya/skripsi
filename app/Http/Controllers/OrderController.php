@@ -86,10 +86,12 @@ class OrderController extends Controller
 
     public function cetakInvoice(Order $order){
         $items = OrderItem::where('id_order','=',$order->id)->get();
+        $administrasi = Staff::select('nama')->where('id','=',auth()->user()->id_users)->first();
 
         $pdf = PDF::loadview('administrasi/pesanan/detail.cetakInvoice',[
             'order' => $order,
-            'items' => $items           
+            'items' => $items,
+            'administrasi' => $administrasi           
           ]);
   
         return $pdf->download('invoice-'.$order->linkInvoice->nomor_invoice.'.pdf');  
@@ -112,7 +114,7 @@ class OrderController extends Controller
             'mengetahui' => $mengetahui            
           ]);
   
-        return $pdf->download('SJ-'.date("d-m-Y").'.pdf'); 
+        return $pdf->download('Surat Jalan-'.date("d F Y").'.pdf'); 
 
         // return view('administrasi/pesanan/detail.cetakSJ', [
         //     'order' => $order,
@@ -123,6 +125,28 @@ class OrderController extends Controller
         // ]);
     }
 
+    public function cetakMemo(Order $order){
+        $items = OrderItem::where('id_order','=',$order->id)->get();
+        $todayDate = date("d-m-Y");
+        $administrasi = Staff::select('nama')->where('id','=',auth()->user()->id_users)->first();
+
+        $pdf = PDF::loadview('administrasi/pesanan/detail.cetakMemo',[
+            'order' => $order,
+            'items' => $items,
+            'date' => $todayDate,
+            'administrasi' => $administrasi          
+          ]);
+  
+        return $pdf->download('memo-'.$order->linkInvoice->nomor_invoice.'.pdf'); 
+        
+        // return view('administrasi/pesanan/detail.cetakMemo',[
+        //     'order' => $order,
+        //     'items' => $items,
+        //     'date' => $todayDate,
+        //     'administrasi' => $adminsitrasi
+        // ]);
+        
+    }
     
     public function simpanDataOrderCustomer(Request $request)
     {
