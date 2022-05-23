@@ -66,7 +66,7 @@
           </a>
         </li>
         <li class="mb-3">
-          <a class="{{ Request::is('dashboard/pengguna*') ? 'active' : '' }}" href="/dashboard/pengguna">
+          <a class="{{ Request::is('supervisor/datastaf*') ? 'active' : '' }}" href="/supervisor/datastaf">
             <i class="bi bi-people-fill me-2"></i><span>Data Staf</span>
           </a>
         </li>
