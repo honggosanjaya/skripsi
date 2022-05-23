@@ -59,7 +59,7 @@ class CustomerController extends Controller
     public function simpanCustomerApi(Request $request){
       $rules = [
         'nama' => ['required', 'string', 'max:255'],
-        'email' => ['string', 'email', 'max:255', 'unique:users'],
+        // 'email' => ['string', 'email', 'max:255', 'unique:users'],
         'id_jenis' => ['required'],
         'id_wilayah' => ['required'],
         'alamat_utama' => ['required', 'string', 'max:255'],

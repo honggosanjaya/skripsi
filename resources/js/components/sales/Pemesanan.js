@@ -8,11 +8,13 @@ import KeranjangDB from '../reuse/KeranjangDB';
 import useInfinite from '../reuse/useInfinite';
 import ProductSales from './ProductSales';
 import { KeranjangSalesContext } from '../../contexts/KeranjangSalesContext';
+import { CustomerContext } from '../../contexts/CustomerContext';
 
 const Pemesanan = () => {
   const { page, setPage, error, paginatedData, isReachedEnd } = useInfinite(`api/salesman/listitems`, 4);
   const [kodePesanan, setKodePesanan] = useState('');
   const { produks, getAllProduks } = useContext(KeranjangSalesContext);
+  const { customer } = useContext(CustomerContext);
 
   useEffect(() => {
     getAllProduks();
