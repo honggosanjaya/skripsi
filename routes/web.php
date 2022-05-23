@@ -5,6 +5,7 @@ use App\Http\Controllers\HomeController;
 use App\Http\Controllers\ItemController;
 use App\Http\Controllers\CartController;
 use App\Http\Controllers\CustomerController;
+use App\Http\Controllers\StaffController;
 use App\Http\Controllers\DistrictController;
 use App\Http\Controllers\EventController;
 use App\Http\Controllers\OrderController;
@@ -55,6 +56,11 @@ Route::prefix('supervisor')->middleware('supervisor')->group(function() {
   Route::post('/jenis/tambahjenis', [CustomerTypeController::class, 'store']);
   Route::get('/jenis/ubah/{customertype:id}', [CustomerTypeController::class, 'edit']);
   Route::put('/jenis/ubahjenis/{customertype:id}', [CustomerTypeController::class, 'update']);
+
+  // Route untuk data staf
+  Route::resource('/datastaf', StaffController::class);
+  Route::get('/datastaf/cari', [StaffController::class, 'stafSearch']);
+  Route::post('/datastaf/ubahstatus/{staf:id}', [StaffController::class, 'supervisorEditStatusStaf']);
 });
 // Route::prefix('salesman')->middleware('salesman')->group(function() {
 //   Route::get('/', [HomeController::class, 'indexSalesman']);
@@ -124,7 +130,6 @@ Route::prefix('customer')->middleware('customer')->group(function() {
   //Route untuk cart
   Route::get('/cart', [CartController::class, 'cartList']);
   Route::get('/cart/tambahorder', [OrderController::class, 'simpanDataOrderCustomer']);
-
 });
 
 require __DIR__.'/auth.php';

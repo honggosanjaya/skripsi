@@ -76,17 +76,12 @@ class CartController extends Controller
           'name' => $request->nama,
           'price' => $request->harga_satuan,
         ]);
-      
-
       }
 
       return response()->json([
         'status' => 'success'
-      ]);
-      
+      ]); 
     }
-
-    
   }
 
   public function updateCart(Request $request)

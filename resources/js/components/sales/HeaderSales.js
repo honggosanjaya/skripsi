@@ -26,7 +26,7 @@ const HeaderSales = ({ title, isDashboard, isOrder }) => {
             <h1 className='page_title'>{title}</h1>
           </div>
           {isOrder &&
-            <Link to="/salesman/order/keranjang">
+            <Link to="/salesman/keranjang">
               <span className="iconify" data-icon="clarity:shopping-cart-solid"></span>
               {produks && <span>{produks.length}</span>}
             </Link>

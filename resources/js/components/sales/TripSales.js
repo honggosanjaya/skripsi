@@ -1,12 +1,14 @@
 import axios from 'axios';
-import React, { Component, useEffect, useState } from 'react';
+import React, { Component, useEffect, useState, useContext } from 'react';
 import HeaderSales from './HeaderSales';
 import { render } from "react-dom";
 import { useNavigate, useParams } from 'react-router-dom'
+import { useHistory } from 'react-router-dom';
 
 
 const TripSales = () => {
-  const { id } = useParams()
+  const { id } = useParams();
+  const history = useHistory();
   const [namaCust, setNamaCust] = useState('');
   const [jenis, setJenis] = useState('1');
   const [wilayah, setWilayah] = useState('2');
@@ -19,7 +21,7 @@ const TripSales = () => {
   const [totalTripEC, setTotalTripEC] = useState(0);
   const [trip, setTrip] = useState('trip');
   const [alasanPenolakan, setAlasanPenolakan] = useState('');
-  const [jamMasuk, setJamMasuk] = useState(Date.now()/1000);
+  const [jamMasuk, setJamMasuk] = useState(Date.now() / 1000);
   const [koordinat, setKoordinat] = useState('');
   const [file, setFile] = useState(null);
   const [prevImage, setPrevImage] = useState('');
@@ -47,7 +49,7 @@ const TripSales = () => {
         Accept: "application/json",
       },
       data: {
-        id: id??null,
+        id: id ?? null,
         nama: namaCust,
         id_jenis: jenis,
         id_wilayah: wilayah,
@@ -60,12 +62,13 @@ const TripSales = () => {
         counter_to_effective_call: totalTripEC,
         jam_masuk: jamMasuk,
         alasan_penolakan: alasanPenolakan,
-        status:trip,
-        koordinat:koordinat,
+        status: trip,
+        koordinat: koordinat,
       }
     })
       .then(response => {
         // console.log(response.data.data);
+        setCustomer(response.data.data);
         return response.data.data;
       })
       .then(dataSatu => axios.post(`${window.location.origin}/api/tripCustomer/foto/${dataSatu.id}`,
@@ -76,15 +79,15 @@ const TripSales = () => {
       }))
       .then(response => {
         Swal.fire({
-              title: 'success',
-              text: 'berhasil menyimpan data, ayo tetap semangat bekerja',
-              icon: 'success',
-              confirmButtonText: 'next trip'
-            }).then((result) => {
-              // this.props.history.push('/salesman/trip')
-              window.location = "/salesman"
-              console.log(result)
-            })
+          title: 'success',
+          text: 'berhasil menyimpan data, ayo tetap semangat bekerja',
+          icon: 'success',
+          confirmButtonText: 'next trip'
+        }).then((result) => {
+          // this.props.history.push('/salesman/trip')
+          window.location = "/salesman"
+          console.log(result)
+        })
       })
       .catch(error => {
         console.log(error.message);
@@ -102,12 +105,12 @@ const TripSales = () => {
     reader.readAsDataURL(file);
   };
 
-  useEffect(()=>{
-    navigator.geolocation.getCurrentPosition(function(position) {
-      setKoordinat(position.coords.latitude+'@'+position.coords.longitude)
+  useEffect(() => {
+    navigator.geolocation.getCurrentPosition(function (position) {
+      setKoordinat(position.coords.latitude + '@' + position.coords.longitude)
     });
-    if(id!=null){
-      console.log(id)
+    if (id != null) {
+      // console.log(id);
       axios.get(`${window.location.origin}/api/tripCustomer/${id}`).then(response => {
         console.log(response.data.data);
         setNamaCust(response.data.data.nama)
@@ -116,13 +119,13 @@ const TripSales = () => {
         setAlamatUtama(response.data.data.alamat_utama)
         setAlamatNomor(response.data.data.alamat_nomor)
         setEmail(response.data.data.email)
-        setEmailInput(response.data.data.email!=null?true:false)
+        setEmailInput(response.data.data.email != null ? true : false)
         setKetAlamat(response.data.data.keterangan_alamat)
         setTelepon(response.data.data.telepon)
         setDurasiTrip(response.data.data.durasi_kunjungan)
         setTotalTripEC(response.data.data.counter_to_effective_call)
         setImagePreviewUrl(response.data.data.image_url)
-  
+
         return response.data.data;
       })
     }
@@ -130,24 +133,25 @@ const TripSales = () => {
       console.log(response.data);
       setDistrictArr(response.data.district)
       setCustomerTypeArr(response.data.customerType)
-      
+
       return response.data.data;
     })
-  },[])
-  useEffect(()=>{
+  }, [])
+
+  useEffect(() => {
     setShowListCustomerType(customerTypeArr?.map((data, index) => {
       return (
-        <option value={data.id}>{data.nama}</option>
+        <option value={data.id} key={index}>{data.nama}</option>
       );
     }))
     console.log(districtArr);
 
     setShowListDistrict(districtArr?.map((data, index) => {
       return (
-        <option value={data.id}>{data.nama}</option>
+        <option value={data.id} key={index}>{data.nama}</option>
       );
     }))
-  },[customerTypeArr,districtArr])
+  }, [customerTypeArr, districtArr])
 
   if (imagePreviewUrl) {
     $imagePreview = <img src={imagePreviewUrl} className="preview_tempatUsaha" />
@@ -156,6 +160,10 @@ const TripSales = () => {
     //   let image = prevImage.replace('public', '');
     //   $imagePreview = <img src={image} className="preview_tempatUsaha" />
     // }
+  }
+
+  const handleOrder = () => {
+    history.push(`/salesman/order/${id}`);
   }
 
   return (
@@ -174,8 +182,8 @@ const TripSales = () => {
             <label className="form-label">Email Customer</label>
             <input type="email" className="form-control"
               value={email || ''}
-              onChange={(e) => setEmail(e.target.value)} 
-              readOnly={emailInput}/>
+              onChange={(e) => setEmail(e.target.value)}
+              readOnly={emailInput} />
           </div>
           <div className="mb-3">
             <label className="form-label">Alamat Utama</label>
@@ -249,7 +257,7 @@ const TripSales = () => {
 
           <div className="trip_aksi">
             <button type="submit" className="btn btn-danger me-3">Keluar</button>
-            <button type="submit" className="btn btn-success">Order</button>
+            <button type="submit" className="btn btn-success" onClick={handleOrder}>Order</button>
           </div>
         </form>
       </div>

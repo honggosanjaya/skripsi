@@ -8,25 +8,29 @@
     margin-left: 5%;
 }
 
+.main_content {
+    min-height: calc(100vh - 8px - 116px);
+}
+
 .header_mobile {
     background-color: lawngreen;
     padding: 1rem;
-  
+
     .iconify {
         font-size: 2rem;
     }
-  
+
     .page_title {
         font-family: "Caveat", cursive;
         font-size: 1.5rem;
     }
-  }
+}
 
 .set-header {
     margin-left: auto;
 }
 
-#set-cart-position{
+#set-cart-position {
     margin-bottom: 12px;
     margin-right: 8px;
 }
@@ -37,6 +41,6 @@
 }
 
 .link-style {
-    color:black;
+    color: black;
     text-decoration: none;
 }

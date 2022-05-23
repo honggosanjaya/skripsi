@@ -11,6 +11,55 @@ use PDF;
 
 class OrderController extends Controller
 {
+
+  public function simpanDataOrderSalesmanAPI(Request $request)
+    {
+      $keranjangItems = $request->keranjang;
+
+      if(sizeof($keranjangItems) > 0){
+        foreach($keranjangItems as $item){
+          $id_customer = $item['customer'];
+        }
+      }
+      
+      
+      $order_id=Order::insertGetId([
+        'id_customer' => $id_customer,
+        'id_staff' => auth()->user()->id,
+        'status' => 15,
+        'created_at'=> now(),
+      ]);
+      
+
+      $data = [];
+      foreach($keranjangItems as $item){
+        array_push($data,[
+            'id_order' => $order_id,
+            'id_item' => $item['id'],
+            'kuantitas' => $item['jumlah'],
+            'harga_satuan' => $item['harga'],
+            'keterangan' => $request->keterangan??null,
+        ]);
+      }
+
+        OrderTrack::insert([
+            'id_order' => $order_id,
+            'status' => 20,
+            'waktu_order'=> now(),
+            'created_at'=> now(),
+            'estimasi_waktu_pengiriman' => '1'
+        ]);
+        OrderItem::insert($data);
+
+
+        return response()->json([
+          'status' => 'success',
+          'success_message' => 'berhasil membuat pesanan'
+        ]);
+    }
+
+
+
     public function index(){
         $orders = Order::paginate(5);
         return view('administrasi/pesanan.index',[
@@ -101,6 +150,7 @@ class OrderController extends Controller
             'status' => 15,
             'waktu_order'=> now(),
             'created_at'=> now(),
+            // 'estimasi_waktu_pengiriman' => '1'
         ]);
         OrderItem::insert($data);
 
