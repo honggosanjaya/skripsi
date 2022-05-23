@@ -44,7 +44,7 @@
   }
   @endphp
 
-  <form method="POST" action="/administrasi/stok/pengadaan/tambahpengadaan" enctype="multipart/form-data">
+  <form method="POST" action="/administrasi/stok/pengadaan/tambahpengadaan?route=pengadaan" enctype="multipart/form-data">
     @csrf
     <div class="my-3">
       <label for="harga_total" class="form-label">Total Harga</label>

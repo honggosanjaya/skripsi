@@ -21,7 +21,7 @@
       </div>
       <div class="col-6 ml-auto">
         <a href="/administrasi/stok/riwayat" class="btn btn-primary">Riwayat Pengadaan</a>
-        <a href="/administrasi/stok/pengadaan" class="btn btn-primary">Pengadaan</a>
+        <a href="/administrasi/stok/pengadaan?route=pengadaan" class="btn btn-primary">Pengadaan</a>
         <a href="#" class="btn btn-primary">Stok Opname</a>
       </div>
     </div>

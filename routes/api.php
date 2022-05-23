@@ -3,6 +3,8 @@
 use App\Http\Controllers\Api\LoginController;
 use App\Http\Controllers\CustomerController;
 use App\Http\Controllers\ItemController;
+use App\Http\Controllers\CartController;
+
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -21,16 +23,17 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
 
+//sales cari customer
 Route::post('/cariCustomer', [CustomerController::class, 'cariCustomerApi']);
 Route::get('/dataFormTrip', [CustomerController::class, 'dataFormTripApi']);
-
+//sales add/update data customer
 Route::get('/tripCustomer/{id}', [CustomerController::class, 'dataCustomerApi']);
 Route::post('/tripCustomer', [CustomerController::class, 'simpanCustomerApi']);
-Route::get('/filterProduk', [ItemController::class, 'filterProdukApi']);
 Route::post('/tripCustomer/foto/{id}', [CustomerController::class, 'simpanCustomerFotoApi']);
-
-
-
+//customer melakukan filter item
+Route::get('/filterProduk', [ItemController::class, 'filterProdukApi']);
+//customer menambahkan data di keranjang
+Route::post('/customer/order/cart', [CartController::class, 'addToCart']);
 
 Route::group(['middleware' => 'auth:sanctum'], function(){
   Route::post('v1/logout', [LoginController::class, 'logoutApi']);
