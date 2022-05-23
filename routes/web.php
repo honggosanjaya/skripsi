@@ -77,7 +77,7 @@ Route::prefix('administrasi')->middleware('administrasi')->group(function() {
   Route::get('/pesanan/detail/{order:id}', [OrderController::class, 'viewDetail']);
   Route::get('/pesanan/detail/{order:id}/cetak-memo', [OrderController::class, 'cetakMemo']);
   Route::get('/pesanan/detail/{order:id}/cetak-invoice', [OrderController::class, 'cetakInvoice']);
-  Route::put('/pesanan/detail/{order:id}/cetak-sj', [OrderController::class, 'cetakSJ']);
+  Route::get('/pesanan/detail/{order:id}/cetak-sj', [OrderController::class, 'cetakSJ']);
 
   //Route untuk kendaraan
   Route::get('/kendaraan', [VehicleController::class, 'index']);
