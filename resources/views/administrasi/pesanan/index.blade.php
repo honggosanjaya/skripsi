@@ -29,14 +29,59 @@
           <div class="input-group">
             <input type="text" class="form-control" name="cari" placeholder="Cari Pesanan..."
             value="{{ request('cari') }}">
-            <button type="submit" class="btn btn-primary">Cari</button>   
+            <button type="submit" class="btn btn-primary">Cari</button> 
+              
           </div>
           
-        </form>    
+          
+        </form>   
+        
         
       </div>
     </div>
+    <div class="col-4 mt-3">
+      <button type="button" class="btn btn-primary ml-5" data-bs-toggle="modal" data-bs-target="#filterDate">
+        <i class="bi bi-funnel-fill fs-6"></i> Filter
+      </button> 
+    </div>
     
+  </div>
+
+  <div class="modal fade" id="filterDate" tabindex="-1" aria-labelledby="filterDateLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="exampleModalLabel">Filter</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+            <div class="mb-3">
+              <label for="tanggal_awal" class="form-label">Tanggal Awal</label>
+              <input type="date" class="form-control @error('tanggal_awal') is-invalid @enderror" id="tanggal_awal"
+              name="tanggal_awal" value="{{ old('tanggal_awal') }}">
+              @error('tanggal_awal')
+              <div class="invalid-feedback">
+              {{ $message }}
+              </div>
+              @enderror
+            </div>
+            <div class="mb-3">
+              <label for="tanggal_akhir" class="form-label">Tanggal Akhir</label>
+              <input type="date" class="form-control @error('tanggal_akhir') is-invalid @enderror" id="tanggal_akhir"
+              name="tanggal_akhir" value="{{ old('tanggal_akhir') }}">
+              @error('tanggal_akhir')
+              <div class="invalid-feedback">
+              {{ $message }}
+              </div>
+              @enderror
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary close-filter-produk" data-bs-dismiss="modal">Close</button>
+            <button type="button" class="btn btn-primary submit-filter-produk"><i class="bi bi-search"></i> Cari</button>
+          </div>
+      </div>
+    </div>
   </div>
 </div>
 
