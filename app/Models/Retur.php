@@ -24,19 +24,19 @@ class Retur extends Model
     }
 
     public function linkStaffPengaju(){
-        return $this->belongsTo(Staff::class,'id','id_staff_pengaju');
+        return $this->belongsTo(Staff::class,'id_staff_pengaju');
     }
 
     public function linkStaffPengonfirmasi(){
-        return $this->belongsTo(Staff::class,'id','id_staff_pengonfirmasi');
+        return $this->belongsTo(Staff::class,'id_staff_pengonfirmasi');
     }
 
     public function linkCustomer(){
-        return $this->belongsTo(Customer::class,'id','id_customer');
+        return $this->belongsTo(Customer::class,'id_customer');
     }
 
     public function linkInvoice(){
-        return $this->belongsTo(Invoice::class,'id','id_invoice');
+        return $this->belongsTo(Invoice::class,'id_invoice');
     }
 
     public function linkReturType(){
@@ -44,6 +44,6 @@ class Retur extends Model
     }
 
     public function linkStatus(){
-        return $this->belongsTo(Status::class,'id','status');
+        return $this->belongsTo(Status::class,'status');
     }
 }
