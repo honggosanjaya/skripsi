@@ -14,6 +14,9 @@ class CartController extends Controller
     }elseif($request->route=="customerOrder") {
       $cartItems = \Cart::session(auth()->user()->id.$request->route)->getContent();
       return view('customer.cart', compact('cartItems'));
+    }elseif($request->route=="opname") {
+      $cartItems = \Cart::session(auth()->user()->id.$request->route)->getContent();
+      return view('administrasi.stok.opname.cart', compact('cartItems'));
     }
       
   }
@@ -81,11 +84,46 @@ class CartController extends Controller
       return response()->json([
         'status' => 'success'
       ]); 
+      
+    }elseif ($request->route=="opname") {
+      $rules = ([
+        'jumlah' => ['required'],
+        'keterangan' => ['required', 'string', 'max:255'],
+      ]);
+  
+      $request->validate($rules);
+
+      if($cartItem !== null){
+        \Cart::session(auth()->user()->id.$request->route)->update(
+          $request->id,
+          [
+              'attributes' => ['jumlah' => $request->jumlah,'keterangan' => $request->keterangan,'kode_barang' => $request->kode_barang]
+          ]
+        );
+  
+        if($request->jumlah == 0){
+          \Cart::session(auth()->user()->id.$request->route)->remove($request->id);
+        }
+  
+      } else if($cartItem == null){
+        \Cart::session(auth()->user()->id.$request->route)->add([
+          'id' => $request->id,
+          'quantity' => $request->quantity,
+          'name' => $request->nama,
+          'price' => $request->harga_satuan,
+          'attributes' => ['jumlah' => $request->jumlah,'keterangan' => $request->keterangan,'kode_barang' => $request->kode_barang]
+        ]);
+      
+
+      }
+
+      return redirect('/administrasi/stok/opname/')->with('pesanSukses', 'Produk berhasil ditambahkan ke keranjang');
     }
   }
 
   public function updateCart(Request $request)
   {
+    if ($request->route=="pengadaan"){
       \Cart::session(auth()->user()->id.$request->route)->update(
           $request->id,
           [
@@ -96,17 +134,47 @@ class CartController extends Controller
           ]
       );
       return redirect()->route('cart.list');
+    }elseif ($request->route=="opname") {
+      \Cart::session(auth()->user()->id.$request->route)->update(
+        $request->id,
+        [
+          'attributes' => ['jumlah' => $request->jumlah,'keterangan' => $request->keterangan,'kode_barang' => $request->kode_barang]
+        ]
+    );
+    $cartItems = \Cart::session(auth()->user()->id.$request->route)->getContent();
+    return view('administrasi.stok.opname.cart', compact('cartItems'));
+    }
   }
 
   public function removeCart(Request $request)
   {
       \Cart::session(auth()->user()->id.$request->route)->remove($request->id);
-      return redirect()->route('cart.list');
+
+      if ($request->route=="pengadaan") {
+        $cartItems = \Cart::session(auth()->user()->id.$request->route)->getContent();
+        return view('administrasi.stok.pengadaan.cart', compact('cartItems'));
+      }elseif($request->route=="customerOrder") {
+        $cartItems = \Cart::session(auth()->user()->id.$request->route)->getContent();
+        return view('customer.cart', compact('cartItems'));
+      }elseif($request->route=="opname") {
+        $cartItems = \Cart::session(auth()->user()->id.$request->route)->getContent();
+        return view('administrasi.stok.opname.cart', compact('cartItems'));
+      }
   }
 
   public function clearAllCart(Request $request)
   {
       \Cart::session(auth()->user()->id.$request->route)->clear();
-      return redirect()->route('cart.list');
+
+      if ($request->route=="pengadaan") {
+        $cartItems = \Cart::session(auth()->user()->id.$request->route)->getContent();
+        return view('administrasi.stok.pengadaan.cart', compact('cartItems'));
+      }elseif($request->route=="customerOrder") {
+        $cartItems = \Cart::session(auth()->user()->id.$request->route)->getContent();
+        return view('customer.cart', compact('cartItems'));
+      }elseif($request->route=="opname") {
+        $cartItems = \Cart::session(auth()->user()->id.$request->route)->getContent();
+        return view('administrasi.stok.opname.cart', compact('cartItems'));
+      }
   }
 }
