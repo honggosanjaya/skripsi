@@ -16,7 +16,7 @@
         <div class="mt-3 search-box">
           <form method="GET" action="/administrasi/retur/cari">
             <div class="input-group">
-              <input type="text" class="form-control" name="cari" placeholder="Cari Retur..."
+              <input type="text" class="form-control" name="cari" placeholder="Cari Nomor Retur..."
               value="{{ request('cari') }}">
               <button type="submit" class="btn btn-primary">Cari</button>   
             </div>
@@ -43,13 +43,15 @@
         <tbody>
             @foreach($returs as $retur)
                 <tr>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
+                    <td>{{ $retur->no_retur }}</td>
+                    <td>{{ date('d-m-Y', strtotime($retur->created_at)) }}</td>
+                    <td>{{ $retur->linkCustomer->nama }}</td>
+                    <td>{{ $retur->linkCustomer->alamat_utama . ' ' . $retur->linkCustomer->alamat_nomor }}</td>
+                    <td>{{ $retur->linkStaffPengaju->nama }}</td>
+                    <td>{{ $retur->linkStatus->nama }}</td>
+                    <td>
+                      <a href="/administrasi/retur/{{ $retur->no_retur }}" class="btn btn-primary">Detail</a>
+                  </td>
                 </tr>
             @endforeach
         </tbody>
