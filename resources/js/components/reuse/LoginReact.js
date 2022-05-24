@@ -4,6 +4,7 @@ import { useHistory } from "react-router";
 import axios from 'axios';
 import { AuthContext } from '../../contexts/AuthContext';
 import LoadingIndicator from './LoadingIndicator';
+import AlertComponent from './AlertComponent';
 
 const LoginReact = () => {
   const history = useHistory();
@@ -16,9 +17,11 @@ const LoginReact = () => {
   const [error, setError] = useState('');
 
   // useEffect(() => {
+  //   console.log(typeof isAuth);//string
+  //   console.log('tf', isAuth == 'true');//false
+  //   console.log('tf', token !== null);//true
   //   if (isAuth === 'true' && token !== null) {
-  //     // local storage role
-  //     // push to beranda
+  //     history.push('/spa/checkrole');
   //   }
   // }, [])
 
@@ -45,20 +48,16 @@ const LoginReact = () => {
       }
     })
       .then((response) => {
-        console.log(response.data);
         setIsLoading(false);
         setError('');
         if (response.data.status == 'success') {
           setErrorValidasi([]);
           setToken(response.data.token);
-          setIsAuth(true);
+          setIsAuth('true');
           if (response.data.role == 'salesman') {
             history.push('/salesman');
           } else if (response.data.data.role == 'shipper') {
             history.push('/shipper');
-          } else {
-            // setError('Woi kamu gak masuk sini');
-            // push ke laravel
           }
         }
         else {
@@ -68,12 +67,12 @@ const LoginReact = () => {
       .catch((error) => {
         setIsLoading(false);
         console.log(error.response.data.message);
+        setIsAuth('false');
         if (error.response.status === 401) {
           setError(error.response.data.message);
         } else {
           setError(error.message);
         }
-        setIsAuth(false);
       });
   }
 
@@ -81,22 +80,17 @@ const LoginReact = () => {
     <main className='page_main login_page'>
       <div className="page_container pt-5">
         {isLoading && <LoadingIndicator />}
-        <h1 className='heading-1'>Selamat Datang</h1>
-        <h2 className='heading-2 '>Aplikasi web salesMan <br /> UD Mandiri</h2>
-        <p className='mb-3 text-center'>
-          halaman login khusus untuk salesman dan tenaga pengirim, untuk staff lain silahkan melalui link ini
-          <a href="/login" className="custom-form-input"> link</a>
-        </p>
 
+        <h1 className='fs-3 text-center'>Selamat Datang</h1>
+        <h2 className='fs-6 text-center'>Aplikasi web salesMan <br /> UD Mandiri</h2>
 
-        {
-          error &&
-          <div className="alert alert-danger alert-dismissible fade show" role="alert">
-            <p className='text-center mb-0'>{error}</p>
-            <button type="button" className="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-          </div>
-        }
-        <form onSubmit={handleSubmit}>
+        {error && <AlertComponent errorMsg={error} />}
+        {error == 'Anda mengakses halaman login yang salah' && <p className='mb-3 text-center'>
+          Halaman login khusus untuk salesman dan tenaga pengirim, untuk staff lain silahkan login
+          <a href="/login" className="custom-form-input">disini</a>
+        </p>}
+
+        <form onSubmit={handleSubmit} className="mt-4">
           <div className="mb-3">
             <label htmlFor="email">Email</label>
             <input

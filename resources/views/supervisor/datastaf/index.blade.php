@@ -10,13 +10,7 @@
 
   <div class="row mt-4">
     <div class="col-5">
-      <form method="GET" action="/supervisor/datastaf/cari">
-        @csrf
-        <div class="input-group">
-          <input type="text" class="form-control" name="cari" placeholder="Cari staf..." value="{{ request('cari') }}">
-          <button type="submit" class="btn btn-primary">Cari</button>
-        </div>
-      </form>
+
     </div>
     <div class="col-5">
       <a href="/supervisor/datastaf/create" class="btn btn-primary">

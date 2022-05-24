@@ -59,7 +59,6 @@ Route::prefix('supervisor')->middleware('supervisor')->group(function() {
 
   // Route untuk data staf
   Route::resource('/datastaf', StaffController::class);
-  Route::get('/datastaf/cari', [StaffController::class, 'stafSearch']);
   Route::post('/datastaf/ubahstatus/{staf:id}', [StaffController::class, 'supervisorEditStatusStaf']);
 });
 // Route::prefix('salesman')->middleware('salesman')->group(function() {

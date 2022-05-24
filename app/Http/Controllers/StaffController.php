@@ -5,8 +5,11 @@ namespace App\Http\Controllers;
 use App\Models\Staff;
 use App\Models\StaffRole;
 use App\Models\Status;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Auth\Events\Registered;
+use Illuminate\Validation\Rules;
 
 class StaffController extends Controller
 {
@@ -23,17 +26,6 @@ class StaffController extends Controller
       ]);
     }
 
-    public function stafSearch()
-    {
-      $stafs =  Staff::where(strtolower('nama'),'like','%'.request('cari').'%')
-        ->orWhere(strtolower('email'),'like','%'.request('cari').'%')
-        ->paginate(5);
-    
-      return view('supervisor.datastaf.index', [
-        'stafs' => $stafs,
-        "title" => "List Tim Marketing UD Mandiri"
-      ]);
-    }
 
     /**
      * Show the form for creating a new resource.
@@ -72,6 +64,7 @@ class StaffController extends Controller
       $validatedData['password'] = Hash::make(12345678);
       $validatedData['role'] = $request->role;
       $validatedData['status'] = $request->status;
+      $validatedData['created_at'] = now();
 
       if ($request->foto_profil) {
         $file_name = time() . '.' . $request->foto_profil->extension();
@@ -79,7 +72,16 @@ class StaffController extends Controller
         $validatedData['foto_profil'] = $file_name;
       }    
 
-      Staff::create($validatedData);
+      $staff=Staff::insertGetId($validatedData);
+
+      $user = User::create([
+        'id_users' => $staff,
+        'email' => $request->email,
+        'password' => Hash::make($request->password),
+        'tabel' => 'staffs',
+      ]);
+
+      event(new Registered($user));
 
       return redirect('/supervisor/datastaf') -> with('pesanSukses', 'Staf berhasil ditambahkan' );
     }

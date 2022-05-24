@@ -17,7 +17,6 @@ class CustomerController extends Controller
 {
     public function cariCustomerApi(Request $request){
       $customer=Customer::where(strtolower('nama'),'like','%'.$request->nama.'%')->where(strtolower('alamat_utama'),'like','%'.$request->alamat_utama.'%')->with('linkDistrict')->get();
-
       if ($customer->count()>0) {
         return response()->json([
           'data' => $customer,
@@ -28,13 +27,11 @@ class CustomerController extends Controller
         'message' => 'data not found',
         'status' => 'error'
       ],404);
-
     }
 
     public function dataCustomerApi($id){
       $customer=Customer::find($id);
       
-
       if ($customer->count()>0) {
         return response()->json([
           'data' => $customer,
@@ -45,7 +42,6 @@ class CustomerController extends Controller
         'message' => 'data not found',
         'status' => 'error'
       ],404);
-
     }
 
     public function dataFormTripApi(){
@@ -59,7 +55,6 @@ class CustomerController extends Controller
     public function simpanCustomerApi(Request $request){
       $rules = [
         'nama' => ['required', 'string', 'max:255'],
-        // 'email' => ['string', 'email', 'max:255', 'unique:users'],
         'id_jenis' => ['required'],
         'id_wilayah' => ['required'],
         'alamat_utama' => ['required', 'string', 'max:255'],
@@ -213,7 +208,7 @@ class CustomerController extends Controller
       
       $validatedData = $request->validate($rules);
       $validatedData['tipe_retur'] = $request->tipe_retur;
-      $validatedData['id_staff'] = session(auth()->user()->id);
+      $validatedData['id_staff'] = auth()->user()->id;
       $validatedData['limit_pembelian'] = 200000;
       $validatedData['durasi_kunjungan'] = 7;
       $validatedData['counter_to_effective_call'] = 0;

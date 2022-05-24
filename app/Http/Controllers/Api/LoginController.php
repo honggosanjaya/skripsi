@@ -21,11 +21,9 @@ class LoginController extends Controller
 
       $role=User::with('linkStaff.linkStaffRole')->where('email',$request->email)->first()->linkStaff->linkStaffRole->nama;
 
-    
-    
-    $request->session()->put('role', $role);
-    $request->session()->put('id_staff', User::where('email',$request->email)->first()->id);
-    // dd(session('role'));
+    // $request->session()->put('role', $role);
+    // $request->session()->put('id_staff', User::where('email',$request->email)->first()->id);
+    // dd(session('id_staff'));
 
       if ($validator->fails()){
         return response()->json([
@@ -36,28 +34,36 @@ class LoginController extends Controller
       $user = User::where('email', $request->email)->first();
       if (!$user || !Hash::check($request->password, $user->password)){
         return response() -> json([
-          'status' => 'fail',
+          'status' => 'error',
           'message' => 'email atau password anda salah'
         ], 401);
       }
       if ($user->linkStaff->status==9){
         return response() -> json([
-          'status' => 'fail',
+          'status' => 'error',
           'message' => 'akun sudah tidak aktif'
         ], 401);
       }
 
       $detail_user = Staff::find($user->id_users);
 
-      $request->session()->put('role', $detail_user->linkStaffRole->nama);
+      // $request->session()->put('role', $detail_user->linkStaffRole->nama);
 
-      return response()->json([
-        'data' => $detail_user,
-        'role' => $detail_user->linkStaffRole->nama,
-        'status_pegawai' => $detail_user->linkStatus->nama,
-        'status' => 'success',
-        'token' => $user->createToken('api-token')->plainTextToken,
-      ],200);
+      if($detail_user->linkStaffRole->nama == 'salesman' || $detail_user->linkStaffRole->nama == 'shipper')
+      {
+        return response()->json([
+          'data' => $detail_user,
+          'role' => $detail_user->linkStaffRole->nama,
+          'status_pegawai' => $detail_user->linkStatus->nama,
+          'status' => 'success',
+          'token' => $user->createToken('api-token')->plainTextToken,
+        ],200);
+      } else{
+        return response() -> json([
+          'status' => 'error',
+          'message' => 'Anda mengakses halaman login yang salah'
+        ], 401);
+      }
     }
 
     public function logoutApi(Request $request)
@@ -68,5 +74,24 @@ class LoginController extends Controller
         'status' => 'success',
         'message' => 'Berhasil logout'
       ]);
+    }
+
+    public function checkUser(Request $request){
+      $user = $request->user();
+      $detail_user = Staff::find($user->id_users);
+
+      if($detail_user->linkStaffRole->nama == "administrasi" || $detail_user->linkStaffRole->nama == "supervisor" || $detail_user->linkStaffRole->nama == "owner"){
+        return response() -> json([
+          'status' => 'error',
+          'message' => 'Anda mengakses halaman login yang salah'
+        ], 401);
+      } else if($detail_user->linkStaffRole->nama == "salesman" || $detail_user->linkStaffRole->nama == "shipper"){
+        return response()->json([
+          'status' => 'success',
+          'data' => $detail_user,
+          'role' => $detail_user->linkStaffRole->nama,
+          'status_pegawai' => $detail_user->linkStatus->nama,
+        ]);
+      }
     }
 }

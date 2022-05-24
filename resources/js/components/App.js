@@ -15,6 +15,8 @@ import LoginReact from './reuse/LoginReact';
 import AuthContextProvider from '../contexts/AuthContext';
 import Pemesanan from './sales/Pemesanan';
 import KeranjangSalesContextProvider from '../contexts/KeranjangSalesContext';
+import UserContextProvider from '../contexts/UserContext';
+// import CheckRole from './reuse/CheckRole';
 
 
 function App() {
@@ -24,18 +26,18 @@ function App() {
         <Switch>
           <Route path="/spa/login" component={LoginReact} />
 
-          <KeranjangSalesContextProvider>
-            <Route exact path="/salesman" component={DashboardSales} />
-            <Route exact path="/salesman/trip" component={TripSales} />
-            <Route exact path="/salesman/trip/:id" component={TripSales} />
-            {/* <Route exact path={["/salesman/order", "/salesman/order/keranjang"]}> */}
-            <Route exact path="/salesman/order/:idCust" component={Pemesanan} />
-            <Route exact path="/salesman/keranjang" component={KeranjangSales} />
-            {/* </Route> */}
-          </KeranjangSalesContextProvider>
+          <UserContextProvider>
+            {/* <Route path="/spa/checkrole" component={CheckRole} /> */}
+            <KeranjangSalesContextProvider>
+              <Route exact path="/salesman" component={DashboardSales} />
+              <Route exact path="/salesman/trip" component={TripSales} />
+              <Route exact path="/salesman/trip/:id" component={TripSales} />
+              <Route exact path="/salesman/order/:idCust" component={Pemesanan} />
+              <Route exact path="/salesman/keranjang/:idCust" component={KeranjangSales} />
+            </KeranjangSalesContextProvider>
 
-
-          <Route exact path="/shipper" component={DashboardShipper} />
+            <Route exact path="/shipper" component={DashboardShipper} />
+          </UserContextProvider>
 
           <Route path="*" component={NotFound} />
         </Switch>

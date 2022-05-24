@@ -1,14 +1,27 @@
 import React, { useContext, useEffect, useState, createContext } from 'react';
+import { useParams } from 'react-router-dom';
 import KeranjangDB from '../reuse/KeranjangDB';
+import { Link, useHistory } from "react-router-dom";
 import { convertPrice } from "../reuse/HelperFunction";
 import { KeranjangSalesContext } from '../../contexts/KeranjangSalesContext';
+import AlertComponent from '../reuse/AlertComponent';
+import { UserContext } from "../../contexts/UserContext";
+import LoadingIndicator from '../reuse/LoadingIndicator';
 
 const KeranjangSales = () => {
+  const { dataUser, loadingDataUser } = useContext(UserContext);
+  const history = useHistory();
+  const { idCust } = useParams();
   const { produks, setProduks, getAllProduks } = useContext(KeranjangSalesContext);
   const [errorMessage, setErrorMessage] = useState(null);
   const [successMessage, setSuccessMessage] = useState(null);
+  const [isLoading, setIsLoading] = useState(false);
 
   let subtotal = 0;
+
+  const goback = () => {
+    history.go(-1);
+  }
 
   useEffect(() => {
     getAllProduks();
@@ -35,10 +48,11 @@ const KeranjangSales = () => {
     }
   }
 
-  const tambahJumlahProduk = (item) => {
+  const tambahJumlahProduk = (item, orderid) => {
     const produk = {
       id: item.id,
-      nama: item.nama,
+      orderId: orderid,
+      customer: parseInt(idCust),
       harga: item.harga,
       jumlah: item.jumlah + 1,
     };
@@ -46,10 +60,11 @@ const KeranjangSales = () => {
     getAllProduks();
   }
 
-  const kurangJumlahProduk = (item) => {
+  const kurangJumlahProduk = (item, orderid) => {
     const produk = {
       id: item.id,
-      nama: item.nama,
+      orderId: orderid,
+      customer: parseInt(idCust),
       harga: item.harga,
       jumlah: item.jumlah - 1,
     };
@@ -64,6 +79,7 @@ const KeranjangSales = () => {
 
   const kirimPesanan = (e) => {
     e.preventDefault();
+    setIsLoading(true);
     axios({
       method: "post",
       url: `${window.location.origin}/api/salesman/buatOrder`,
@@ -72,15 +88,18 @@ const KeranjangSales = () => {
       },
       data: {
         keranjang: produks,
+        idStaf: dataUser.id
       }
     })
       .then(response => {
-        console.log(response);
-        setSuccessMessage(response.data.success_message);
+        console.log('chekout', response);
         hapusSemuaProduk();
+        setIsLoading(false);
+        setSuccessMessage(response.data.success_message);
       })
       .catch(error => {
         console.log(error.message);
+        setIsLoading(false);
         setErrorMessage(error.message);
       });
   }
@@ -88,8 +107,19 @@ const KeranjangSales = () => {
 
   return (
     <main className="page_main">
+      <header className='header_mobile'>
+        <div className='d-flex align-items-center'>
+          <button className='btn' onClick={goback}>
+            <span className="iconify" data-icon="eva:arrow-back-fill"></span>
+          </button>
+          <h1 className='page_title'>Keranjang</h1>
+        </div>
+      </header>
 
       <div className="page_container pt-4">
+        {isLoading && loadingDataUser && <LoadingIndicator />}
+        {successMessage && <AlertComponent successMsg={successMessage} />}
+        {errorMessage && <AlertComponent errorMsg={errorMessage} />}
         {(produks && produks.length === 0) && <p className='text-danger text-center'>Keranjang Kosong</p>}
         {(produks && produks.length !== 0) && <button className='btn btn-danger' onClick={hapusSemuaProduk}>Hapus Semua</button>}
 
@@ -117,7 +147,7 @@ const KeranjangSales = () => {
                   <button
                     className="btn btn-primary"
                     disabled={produk.jumlah === 1 ? true : false}
-                    onClick={() => kurangJumlahProduk(produk)}
+                    onClick={() => kurangJumlahProduk(produk, produk.orderId)}
                   >
                     -
                   </button>
@@ -130,7 +160,7 @@ const KeranjangSales = () => {
 
                   <button
                     className="btn btn-primary"
-                    onClick={() => tambahJumlahProduk(produk)}>
+                    onClick={() => tambahJumlahProduk(produk, produk.orderId)}>
                     +
                   </button>
                 </div>
