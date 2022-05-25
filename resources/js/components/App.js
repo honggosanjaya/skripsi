@@ -16,18 +16,17 @@ import AuthContextProvider from '../contexts/AuthContext';
 import Pemesanan from './sales/Pemesanan';
 import KeranjangSalesContextProvider from '../contexts/KeranjangSalesContext';
 import UserContextProvider from '../contexts/UserContext';
-// import CheckRole from './reuse/CheckRole';
-
+import CheckRole from './reuse/CheckRole';
 
 function App() {
   return (
     <Router>
       <AuthContextProvider>
-        <Switch>
-          <Route path="/spa/login" component={LoginReact} />
+        <UserContextProvider>
+          <Switch>
+            <Route path="/spa/login" component={LoginReact} />
 
-          <UserContextProvider>
-            {/* <Route path="/spa/checkrole" component={CheckRole} /> */}
+            <Route path="/spa/checkrole" component={CheckRole} />
             <KeranjangSalesContextProvider>
               <Route exact path="/salesman" component={DashboardSales} />
               <Route exact path="/salesman/trip" component={TripSales} />
@@ -37,10 +36,10 @@ function App() {
             </KeranjangSalesContextProvider>
 
             <Route exact path="/shipper" component={DashboardShipper} />
-          </UserContextProvider>
 
-          <Route path="*" component={NotFound} />
-        </Switch>
+            <Route path="*" component={NotFound} />
+          </Switch>
+        </UserContextProvider>
       </AuthContextProvider>
     </Router>
   )

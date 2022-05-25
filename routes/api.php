@@ -43,11 +43,11 @@ Route::post('/salesman/buatOrder', [OrderController::class, 'simpanDataOrderSale
 // sales sudah ada kode customer
 Route::get('/kodeCustomer/{id}', [OrderController::class, 'dataKodeCustomer']);
 
+Route::get('/forceLogout', [LoginController::class, 'logoutUnauthorizedSPAApi']);
 
 Route::group(['middleware' => 'auth:sanctum'], function(){
   Route::post('v1/logout', [LoginController::class, 'logoutApi']);
   Route::get('/user', [LoginController::class, 'checkUser']);
-
 
 
 

@@ -1,20 +1,25 @@
-import React, { Component, useContext, useEffect, useState } from 'react';
-import { useHistory } from "react-router";
-import { UserContext } from '../../contexts/UserContext';
+// import React, { Component, useContext, useEffect, useState } from 'react';
+// import { useHistory } from "react-router";
+// import { UserContext } from '../../contexts/UserContext';
 
-const CheckRole = () => {
-  const history = useHistory();
-  const { dataUser, loadingDataUser } = useContext(UserContext);
+// const CheckRole = () => {
+//   const history = useHistory();
+//   const { dataUser } = useContext(UserContext);
 
-  useEffect(() => {
-    if (dataUser.role == 3) {
-      history.push('/salesman');
-    } else if (dataUser.role == 4) {
-      history.push('/shipper');
-    }
-  }, [dataUser])
+//   useEffect(() => {
+//     if (dataUser.length) {
+//       if (dataUser.role == 'salesman') {
+//         history.push('/salesman');
+//       } else if (dataUser.role == 'shipper') {
+//         history.push('/shipper');
+//       }
+//     } else {
+//       console.log('kamu loh belum login');
+//     }
+//   }, [])
+//   // dataUser
 
-  return null;
-}
+//   return null;
+// }
 
-export default CheckRole;
+// export default CheckRole;

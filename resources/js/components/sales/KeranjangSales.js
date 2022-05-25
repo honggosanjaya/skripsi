@@ -88,7 +88,7 @@ const KeranjangSales = () => {
       },
       data: {
         keranjang: produks,
-        idStaf: dataUser.id
+        // idStaf: dataUser[0].id_staff
       }
     })
       .then(response => {

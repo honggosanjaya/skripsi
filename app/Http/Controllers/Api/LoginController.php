@@ -19,11 +19,7 @@ class LoginController extends Controller
         'password' => ['required', 'string', 'max:255']
       ]);
 
-      $role=User::with('linkStaff.linkStaffRole')->where('email',$request->email)->first()->linkStaff->linkStaffRole->nama;
-
-    // $request->session()->put('role', $role);
-    // $request->session()->put('id_staff', User::where('email',$request->email)->first()->id);
-    // dd(session('id_staff'));
+      User::with('linkStaff.linkStaffRole')->where('email',$request->email)->first()->linkStaff->linkStaffRole->nama;
 
       if ($validator->fails()){
         return response()->json([
@@ -46,19 +42,25 @@ class LoginController extends Controller
       }
 
       $detail_user = Staff::find($user->id_users);
-
-      // $request->session()->put('role', $detail_user->linkStaffRole->nama);
+      $data = (object) [
+        "id_staff" => $detail_user->id,
+        "nama" => $detail_user->nama,
+        "email" => $detail_user->email,
+        "telepon" => $detail_user->telepon,
+        "foto_profil" => $detail_user->foto_profil,
+        "role" => $detail_user->linkStaffRole->nama,
+        "status" => $detail_user->linkStatus->nama
+      ];
 
       if($detail_user->linkStaffRole->nama == 'salesman' || $detail_user->linkStaffRole->nama == 'shipper')
       {
         return response()->json([
-          'data' => $detail_user,
-          'role' => $detail_user->linkStaffRole->nama,
-          'status_pegawai' => $detail_user->linkStatus->nama,
+          'data' => $data,
           'status' => 'success',
           'token' => $user->createToken('api-token')->plainTextToken,
         ],200);
-      } else{
+      } 
+      else{
         return response() -> json([
           'status' => 'error',
           'message' => 'Anda mengakses halaman login yang salah'
@@ -80,18 +82,37 @@ class LoginController extends Controller
       $user = $request->user();
       $detail_user = Staff::find($user->id_users);
 
-      if($detail_user->linkStaffRole->nama == "administrasi" || $detail_user->linkStaffRole->nama == "supervisor" || $detail_user->linkStaffRole->nama == "owner"){
-        return response() -> json([
-          'status' => 'error',
-          'message' => 'Anda mengakses halaman login yang salah'
-        ], 401);
-      } else if($detail_user->linkStaffRole->nama == "salesman" || $detail_user->linkStaffRole->nama == "shipper"){
+      $data = (object) [
+        "id_staff" => $detail_user->id,
+        "nama" => $detail_user->nama,
+        "email" => $detail_user->email,
+        "telepon" => $detail_user->telepon,
+        "foto_profil" => $detail_user->foto_profil,
+        "role" => $detail_user->linkStaffRole->nama,
+        "status" => $detail_user->linkStatus->nama
+      ];
+
+      if($detail_user->linkStaffRole->nama == 'salesman' || $detail_user->linkStaffRole->nama == 'shipper')
+      {
         return response()->json([
           'status' => 'success',
-          'data' => $detail_user,
-          'role' => $detail_user->linkStaffRole->nama,
-          'status_pegawai' => $detail_user->linkStatus->nama,
+          'data' => $data,
         ]);
       }
+      else{
+        return response()->json([
+          'status' => 'error',
+          'data' => 'Unauthorized User',
+        ]);
+      }
+    }
+
+    public function logoutUnauthorizedSPAApi(Request $request)
+    {
+      Auth::guard('web')->logout();
+      $request->session()->invalidate();
+      $request->session()->regenerateToken();
+
+      return redirect('/spa/login');
     }
 }

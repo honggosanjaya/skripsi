@@ -7,7 +7,7 @@ import { AuthContext } from '../../contexts/AuthContext';
 import LoadingIndicator from '../reuse/LoadingIndicator';
 
 const HeaderSales = ({ title, isDashboard, isOrder, linkKeranjang }) => {
-  const { token, setToken, isAuth, setIsAuth } = useContext(AuthContext);
+  const { token, setToken, setIsAuth, setErrorAuth } = useContext(AuthContext);
   const history = useHistory();
   const { produks, getAllProduks } = useContext(KeranjangSalesContext);
   const [isLoading, setIsLoading] = useState(false);
@@ -35,12 +35,13 @@ const HeaderSales = ({ title, isDashboard, isOrder, linkKeranjang }) => {
         setIsLoading(false);
         setIsAuth('false');
         setToken(null);
-        // setProfilUser([]);
+        // window.localStorage.removeItem("isAuth");
+        // window.localStorage.removeItem("token");
         history.push('/spa/login');
       })
       .catch((error) => {
         setIsLoading(false);
-        // setError(error.message);
+        setErrorAuth(error.message);
         console.log('eror logout', error.message);
       });
   }

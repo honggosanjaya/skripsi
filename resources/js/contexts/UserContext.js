@@ -1,45 +1,61 @@
 import React, { createContext, useContext, useEffect, useState } from 'react';
-import { useHistory } from 'react-router';
 import { AuthContext } from './AuthContext';
-
+import { useHistory } from "react-router";
 export const UserContext = createContext();
 
 const UserContextProvider = (props) => {
-  const { token, setErrorAuth, setSuccessAuth, setIsAuth } = useContext(AuthContext);
-  const history = useHistory();
+  const { token, setToken, isAuth, setIsAuth } = useContext(AuthContext);
   const [loadingDataUser, setLoadingDataUser] = useState(false);
   const [dataUser, setDataUser] = useState([]);
+  const [errorDataUser, setErrorDataUser] = useState(null);
+  const history = useHistory();
 
   useEffect(() => {
-    setLoadingDataUser(true);
-    axios({
-      method: "get",
-      url: `${window.location.origin}/api/user`,
-      headers: {
-        Authorization: "Bearer " + token,
-      }
-    })
-      .then((response) => {
-        if (response.data.status !== 'success') {
-          setIsAuth('false');
-          throw Error(response.data.message);
-        } else {
-          console.log("user :", response.data);
-          setDataUser(response.data.data);
-          setIsAuth('true');
-          setLoadingDataUser(false);
+    if (isAuth === 'true' && token !== null & dataUser.length === 0) {
+      setLoadingDataUser(true);
+      axios({
+        method: "get",
+        url: `${window.location.origin}/api/user`,
+        headers: {
+          Accept: "application/json",
+          Authorization: "Bearer " + token,
         }
       })
-      .catch((error) => {
-        if (error.response.data.message === 'Unauthenticated.' || error.response.status === 401) {
-          setIsAuth('false');
-        }
-        history.push('/spa/login');
-        setErrorAuth('Login Terlebih Dahulu');
-        setLoadingDataUser(false);
-        setSuccessAuth('');
-      });
-  }, []);
+        .then((response) => {
+          console.log("user context:", response.data.data);
+          setLoadingDataUser(false);
+          if (response.data.status === 'success') {
+            setDataUser(response.data.data);
+          } else {
+            console.log('dari user context logout paksa');
+            setIsAuth('false');
+            setToken(null);
+            history.push('/spa/login');
+            // axios({
+            //   method: "get",
+            //   url: `${window.location.origin}/api/forceLogout`,
+            //   headers: {
+            //     Accept: "application/json",
+            //   }
+            // })
+            //   .then((response) => {
+            //     setIsAuth('false');
+            //     setToken(null);
+            //     // window.localStorage.removeItem("isAuth");
+            //     // window.localStorage.removeItem("token");
+            //     history.push('/spa/login');
+            //   })
+            //   .catch((error) => {
+            //     console.log(error.message);
+            //   });
+          }
+        })
+        .catch((error) => {
+          setLoadingDataUser(false);
+          setErrorDataUser(error.message);
+        });
+    }
+  }, [dataUser]);
 
   return (
     <UserContext.Provider value={{ dataUser, loadingDataUser, setDataUser }}>

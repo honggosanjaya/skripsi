@@ -14,9 +14,9 @@ class OrderController extends Controller
     public function simpanDataOrderSalesmanAPI(Request $request)
     {
         $keranjangItems = $request->keranjang;
-        $id_order=null;
         $idStaf = $request->idStaf;
 
+        $id_order=null;
         if(sizeof($keranjangItems) > 0){
           foreach($keranjangItems as $item){
             $id_customer = $item['customer'];
@@ -95,7 +95,7 @@ class OrderController extends Controller
               }
           }
           
-          // $orderTrack->update('waktu_diteruskan', now());          
+          OrderTrack::where('id_order', $id_order)->update('waktu_diteruskan', now());          
         }
 
                   // Trip::create(
