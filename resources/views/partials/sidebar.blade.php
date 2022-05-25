@@ -34,7 +34,7 @@
           </a>
         </li>
         <li class="mb-3">
-          <a class="{{ Request::is('dashboard/retur*') ? 'active' : '' }}" href="/dashboard/retur">
+          <a class="{{ Request::is('administrasi/retur*') ? 'active' : '' }}" href="/administrasi/retur">
             <i class="bi bi-arrow-return-left me-2"></i><span>Retur</span>
           </a>
         </li>

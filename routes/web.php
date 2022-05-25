@@ -10,6 +10,7 @@ use App\Http\Controllers\DistrictController;
 use App\Http\Controllers\EventController;
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\VehicleController;
+use App\Http\Controllers\ReturController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -76,7 +77,13 @@ Route::prefix('administrasi')->middleware('administrasi')->group(function() {
   Route::get('/pesanan/detail/{order:id}', [OrderController::class, 'viewDetail']);
   Route::get('/pesanan/detail/{order:id}/cetak-memo', [OrderController::class, 'cetakMemo']);
   Route::get('/pesanan/detail/{order:id}/cetak-invoice', [OrderController::class, 'cetakInvoice']);
-  Route::put('/pesanan/detail/{order:id}/cetak-sj', [OrderController::class, 'cetakSJ']);
+  Route::get('/pesanan/detail/{order:id}/cetak-sj', [OrderController::class, 'cetakSJ']);
+
+  //Route untuk retur
+  Route::get('/retur', [ReturController::class, 'index']);
+  Route::get('/retur/cari', [ReturController::class, 'search']);
+  Route::get('/retur/{retur:no_retur}', [ReturController::class, 'viewRetur']);
+  Route::get('/retur/cetak-retur/{retur:no_retur}', [ReturController::class, 'cetakRetur']);
 
   //Route untuk kendaraan
   Route::get('/kendaraan', [VehicleController::class, 'index']);
@@ -107,6 +114,17 @@ Route::prefix('administrasi')->middleware('administrasi')->group(function() {
     Route::post('/pengadaan/clear', [CartController::class, 'clearAllCart'])->name('cart.clear');
 
     Route::post('/pengadaan/tambahpengadaan', [ItemController::class, 'simpanDataPengadaan']);
+
+    //Route untuk stok
+    Route::get('/opname', [ItemController::class, 'productListOpname']);
+    Route::get('/opname/final', [CartController::class, 'cartList']);
+    Route::post('/opname/final', [CartController::class, 'addToCart']);
+    Route::post('/opname/update-final', [CartController::class, 'updateCart']);
+    Route::post('/opname/remove', [CartController::class, 'removeCart']);
+    Route::get('/opname/clear', [CartController::class, 'clearAllCart']);
+
+    Route::get('/opname/tambahopname', [ItemController::class, 'simpanDataOpname']);
+
   });
 
   Route::get('/datacustomer', [CustomerController::class, 'administrasiIndex']);

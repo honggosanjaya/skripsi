@@ -3,8 +3,11 @@
 namespace App\Http\Controllers;
 
 use App\Models\Item;
+use App\Models\Order;
+use App\Models\OrderItem;
 use App\Models\Pengadaan;
 use App\Models\Status;
+use App\Models\Staff;
 use Barryvdh\DomPDF\Facade\Pdf as FacadePdf;
 use Barryvdh\DomPDF\PDF as DomPDFPDF;
 use Illuminate\Http\Request;
@@ -53,12 +56,22 @@ class ItemController extends Controller
       ], 200);
   }
 
+//pengadaan
   public function productList()
   {
       $products = Item::all();
       return view('administrasi.stok.pengadaan.index', [
         "products" => $products,
         "title" => "Stok Marketing - Pengadaan",
+      ]);
+  }
+//opname
+  public function productListOpname()
+  {
+      $products = Item::all();
+      return view('administrasi.stok.opname.index', [
+        "products" => $products,
+        "title" => "Stok Marketing - opname",
       ]);
   }
 
@@ -92,12 +105,43 @@ class ItemController extends Controller
       $stok->save();
     }
 
-    // dd($data);
-
     Pengadaan::insert($data);
     \Cart::session(auth()->user()->id.$request->route)->clear();
 
     return redirect()->route('products.list')->with('pesanSukses', 'Produk berhasil ditambahkan ke database');
+  }
+
+  public function simpanDataOpname(Request $request)
+  {
+    $cartItems = \Cart::session(auth()->user()->id.$request->route)->getContent();
+
+    $order_id= Order::insertGetId([
+      'id_customer' => 0,
+      'id_staff' => auth()->user()->id,
+      'status' => 14,
+      'created_at' => now(),
+    ]);
+
+    $data = [];
+    foreach($cartItems as $item){
+      array_push($data,[
+        'id_item' => auth()->user()->id,
+        'id_order' => $order_id,
+        'kuantitas' => $item->attributes->jumlah,
+        'harga_satuan' => 0,
+        'keterangan' =>  $item->attributes->keterangan,
+      ]);
+      $stok = Item::find($item->id);
+      $stok->stok +=  $item->attributes->jumlah;
+      $stok->save();
+    }
+
+    OrderItem::insert($data);
+
+    
+    \Cart::session(auth()->user()->id.$request->route)->clear();
+
+    return redirect('/administrasi/stok/')->with('pesanSukses', 'Produk berhasil ditambahkan ke database');
   }
 
     /**
@@ -336,11 +380,14 @@ class ItemController extends Controller
         $total = Pengadaan::selectRaw('SUM(harga_total) as harga')
         ->where('no_pengadaan','=',$pengadaan->no_pengadaan)
         ->first();
+
+        $administrasi = Staff::select('nama')->where('id','=',auth()->user()->id_users)->first();
         
         $pdf = PDF::loadview('administrasi/stok/riwayat.detail-pdf',[
           'pengadaans' => $pengadaans,
             'total_harga' => $total,
-            'detail' => $pengadaan            
+            'detail' => $pengadaan,
+            'administrasi' => $administrasi            
         ]);
 
         return $pdf->download('laporan-NPB-pdf.pdf');
