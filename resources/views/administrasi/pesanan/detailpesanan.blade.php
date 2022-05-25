@@ -70,12 +70,7 @@
         <h5>Status Pesanan : </h5>
       </div>
       <div class="col-3">
-        @if ($order->linkStatus->id === 14 )
-            <p class="text-success fw-bold">{{ $order->linkStatus->nama }}</p>
-        @else
-            <p class="text-danger fw-bold">{{ $order->linkStatus->nama }}</p>
-        @endif
-        
+        <p class="text-success fw-bold">{{ $order->linkOrderTrack->linkStatus->nama }}</p>     
       </div>    
   </div>
 
