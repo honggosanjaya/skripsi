@@ -7,6 +7,8 @@ use App\Models\Order;
 use App\Models\OrderTrack;
 use App\Models\OrderItem;
 use App\Models\Staff;
+use App\Models\Invoice;
+use App\Models\Status;
 use PDF;
 
 class OrderController extends Controller
@@ -61,18 +63,55 @@ class OrderController extends Controller
 
 
     public function index(){
-        $orders = Order::paginate(5);
+        $orders = Order::join('order_tracks','orders.id','=','order_tracks.id_order')
+        ->join('statuses','order_tracks.status','=','statuses.id')
+        ->join('invoices','orders.id','=','invoices.id_order')
+        ->paginate(5);
+        $statuses = Status::where('tabel','=','order_tracks')->get();
+                     
         return view('administrasi/pesanan.index',[
-            'orders' => $orders
+            'orders' => $orders,            
+            'statuses' => $statuses
         ]);
     }
 
     public function search(){
-        $orders = Order::where(strtolower('nomor_invoice'),'like','%'.request('cari').'%')->paginate(5);
-               
+      $orders = Order::join('order_tracks','orders.id','=','order_tracks.id_order')
+        ->join('statuses','order_tracks.status','=','statuses.id')
+        ->join('invoices','orders.id','=','invoices.id_order')
+        ->where(strtolower('nomor_invoice'),'like','%'.request('cari').'%')
+        ->paginate(5);  
+      
+        $statuses = Status::where('tabel','=','order_tracks')->get();
+
         return view('administrasi/pesanan.index',[
-            'orders' => $orders
+            'orders' => $orders,
+            'statuses' => $statuses
         ]);
+    }
+
+    public function filter(){
+      if(request('status') != ""){
+        $orders = Order::join('order_tracks','orders.id','=','order_tracks.id_order')
+        ->join('statuses','order_tracks.status','=','statuses.id')
+        ->join('invoices','orders.id','=','invoices.id_order')
+        ->where('statuses.id','=',request('status'))
+        ->paginate(5);
+      }
+      else{
+        $orders = Order::join('order_tracks','orders.id','=','order_tracks.id_order')
+        ->join('statuses','order_tracks.status','=','statuses.id')
+        ->join('invoices','orders.id','=','invoices.id_order')        
+        ->paginate(5);
+      }
+      
+        $statuses = Status::where('tabel','=','order_tracks')       
+        ->get();
+
+        return view('administrasi/pesanan.index',[
+            'orders' => $orders,            
+            'statuses' => $statuses
+        ]);      
     }
 
     public function viewDetail(Order $order){

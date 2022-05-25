@@ -29,15 +29,34 @@
           <div class="input-group">
             <input type="text" class="form-control" name="cari" placeholder="Cari Pesanan..."
             value="{{ request('cari') }}">
-            <button type="submit" class="btn btn-primary">Cari</button>   
-          </div>
-          
-        </form>    
+            <button type="submit" class="btn btn-primary">Cari</button>               
+          </div>                   
+        </form>         
         
       </div>
     </div>
-    
   </div>
+  <div class="row">
+    <div class="col-3">
+      <div class="mt-3 search-box">
+        <form method="GET" action="/administrasi/pesanan/filter">          
+            <select class="form-select" name="status">
+              <option value="">-- Pilih Status -- </option>
+              @foreach($statuses as $status)
+                <option value="{{ $status->id }}">
+                  {{ $status->nama }}
+                </option>
+              @endforeach
+            </select>                    
+                                            
+      </div>
+    </div>
+    <div class="col-3 mt-3">
+      <button type="submit" class="btn btn-primary">Cari</button>
+    </div>
+  </form> 
+  </div> 
+  
 </div>
 
 
@@ -60,12 +79,12 @@
             <td>{{ ($orders->currentPage() - 1) * $orders->perPage() + $loop->iteration }}</td>
             <td>{{ $order->linkCustomer->nama }}</td>
             <td>{{ $order->linkStaff->nama }}</td>
-            <td>{{ $order->linkInvoice->nomor_invoice }}</td>
-            <td>{{ $order->linkInvoice->harga_total }}</td>
+            <td>{{ $order->nomor_invoice }}</td>
+            <td>{{ $order->harga_total }}</td>
             <td>{{ $order->linkStatus->nama }}</td>
-            <td>{{ date('d-m-Y', strtotime($order->linkInvoice->created_at)) }}</td>
+            <td>{{ date('d-m-Y', strtotime($order->created_at)) }}</td>
             <td>
-                <a href="/administrasi/pesanan/detail/{{ $order->id }}" class="btn btn-primary">Detail</a>
+                <a href="/administrasi/pesanan/detail/{{ $order->id_order }}" class="btn btn-primary">Detail</a>
             </td>
         </tr>
     @endforeach
