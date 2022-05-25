@@ -115,6 +115,17 @@ Route::prefix('administrasi')->middleware('administrasi')->group(function() {
     Route::post('/pengadaan/clear', [CartController::class, 'clearAllCart'])->name('cart.clear');
 
     Route::post('/pengadaan/tambahpengadaan', [ItemController::class, 'simpanDataPengadaan']);
+
+    //Route untuk stok
+    Route::get('/opname', [ItemController::class, 'productListOpname']);
+    Route::get('/opname/final', [CartController::class, 'cartList']);
+    Route::post('/opname/final', [CartController::class, 'addToCart']);
+    Route::post('/opname/update-final', [CartController::class, 'updateCart']);
+    Route::post('/opname/remove', [CartController::class, 'removeCart']);
+    Route::get('/opname/clear', [CartController::class, 'clearAllCart']);
+
+    Route::get('/opname/tambahopname', [ItemController::class, 'simpanDataOpname']);
+
   });
 
   Route::get('/datacustomer', [CustomerController::class, 'administrasiIndex']);
