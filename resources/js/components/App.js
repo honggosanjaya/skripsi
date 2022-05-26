@@ -16,7 +16,6 @@ import AuthContextProvider from '../contexts/AuthContext';
 import Pemesanan from './sales/Pemesanan';
 import KeranjangSalesContextProvider from '../contexts/KeranjangSalesContext';
 import UserContextProvider from '../contexts/UserContext';
-import CheckRole from './reuse/CheckRole';
 
 function App() {
   return (
@@ -26,7 +25,7 @@ function App() {
           <Switch>
             <Route path="/spa/login" component={LoginReact} />
 
-            <Route path="/spa/checkrole" component={CheckRole} />
+
             <KeranjangSalesContextProvider>
               <Route exact path="/salesman" component={DashboardSales} />
               <Route exact path="/salesman/trip" component={TripSales} />

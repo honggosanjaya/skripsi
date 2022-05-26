@@ -6,7 +6,7 @@ import { Dropdown } from 'react-bootstrap';
 import { AuthContext } from '../../contexts/AuthContext';
 import LoadingIndicator from '../reuse/LoadingIndicator';
 
-const HeaderSales = ({ title, isDashboard, isOrder, linkKeranjang }) => {
+const HeaderSales = ({ title, isDashboard, isOrder, lihatKeranjang }) => {
   const { token, setToken, setIsAuth, setErrorAuth } = useContext(AuthContext);
   const history = useHistory();
   const { produks, getAllProduks } = useContext(KeranjangSalesContext);
@@ -35,8 +35,6 @@ const HeaderSales = ({ title, isDashboard, isOrder, linkKeranjang }) => {
         setIsLoading(false);
         setIsAuth('false');
         setToken(null);
-        // window.localStorage.removeItem("isAuth");
-        // window.localStorage.removeItem("token");
         history.push('/spa/login');
       })
       .catch((error) => {
@@ -58,10 +56,10 @@ const HeaderSales = ({ title, isDashboard, isOrder, linkKeranjang }) => {
             <h1 className='page_title'>{title}</h1>
           </div>
           {isOrder &&
-            <Link to={linkKeranjang}>
+            <button className="btn" onClick={lihatKeranjang}>
               <span className="iconify" data-icon="clarity:shopping-cart-solid"></span>
               {produks && <span>{produks.length}</span>}
-            </Link>
+            </button>
           }
         </Fragment>
       }
@@ -79,8 +77,6 @@ const HeaderSales = ({ title, isDashboard, isOrder, linkKeranjang }) => {
               </Dropdown.Item>
             </Dropdown.Menu>
           </Dropdown>
-
-
         </Fragment>
       }
     </header >

@@ -28,26 +28,21 @@ const UserContextProvider = (props) => {
             setDataUser(response.data.data);
           } else {
             console.log('dari user context logout paksa');
-            setIsAuth('false');
-            setToken(null);
-            history.push('/spa/login');
-            // axios({
-            //   method: "get",
-            //   url: `${window.location.origin}/api/forceLogout`,
-            //   headers: {
-            //     Accept: "application/json",
-            //   }
-            // })
-            //   .then((response) => {
-            //     setIsAuth('false');
-            //     setToken(null);
-            //     // window.localStorage.removeItem("isAuth");
-            //     // window.localStorage.removeItem("token");
-            //     history.push('/spa/login');
-            //   })
-            //   .catch((error) => {
-            //     console.log(error.message);
-            //   });
+            // setIsAuth('false');
+            // setToken(null);
+            // history.push('/spa/login');
+            axios({
+              method: "get",
+              url: `${window.location.origin}/api/forceLogout`,
+              headers: {
+                Accept: "application/json",
+              }
+            })
+              .then(() => {
+                setIsAuth('false');
+                setToken(null);
+                history.push('/spa/login');
+              })
           }
         })
         .catch((error) => {

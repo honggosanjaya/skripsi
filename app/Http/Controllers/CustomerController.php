@@ -64,15 +64,16 @@ class CustomerController extends Controller
         'durasi_kunjungan' => ['required', 'integer'],
       ];
       
-      if ($request->id==null){
-        $rules['email'] = ['string', 'email', 'max:255', 'unique:users'];
-      }
-      if (Customer::find($request->id)->email == null) {
-        $rules['email'] = ['string', 'email', 'max:255', 'unique:users'];
-      }
+      // if ($request->id==null){
+      //   $rules['email'] = ['string', 'email', 'max:255', 'unique:users'];
+      // }
+      // if (Customer::find($request->id)->email == null) {
+      //   $rules['email'] = ['string', 'email', 'max:255', 'unique:users'];
+      // }
       
       $validator = Validator::make($request->all(), $rules);
-      $data = $request->except(['jam_masuk','alasan_penolakan','status','koordinat'])+['id_staff' => session('id_staff'), 'status' => 3,'created_at' => now()];
+      // $data = $request->except(['jam_masuk','alasan_penolakan','status','koordinat'])+['id_staff' => session('id_staff'), 'status' => 3,'created_at' => now()];
+      $data = $request->except(['jam_masuk','alasan_penolakan','status','koordinat'])+['id_staff' => 4, 'status' => 3,'created_at' => now()];
       $status = $request->status=='trip'?1:2;
       $id=null;
 
@@ -103,18 +104,16 @@ class CustomerController extends Controller
         }
         $customer = Customer::find($id)->update($data);
         Customer::find($id)->update(['password'=>Hash::make(12345678)]);
-
       }
       if (Trip::where('id_customer',$id)->where('status',2)->count()==0) {
         Customer::find($id)->update(['counter_to_effective_call' => $request->counter_to_effective_call+1]);
       }
       
-
-      // dd($request->jam_masuk);
       Trip::create(
         [
           'id_customer' => $id,
-          'id_staff' => session('id_staff') ,
+          // 'id_staff' => session('id_staff') ,
+          'id_staff' => 4,
           'alasan_penolakan' => $request->alasan_penolakan,
           'koordinat' => $request->koordinat,
           'waktu_masuk' => date('Y-m-d H:i:s', $request->jam_masuk),
@@ -125,9 +124,10 @@ class CustomerController extends Controller
       );
             
       // dd($request);
+
       return response()->json([
         'status' => 'success',
-        'data' => Customer::find($id)
+        'data' => Customer::find($id),
       ]);
     }
 

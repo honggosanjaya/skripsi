@@ -125,7 +125,11 @@ const DashboardSales = () => {
                       {showListCustomer}
                     </Accordion>
                   </div>
-                  <a type="button" href="/salesman/trip/" className={`btn btn-primary d-block ${addButton == 'active' ? '' : 'd-none'}`}>masih belum menemukan silahkan tambah baru</a>
+                  {/* ini nanti pakai <Link> di recat tidak pakai a kalau a refresh halaman */}
+                  <a type="button" href="/salesman/trip/"
+                    className={`btn btn-primary d-block ${addButton == 'active' ? '' : 'd-none'}`}>
+                    masih belum menemukan silahkan tambah baru
+                  </a>
                 </div>
               </div>
             </div>

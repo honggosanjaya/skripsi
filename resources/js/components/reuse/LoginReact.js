@@ -21,7 +21,7 @@ const LoginReact = () => {
     console.log('token', token);
     console.log('data user', dataUser);
 
-    if (isAuth === 'true' && token !== null) {
+    if (isAuth === 'true' && token !== null && dataUser) {
       console.log('sudah login', dataUser);
       if (dataUser.role == 'salesman') {
         history.push('/salesman');
@@ -84,28 +84,31 @@ const LoginReact = () => {
           }
         }
 
-        axios({
-          method: "get",
-          url: `${window.location.origin}/api/user`,
-          headers: {
-            Accept: "application/json",
-            Authorization: "Bearer " + token,
-          }
-        })
-          .then((response) => {
-            if (response.data.status === 'error') {
-              axios({
-                method: "get",
-                url: `${window.location.origin}/api/forceLogout`,
-                headers: {
-                  Accept: "application/json",
-                }
-              })
+        if (token != null) {
+          console.log('dijaankan');
+          axios({
+            method: "get",
+            url: `${window.location.origin}/api/user`,
+            headers: {
+              Accept: "application/json",
+              Authorization: "Bearer " + token,
             }
           })
-          .catch((error) => {
-            setErrorDataUser(error.message);
-          });
+            .then((response) => {
+              if (response.data.status === 'error') {
+                axios({
+                  method: "get",
+                  url: `${window.location.origin}/api/forceLogout`,
+                  headers: {
+                    Accept: "application/json",
+                  }
+                })
+              }
+            })
+          // .catch((error) => {
+          //   setErrorDataUser(error.message);
+          // });
+        }
       })
       .catch((error) => {
         setIsLoading(false);

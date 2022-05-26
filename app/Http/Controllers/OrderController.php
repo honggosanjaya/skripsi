@@ -7,7 +7,10 @@ use App\Models\Order;
 use App\Models\OrderTrack;
 use App\Models\OrderItem;
 use App\Models\Staff;
+use App\Models\Trip;
+use App\Models\Customer;
 use PDF;
+use Illuminate\Support\Facades\Validator;
 
 class OrderController extends Controller
 {
@@ -16,8 +19,11 @@ class OrderController extends Controller
     {
         $keranjangItems = $request->keranjang;
         $idStaf = $request->idStaf;
+        $estimasiWaktuPengiriman = $request->estimasiWaktuPengiriman;
+        $keterangan = $request->keterangan;
+        $id_order = null;
+        $id_customer = null;
 
-        $id_order=null;
         if(sizeof($keranjangItems) > 0){
           foreach($keranjangItems as $item){
             $id_customer = $item['customer'];
@@ -55,12 +61,14 @@ class OrderController extends Controller
             'waktu_order'=> now(),
             'created_at'=> now(),
             'waktu_diteruskan' => now(),
-            'estimasi_waktu_pengiriman' => '1'
+            'estimasi_waktu_pengiriman' => $estimasiWaktuPengiriman,
           ]);
           OrderItem::insert($data);
-        } 
-        else{
-          //order item sudah ada jadi tinggal update      
+        }
+        
+        // =========== JIKA SUDAH ADA ============
+
+        else{   
           foreach($keranjangItems as $item){
             $updateitem=OrderItem::where('id_order', $id_order)->where('id_item', $item['id'])->first();
             //jika data order item di database ditemukan
@@ -71,7 +79,7 @@ class OrderController extends Controller
                 'id_item' => $item['id'],
                 'kuantitas' => $item['jumlah'],
                 'harga_satuan' => $item['harga'],
-                'keterangan' => null,
+                'keterangan' => $keterangan,
               ]);
             } else {
               # create...
@@ -80,60 +88,102 @@ class OrderController extends Controller
                 'id_item' => $item['id'],
                 'kuantitas' => $item['jumlah'],
                 'harga_satuan' => $item['harga'],
-                'keterangan' => null,
+                'keterangan' => $keterangan,
               ]);
             } 
           }
 
           $orderItems=OrderItem::where('id_order', $id_order)->get();
           foreach($orderItems as $orderItem){
-            // cari $orderItem->id_item ada tidak di id item di cart 
-            // jika tidak ada jalankan if
+            // cari $orderItem->id_item ada tidak di id item di cart, jika tidak ada jalankan if
             $key = array_search($orderItem->id_item, array_column($keranjangItems, 'id'));
               if($key === false){
                 # delete...
                 $orderItem->delete();
               }
           }
-          
-          OrderTrack::where('id_order', $id_order)->update('waktu_diteruskan', now());          
+
+          Order::where('id', $id_order)->update([
+            'id_staff' => $idStaf,
+          ]);
+
+          OrderTrack::where('id_order', $id_order)->update([
+            'waktu_diteruskan' => now(),
+            'estimasi_waktu_pengiriman' => $estimasiWaktuPengiriman,
+          ]);          
         }
 
-                  // Trip::create(
-          //   [
-          //     'id_customer' => $id,
-          //     'id_staff' => session('id_staff') ,
-          //     'koordinat' => $request->koordinat,
-          //     'waktu_masuk' => date('Y-m-d H:i:s', $request->jam_masuk),
-          //     'waktu_keluar' => now(),
-          //     'status' => $status,
-          //     'created_at'=> now()
-          //   ]
-          // );
-        
-        
+        return response()->json([
+          'status' => 'success',
+          'success_message' => 'berhasil membuat pesanan'
+        ]);
+    }
 
-          return response()->json([
-            'status' => 'success',
-            'success_message' => 'berhasil membuat pesanan'
-          ]);
+// ============================
+
+    public function keluarTripOrderApi($id){                
+        Trip::find($id)->update([
+          'waktu_keluar' => now(),
+          'updated_at' => now()
+        ]);
+
+        return response()->json([
+          'status' => 'success',
+          'message'=>'Jam keluar berhasil dicatat',
+          'data' => Trip::find($id)
+        ]);
+    }
+
+    public function catatTripOrderApi(Request $request){
+      $id_customer = $request->idCustomer;
+      $id_staff = $request->idStaff;
+      $customer = Customer::find($id_customer);
+
+      if (Trip::where('id_customer',$id_customer)->where('status',2)->count()==0) {
+        Customer::find($id_customer)->update([
+          'counter_to_effective_call' => $customer->counter_to_effective_call+1
+        ]);
+      }
+
+      $tripOrder = Trip::insertGetId(
+        [
+          'id_customer' => $id_customer,
+          'id_staff' => $id_staff,
+          'alasan_penolakan' => null,
+          'koordinat' => $request->koordinat,
+          'waktu_masuk' => date('Y-m-d H:i:s', $request->jam_masuk),
+          'waktu_keluar' => null,
+          'status' => 2,
+          'created_at'=> now()
+        ]
+      );
+
+      $id_trip = $tripOrder;
+
+      return response()->json([
+        'status' => 'success',
+        'message'=>'Trip Order berhasil dicatat',
+        'data' => Trip::find($id_trip)
+      ]); 
     }
 
     public function dataKodeCustomer($id){
       $order=Order::find($id);
-
       $order_item = OrderItem::where('id_order', $id)->get();
 
-      return response()->json([
-        'status' => 'success',
-        'dataOrder' => $order,
-        'dataOrderItem' => $order_item,
-        'message' => 'berhasil memasukkan produk dalam keranjang'
-      ]);
-    }
-
-    public function keluarToko(){
-      
+      if($order!==null){
+        return response()->json([
+          'status' => 'success',
+          'dataOrder' => $order,
+          'dataOrderItem' => $order_item,
+          'message' => 'berhasil memasukkan produk dalam keranjang'
+        ]);
+      } else{
+        return response()->json([
+          'status' => 'error',
+          'message' => 'kode customer tidak ditemukan'
+        ]);
+      }
     }
 
     public function index(){

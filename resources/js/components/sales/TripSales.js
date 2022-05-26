@@ -33,6 +33,7 @@ const TripSales = () => {
   const [customerTypeArr, setCustomerTypeArr] = useState([]);
   const [showListCustomerType, setShowListCustomerType] = useState([]);
   const [showListDistrict, setShowListDistrict] = useState([]);
+  const [customer, setCustomer] = useState([]);
 
   const Swal = require('sweetalert2')
   let $imagePreview = null;
@@ -67,7 +68,7 @@ const TripSales = () => {
       }
     })
       .then(response => {
-        // console.log(response.data.data);
+        console.log(response.data);
         setCustomer(response.data.data);
         return response.data.data;
       })
@@ -133,7 +134,6 @@ const TripSales = () => {
       console.log(response.data);
       setDistrictArr(response.data.district)
       setCustomerTypeArr(response.data.customerType)
-
       return response.data.data;
     })
   }, [])
@@ -163,7 +163,12 @@ const TripSales = () => {
   }
 
   const handleOrder = () => {
-    history.push(`/salesman/order/${id}`);
+    kirimCustomer();
+    if (id == undefined) {
+      history.push(`/salesman/order/${customer.id}`);
+    } else {
+      history.push(`/salesman/order/${id}`);
+    }
   }
 
   return (
@@ -257,7 +262,7 @@ const TripSales = () => {
 
           <div className="trip_aksi">
             <button type="submit" className="btn btn-danger me-3">Keluar</button>
-            <button type="submit" className="btn btn-success" onClick={handleOrder}>Order</button>
+            <button className="btn btn-success" onClick={handleOrder}>Order</button>
           </div>
         </form>
       </div>
