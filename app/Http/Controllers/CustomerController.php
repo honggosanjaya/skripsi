@@ -58,98 +58,133 @@ class CustomerController extends Controller
         'id_jenis' => ['required'],
         'id_wilayah' => ['required'],
         'alamat_utama' => ['required', 'string', 'max:255'],
-        'alamat_nomor' => ['required', 'string', 'max:255'],
-        'keterangan_alamat' => ['string', 'max:255'],
-        'telepon' => ['string', 'max:15'],
         'durasi_kunjungan' => ['required', 'integer'],
       ];
-      
-      // if ($request->id==null){
-      //   $rules['email'] = ['string', 'email', 'max:255', 'unique:users'];
-      // }
-      // if (Customer::find($request->id)->email == null) {
-      //   $rules['email'] = ['string', 'email', 'max:255', 'unique:users'];
-      // }
-      
-      $validator = Validator::make($request->all(), $rules);
-      // $data = $request->except(['jam_masuk','alasan_penolakan','status','koordinat'])+['id_staff' => session('id_staff'), 'status' => 3,'created_at' => now()];
-      $data = $request->except(['jam_masuk','alasan_penolakan','status','koordinat'])+['id_staff' => 4, 'status' => 3,'created_at' => now()];
-      $status = $request->status=='trip'?1:2;
-      $id=null;
 
-      if($validator->fails()){
-        return response()->json($validator->errors(),400);
+      if($request->alamat_nomor){
+        $rules['alamat_nomor'] = ['string', 'max:255'];
       }
+
+      if($request->keterangan_alamat){
+        $rules['keterangan_alamat'] = ['string', 'max:255'];
+      }
+
+      if($request->telepon){
+        $rules['telepon'] = ['string', 'max:15'];
+      }
+
+      if($request->id){
+        if (Customer::find($request->id)->email == null && $request->email !== null) {
+          $rules['email'] = ['string', 'email', 'max:255', 'unique:users'];
+        }
+      }else{
+        if ($request->email !== null) {
+          $rules['email'] = ['string', 'email', 'max:255', 'unique:users'];
+        }
+      }
+
+      $validator = Validator::make($request->all(), $rules);
+      if ($validator->fails()){
+        return response()->json([
+          'validate_err' => $validator->errors()
+        ]);
+      }
+
+      $data = $request->except(['jam_masuk','alasan_penolakan','status','koordinat'])+[
+        'status' => 3,
+        'created_at' => now()
+      ];
+      $status = $request->status == 'trip' ? 1:2;
+      $id_customer = null;
+
       if ($request->id==null) {
         $customer = Customer::insertGetId($data+['koordinat' =>  $request->koordinat]);
-        $id=$customer;
+        $id_customer = $customer;
         if ($request->email!=null) {
-          $user = User::create([
-            'id_users' =>  $id,
+          User::create([
+            'id_users' =>  $id_customer,
             'email' => $request->email,
             'password' => Hash::make(12345678),
             'tabel' => 'customers',
-        ]);
-        Customer::find($customer)->update(['password'=>Hash::make(12345678)]);
+          ]);
+          Customer::find($customer)->update(['password'=>Hash::make(12345678)]);
         }
       } else {
-        $id=$request->id;
-        if ($request->email!=null&&Customer::find($id)->email==null) {
-          $user = User::create([
-            'id_users' =>  $id,
+        $id_customer = $request->id;
+        if ($request->email!=null&&Customer::find($id_customer)->email==null) {
+          User::create([
+            'id_users' =>  $id_customer,
             'email' => $request->email,
             'password' => Hash::make(12345678),
             'tabel' => 'customers',
           ]);
         }
-        $customer = Customer::find($id)->update($data);
-        Customer::find($id)->update(['password'=>Hash::make(12345678)]);
+        $customer = Customer::find($id_customer)->update($data);
+        Customer::find($id_customer)->update(['password'=>Hash::make(12345678)]);
       }
-      if (Trip::where('id_customer',$id)->where('status',2)->count()==0) {
-        Customer::find($id)->update(['counter_to_effective_call' => $request->counter_to_effective_call+1]);
+
+      if (Trip::where('id_customer',$id_customer)->where('status',2)->count()==0) {
+        Customer::find($id_customer)->update(['counter_to_effective_call' => $request->counter_to_effective_call+1]);
       }
-      
-      Trip::create(
-        [
-          'id_customer' => $id,
-          // 'id_staff' => session('id_staff') ,
-          'id_staff' => 4,
+
+      if($status == 1){
+        Trip::create([
+          'id_customer' => $id_customer,
+          'id_staff' => $request->id_staff,
           'alasan_penolakan' => $request->alasan_penolakan,
           'koordinat' => $request->koordinat,
           'waktu_masuk' => date('Y-m-d H:i:s', $request->jam_masuk),
           'waktu_keluar' => now(),
           'status' => $status,
           'created_at'=> now()
-        ]
-      );
-            
-      // dd($request);
+        ]);
+      } 
+      // else if($status == 2){
+      //   Trip::create([
+      //     'id_customer' => $id_customer,
+      //     'id_staff' => $request->id_staff,
+      //     'alasan_penolakan' => $request->alasan_penolakan,
+      //     'koordinat' => $request->koordinat,
+      //     'waktu_masuk' => date('Y-m-d H:i:s', $request->jam_masuk),
+      //     'waktu_keluar' => null,
+      //     'status' => $status,
+      //     'created_at'=> now()
+      //   ]);
+      // }
 
       return response()->json([
         'status' => 'success',
-        'data' => Customer::find($id),
+        'data' => Customer::find($id_customer),
       ]);
     }
 
     public function simpanCustomerFotoApi(Request $request, $id){
-      $validator = Validator::make($request->all(), [
-        'foto' => 'nullable|image|mimes:jpg,bmp,png'
-      ]);
-
-      if ($validator->fails()) {
-        return response()->json([
-            'message' => 'validation fails',
-            'errors' => $validator->errors()
-        ]);
+      $fileFoto = $request->foto;
+      if($fileFoto == "null"){
+        $fileFoto = null;
       }
 
       $customer = Customer::find($id);
 
-      if ($request->foto) {
+      if($fileFoto !== null){
+        $validator = Validator::make($request->all(), [
+          'foto' => 'image|nullable|max:1024',
+        ]);
+    
+        if ($validator->fails()) {
+          return response()->json([
+            'message' => 'validation fails',
+            'errors' => $validator->errors()
+          ]);
+        }
+      }
+
+      if ($fileFoto !== null) {
         $file_name = time() . '.' . $request->foto->extension();
         $request->foto->move(public_path('storage/customer'), $file_name);
         $customer->foto = $file_name;
-      }    
+      }
+          
       $customer->update();
 
       return response()->json([
@@ -204,11 +239,11 @@ class CustomerController extends Controller
         'id_wilayah' => ['required'],
         'alamat_utama' => ['required', 'string', 'max:255'],
         'alamat_nomor' => ['nullable', 'string', 'max:255'],
-        'keterangan_alamat' => ['nullable','string', 'max:255'],
-        'telepon' => ['nullable','string', 'max:15'],
+        'keterangan_alamat' => ['nullable', 'string', 'max:255'],
+        'telepon' => ['nullable', 'string', 'max:15'],
         'pengajuan_limit_pembelian' => ['nullable'],
         'status' => ['required'],
-        'foto' => 'image|file|max:1024',
+        'foto' => ['image', 'file', 'max:1024'],
       ];
 
       if($request->email){

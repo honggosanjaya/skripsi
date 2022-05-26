@@ -1,110 +1,43 @@
 import axios from 'axios';
 import React, { Component, useEffect, useState, useContext } from 'react';
 import HeaderSales from './HeaderSales';
-import { render } from "react-dom";
 import { useNavigate, useParams } from 'react-router-dom'
 import { useHistory } from 'react-router-dom';
-
+import { UserContext } from '../../contexts/UserContext';
+import AlertComponent from '../reuse/AlertComponent';
 
 const TripSales = () => {
   const { id } = useParams();
   const history = useHistory();
+  const { dataUser } = useContext(UserContext);
+
   const [namaCust, setNamaCust] = useState('');
-  const [jenis, setJenis] = useState('1');
-  const [wilayah, setWilayah] = useState('2');
+  const [email, setEmail] = useState('');
   const [alamatUtama, setAlamatUtama] = useState('');
   const [alamatNomor, setAlamatNomor] = useState('');
+  const [jenis, setJenis] = useState('1');
+  const [wilayah, setWilayah] = useState('2');
   const [ketAlamat, setKetAlamat] = useState('');
   const [telepon, setTelepon] = useState('');
-  const [durasiTrip, setDurasiTrip] = useState('');
-  const [email, setEmail] = useState('');
-  const [totalTripEC, setTotalTripEC] = useState(0);
-  const [trip, setTrip] = useState('trip');
+  const [durasiTrip, setDurasiTrip] = useState(7);
   const [alasanPenolakan, setAlasanPenolakan] = useState('');
-  const [jamMasuk, setJamMasuk] = useState(Date.now() / 1000);
+  const [error, setError] = useState(null);
+  const [errorValidasi, setErrorValidasi] = useState([]);
+
+  const [totalTripEC, setTotalTripEC] = useState(0);
   const [koordinat, setKoordinat] = useState('');
   const [file, setFile] = useState(null);
   const [prevImage, setPrevImage] = useState(null);
   const [imagePreviewUrl, setImagePreviewUrl] = useState('');
-  const [error, setError] = useState(null);
-  const [success, setSuccess] = useState(null);
   const [emailInput, setEmailInput] = useState(false);
   const [districtArr, setDistrictArr] = useState([]);
   const [customerTypeArr, setCustomerTypeArr] = useState([]);
   const [showListCustomerType, setShowListCustomerType] = useState([]);
   const [showListDistrict, setShowListDistrict] = useState([]);
-  const [customer, setCustomer] = useState([]);
-
-  const Swal = require('sweetalert2')
+  const Swal = require('sweetalert2');
   let $imagePreview = null;
+  const jamMasuk = Date.now() / 1000;
 
-  const kirimCustomer = (e) => {
-    e.preventDefault();
-    let formData = new FormData();
-    formData.append("foto", file);
-
-    axios({
-      method: "post",
-      url: `${window.location.origin}/api/tripCustomer`,
-      headers: {
-        Accept: "application/json",
-      },
-      data: {
-        id: id ?? null,
-        nama: namaCust,
-        id_jenis: jenis,
-        id_wilayah: wilayah,
-        alamat_utama: alamatUtama,
-        email: email,
-        alamat_nomor: alamatNomor,
-        keterangan_alamat: ketAlamat,
-        telepon: telepon,
-        durasi_kunjungan: durasiTrip,
-        counter_to_effective_call: totalTripEC,
-        jam_masuk: jamMasuk,
-        alasan_penolakan: alasanPenolakan,
-        status: trip,
-        koordinat: koordinat,
-      }
-    })
-      .then(response => {
-        console.log(response.data);
-        setCustomer(response.data.data);
-        return response.data.data;
-      })
-      .then(dataSatu => axios.post(`${window.location.origin}/api/tripCustomer/foto/${dataSatu.id}`,
-        formData, {
-        headers: {
-          Accept: "application/json",
-        }
-      }))
-      .then(response => {
-        Swal.fire({
-          title: 'success',
-          text: 'berhasil menyimpan data, ayo tetap semangat bekerja',
-          icon: 'success',
-          confirmButtonText: 'next trip'
-        }).then((result) => {
-          // this.props.history.push('/salesman/trip')
-          window.location = "/salesman"
-          console.log(result)
-        })
-      })
-      .catch(error => {
-        console.log(error.message);
-      });
-  }
-
-  const handleImageChange = (e) => {
-    e.preventDefault();
-    let reader = new FileReader();
-    let file = e.target.files[0];
-    reader.onloadend = () => {
-      setFile(file);
-      setImagePreviewUrl(reader.result);
-    };
-    reader.readAsDataURL(file);
-  };
 
   useEffect(() => {
     navigator.geolocation.getCurrentPosition(function (position) {
@@ -144,58 +77,169 @@ const TripSales = () => {
         <option value={data.id} key={index}>{data.nama}</option>
       );
     }))
-    console.log(districtArr);
-
+    // console.log(districtArr);
     setShowListDistrict(districtArr?.map((data, index) => {
       return (
         <option value={data.id} key={index}>{data.nama}</option>
       );
     }))
-  }, [customerTypeArr, districtArr])
+  }, [customerTypeArr, districtArr]);
+
+  const handleImageChange = (e) => {
+    e.preventDefault();
+    let reader = new FileReader();
+    let file = e.target.files[0];
+    reader.onloadend = () => {
+      setFile(file);
+      setImagePreviewUrl(reader.result);
+    };
+    reader.readAsDataURL(file);
+  };
 
   if (imagePreviewUrl) {
     $imagePreview = <img src={imagePreviewUrl} className="preview_tempatUsaha" />
   } else {
-    // if(prevImage){
-    //   let image = prevImage.replace('public', '');
-    //   $imagePreview = <img src={image} className="preview_tempatUsaha" />
-    // }
+    if (prevImage) {
+      let image = prevImage.replace('public', '');
+      $imagePreview = <img src={image} className="preview_tempatUsaha" />
+    }
   }
 
-  const handleOrder = () => {
-    kirimCustomer();
-    if (id == undefined) {
-      history.push(`/salesman/order/${customer.id}`);
-    } else {
-      history.push(`/salesman/order/${id}`);
-    }
+  let objData = {
+    id: id ?? null,
+    id_jenis: jenis,
+    id_staff: dataUser.id_staff,
+    id_wilayah: wilayah,
+    nama: namaCust,
+    email: email,
+    alamat_utama: alamatUtama,
+    alamat_nomor: alamatNomor,
+    keterangan_alamat: ketAlamat,
+    koordinat: koordinat,
+    telepon: telepon,
+    durasi_kunjungan: durasiTrip,
+    counter_to_effective_call: totalTripEC,
+    jam_masuk: jamMasuk,
+    alasan_penolakan: alasanPenolakan,
+  }
+
+  const kirimCustomer = (e) => {
+    e.preventDefault();
+    let formData = new FormData();
+    formData.append("foto", file);
+    objData["status"] = "trip";
+    axios({
+      method: "post",
+      url: `${window.location.origin}/api/tripCustomer`,
+      headers: {
+        Accept: "application/json",
+      },
+      data: objData
+    })
+      .then(response => {
+        setError(null);
+        if (response.data.status == 'success') {
+          setErrorValidasi([]);
+          return response.data.data;
+        }
+        else {
+          setErrorValidasi(response.data.validate_err);
+          throw Error("Error validasi");
+        }
+      })
+      .then(dataCustomer => axios.post(`${window.location.origin}/api/tripCustomer/foto/${dataCustomer.id}`,
+        formData, {
+        headers: {
+          Accept: "application/json",
+        }
+      }))
+      .then(() => {
+        setError(null);
+        Swal.fire({
+          title: 'success',
+          text: 'berhasil menyimpan data, ayo tetap semangat bekerja',
+          icon: 'success',
+          confirmButtonText: 'next trip'
+        }).then((result) => {
+          history.push('/salesman');
+          console.log(result);
+        })
+      })
+      .catch(error => {
+        setError(error.message);
+      });
+  }
+
+  const handleOrder = (e) => {
+    e.preventDefault();
+    let formData = new FormData();
+    formData.append("foto", file);
+    objData["status"] = "order";
+    axios({
+      method: "post",
+      url: `${window.location.origin}/api/tripCustomer`,
+      headers: {
+        Accept: "application/json",
+      },
+      data: objData
+    })
+      .then(response => {
+        setError(null);
+        if (response.data.status == 'success') {
+          setErrorValidasi([]);
+          return response.data.data;
+        }
+        else {
+          setErrorValidasi(response.data.validate_err);
+          throw Error("Error validasi");
+        }
+      })
+      .then(dataCustomer => axios.post(`${window.location.origin}/api/tripCustomer/foto/${dataCustomer.id}`,
+        formData, {
+        headers: {
+          Accept: "application/json",
+        }
+      }))
+      .then((dataCustomer) => {
+        setError(null);
+        history.push(`/salesman/order/${dataCustomer.data.data.id}`);
+      })
+      .catch(error => {
+        setError(error.message);
+      });
   }
 
   return (
     <main className="page_main">
       <HeaderSales title="Trip" />
-
       <div className="page_container pt-4">
-        <form onSubmit={kirimCustomer}>
-          <div className="mb-3">
+        {error && <AlertComponent errorMsg={error} />}
+        <form>
+          <div className={`${errorValidasi.nama ? '' : 'mb-3'}`}>
             <label className="form-label">Nama Customer</label>
             <input type="text" className="form-control"
               value={namaCust || ''}
               onChange={(e) => setNamaCust(e.target.value)} />
           </div>
-          <div className="mb-3">
+          {errorValidasi.nama && <small className="text-danger mb-3">{errorValidasi.nama}</small>}
+
+          <div className={`${errorValidasi.email ? '' : 'mb-3'}`}>
             <label className="form-label">Email Customer</label>
             <input type="email" className="form-control"
               value={email || ''}
               onChange={(e) => setEmail(e.target.value)}
               readOnly={emailInput} />
           </div>
-          <div className="mb-3">
+          {errorValidasi.email && <small className="text-danger mb-3">{errorValidasi.email}</small>}
+
+          <div className={`${errorValidasi.alamat_utama ? '' : 'mb-3'}`}>
             <label className="form-label">Alamat Utama</label>
             <input type="text" className="form-control"
               value={alamatUtama}
               onChange={(e) => setAlamatUtama(e.target.value)} />
           </div>
+          {errorValidasi.alamat_utama && <small className="text-danger mb-3">{errorValidasi.alamat_utama}</small>}
+
           <div className="mb-3">
             <label className="form-label">Alamat Nomor</label>
             <input type="text" className="form-control"
@@ -212,6 +256,7 @@ const TripSales = () => {
               {showListCustomerType}
             </select>
           </div>
+
           <div className="mb-3">
             <label className="form-label">Wilayah</label>
             <select className="form-select"
@@ -227,23 +272,28 @@ const TripSales = () => {
               value={ketAlamat}
               onChange={(e) => setKetAlamat(e.target.value)}></textarea>
           </div>
+
           <div className="mb-3">
             <label className="form-label">Telepon</label>
             <input type="text" className="form-control"
               value={telepon}
               onChange={(e) => setTelepon(e.target.value)} />
           </div>
+
           <div className="mb-3">
             <label className="form-label">Durasi Trip</label>
             <div className="position-relative">
               <input type="number" className="form-control"
                 value={durasiTrip}
-                onChange={(e) => setDurasiTrip(e.target.value)} />
+                onChange={(e) => setDurasiTrip(e.target.value)}
+                min='0'
+              />
               <span className='satuan'>Hari</span>
             </div>
           </div>
+
           <div className="mb-3">
-            <label className="form-label">penolakan</label>
+            <label className="form-label">Alasan Penolakan</label>
             <textarea className="form-control"
               value={alasanPenolakan}
               onChange={(e) => setAlasanPenolakan(e.target.value)} />
@@ -261,13 +311,12 @@ const TripSales = () => {
           </div>
 
           <div className="trip_aksi">
-            <button type="submit" className="btn btn-danger me-3">Keluar</button>
+            <button className="btn btn-danger me-3" onClick={kirimCustomer}>Keluar</button>
             <button className="btn btn-success" onClick={handleOrder}>Order</button>
           </div>
         </form>
-      </div>
-
-    </main>
+      </div >
+    </main >
   );
 }
 
