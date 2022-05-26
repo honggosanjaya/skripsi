@@ -110,6 +110,7 @@ Route::prefix('administrasi')->middleware('administrasi')->group(function() {
     
     //Route untuk pengadaan
     Route::resource('/produk', ItemController::class);
+    Route::get('/produk/cari', [ItemController::class, 'produkSearch']);
     Route::get('/pengadaan', [ItemController::class, 'productList'])->name('products.list');
     Route::get('/pengadaan/cart', [CartController::class, 'cartList'])->name('cart.list');
     Route::post('/pengadaan/cart', [CartController::class, 'addToCart'])->name('cart.store');
