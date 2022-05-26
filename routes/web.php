@@ -52,6 +52,11 @@ Route::prefix('supervisor')->middleware('supervisor')->group(function() {
 
   // Route untuk data customer termasuk limit pembelian
   Route::get('/datacustomer', [CustomerController::class, 'dataCustomer']);
+  Route::get('/datacustomer/cari', [CustomerController::class, 'supervisorSearch']);
+  Route::get('/datapengajuan', [CustomerController::class, 'dataPengajuanLimit']);
+  Route::get('/datapengajuan/{customer:id}', [CustomerController::class, 'detailDataPengajuanLimit']);
+  Route::post('/datapengajuan/setuju/{customer:id}', [CustomerController::class, 'setujuPengajuanLimit']);
+  Route::post('/datapengajuan/tolak/{customer:id}', [CustomerController::class, 'tolakPengajuanLimit']);
 
   //Route untuk jenis customer
   Route::get('/jenis', [CustomerTypeController::class, 'index']);
@@ -64,6 +69,7 @@ Route::prefix('supervisor')->middleware('supervisor')->group(function() {
   // Route untuk data staf
   Route::resource('/datastaf', StaffController::class);
   Route::post('/datastaf/ubahstatus/{staf:id}', [StaffController::class, 'supervisorEditStatusStaf']);
+  
 });
 // Route::prefix('salesman')->middleware('salesman')->group(function() {
 //   Route::get('/', [HomeController::class, 'indexSalesman']);

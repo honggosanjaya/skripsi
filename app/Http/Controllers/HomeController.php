@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Http\Controllers;
+use App\Models\Customer;
 
 use Illuminate\Http\Request;
 
@@ -14,7 +15,12 @@ class HomeController extends Controller
     public function indexSupervisor()
     {
         $role='indexSupervisor';
-        return view('supervisor/dashboard',compact('role'));
+        $customersPengajuanLimit = Customer::where('status_limit_pembelian', 7)->get();
+
+        return view('supervisor.dashboard',[
+          'customersPengajuanLimit' => $customersPengajuanLimit,
+          'role' => $role
+      ]);
     }
     public function indexSalesman()
     {
