@@ -50,6 +50,9 @@ Route::prefix('supervisor')->middleware('supervisor')->group(function() {
   Route::get('/wilayah/ubah/{district:id}', [DistrictController::class, 'edit']);
   Route::put('/wilayah/ubahwilayah/{district:id}', [DistrictController::class, 'update']);
 
+  // Route untuk data customer termasuk limit pembelian
+  Route::get('/datacustomer', [CustomerController::class, 'dataCustomer']);
+
   //Route untuk jenis customer
   Route::get('/jenis', [CustomerTypeController::class, 'index']);
   Route::get('/jenis/cari', [CustomerTypeController::class, 'search']);

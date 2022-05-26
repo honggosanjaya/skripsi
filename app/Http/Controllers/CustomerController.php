@@ -158,13 +158,11 @@ class CustomerController extends Controller
       ]);
     }
 
-
     public function administrasiIndex(){
       return view('administrasi.dataCustomer.index', [
         'customers' => Customer::paginate(5),
         "title" => "Data Customer"
       ]);
-
     }
 
     public function administrasiSearch(){
@@ -327,4 +325,12 @@ class CustomerController extends Controller
 
       return redirect('/administrasi/datacustomer') -> with('pesanSukses', 'Berhasil ubah status' );
     } 
+
+    public function dataCustomer(){
+      $customers = Customer::paginate(5);
+      return view('supervisor.datacustomer.dataCustomer', [
+        'customers' => $customers,
+        "title" => "Seluruh Data Customer"
+      ]);
+    }
 }
