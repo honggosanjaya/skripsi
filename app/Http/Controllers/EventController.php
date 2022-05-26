@@ -164,4 +164,22 @@ class EventController extends Controller
         
         return redirect('/supervisor/event')->with('updateEventSuccess','Ubah Event berhasil');
     }
+
+    //Controller untuk Customer
+    public function customerIndex(){
+        $events = Event::paginate(5);
+
+        return view('customer.event',[
+            'events' => $events
+        ]);
+    }
+
+    public function customerDetail(Event $event){
+        dd($event);
+        // $event = Event::paginate(5);
+
+        // return view('customer.event',[
+        //     'events' => $events
+        // ]);
+    }
 }

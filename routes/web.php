@@ -159,6 +159,9 @@ Route::prefix('customer')->middleware('customer')->group(function() {
   //Route untuk cart
   Route::get('/cart', [CartController::class, 'cartList']);
   Route::get('/cart/tambahorder', [OrderController::class, 'simpanDataOrderCustomer']);
+  //Route untuk event
+  Route::get('/event', [EventController::class, 'customerIndex']);
+  Route::get('/event/{event:id}', [EventController::class, 'customerDetail']);
 });
 
 require __DIR__.'/auth.php';

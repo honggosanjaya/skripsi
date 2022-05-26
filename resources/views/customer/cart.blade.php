@@ -91,16 +91,16 @@
     <div class="container">
       <div class="row">
         <div class="col-3 d-flex flex-column align-items-center">
-          <a href="/customer/produk" class="link-style"><i class="bi bi-house-door-fill fs-3"></i></a>
-          <p class="fw-bold"><a href="/customer/produk" class="link-style">Beranda</a></p>
+          <a href="/customer" class="link-style"><i class="bi bi-house-door-fill fs-3"></i></a>
+          <p class="fw-bold"><a href="/customer" class="link-style">Beranda</a></p>
         </div>
         <div class="col-3 d-flex flex-column align-items-center">
           <a href="/customer/produk" class="link-style"><i class="bi bi-cart-fill fs-3"></i></a>
           <p class="fw-bold"><a href="/customer/produk" class="link-style">Produk</a></p>
         </div>
         <div class="col-3 d-flex flex-column align-items-center">
-          <a href="/customer/produk" class="link-style"><i class="bi bi-calendar-check-fill fs-3"></i></a>
-          <p class="fw-bold"><a href="/customer/produk" class="link-style">Event</a></p>
+          <a href="/customer/event" class="link-style"><i class="bi bi-calendar-check-fill fs-3"></i></a>
+          <p class="fw-bold"><a href="/customer/event" class="link-style">Event</a></p>
         </div>
         <div class="col-3 d-flex flex-column align-items-center">
           <a href="/customer/produk" class="link-style"><i class="bi bi-person-fill fs-3"></i></a>
