@@ -113,13 +113,8 @@
 
     <div class="my-3">
       <label for="limit_pembelian" class="form-label">Limit Pembelian</label>
-      @if ($customer->limit_pembelian)
-        <input type="number" class="form-control" id="limit_pembelian" name="limit_pembelian"
-          value="{{ $customer->limit_pembelian }}" step=".01" disabled readonly>
-      @else
-        <input type="number" class="form-control" id="limit_pembelian" name="limit_pembelian"
-          value="{{ 200000 }}" step=".01" disabled readonly>
-      @endif
+      <input type="number" class="form-control" id="limit_pembelian" name="limit_pembelian"
+        value="{{ $customer->limit_pembelian }}" step=".01" readonly>
     </div>
 
     <div class="my-3">
