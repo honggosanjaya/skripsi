@@ -10,16 +10,26 @@ import useInfinite from '../reuse/useInfinite';
 import ProductSales from './ProductSales';
 import { KeranjangSalesContext } from '../../contexts/KeranjangSalesContext';
 import { AuthContext } from '../../contexts/AuthContext';
+import { UserContext } from '../../contexts/UserContext';
+import { useHistory } from "react-router-dom";
 
-const Pemesanan = () => {
-  const [urlApi, setUrlApi] = useState('api/salesman/listitems')
+const Pemesanan = ({ location }) => {
+  const [urlApi, setUrlApi] = useState('api/salesman/listitems');
   const { page, setPage, erorFromInfinite, paginatedData, isReachedEnd } = useInfinite(`${urlApi}`, 4);
-  const { idCust } = useParams()
+  const { idCust } = useParams();
   const { token } = useContext(AuthContext);
+  const { dataUser } = useContext(UserContext);
+  const history = useHistory();
   const [kodePesanan, setKodePesanan] = useState('');
   const [kataKunci, setKataKunci] = useState('');
   const { produks, getAllProduks } = useContext(KeranjangSalesContext);
   const [errorMessage, setErrorMessage] = useState(null);
+  const [orderId, setOrderId] = useState(null);
+  const [errorKodeCustomer, setErrorKodeCustomer] = useState(null);
+  const [koordinat, setKoordinat] = useState(null);
+  const jamMasuk = Date.now() / 1000;
+  const [idTrip, setIdTrip] = useState(null);
+  const { state: idTripTetap } = location;
 
   const { data: dataCustomer, error } = useSWR(
     [`${window.location.origin}/api/tripCustomer/${idCust}`, token], {
@@ -27,8 +37,41 @@ const Pemesanan = () => {
   });
 
   useEffect(() => {
+    if (idTripTetap) {
+      setIdTrip(idTripTetap);
+    }
+    navigator.geolocation.getCurrentPosition(function (position) {
+      setKoordinat(position.coords.latitude + '@' + position.coords.longitude)
+    });
     getAllProduks();
-  }, [])
+  }, []);
+
+  useEffect(() => {
+    console.log('idtriptetap', idTripTetap);
+    console.log('isnan', isNaN(idTripTetap));
+    if (dataUser.nama && koordinat && idTripTetap == null) {
+      axios({
+        method: "post",
+        url: `${window.location.origin}/api/tripOrderCustomer`,
+        data: {
+          idCustomer: parseInt(idCust),
+          idStaff: dataUser.id_staff,
+          koordinat: koordinat,
+          jam_masuk: jamMasuk,
+        },
+        headers: {
+          Accept: "application/json",
+        },
+      })
+        .then((response) => {
+          console.log('trip', response.data.data);
+          setIdTrip(response.data.data.id);
+        })
+        .catch((error) => {
+          console.log(error.message);
+        });
+    }
+  }, [dataUser, koordinat]);
 
   useEffect(() => {
     produks.map((produk) => {
@@ -58,13 +101,96 @@ const Pemesanan = () => {
     </main>
   )
 
+  const handleKeluarToko = () => {
+    console.log(idTrip);
+    if (idTrip) {
+      axios({
+        method: "get",
+        url: `${window.location.origin}/api/keluarToko/${idTrip}`,
+        headers: {
+          Accept: "application/json",
+        },
+      })
+        .then((response) => {
+          console.log('trip', response.data.message);
+          hapusSemuaProduk();
+          history.push('/salesman');
+        })
+        .catch((error) => {
+          console.log(error.message);
+        });
+    } else {
+      console.log('silahkan melakukan trip terlebih dahulu');
+    }
+  }
+
+  const lihatKeranjang = () => {
+    console.log('disini', idTrip);
+    history.push({
+      pathname: `/salesman/keranjang/${idCust}`,
+      state: idTrip // your data array of objects
+    })
+  }
+
+  const hapusSemuaProduk = () => {
+    produks.map((produk) => {
+      KeranjangDB.deleteProduk(produk.id);
+      getAllProduks();
+    })
+  }
+
+  const handleKodeCustomer = (e) => {
+    e.preventDefault();
+    hapusSemuaProduk();
+    axios({
+      method: "get",
+      url: `${window.location.origin}/api/kodeCustomer/${kodePesanan}`,
+      headers: {
+        Accept: "application/json",
+      }
+    })
+      .then((response) => {
+        console.log('handlekode', response.data);
+
+        if (response.data.status === 'success') {
+          const dataOrderItems = response.data.dataOrderItem;
+          const dataOrder = response.data.dataOrder;
+
+          if (dataOrder.id_customer == idCust) {
+            setOrderId(dataOrder.id);
+            dataOrderItems.map((dataOrderItem) => {
+              const produk = {
+                id: dataOrderItem.id_item,
+                orderId: dataOrder.id,
+                customer: dataOrder.id_customer,
+                harga: dataOrderItem.harga_satuan,
+                jumlah: dataOrderItem.kuantitas,
+              };
+              KeranjangDB.updateProduk(produk);
+              getAllProduks();
+            })
+          }
+          else {
+            setErrorKodeCustomer('kode customer tidak sesusai');
+          }
+        } else {
+          throw Error(response.data.message);
+        }
+
+      })
+      .catch((error) => {
+        console.log(error.message);
+        setErrorKodeCustomer(error.message);
+      });
+  }
+
   const handleTambahJumlah = (item) => {
     const exist = produks.find((x) => x.id === item.id);
     if (exist) {
       const produk = {
         id: item.id,
-        customer: idCust,
-        nama: item.nama,
+        orderId: orderId ? parseInt(orderId) : 'belum ada',
+        customer: parseInt(idCust),
         harga: item.harga_satuan,
         jumlah: exist.jumlah < item.stok ? exist.jumlah + 1 : exist.jumlah,
       };
@@ -77,8 +203,8 @@ const Pemesanan = () => {
     else {
       const produk = {
         id: item.id,
-        customer: idCust,
-        nama: item.nama,
+        orderId: orderId ? parseInt(orderId) : 'belum ada',
+        customer: parseInt(idCust),
         harga: item.harga_satuan,
         jumlah: 1,
       };
@@ -92,8 +218,8 @@ const Pemesanan = () => {
     if (exist && exist.jumlah > 1) {
       const produk = {
         id: item.id,
-        customer: idCust,
-        nama: item.nama,
+        orderId: orderId ? parseInt(orderId) : 'belum ada',
+        customer: parseInt(idCust),
         harga: item.harga_satuan,
         jumlah: exist.jumlah - 1,
       };
@@ -131,8 +257,8 @@ const Pemesanan = () => {
       if (isNaN(newVal) == false) {
         const produk = {
           id: item.id,
-          customer: idCust,
-          nama: item.nama,
+          orderId: orderId ? parseInt(orderId) : 'belum ada',
+          customer: parseInt(idCust),
           harga: item.harga_satuan,
           jumlah: isNaN(parseInt(newVal)) ? 0 : parseInt(newVal),
         };
@@ -144,8 +270,8 @@ const Pemesanan = () => {
       if (isNaN(newVal) == false) {
         const produk = {
           id: item.id,
-          customer: idCust,
-          nama: item.nama,
+          orderId: orderId ? parseInt(orderId) : 'belum ada',
+          customer: parseInt(idCust),
           harga: item.harga_satuan,
           jumlah: isNaN(parseInt(newVal)) ? 0 : parseInt(newVal),
         };
@@ -171,42 +297,55 @@ const Pemesanan = () => {
 
   return (
     <main className='page_main'>
-      <HeaderSales title="Salesman" isOrder={true} />
+      <HeaderSales title="Salesman" isOrder={true} lihatKeranjang={lihatKeranjang} />
       <div className="page_container pt-4">
-        <p>Sudah punya kode customer?</p>
-        <input type="text" className="form-control"
-          value={kodePesanan}
-          onChange={(e) => setKodePesanan(e.target.value)}
-        />
-
-        <h1 className='fs-4'>Item</h1>
-        <div className='mb-3'>
-          <form onSubmit={handleCariProduk}>
+        <div className="kode_customer">
+          <p>Sudah punya kode customer?</p>
+          <form onSubmit={handleKodeCustomer}>
             <div className="input-group">
-              <input type="text" className="form-control" placeholder="Cari Produk..."
-                value={kataKunci}
-                onChange={(e) => setKataKunci(e.target.value)}
+              <input type="text" className="form-control"
+                value={kodePesanan}
+                onChange={(e) => setKodePesanan(e.target.value)}
               />
-              <button type="submit" className="btn btn-primary">Cari</button>
+              <button type="submit" className="btn btn-primary">Proses</button>
             </div>
           </form>
+          {errorKodeCustomer && <p className='text-danger'>{errorKodeCustomer}</p>}
         </div>
 
+        <div className="tidak_pesan my-5">
+          <h1 className="fs-6">Customer tidak jadi pesan?</h1>
+          <button className='btn btn-danger' onClick={handleKeluarToko}>Keluar</button>
+        </div>
 
+        <div className="item">
+          <h1 className='fs-4'>Item</h1>
+          <div className='mb-3'>
+            <form onSubmit={handleCariProduk}>
+              <div className="input-group">
+                <input type="text" className="form-control" placeholder="Cari Produk..."
+                  value={kataKunci}
+                  onChange={(e) => setKataKunci(e.target.value)}
+                />
+                <button type="submit" className="btn btn-primary">Cari</button>
+              </div>
+            </form>
+          </div>
 
-        {erorFromInfinite && <p className="text-danger">something is wrong</p>}
-        <InfiniteScroll
-          dataLength={paginatedData?.length ?? 0}
-          next={() => setPage(page + 1)}
-          hasMore={!isReachedEnd}
-          loader={<p>Loading...</p>}
-          endMessage={<p className="text-center">No more data</p>}>
-          {paginatedData &&
-            <ProductSales listItems={paginatedData} handleTambahJumlah={handleTambahJumlah}
-              checkifexist={checkifexist} handleValueChange={handleValueChange}
-              handleKurangJumlah={handleKurangJumlah} />
-          }
-        </InfiniteScroll>
+          {erorFromInfinite && <p className="text-danger">something is wrong</p>}
+          <InfiniteScroll
+            dataLength={paginatedData?.length ?? 0}
+            next={() => setPage(page + 1)}
+            hasMore={!isReachedEnd}
+            loader={<p>Loading...</p>}
+            endMessage={<p className="text-center">No more data</p>}>
+            {paginatedData &&
+              <ProductSales listItems={paginatedData} handleTambahJumlah={handleTambahJumlah}
+                checkifexist={checkifexist} handleValueChange={handleValueChange}
+                handleKurangJumlah={handleKurangJumlah} />
+            }
+          </InfiniteScroll>
+        </div>
       </div>
     </main>
   );

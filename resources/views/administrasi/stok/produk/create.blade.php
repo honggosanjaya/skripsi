@@ -94,6 +94,17 @@
       @enderror
     </div>
 
+    <div class="my-3">
+      <label for="volume" class="form-label">Volume Barang</label>
+      <input type="number" class="form-control @error('volume') is-invalid @enderror" id="volume" name="volume"
+        value="{{ old('volume') }}" step=".01">
+      @error('volume')
+        <div class="invalid-feedback">
+          {{ $message }}
+        </div>
+      @enderror
+    </div>
+
 
     <div class="my-3">
       <label for="status" class="form-label">Satus</label>

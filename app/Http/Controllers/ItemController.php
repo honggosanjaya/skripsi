@@ -152,7 +152,7 @@ class ItemController extends Controller
     public function index()
     {      
         return view('administrasi.stok.produk.index', [
-          'items' => Item::all(),
+          'items' => Item::paginate(5),
           "title" => "List Produk"
         ]);
     }
@@ -188,6 +188,7 @@ class ItemController extends Controller
         'satuan' => ['required', 'string', 'max:30'],
         'harga_satuan' => ['required', 'numeric'],
         'gambar' => 'image|file|max:1024',
+        'volume' => 'required'
       ]);
 
       if($request->stok){
@@ -264,6 +265,7 @@ class ItemController extends Controller
         'max_pengadaan' => ['required', 'integer', 'min:0'],
         'satuan' => ['required', 'string', 'max:30'],
         'harga_satuan' => ['required', 'numeric'],
+        'volume' => ['required'],
       ]);
 
       if($request->kode_barang !== Item::where('id', $id)->first()->kode_barang){
@@ -425,6 +427,15 @@ class ItemController extends Controller
             'status' => 'error'
           ],404);
         }
-        
+    }
+
+    public function produkSearch(){
+      $items =  Item::where(strtolower('nama'),'like','%'.request('cari').'%')
+        ->paginate(5);
+
+      return view('administrasi.stok.produk.index', [
+        'items' => $items,
+        "title" => "List Produk"
+      ]);
     }
 }

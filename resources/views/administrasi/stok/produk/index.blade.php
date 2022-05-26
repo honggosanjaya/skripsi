@@ -8,9 +8,28 @@
     </div>
   @endif
 
-  <a href="/administrasi/stok/produk/create" class="text-decoration-none">
-    <i class="bi bi-plus-circle-fill me-2"></i> Tambah Produk
-  </a>
+  <div class="container">
+    <div class="row">
+      <div class="col-5">
+        <div class="mt-3 search-box">
+          <form method="GET" action="/administrasi/stok/produk/cari">
+            <div class="input-group">
+              <input type="text" class="form-control" name="cari" placeholder="Cari Produk..."
+                value="{{ request('cari') }}">
+              <button type="submit" class="btn btn-primary">Cari</button>
+            </div>
+          </form>
+        </div>
+      </div>
+      <div class="col-4 mt-3">
+        <a href="/administrasi/stok/produk/create" class="text-decoration-none">
+          <i class="bi bi-plus-circle-fill me-2"></i> Tambah Produk
+        </a>
+      </div>
+    </div>
+  </div>
+
+
 
   <div class="table-responsive mt-3">
     <table class="table table-hover table-sm">
@@ -25,6 +44,7 @@
           <th scope="col">Max Stok</th>
           <th scope="col">Max Pengadaan</th>
           <th scope="col">Harga Satuan</th>
+          <th scope="col">Volume</th>
           <th scope="col">Status</th>
           <th scope="col">Aksi</th>
         </tr>
@@ -32,7 +52,7 @@
       <tbody>
         @foreach ($items as $item)
           <tr>
-            <td class="text-center">{{ $loop->iteration }}</td>
+            <td class="text-center">{{ ($items->currentPage() - 1) * $items->perPage() + $loop->iteration }}</td>
             <td>{{ $item->kode_barang }}</td>
             <td class="text-center">
               @if ($item->gambar)
@@ -47,19 +67,17 @@
             <td>{{ $item->max_stok }}</td>
             <td>{{ $item->max_pengadaan }}</td>
             <td>{{ $item->harga_satuan }}</td>
+            <td>{{ $item->volume }}</td>
             <td>{{ $item->linkStatus->nama }}</td>
-
             <td class="text-center">
               {{-- <a href="/administrasi/stok/produk/{{ $item->id }}"
                 class="badge bg-primary text-decoration-none text-white">
                 detail
               </a> --}}
-
               <a href="/administrasi/stok/produk/{{ $item->id }}/edit"
                 class="badge bg-primary text-decoration-none text-white">
                 edit
               </a>
-
               <a href="/administrasi/stok/produk/{{ $item->id }}"
                 class="badge bg-primary text-decoration-none text-white">
                 nonaktifkan
@@ -69,5 +87,6 @@
         @endforeach
       </tbody>
     </table>
+    {{ $items->links() }}
   </div>
 @endsection

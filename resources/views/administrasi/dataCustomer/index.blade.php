@@ -15,12 +15,12 @@
           <form method="GET" action="/administrasi/datacustomer/cari">
             <div class="input-group">
               <input type="text" class="form-control" name="cari" placeholder="Cari Customer..."
-              value="{{ request('cari') }}">
-              <button type="submit" class="btn btn-primary">Cari</button>   
+                value="{{ request('cari') }}">
+              <button type="submit" class="btn btn-primary">Cari</button>
             </div>
-            
-          </form>    
-          
+
+          </form>
+
         </div>
       </div>
       <div class="col-4 mt-3">
@@ -30,7 +30,6 @@
       </div>
     </div>
   </div>
-  
 
   <div class="table-responsive mt-3">
     <table class="table table-hover table-sm">

@@ -52,7 +52,7 @@
       <div>
   </header>
 
-  <div class="container">
+  <div class="container main_content">
     <table class="table">
       <thead>
         <th scope="col">#</th>

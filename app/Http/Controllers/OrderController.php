@@ -8,53 +8,115 @@ use App\Models\OrderTrack;
 use App\Models\OrderItem;
 use App\Models\Staff;
 use App\Models\Item;
+use App\Models\Trip;
+use App\Models\Customer;
 use App\Models\Invoice;
 use App\Models\Vehicle;
 use App\Models\Status;
+
 use PDF;
+use Illuminate\Support\Facades\Validator;
 
 class OrderController extends Controller
 {
 
-  public function simpanDataOrderSalesmanAPI(Request $request)
+    public function simpanDataOrderSalesmanAPI(Request $request)
     {
-      $keranjangItems = $request->keranjang;
+        $keranjangItems = $request->keranjang;
+        $idStaf = $request->idStaf;
+        $estimasiWaktuPengiriman = $request->estimasiWaktuPengiriman;
+        $keterangan = $request->keterangan;
+        $id_order = null;
+        $id_customer = null;
 
-      if(sizeof($keranjangItems) > 0){
-        foreach($keranjangItems as $item){
-          $id_customer = $item['customer'];
+        if(sizeof($keranjangItems) > 0){
+          foreach($keranjangItems as $item){
+            $id_customer = $item['customer'];
+            if($item['orderId'] != 'belum ada'){
+              $id_order = $item['orderId'];
+            }
+            if($item['orderId'] == 'belum ada'){
+              $id_order = 'belum ada';
+            }
+          }
         }
-      }
-      
-      
-      $order_id=Order::insertGetId([
-        'id_customer' => $id_customer,
-        'id_staff' => auth()->user()->id,
-        'status' => 15,
-        'created_at'=> now(),
-      ]);
-      
 
-      $data = [];
-      foreach($keranjangItems as $item){
-        array_push($data,[
-            'id_order' => $order_id,
-            'id_item' => $item['id'],
-            'kuantitas' => $item['jumlah'],
-            'harga_satuan' => $item['harga'],
-            'keterangan' => $request->keterangan??null,
-        ]);
-      }
-
-        OrderTrack::insert([
+        if($id_order == "belum ada"){
+          $order_id=Order::insertGetId([
+            'id_customer' => $id_customer,
+            'id_staff' => $idStaf,
+            'status' => 15,
+            'created_at'=> now(),
+          ]);
+          
+          $data = [];
+          foreach($keranjangItems as $item){
+            array_push($data,[
+              'id_order' => $order_id,
+              'id_item' => $item['id'],
+              'kuantitas' => $item['jumlah'],
+              'harga_satuan' => $item['harga'],
+              'keterangan' => $request->keterangan??null,
+            ]);
+          }
+  
+          OrderTrack::insert([
             'id_order' => $order_id,
             'status' => 20,
             'waktu_order'=> now(),
             'created_at'=> now(),
-            'estimasi_waktu_pengiriman' => '1'
-        ]);
-        OrderItem::insert($data);
+            'waktu_diteruskan' => now(),
+            'estimasi_waktu_pengiriman' => $estimasiWaktuPengiriman,
+          ]);
+          OrderItem::insert($data);
+        }
+        
+        // =========== JIKA SUDAH ADA ============
 
+        else{   
+          foreach($keranjangItems as $item){
+            $updateitem=OrderItem::where('id_order', $id_order)->where('id_item', $item['id'])->first();
+            //jika data order item di database ditemukan
+            if ($updateitem??null) {
+              # update...
+              $updateitem->update([
+                'id_order' => $id_order,
+                'id_item' => $item['id'],
+                'kuantitas' => $item['jumlah'],
+                'harga_satuan' => $item['harga'],
+                'keterangan' => $keterangan,
+              ]);
+            } else {
+              # create...
+              OrderItem::insert([
+                'id_order' => $id_order,
+                'id_item' => $item['id'],
+                'kuantitas' => $item['jumlah'],
+                'harga_satuan' => $item['harga'],
+                'keterangan' => $keterangan,
+              ]);
+            } 
+          }
+
+          $orderItems=OrderItem::where('id_order', $id_order)->get();
+          foreach($orderItems as $orderItem){
+            // cari $orderItem->id_item ada tidak di id item di cart, jika tidak ada jalankan if
+            $key = array_search($orderItem->id_item, array_column($keranjangItems, 'id'));
+              if($key === false){
+                # delete...
+                $orderItem->delete();
+              }
+          }
+
+          Order::where('id', $id_order)->update([
+            'id_staff' => $idStaf,
+          ]);
+
+          OrderTrack::where('id_order', $id_order)->update([
+            'waktu_diteruskan' => now(),
+            'estimasi_waktu_pengiriman' => $estimasiWaktuPengiriman,
+          ]);          
+        }
 
         return response()->json([
           'status' => 'success',
@@ -62,7 +124,72 @@ class OrderController extends Controller
         ]);
     }
 
+// ============================
 
+    public function keluarTripOrderApi($id){                
+        Trip::find($id)->update([
+          'waktu_keluar' => now(),
+          'updated_at' => now()
+        ]);
+
+        return response()->json([
+          'status' => 'success',
+          'message'=>'Jam keluar berhasil dicatat',
+          'data' => Trip::find($id)
+        ]);
+    }
+
+    public function catatTripOrderApi(Request $request){
+      $id_customer = $request->idCustomer;
+      $id_staff = $request->idStaff;
+      $customer = Customer::find($id_customer);
+
+      if (Trip::where('id_customer',$id_customer)->where('status',2)->count()==0) {
+        Customer::find($id_customer)->update([
+          'counter_to_effective_call' => $customer->counter_to_effective_call+1
+        ]);
+      }
+
+      $tripOrder = Trip::insertGetId(
+        [
+          'id_customer' => $id_customer,
+          'id_staff' => $id_staff,
+          'alasan_penolakan' => null,
+          'koordinat' => $request->koordinat,
+          'waktu_masuk' => date('Y-m-d H:i:s', $request->jam_masuk),
+          'waktu_keluar' => null,
+          'status' => 2,
+          'created_at'=> now()
+        ]
+      );
+
+      $id_trip = $tripOrder;
+
+      return response()->json([
+        'status' => 'success',
+        'message'=>'Trip Order berhasil dicatat',
+        'data' => Trip::find($id_trip)
+      ]); 
+    }
+
+    public function dataKodeCustomer($id){
+      $order=Order::find($id);
+      $order_item = OrderItem::where('id_order', $id)->get();
+
+      if($order!==null){
+        return response()->json([
+          'status' => 'success',
+          'dataOrder' => $order,
+          'dataOrderItem' => $order_item,
+          'message' => 'berhasil memasukkan produk dalam keranjang'
+        ]);
+      } else{
+        return response()->json([
+          'status' => 'error',
+          'message' => 'kode customer tidak ditemukan'
+        ]);
+      }
+    }
 
     public function index(){
         $orders = Order::join('order_tracks','orders.id','=','order_tracks.id_order')
@@ -240,7 +367,7 @@ class OrderController extends Controller
 
         OrderTrack::insert([
             'id_order' => $order_id,
-            'status' => 15,
+            'status' => 19,
             'waktu_order'=> now(),
             'created_at'=> now(),
             // 'estimasi_waktu_pengiriman' => '1'
