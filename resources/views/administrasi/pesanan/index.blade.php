@@ -52,7 +52,7 @@
       </div>
     </div>
     <div class="col-3 mt-3">
-      <button type="submit" class="btn btn-primary">Cari</button>
+      <button type="submit" class="btn btn-primary"><i class="bi bi-eye p-1"></i>Lihat</button>
     </div>
   </form> 
   </div> 
