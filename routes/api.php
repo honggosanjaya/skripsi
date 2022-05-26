@@ -47,7 +47,7 @@ Route::get('/kodeCustomer/{id}', [OrderController::class, 'dataKodeCustomer']);
 Route::post('/tripOrderCustomer', [OrderController::class, 'catatTripOrderApi']);
 
 // ubah trip untuk keluar
-Route::get('/keluarToko/{id}', [OrderController::class, 'keluarTripOrderApi']);
+Route::post('/keluarToko/{id}', [OrderController::class, 'keluarTripOrderApi']);
 
 Route::get('/forceLogout', [LoginController::class, 'logoutUnauthorizedSPAApi']);
 

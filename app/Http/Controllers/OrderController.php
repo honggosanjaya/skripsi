@@ -19,49 +19,50 @@ use Illuminate\Support\Facades\Validator;
 
 class OrderController extends Controller
 {
+    public function simpanDataOrderSalesmanAPI(Request $request){
+      $totalPesanan = $request->totalHarga;
+      $keranjangItems = $request->keranjang;
+      $idStaf = $request->idStaf;
+      $estimasiWaktuPengiriman = $request->estimasiWaktuPengiriman;
+      $keterangan = $request->keterangan;
+      $id_order = null;
+      $id_customer = null;
 
-    public function simpanDataOrderSalesmanAPI(Request $request)
-    {
-        $keranjangItems = $request->keranjang;
-        $idStaf = $request->idStaf;
-        $estimasiWaktuPengiriman = $request->estimasiWaktuPengiriman;
-        $keterangan = $request->keterangan;
-        $id_order = null;
-        $id_customer = null;
-
-        if(sizeof($keranjangItems) > 0){
-          foreach($keranjangItems as $item){
-            $id_customer = $item['customer'];
-            if($item['orderId'] != 'belum ada'){
-              $id_order = $item['orderId'];
-            }
-            if($item['orderId'] == 'belum ada'){
-              $id_order = 'belum ada';
-            }
+      if(sizeof($keranjangItems) > 0){
+        foreach($keranjangItems as $item){
+          $id_customer = $item['customer'];
+          if($item['orderId'] != 'belum ada'){
+            $id_order = $item['orderId'];
+          }
+          if($item['orderId'] == 'belum ada'){
+            $id_order = 'belum ada';
           }
         }
+      }
 
-        if($id_order == "belum ada"){
-          $order_id=Order::insertGetId([
-            'id_customer' => $id_customer,
-            'id_staff' => $idStaf,
-            'status' => 15,
-            'created_at'=> now(),
+      if($id_order == "belum ada"){
+        $id_order=Order::insertGetId([
+          'id_customer' => $id_customer,
+          'id_staff' => $idStaf,
+          'status' => 15,
+          'created_at'=> now(),
+        ]);
+        
+        $data = [];
+        foreach($keranjangItems as $item){
+          array_push($data,[
+            'id_order' => $id_order,
+            'id_item' => $item['id'],
+            'kuantitas' => $item['jumlah'],
+            'harga_satuan' => $item['harga'],
+            'keterangan' => $request->keterangan??null,
           ]);
-          
-          $data = [];
-          foreach($keranjangItems as $item){
-            array_push($data,[
-              'id_order' => $order_id,
-              'id_item' => $item['id'],
-              'kuantitas' => $item['jumlah'],
-              'harga_satuan' => $item['harga'],
-              'keterangan' => $request->keterangan??null,
-            ]);
-          }
-  
+        }
+
+        $limitPembelian = Customer::find($id_customer)->limit_pembelian;
+        if($limitPembelian == null || $limitPembelian>=$totalPesanan){
           OrderTrack::insert([
-            'id_order' => $order_id,
+            'id_order' => $id_order,
             'status' => 20,
             'waktu_order'=> now(),
             'created_at'=> now(),
@@ -69,7 +70,15 @@ class OrderController extends Controller
             'estimasi_waktu_pengiriman' => $estimasiWaktuPengiriman,
           ]);
           OrderItem::insert($data);
+        }else{
+          return response()->json([
+            'status' => 'error',
+            'error_message' => 'Total pesanan melebihi limit pembelian'
+          ]);
         }
+  
+       
+      }
         
         // =========== JIKA SUDAH ADA ============
 
@@ -108,15 +117,30 @@ class OrderController extends Controller
               }
           }
 
-          Order::where('id', $id_order)->update([
-            'id_staff' => $idStaf,
-          ]);
+          $limitPembelian = Customer::find($id_customer)->limit_pembelian;
+          if($limitPembelian == null || $limitPembelian>=$totalPesanan){
+            Order::where('id', $id_order)->update([
+              'id_staff' => $idStaf,
+            ]);
 
-          OrderTrack::where('id_order', $id_order)->update([
-            'waktu_diteruskan' => now(),
-            'estimasi_waktu_pengiriman' => $estimasiWaktuPengiriman,
-          ]);          
+            OrderTrack::where('id_order', $id_order)->update([
+              'waktu_diteruskan' => now(),
+              'estimasi_waktu_pengiriman' => $estimasiWaktuPengiriman,
+            ]);    
+          }else{
+            return response()->json([
+              'status' => 'error',
+              'error_message' => 'Total pesanan melebihi limit pembelian'
+            ]);
+          }   
         }
+
+        // Invoice::insert([
+        //   'id_order' => $id_order,
+        //   'id_event' => $idEvent,
+        //   'nomor_invoice' => (Invoice::orderBy("nomor_invoice", "DESC")->first()->nomor_invoice ?? 0) + 1,
+        //   'harga_total' => $request->totalHarga;
+        // ]);
 
         return response()->json([
           'status' => 'success',
@@ -124,12 +148,11 @@ class OrderController extends Controller
         ]);
     }
 
-// ============================
-
-    public function keluarTripOrderApi($id){                
+    public function keluarTripOrderApi(Request $request, $id){ 
         Trip::find($id)->update([
           'waktu_keluar' => now(),
-          'updated_at' => now()
+          'updated_at' => now(),
+          'alasan_penolakan' => $request->alasan_penolakan
         ]);
 
         return response()->json([
@@ -192,15 +215,19 @@ class OrderController extends Controller
     }
 
     public function index(){
-        $orders = Order::join('order_tracks','orders.id','=','order_tracks.id_order')
-        ->join('statuses','order_tracks.status','=','statuses.id')
-        ->join('invoices','orders.id','=','invoices.id_order')
-        ->paginate(5);
+
+            $orders = Order::paginate(5);
+
+           
+
         $statuses = Status::where('tabel','=','order_tracks')->get();
+        // dd($statuses);
+       // dd($orders, $orders1);
                      
-        return view('administrasi/pesanan.index',[
-            'orders' => $orders,            
-            'statuses' => $statuses
+        return view('administrasi.pesanan.index',[
+          'orders' => $orders,
+                      
+          'statuses' => $statuses
         ]);
     }
 

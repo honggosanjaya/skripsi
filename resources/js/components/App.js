@@ -27,13 +27,16 @@ function App() {
 
             <Route exact path="/shipper/dashboard" component={DashboardShipper} />
 
-            <KeranjangSalesContextProvider>
-              <Route exact path="/salesman" component={DashboardSales} />
-              <Route exact path="/salesman/trip" component={TripSales} />
-              <Route exact path="/salesman/trip/:id" component={TripSales} />
-              <Route exact path="/salesman/order/:idCust" component={Pemesanan} />
-              <Route exact path="/salesman/keranjang/:idCust" component={KeranjangSales} />
-            </KeranjangSalesContextProvider>
+
+            <Route path={["/salesman"]}>
+              <KeranjangSalesContextProvider>
+                <Route exact path="/salesman" component={DashboardSales} />
+                <Route exact path="/salesman/trip" component={TripSales} />
+                <Route exact path="/salesman/trip/:id" component={TripSales} />
+                <Route exact path="/salesman/order/:idCust" component={Pemesanan} />
+                <Route exact path="/salesman/keranjang/:idCust" component={KeranjangSales} />
+              </KeranjangSalesContextProvider>
+            </Route>
 
 
             <Route path="*" component={NotFound} />
