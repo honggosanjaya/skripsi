@@ -253,14 +253,17 @@ class OrderController extends Controller
     }
 
     public function viewKapasitas(Order $order){
+      $kendaraans = Vehicle::get();
+      $invoice = Invoice::where('id_order','=',$order->id)->first();
       $tempVolume = array();
       $tempPersentaseVolume = array();
+      $tempPersentaseHarga = array();
       $orderItemDatas = $order->linkOrderItem;
       $itemData = '';
       $volume = 0;
       $totalVolume = 0;
-      $kendaraans = Vehicle::get();
-            
+      
+                  
       for($i=0; $i<$orderItemDatas->count(); $i++){
          $itemData = Item::where('id','=',$orderItemDatas[$i]->id_item)->first();
          $volume = $itemData->volume * $orderItemDatas[$i]->kuantitas;
@@ -270,13 +273,17 @@ class OrderController extends Controller
       $totalVolume = array_sum($tempVolume);
 
       for($j=0; $j<$kendaraans->count();$j++){
-        array_push($tempPersentaseVolume, (($totalVolume/$kendaraans[$j]->kapasitas_volume)*100));
+        array_push($tempPersentaseVolume, 
+        [$kendaraans[$j]->nama,$kendaraans[$j]->kode_kendaraan,(($totalVolume/$kendaraans[$j]->kapasitas_volume)*100)]);
+        
+        array_push($tempPersentaseHarga, 
+        [$kendaraans[$j]->nama,$kendaraans[$j]->kode_kendaraan,(($invoice->harga_total/$kendaraans[$j]->kapasitas_harga)*100)]);
       }
-      dd($tempPersentaseVolume);
-         
+     
       return view('administrasi/pesanan.kapasitaskendaraan',[
           'order' => $order,
-          'totalVolume' => $totalVolume
+          'persentaseVolumes' => $tempPersentaseVolume,
+          'persentaseHargas' => $tempPersentaseHarga
       ]);
   }
 
