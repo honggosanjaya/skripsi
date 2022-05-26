@@ -26,12 +26,14 @@
         <span class="iconify" data-icon="clarity:shopping-cart-solid"></span>
     </header>-->
   <header class='header_mobile d-flex justify-content-between align-items-center'>
+    <a href="/customer" style="color: black"><i class="bi bi-arrow-left fs-4"></i></a>
     <a href="/customer" style="text-decoration: none; color: black">
-      <h1 class='page_title mb-0'>salesMan</h1>
+      <h1 class="page_title">salesMan</h1>
     </a>
     <div class="set-header">
 
-      <span class="iconify" id="set-cart-position" data-icon="clarity:shopping-cart-solid"></span>
+      <a href="/customer/cart?route=customerOrder"><span class="iconify" id="set-cart-position"
+          data-icon="clarity:shopping-cart-solid"></span></a>
 
       <a class="dropdown-toggle link-style" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown"
         aria-expanded="false">
@@ -52,31 +54,70 @@
   </header>
 
   <div class="container main_content">
-    <h1>Ini dashboard customer</h1>
+    <div class="row">
+      <div class="col-8">
+        <div class="mt-3 search-box">
+          <form method="GET" action="/customer/event/cari">
+            <div class="input-group">
+              <input type="text" class="form-control" name="cari" placeholder="Cari Event..."
+                value="{{ request('cari') }}">
+              <button type="submit" class="btn btn-primary">Cari</button>
 
-    <p class="fw-bold">Produk Favorit Bulan Mei</p>
+            </div>
 
-    <table border="1" class="table table-bordered">
-      <thead>
-        <tr>
-          <th scope="col">Kode Barang</th>
-          <th scope="col">Nama Barang</th>
-          <th scope="col">Penjualan</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr>
-          <td>K001</td>
-          <td>Sapu</td>
-          <td>5000000</td>
-        </tr>
-        <tr>
-          <td>K002</td>
-          <td>Lidi</td>
-          <td>6000000</td>
-        </tr>
-      </tbody>
-    </table>
+          </form>
+        </div>
+      </div>
+      
+    </div>
+    
+    <div class="container">
+        @foreach($events as $event)
+        <div class="row border border-2 my-3">
+            <h5>{{ $event->nama }}</h5>
+            @if($event->diskon != null)
+            <h6>Promo Diskon {{ $event->diskon }} %</h6>
+            @else
+            <h6>Promo Potongan Rp {{ $event->potongan }}</h6>
+            @endif
+            <h6>{{ date('d F Y', strtotime($event->date_end)) }}</h6>
+            {{-- <p class="text-primary fw-bold"><a data-bs-toggle="modal" data-bs-target="#testing">Lihat Detail >>></a></p>             --}}
+            <!-- Button trigger modal -->
+          <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#event{{ $event->id }}">
+            Launch demo modal
+          </button>
+
+          <!-- Modal -->
+          <div class="modal fade" id="event{{ $event->id }}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <h5 class="modal-title" id="exampleModalLabel">{{ $event->nama }}</h5>
+                  <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                  @if($event->diskon != null)
+                  <h6>Promo Diskon {{ $event->diskon }} %</h6>
+                  @else
+                  <h6>Promo Potongan Rp {{ $event->potongan }}</h6>
+                  @endif
+                  <p>{{ $event->keterangan }}</p>
+                  <h6> Berlaku sampai {{ date('d F Y', strtotime($event->date_end)) }}</h6>
+                  <p> NB: Tanyakan pada sales, saat sales datang</p>
+                </div>
+                <div class="modal-footer">
+                  <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        @endforeach
+
+    </div>
+
+    {{ $events->links() }}
+    
   </div>
 
   <footer class='footer_mobile d-flex justify-content-between align-items-center'>
@@ -106,6 +147,7 @@
 
   <script src="{{ mix('js/bootstrap.js') }}"></script>
   <script src="{{ mix('js/main.js') }}"></script>
+  <script src="{{ mix('js/d_customer.js') }}"></script>
   <script src="https://code.iconify.design/2/2.0.3/iconify.min.js"></script>
 </body>
 
