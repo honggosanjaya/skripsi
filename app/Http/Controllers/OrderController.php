@@ -7,7 +7,9 @@ use App\Models\Order;
 use App\Models\OrderTrack;
 use App\Models\OrderItem;
 use App\Models\Staff;
+use App\Models\Item;
 use App\Models\Invoice;
+use App\Models\Vehicle;
 use App\Models\Status;
 use PDF;
 
@@ -122,6 +124,34 @@ class OrderController extends Controller
             'items' => $items
         ]);
     }
+
+    public function viewKapasitas(Order $order){
+      $tempVolume = array();
+      $tempPersentaseVolume = array();
+      $orderItemDatas = $order->linkOrderItem;
+      $itemData = '';
+      $volume = 0;
+      $totalVolume = 0;
+      $kendaraans = Vehicle::get();
+            
+      for($i=0; $i<$orderItemDatas->count(); $i++){
+         $itemData = Item::where('id','=',$orderItemDatas[$i]->id_item)->first();
+         $volume = $itemData->volume * $orderItemDatas[$i]->kuantitas;
+         array_push($tempVolume, $volume);
+      }   
+
+      $totalVolume = array_sum($tempVolume);
+
+      for($j=0; $j<$kendaraans->count();$j++){
+        array_push($tempPersentaseVolume, (($totalVolume/$kendaraans[$j]->kapasitas_volume)*100));
+      }
+      dd($tempPersentaseVolume);
+         
+      return view('administrasi/pesanan.kapasitaskendaraan',[
+          'order' => $order,
+          'totalVolume' => $totalVolume
+      ]);
+  }
 
     public function cetakInvoice(Order $order){
         $items = OrderItem::where('id_order','=',$order->id)->get();
