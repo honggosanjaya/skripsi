@@ -81,8 +81,8 @@
           </a>
         </li>
         <li class="mb-3">
-          <a class="" href="">
-            <i class="bi bi-wallet2 me-2"></i><span>Limit Pembelian</span>
+          <a class="{{ Request::is('supervisor/datacustomer*') ? 'active' : '' }}" href="/supervisor/datacustomer">
+            <i class="bi bi-wallet2 me-2"></i><span>Data Customer</span>
           </a>
         </li>
         <li class="mb-3">

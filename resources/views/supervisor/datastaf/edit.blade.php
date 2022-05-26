@@ -41,7 +41,7 @@
       <label for="foto_profil" class="form-label">Foto Profil</label>
       <input type="hidden" name="oldImage" value="{{ $staf->foto_profil }}">
       @if ($staf->foto_profil)
-        <img src="{{ asset('storage/staf/' . $staf->foto_profil) }}" class="img-preview img-fluid d-block">
+        <img src="{{ asset('storage/staff/' . $staf->foto_profil) }}" class="img-preview img-fluid d-block">
       @else
         <img class="img-preview img-fluid">
         <p>Belum ada foto profil</p>

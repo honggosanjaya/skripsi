@@ -40,8 +40,21 @@ Route::post('/customer/order/cart', [CartController::class, 'addToCart']);
 // sales checkout
 Route::post('/salesman/buatOrder', [OrderController::class, 'simpanDataOrderSalesmanAPI']);
 
+// sales sudah ada kode customer
+Route::get('/kodeCustomer/{id}', [OrderController::class, 'dataKodeCustomer']);
+
+// catat trip untuk order
+Route::post('/tripOrderCustomer', [OrderController::class, 'catatTripOrderApi']);
+
+// ubah trip untuk keluar
+Route::get('/keluarToko/{id}', [OrderController::class, 'keluarTripOrderApi']);
+
+Route::get('/forceLogout', [LoginController::class, 'logoutUnauthorizedSPAApi']);
+
 Route::group(['middleware' => 'auth:sanctum'], function(){
   Route::post('v1/logout', [LoginController::class, 'logoutApi']);
+  Route::get('/user', [LoginController::class, 'checkUser']);
+
 
 
   Route::prefix('salesman')->group(function() {

@@ -17,7 +17,6 @@ class CustomerController extends Controller
 {
     public function cariCustomerApi(Request $request){
       $customer=Customer::where(strtolower('nama'),'like','%'.$request->nama.'%')->where(strtolower('alamat_utama'),'like','%'.$request->alamat_utama.'%')->with('linkDistrict')->get();
-
       if ($customer->count()>0) {
         return response()->json([
           'data' => $customer,
@@ -28,13 +27,11 @@ class CustomerController extends Controller
         'message' => 'data not found',
         'status' => 'error'
       ],404);
-
     }
 
     public function dataCustomerApi($id){
       $customer=Customer::find($id);
       
-
       if ($customer->count()>0) {
         return response()->json([
           'data' => $customer,
@@ -45,7 +42,6 @@ class CustomerController extends Controller
         'message' => 'data not found',
         'status' => 'error'
       ],404);
-
     }
 
     public function dataFormTripApi(){
@@ -59,7 +55,6 @@ class CustomerController extends Controller
     public function simpanCustomerApi(Request $request){
       $rules = [
         'nama' => ['required', 'string', 'max:255'],
-        // 'email' => ['string', 'email', 'max:255', 'unique:users'],
         'id_jenis' => ['required'],
         'id_wilayah' => ['required'],
         'alamat_utama' => ['required', 'string', 'max:255'],
@@ -69,15 +64,16 @@ class CustomerController extends Controller
         'durasi_kunjungan' => ['required', 'integer'],
       ];
       
-      if ($request->id==null){
-        $rules['email'] = ['string', 'email', 'max:255', 'unique:users'];
-      }
-      if (Customer::find($request->id)->email == null) {
-        $rules['email'] = ['string', 'email', 'max:255', 'unique:users'];
-      }
+      // if ($request->id==null){
+      //   $rules['email'] = ['string', 'email', 'max:255', 'unique:users'];
+      // }
+      // if (Customer::find($request->id)->email == null) {
+      //   $rules['email'] = ['string', 'email', 'max:255', 'unique:users'];
+      // }
       
       $validator = Validator::make($request->all(), $rules);
-      $data = $request->except(['jam_masuk','alasan_penolakan','status','koordinat'])+['id_staff' => session('id_staff'), 'status' => 3,'created_at' => now()];
+      // $data = $request->except(['jam_masuk','alasan_penolakan','status','koordinat'])+['id_staff' => session('id_staff'), 'status' => 3,'created_at' => now()];
+      $data = $request->except(['jam_masuk','alasan_penolakan','status','koordinat'])+['id_staff' => 4, 'status' => 3,'created_at' => now()];
       $status = $request->status=='trip'?1:2;
       $id=null;
 
@@ -108,18 +104,16 @@ class CustomerController extends Controller
         }
         $customer = Customer::find($id)->update($data);
         Customer::find($id)->update(['password'=>Hash::make(12345678)]);
-
       }
       if (Trip::where('id_customer',$id)->where('status',2)->count()==0) {
         Customer::find($id)->update(['counter_to_effective_call' => $request->counter_to_effective_call+1]);
       }
       
-
-      // dd($request->jam_masuk);
       Trip::create(
         [
           'id_customer' => $id,
-          'id_staff' => session('id_staff') ,
+          // 'id_staff' => session('id_staff') ,
+          'id_staff' => 4,
           'alasan_penolakan' => $request->alasan_penolakan,
           'koordinat' => $request->koordinat,
           'waktu_masuk' => date('Y-m-d H:i:s', $request->jam_masuk),
@@ -130,9 +124,10 @@ class CustomerController extends Controller
       );
             
       // dd($request);
+
       return response()->json([
         'status' => 'success',
-        'data' => Customer::find($id)
+        'data' => Customer::find($id),
       ]);
     }
 
@@ -163,13 +158,11 @@ class CustomerController extends Controller
       ]);
     }
 
-
     public function administrasiIndex(){
       return view('administrasi.dataCustomer.index', [
         'customers' => Customer::paginate(5),
         "title" => "Data Customer"
       ]);
-
     }
 
     public function administrasiSearch(){
@@ -213,7 +206,7 @@ class CustomerController extends Controller
       
       $validatedData = $request->validate($rules);
       $validatedData['tipe_retur'] = $request->tipe_retur;
-      $validatedData['id_staff'] = session(auth()->user()->id);
+      $validatedData['id_staff'] = auth()->user()->id;
       $validatedData['limit_pembelian'] = 200000;
       $validatedData['durasi_kunjungan'] = 7;
       $validatedData['counter_to_effective_call'] = 0;
@@ -332,4 +325,12 @@ class CustomerController extends Controller
 
       return redirect('/administrasi/datacustomer') -> with('pesanSukses', 'Berhasil ubah status' );
     } 
+
+    public function dataCustomer(){
+      $customers = Customer::paginate(5);
+      return view('supervisor.datacustomer.dataCustomer', [
+        'customers' => $customers,
+        "title" => "Seluruh Data Customer"
+      ]);
+    }
 }

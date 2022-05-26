@@ -24,7 +24,7 @@ const TripSales = () => {
   const [jamMasuk, setJamMasuk] = useState(Date.now() / 1000);
   const [koordinat, setKoordinat] = useState('');
   const [file, setFile] = useState(null);
-  const [prevImage, setPrevImage] = useState('');
+  const [prevImage, setPrevImage] = useState(null);
   const [imagePreviewUrl, setImagePreviewUrl] = useState('');
   const [error, setError] = useState(null);
   const [success, setSuccess] = useState(null);
@@ -33,6 +33,7 @@ const TripSales = () => {
   const [customerTypeArr, setCustomerTypeArr] = useState([]);
   const [showListCustomerType, setShowListCustomerType] = useState([]);
   const [showListDistrict, setShowListDistrict] = useState([]);
+  const [customer, setCustomer] = useState([]);
 
   const Swal = require('sweetalert2')
   let $imagePreview = null;
@@ -67,7 +68,7 @@ const TripSales = () => {
       }
     })
       .then(response => {
-        // console.log(response.data.data);
+        console.log(response.data);
         setCustomer(response.data.data);
         return response.data.data;
       })
@@ -113,19 +114,19 @@ const TripSales = () => {
       // console.log(id);
       axios.get(`${window.location.origin}/api/tripCustomer/${id}`).then(response => {
         console.log(response.data.data);
-        setNamaCust(response.data.data.nama)
-        setJenis(response.data.data.id_jenis)
-        setWilayah(response.data.data.id_wilayah)
-        setAlamatUtama(response.data.data.alamat_utama)
-        setAlamatNomor(response.data.data.alamat_nomor)
-        setEmail(response.data.data.email)
-        setEmailInput(response.data.data.email != null ? true : false)
-        setKetAlamat(response.data.data.keterangan_alamat)
-        setTelepon(response.data.data.telepon)
-        setDurasiTrip(response.data.data.durasi_kunjungan)
-        setTotalTripEC(response.data.data.counter_to_effective_call)
-        setImagePreviewUrl(response.data.data.image_url)
-
+        setNamaCust(response.data.data.nama);
+        setJenis(response.data.data.id_jenis);
+        setWilayah(response.data.data.id_wilayah);
+        setAlamatUtama(response.data.data.alamat_utama);
+        setAlamatNomor(response.data.data.alamat_nomor == null ? '' : response.data.data.alamat_nomor);
+        setEmail(response.data.data.email == null ? '' : response.data.data.email);
+        setEmailInput(response.data.data.email != null ? true : false);
+        setKetAlamat(response.data.data.keterangan_alamat == null ? '' : response.data.data.keterangan_alamat);
+        setTelepon(response.data.data.telepon == null ? '' : response.data.data.telepon);
+        setDurasiTrip(response.data.data.durasi_kunjungan);
+        setTotalTripEC(response.data.data.counter_to_effective_call);
+        setImagePreviewUrl(response.data.data.image_url);
+        setPrevImage(response.data.data.foto);
         return response.data.data;
       })
     }
@@ -133,7 +134,6 @@ const TripSales = () => {
       console.log(response.data);
       setDistrictArr(response.data.district)
       setCustomerTypeArr(response.data.customerType)
-
       return response.data.data;
     })
   }, [])
@@ -163,7 +163,12 @@ const TripSales = () => {
   }
 
   const handleOrder = () => {
-    history.push(`/salesman/order/${id}`);
+    kirimCustomer();
+    if (id == undefined) {
+      history.push(`/salesman/order/${customer.id}`);
+    } else {
+      history.push(`/salesman/order/${id}`);
+    }
   }
 
   return (
@@ -246,7 +251,7 @@ const TripSales = () => {
 
           <div className="mb-5">
             <label className="form-label">Foto Tempat Usaha</label>
-            {$imagePreview}
+            {prevImage ? $imagePreview : <p>Belum ada foto</p>}
             <input
               type="file"
               name="foto"
@@ -257,7 +262,7 @@ const TripSales = () => {
 
           <div className="trip_aksi">
             <button type="submit" className="btn btn-danger me-3">Keluar</button>
-            <button type="submit" className="btn btn-success" onClick={handleOrder}>Order</button>
+            <button className="btn btn-success" onClick={handleOrder}>Order</button>
           </div>
         </form>
       </div>

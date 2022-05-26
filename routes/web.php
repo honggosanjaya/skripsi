@@ -50,6 +50,9 @@ Route::prefix('supervisor')->middleware('supervisor')->group(function() {
   Route::get('/wilayah/ubah/{district:id}', [DistrictController::class, 'edit']);
   Route::put('/wilayah/ubahwilayah/{district:id}', [DistrictController::class, 'update']);
 
+  // Route untuk data customer termasuk limit pembelian
+  Route::get('/datacustomer', [CustomerController::class, 'dataCustomer']);
+
   //Route untuk jenis customer
   Route::get('/jenis', [CustomerTypeController::class, 'index']);
   Route::get('/jenis/cari', [CustomerTypeController::class, 'search']);
@@ -60,7 +63,6 @@ Route::prefix('supervisor')->middleware('supervisor')->group(function() {
 
   // Route untuk data staf
   Route::resource('/datastaf', StaffController::class);
-  Route::get('/datastaf/cari', [StaffController::class, 'stafSearch']);
   Route::post('/datastaf/ubahstatus/{staf:id}', [StaffController::class, 'supervisorEditStatusStaf']);
 });
 // Route::prefix('salesman')->middleware('salesman')->group(function() {
@@ -108,6 +110,7 @@ Route::prefix('administrasi')->middleware('administrasi')->group(function() {
     
     //Route untuk pengadaan
     Route::resource('/produk', ItemController::class);
+    Route::get('/produk/cari', [ItemController::class, 'produkSearch']);
     Route::get('/pengadaan', [ItemController::class, 'productList'])->name('products.list');
     Route::get('/pengadaan/cart', [CartController::class, 'cartList'])->name('cart.list');
     Route::post('/pengadaan/cart', [CartController::class, 'addToCart'])->name('cart.store');
