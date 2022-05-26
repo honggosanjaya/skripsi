@@ -81,46 +81,40 @@
             <h6>Promo Potongan Rp {{ $event->potongan }}</h6>
             @endif
             <h6>{{ date('d F Y', strtotime($event->date_end)) }}</h6>
-            <p class="text-primary fw-bold"><a data-bs-toggle="modal" data-bs-target="#testing">Lihat Detail >>></a></p>            
-            
-        </div>
-        @endforeach
-    </div>
+            {{-- <p class="text-primary fw-bold"><a data-bs-toggle="modal" data-bs-target="#testing">Lihat Detail >>></a></p>             --}}
+            <!-- Button trigger modal -->
+          <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#event{{ $event->id }}">
+            Launch demo modal
+          </button>
 
-    
-
-    <div class="col-4 mt-2">
-        
-        @foreach($events as $event)
-        <!-- Modal -->
-        <div class="modal fade" id="testing" tabindex="-1" aria-labelledby="testingLabel"
-          aria-hidden="true">
-          <div class="modal-dialog">
-            <div class="modal-content">
-              <div class="modal-header">
-                <h5 class="modal-title" id="testingLabel">Detail</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-              </div>
-              <div class="modal-body">
-                <div class="mb-3">
-                  <h5>Nama : {{ $event->nama }}</h5>
-                  <h5>ID : {{ $event->id }}</h5>
-                  
-                  
+          <!-- Modal -->
+          <div class="modal fade" id="event{{ $event->id }}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <h5 class="modal-title" id="exampleModalLabel">{{ $event->nama }}</h5>
+                  <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
-              </div>
-              <div class="modal-footer">
-                <button type="button" class="btn btn-secondary close-filter-produk"
-                  data-bs-dismiss="modal">Close</button>                
+                <div class="modal-body">
+                  @if($event->diskon != null)
+                  <h6>Promo Diskon {{ $event->diskon }} %</h6>
+                  @else
+                  <h6>Promo Potongan Rp {{ $event->potongan }}</h6>
+                  @endif
+                  <p>{{ $event->keterangan }}</p>
+                  <h6> Berlaku sampai {{ date('d F Y', strtotime($event->date_end)) }}</h6>
+                  <p> NB: Tanyakan pada sales, saat sales datang</p>
+                </div>
+                <div class="modal-footer">
+                  <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                </div>
               </div>
             </div>
           </div>
         </div>
         @endforeach
-       
 
     </div>
-    
 
     {{ $events->links() }}
     
