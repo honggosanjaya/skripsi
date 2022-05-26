@@ -72,6 +72,9 @@
       <div class="col-3">
         <p class="text-success fw-bold">{{ $order->linkOrderTrack->linkStatus->nama }}</p>     
       </div>    
+      <div class="col-6">
+        <a class="btn btn-warning" href="/administrasi/pesanan/detail/{{ $order->id }}/kapasitas"><i class="bi bi-eye-fill p-1"></i>Lihat Kapasitas Kendaraan</a>
+      </div>      
   </div>
 
   <div>

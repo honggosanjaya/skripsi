@@ -7,9 +7,11 @@ use App\Models\Order;
 use App\Models\OrderTrack;
 use App\Models\OrderItem;
 use App\Models\Staff;
+use App\Models\Item;
 use App\Models\Trip;
 use App\Models\Customer;
 use App\Models\Invoice;
+use App\Models\Vehicle;
 use App\Models\Status;
 
 use PDF;
@@ -249,6 +251,41 @@ class OrderController extends Controller
             'items' => $items
         ]);
     }
+
+    public function viewKapasitas(Order $order){
+      $kendaraans = Vehicle::get();
+      $invoice = Invoice::where('id_order','=',$order->id)->first();
+      $tempVolume = array();
+      $tempPersentaseVolume = array();
+      $tempPersentaseHarga = array();
+      $orderItemDatas = $order->linkOrderItem;
+      $itemData = '';
+      $volume = 0;
+      $totalVolume = 0;
+      
+                  
+      for($i=0; $i<$orderItemDatas->count(); $i++){
+         $itemData = Item::where('id','=',$orderItemDatas[$i]->id_item)->first();
+         $volume = $itemData->volume * $orderItemDatas[$i]->kuantitas;
+         array_push($tempVolume, $volume);
+      }   
+
+      $totalVolume = array_sum($tempVolume);
+
+      for($j=0; $j<$kendaraans->count();$j++){
+        array_push($tempPersentaseVolume, 
+        [$kendaraans[$j]->nama,$kendaraans[$j]->kode_kendaraan,(($totalVolume/$kendaraans[$j]->kapasitas_volume)*100)]);
+        
+        array_push($tempPersentaseHarga, 
+        [$kendaraans[$j]->nama,$kendaraans[$j]->kode_kendaraan,(($invoice->harga_total/$kendaraans[$j]->kapasitas_harga)*100)]);
+      }
+     
+      return view('administrasi/pesanan.kapasitaskendaraan',[
+          'order' => $order,
+          'persentaseVolumes' => $tempPersentaseVolume,
+          'persentaseHargas' => $tempPersentaseHarga
+      ]);
+  }
 
     public function cetakInvoice(Order $order){
         $items = OrderItem::where('id_order','=',$order->id)->get();

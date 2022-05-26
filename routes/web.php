@@ -85,6 +85,7 @@ Route::prefix('administrasi')->middleware('administrasi')->group(function() {
   Route::get('/pesanan/cari', [OrderController::class, 'search']);
   Route::get('/pesanan/filter', [OrderController::class, 'filter']);
   Route::get('/pesanan/detail/{order:id}', [OrderController::class, 'viewDetail']);
+  Route::get('/pesanan/detail/{order:id}/kapasitas', [OrderController::class, 'viewKapasitas']);
   Route::get('/pesanan/detail/{order:id}/cetak-memo', [OrderController::class, 'cetakMemo']);
   Route::get('/pesanan/detail/{order:id}/cetak-invoice', [OrderController::class, 'cetakInvoice']);
   Route::get('/pesanan/detail/{order:id}/cetak-sj', [OrderController::class, 'cetakSJ']);
