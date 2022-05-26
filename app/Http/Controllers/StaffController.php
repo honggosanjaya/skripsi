@@ -77,7 +77,7 @@ class StaffController extends Controller
       $user = User::create([
         'id_users' => $staff,
         'email' => $request->email,
-        'password' => Hash::make($request->password),
+        'password' => $validatedData['password'],
         'tabel' => 'staffs',
       ]);
 

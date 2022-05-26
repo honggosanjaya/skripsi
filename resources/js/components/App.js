@@ -25,6 +25,7 @@ function App() {
           <Switch>
             <Route path="/spa/login" component={LoginReact} />
 
+            <Route exact path="/shipper/dashboard" component={DashboardShipper} />
 
             <KeranjangSalesContextProvider>
               <Route exact path="/salesman" component={DashboardSales} />
@@ -34,7 +35,6 @@ function App() {
               <Route exact path="/salesman/keranjang/:idCust" component={KeranjangSales} />
             </KeranjangSalesContextProvider>
 
-            <Route exact path="/shipper" component={DashboardShipper} />
 
             <Route path="*" component={NotFound} />
           </Switch>
