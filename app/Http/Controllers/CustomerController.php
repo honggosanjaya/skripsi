@@ -176,6 +176,17 @@ class CustomerController extends Controller
       ]);
     }
 
+    public function supervisorSearch(){
+      $customers =  Customer::where(strtolower('nama'),'like','%'.request('cari').'%')
+        ->orWhere(strtolower('email'),'like','%'.request('cari').'%')
+        ->paginate(5);
+
+      return view('supervisor.dataCustomer.dataCustomer', [
+        'customers' => $customers,
+        "title" => "Data Customer"
+      ]);
+    }
+
     public function administrasiCreate(){
       return view('administrasi.dataCustomer.create', [
         'customer_types' => CustomerType::all(),
@@ -312,8 +323,7 @@ class CustomerController extends Controller
       return redirect('/administrasi/datacustomer') -> with('pesanSukses', 'Data berhasil diubah' );
     }
 
-    public function administrasiEditStatusCustomer(Customer $customer)
-    {
+    public function administrasiEditStatusCustomer(Customer $customer){
       $status = $customer->status;
       $nama_status = Status::where('id', $status)->first()->nama; 
 
@@ -332,5 +342,40 @@ class CustomerController extends Controller
         'customers' => $customers,
         "title" => "Seluruh Data Customer"
       ]);
+    }
+
+    public function dataPengajuanLimit(){
+      $customers = Customer::where('status_limit_pembelian', 7)->get();
+
+      return view('supervisor.datacustomer.pengajuanLimit', [
+        'customers' => $customers,
+        "title" => "Data Pengajuan Limit Pembelian Customer"
+      ]);
+    }
+
+    public function detailDataPengajuanLimit(Customer $customer){
+      $customer = Customer::find($customer->id);
+
+      return view('supervisor.datacustomer.detailPengajuanLimit', [
+        'customer' => $customer,
+        "title" => "Detail Pengajuan Limit Pembelian Customer"
+      ]);
+    }
+
+    public function setujuPengajuanLimit(Customer $customer){
+      Customer::find($customer->id)->update([
+        'limit_pembelian' => $customer->pengajuan_limit_pembelian,
+        'pengajuan_limit_pembelian' => null,
+        'status_limit_pembelian' => 5
+      ]);
+      return redirect('/supervisor/datapengajuan') -> with('pesanSukses', 'Berhasil menyetujui pengajuan' );
+    }
+
+    public function tolakPengajuanLimit(Customer $customer){
+      Customer::find($customer->id)->update([
+        'pengajuan_limit_pembelian' => null,
+        'status_limit_pembelian' => 6
+      ]);
+      return redirect('/supervisor/datapengajuan') -> with('pesanSukses', 'Berhasil menolak pengajuan' );
     }
 }

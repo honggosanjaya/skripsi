@@ -8,10 +8,12 @@
     </div>
   @endif
 
+  <a href="/supervisor/datapengajuan" class="btn btn-primary">Pengajuan Limit Pembelian</a>
+
   <div class="row">
     <div class="col-5">
       <div class="mt-3 search-box">
-        <form method="GET" action="/administrasi/datacustomer/cari">
+        <form method="GET" action="/supervisor/datacustomer/cari">
           <div class="input-group">
             <input type="text" class="form-control" name="cari" placeholder="Cari Customer..."
               value="{{ request('cari') }}">
