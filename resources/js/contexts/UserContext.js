@@ -10,6 +10,23 @@ const UserContextProvider = (props) => {
   const [errorDataUser, setErrorDataUser] = useState(null);
   const history = useHistory();
 
+
+  const forceLogout = () => {
+    console.log('dari user context logout paksa');
+    axios({
+      method: "get",
+      url: `${window.location.origin}/api/forceLogout`,
+      headers: {
+        Accept: "application/json",
+      }
+    })
+      .then(() => {
+        setIsAuth('false');
+        setToken(null);
+        history.push('/spa/login');
+      })
+  }
+
   useEffect(() => {
     if (isAuth === 'true' && token !== null & dataUser.length === 0) {
       setLoadingDataUser(true);
@@ -27,27 +44,14 @@ const UserContextProvider = (props) => {
           if (response.data.status === 'success') {
             setDataUser(response.data.data);
           } else {
-            console.log('dari user context logout paksa');
-            // setIsAuth('false');
-            // setToken(null);
-            // history.push('/spa/login');
-            axios({
-              method: "get",
-              url: `${window.location.origin}/api/forceLogout`,
-              headers: {
-                Accept: "application/json",
-              }
-            })
-              .then(() => {
-                setIsAuth('false');
-                setToken(null);
-                history.push('/spa/login');
-              })
+            forceLogout();
           }
         })
         .catch((error) => {
           setLoadingDataUser(false);
           setErrorDataUser(error.message);
+          // disini masih ragu, kalau error forceLogout(); dikomen aja
+          // forceLogout();
         });
     }
   }, [dataUser]);

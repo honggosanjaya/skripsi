@@ -18,9 +18,10 @@ const KeranjangSales = ({ location }) => {
   const [isLoading, setIsLoading] = useState(false);
   const [estimasiWaktuPengiriman, setEstimasiWaktuPengiriman] = useState(null);
   const [keteranganOrderItem, setKeteranganOrderItem] = useState(null);
+  const [idEvent, setIdEvent] = useState(null);
   const { state: idTrip } = location;
 
-  let subtotal = 0;
+  let totalHarga = 0;
 
   const goback = () => {
     history.push({
@@ -101,25 +102,31 @@ const KeranjangSales = ({ location }) => {
           keranjang: produks,
           idStaf: dataUser.id_staff,
           estimasiWaktuPengiriman: estimasiWaktuPengiriman,
-          keterangan: keteranganOrderItem
+          keterangan: keteranganOrderItem,
+          idEvent: idEvent,
+          totalHarga: totalHarga,
         }
       })
         .then(response => {
           console.log('chekout', response);
-          hapusSemuaProduk();
-          setIsLoading(false);
-          setSuccessMessage(response.data.success_message);
-          axios({
-            method: "get",
-            url: `${window.location.origin}/api/keluarToko/${idTrip}`,
-            headers: {
-              Accept: "application/json",
-            },
-          })
-            .then(response => {
-              console.log(response.message);
-              history.push('/salesman');
+          if (response.data.status === 'success') {
+            hapusSemuaProduk();
+            setIsLoading(false);
+            setSuccessMessage(response.data.success_message);
+            axios({
+              method: "get",
+              url: `${window.location.origin}/api/keluarToko/${idTrip}`,
+              headers: {
+                Accept: "application/json",
+              },
             })
+              .then(response => {
+                console.log(response.message);
+                history.push('/salesman');
+              })
+          } else {
+            throw Error(response.data.error_message);
+          }
         })
         .catch(error => {
           console.log(error.message);
@@ -128,7 +135,6 @@ const KeranjangSales = ({ location }) => {
         });
     }
   }
-
 
   return (
     <main className="page_main">
@@ -207,27 +213,32 @@ const KeranjangSales = ({ location }) => {
             {!estimasiWaktuPengiriman && <p className='text-danger'>Estimasi waktu pengiriman wajib diisi</p>}
 
             <label className="form-label mt-3">Keterangan Pesanan</label>
-            <input type="text" className="form-control mb-btnBottom"
+            <input type="text" className="form-control"
               value={keteranganOrderItem || ''}
               onChange={(e) => setKeteranganOrderItem(e.target.value)}
+            />
+
+            <label className="form-label mt-3">Id Event</label>
+            <input type="text" className="form-control mb-btnBottom"
+              value={idEvent || ''}
+              onChange={(e) => setIdEvent(e.target.value)}
             />
 
             <div className="button_bottom d-flex justify-content-between">
               <div>
                 <p className='mb-0'>Total Pesanan:</p>
                 {produks.map((produk) => {
-                  subtotal = subtotal + (produk.jumlah * produk.harga);
+                  totalHarga = totalHarga + (produk.jumlah * produk.harga);
                 })}
-                <h1 className='mb-0 fs-4'>{convertPrice(subtotal)}</h1>
+                <h1 className='mb-0 fs-4'>{convertPrice(totalHarga)}</h1>
               </div>
               <button className='btn btn-success' onClick={checkout}>CHECKOUT</button>
             </div>
           </Fragment>
         }
 
-
       </div>
-    </main >
+    </main>
   );
 }
 
