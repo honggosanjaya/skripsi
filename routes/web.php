@@ -90,6 +90,8 @@ Route::prefix('administrasi')->middleware('administrasi')->group(function() {
   Route::get('/pesanan/detail/{order:id}/cetak-memo', [OrderController::class, 'cetakMemo']);
   Route::get('/pesanan/detail/{order:id}/cetak-invoice', [OrderController::class, 'cetakInvoice']);
   Route::get('/pesanan/detail/{order:id}/cetak-sj', [OrderController::class, 'cetakSJ']);
+  Route::post('/pesanan/setuju/{order:id}', [OrderController::class, 'setujuPesanan']);
+  Route::post('/pesanan/tolak/{order:id}', [OrderController::class, 'tolakPesanan']);
 
   //Route untuk retur
   Route::get('/retur', [ReturController::class, 'index']);
@@ -135,7 +137,6 @@ Route::prefix('administrasi')->middleware('administrasi')->group(function() {
     Route::post('/opname/update-final', [CartController::class, 'updateCart']);
     Route::post('/opname/remove', [CartController::class, 'removeCart']);
     Route::get('/opname/clear', [CartController::class, 'clearAllCart']);
-
     Route::get('/opname/tambahopname', [ItemController::class, 'simpanDataOpname']);
 
   });

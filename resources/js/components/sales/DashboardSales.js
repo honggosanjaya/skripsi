@@ -17,12 +17,7 @@ const DashboardSales = () => {
   const [dataShow, setDataShow] = useState('inactive');
 
   useEffect(() => {
-    // console.log(isAuth);
-    // console.log(token);
-    // console.log('tf', isAuth === 'true');
-    // console.log('tf', token !== null)
     if (isAuth === 'true' && token !== null) {
-      console.log('perlihatkan')
     } else {
       history.push('/spa/login');
     }
@@ -42,7 +37,6 @@ const DashboardSales = () => {
       }
     })
       .then(response => {
-        // console.log(response.data.data);
         setListCustomer(response.data.data)
         setAddButton('active')
         setDataShow('inactive')

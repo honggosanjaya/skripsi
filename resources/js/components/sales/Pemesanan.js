@@ -12,6 +12,7 @@ import { KeranjangSalesContext } from '../../contexts/KeranjangSalesContext';
 import { AuthContext } from '../../contexts/AuthContext';
 import { UserContext } from '../../contexts/UserContext';
 import { useHistory } from "react-router-dom";
+import { Button, Modal } from 'react-bootstrap';
 
 const Pemesanan = ({ location }) => {
   const [urlApi, setUrlApi] = useState('api/salesman/listitems');
@@ -30,6 +31,10 @@ const Pemesanan = ({ location }) => {
   const jamMasuk = Date.now() / 1000;
   const [idTrip, setIdTrip] = useState(null);
   const { state: idTripTetap } = location;
+  const [show, setShow] = useState(false);
+  const handleClose = () => setShow(false);
+  const handleShow = () => setShow(true);
+  const [alasanPenolakan, setAlasanPenolakan] = useState(null);
 
   const { data: dataCustomer, error } = useSWR(
     [`${window.location.origin}/api/tripCustomer/${idCust}`, token], {
@@ -40,16 +45,22 @@ const Pemesanan = ({ location }) => {
     if (idTripTetap) {
       setIdTrip(idTripTetap);
     }
+
     navigator.geolocation.getCurrentPosition(function (position) {
-      setKoordinat(position.coords.latitude + '@' + position.coords.longitude)
+      setKoordinat(position.coords.latitude + '@' + position.coords.longitude);
     });
+
     getAllProduks();
   }, []);
 
   useEffect(() => {
-    console.log('idtriptetap', idTripTetap);
-    console.log('isnan', isNaN(idTripTetap));
-    if (dataUser.nama && koordinat && idTripTetap == null) {
+    // console.log('idtrip', idTrip);
+    // console.log('idtriptetap', idTripTetap);
+    // console.log('isnan', isNaN(idTripTetap));
+    // console.log(koordinat);
+    // console.log(dataUser.nama);
+
+    if (dataUser.nama && koordinat && isNaN(idTripTetap) && idTrip == null) {
       axios({
         method: "post",
         url: `${window.location.origin}/api/tripOrderCustomer`,
@@ -102,14 +113,17 @@ const Pemesanan = ({ location }) => {
   )
 
   const handleKeluarToko = () => {
-    console.log(idTrip);
+    console.log('idTrip', idTrip);
     if (idTrip) {
       axios({
-        method: "get",
+        method: "post",
         url: `${window.location.origin}/api/keluarToko/${idTrip}`,
         headers: {
           Accept: "application/json",
         },
+        data: {
+          'alasan_penolakan': alasanPenolakan,
+        }
       })
         .then((response) => {
           console.log('trip', response.data.message);
@@ -153,6 +167,7 @@ const Pemesanan = ({ location }) => {
         console.log('handlekode', response.data);
 
         if (response.data.status === 'success') {
+          setErrorKodeCustomer(null);
           const dataOrderItems = response.data.dataOrderItem;
           const dataOrder = response.data.dataOrder;
 
@@ -193,6 +208,7 @@ const Pemesanan = ({ location }) => {
         customer: parseInt(idCust),
         harga: item.harga_satuan,
         jumlah: exist.jumlah < item.stok ? exist.jumlah + 1 : exist.jumlah,
+        gambar: item.gambar
       };
       KeranjangDB.updateProduk(produk);
       getAllProduks();
@@ -207,6 +223,7 @@ const Pemesanan = ({ location }) => {
         customer: parseInt(idCust),
         harga: item.harga_satuan,
         jumlah: 1,
+        gambar: item.gambar
       };
       KeranjangDB.putProduk(produk);
       getAllProduks();
@@ -222,6 +239,7 @@ const Pemesanan = ({ location }) => {
         customer: parseInt(idCust),
         harga: item.harga_satuan,
         jumlah: exist.jumlah - 1,
+        gambar: item.gambar
       };
       KeranjangDB.updateProduk(produk);
       getAllProduks();
@@ -253,7 +271,6 @@ const Pemesanan = ({ location }) => {
   const handleValueChange = (item, newVal) => {
     const exist = produks.find((x) => x.id === item.id);
     if (exist) {
-      // if (isNaN(newVal) == false && newVal !== null && newVal !== '' && item.stok >= newVal && newVal > 0) {
       if (isNaN(newVal) == false) {
         const produk = {
           id: item.id,
@@ -261,18 +278,19 @@ const Pemesanan = ({ location }) => {
           customer: parseInt(idCust),
           harga: item.harga_satuan,
           jumlah: isNaN(parseInt(newVal)) ? 0 : parseInt(newVal),
+          gambar: item.gambar
         };
         KeranjangDB.updateProduk(produk);
         getAllProduks();
       }
     } else {
-      // if (isNaN(newVal) == false && newVal > 0) {
       if (isNaN(newVal) == false) {
         const produk = {
           id: item.id,
           orderId: orderId ? parseInt(orderId) : 'belum ada',
           customer: parseInt(idCust),
           harga: item.harga_satuan,
+          gambar: item.gambar,
           jumlah: isNaN(parseInt(newVal)) ? 0 : parseInt(newVal),
         };
         KeranjangDB.putProduk(produk);
@@ -313,9 +331,32 @@ const Pemesanan = ({ location }) => {
           {errorKodeCustomer && <p className='text-danger'>{errorKodeCustomer}</p>}
         </div>
 
-        <div className="tidak_pesan my-5">
+        <div className="my-5">
           <h1 className="fs-6">Customer tidak jadi pesan?</h1>
-          <button className='btn btn-danger' onClick={handleKeluarToko}>Keluar</button>
+          <Button variant="danger" onClick={handleShow}>
+            Keluar
+          </Button>
+
+          <Modal show={show} onHide={handleClose}>
+            <Modal.Header closeButton>
+              <Modal.Title>Keluar Toko</Modal.Title>
+            </Modal.Header>
+            <Modal.Body>
+              <label className="form-label mt-3">Alasan Penolakan</label>
+              <input type="text" className="form-control"
+                value={alasanPenolakan || ''}
+                onChange={(e) => setAlasanPenolakan(e.target.value)}
+              />
+            </Modal.Body>
+            <Modal.Footer>
+              <Button variant="secondary" onClick={handleClose}>
+                Batal
+              </Button>
+              <Button variant="primary" onClick={handleKeluarToko}>
+                Keluar
+              </Button>
+            </Modal.Footer>
+          </Modal>
         </div>
 
         <div className="item">

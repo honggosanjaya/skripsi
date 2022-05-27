@@ -23,6 +23,13 @@ class ReturController extends Controller
         ]);
     }
 
+    public function getTypeReturAPI(){
+      return response()->json([
+        "status" => "success",
+        "data" => ReturType::all(),
+      ], 200);
+    }
+
     public function search(){
         $returs = Retur::select('no_retur','id_customer','id_staff_pengaju', 'created_at','status')        
         ->groupBy('no_retur','id_customer','id_staff_pengaju','created_at','status')
