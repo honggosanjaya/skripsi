@@ -13,7 +13,6 @@ import { AuthContext } from '../../contexts/AuthContext';
 import { UserContext } from '../../contexts/UserContext';
 import { useHistory } from "react-router-dom";
 import { Button, Modal } from 'react-bootstrap';
-import { useMountedState } from 'react-use';
 
 const Pemesanan = ({ location }) => {
   const [urlApi, setUrlApi] = useState('api/salesman/listitems');
@@ -55,11 +54,11 @@ const Pemesanan = ({ location }) => {
   }, []);
 
   useEffect(() => {
-    console.log('idtrip', idTrip);
-    console.log('idtriptetap', idTripTetap);
-    console.log('isnan', isNaN(idTripTetap));
-    console.log(koordinat);
-    console.log(dataUser.nama);
+    // console.log('idtrip', idTrip);
+    // console.log('idtriptetap', idTripTetap);
+    // console.log('isnan', isNaN(idTripTetap));
+    // console.log(koordinat);
+    // console.log(dataUser.nama);
 
     if (dataUser.nama && koordinat && isNaN(idTripTetap) && idTrip == null) {
       axios({
@@ -208,6 +207,7 @@ const Pemesanan = ({ location }) => {
         customer: parseInt(idCust),
         harga: item.harga_satuan,
         jumlah: exist.jumlah < item.stok ? exist.jumlah + 1 : exist.jumlah,
+        gambar: item.gambar
       };
       KeranjangDB.updateProduk(produk);
       getAllProduks();
@@ -222,6 +222,7 @@ const Pemesanan = ({ location }) => {
         customer: parseInt(idCust),
         harga: item.harga_satuan,
         jumlah: 1,
+        gambar: item.gambar
       };
       KeranjangDB.putProduk(produk);
       getAllProduks();
@@ -237,6 +238,7 @@ const Pemesanan = ({ location }) => {
         customer: parseInt(idCust),
         harga: item.harga_satuan,
         jumlah: exist.jumlah - 1,
+        gambar: item.gambar
       };
       KeranjangDB.updateProduk(produk);
       getAllProduks();
@@ -268,7 +270,6 @@ const Pemesanan = ({ location }) => {
   const handleValueChange = (item, newVal) => {
     const exist = produks.find((x) => x.id === item.id);
     if (exist) {
-      // if (isNaN(newVal) == false && newVal !== null && newVal !== '' && item.stok >= newVal && newVal > 0) {
       if (isNaN(newVal) == false) {
         const produk = {
           id: item.id,
@@ -276,18 +277,19 @@ const Pemesanan = ({ location }) => {
           customer: parseInt(idCust),
           harga: item.harga_satuan,
           jumlah: isNaN(parseInt(newVal)) ? 0 : parseInt(newVal),
+          gambar: item.gambar
         };
         KeranjangDB.updateProduk(produk);
         getAllProduks();
       }
     } else {
-      // if (isNaN(newVal) == false && newVal > 0) {
       if (isNaN(newVal) == false) {
         const produk = {
           id: item.id,
           orderId: orderId ? parseInt(orderId) : 'belum ada',
           customer: parseInt(idCust),
           harga: item.harga_satuan,
+          gambar: item.gambar,
           jumlah: isNaN(parseInt(newVal)) ? 0 : parseInt(newVal),
         };
         KeranjangDB.putProduk(produk);

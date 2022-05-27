@@ -55,8 +55,6 @@ Route::group(['middleware' => 'auth:sanctum'], function(){
   Route::post('v1/logout', [LoginController::class, 'logoutApi']);
   Route::get('/user', [LoginController::class, 'checkUser']);
 
-
-
   Route::prefix('salesman')->group(function() {
     Route::get('/listitems', [ItemController::class, 'getListAllProductAPI']);
   });

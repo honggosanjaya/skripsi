@@ -87,7 +87,6 @@ class ItemController extends Controller
 
     $request->validate($rules);
 
-
     $data = [];
     foreach($cartItems as $item){
       array_push($data,[

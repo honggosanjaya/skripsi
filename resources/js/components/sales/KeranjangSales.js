@@ -5,20 +5,27 @@ import { Link, useHistory } from "react-router-dom";
 import { convertPrice } from "../reuse/HelperFunction";
 import { KeranjangSalesContext } from '../../contexts/KeranjangSalesContext';
 import AlertComponent from '../reuse/AlertComponent';
+import { AuthContext } from '../../contexts/AuthContext';
 import { UserContext } from "../../contexts/UserContext";
 import LoadingIndicator from '../reuse/LoadingIndicator';
+import urlAsset from '../../config';
 
 const KeranjangSales = ({ location }) => {
   const { dataUser, loadingDataUser } = useContext(UserContext);
   const history = useHistory();
   const { idCust } = useParams();
+  const { token } = useContext(AuthContext);
   const { produks, setProduks, getAllProduks } = useContext(KeranjangSalesContext);
+
   const [errorMessage, setErrorMessage] = useState(null);
   const [successMessage, setSuccessMessage] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
   const [estimasiWaktuPengiriman, setEstimasiWaktuPengiriman] = useState(null);
   const [keteranganOrderItem, setKeteranganOrderItem] = useState(null);
   const [idEvent, setIdEvent] = useState(null);
+  const [idCustomer, setIdCustomer] = useState(null);
+  const [limitPembelian, setLimitPembelian] = useState(0);
+
   const { state: idTrip } = location;
 
   let totalHarga = 0;
@@ -31,12 +38,36 @@ const KeranjangSales = ({ location }) => {
   }
 
   useEffect(() => {
+    getAllProduks();
+  }, [])
+
+  useEffect(() => {
+    if (idCustomer) {
+      axios({
+        method: "get",
+        url: `${window.location.origin}/api/tripCustomer/${idCustomer}`,
+        headers: {
+          Accept: "application/json",
+        },
+      })
+        .then(response => {
+          setLimitPembelian(response.data.data.limit_pembelian);
+        })
+        .catch(error => {
+          setErrorMessage(error.message);
+        });
+    }
+  }, [idCustomer])
+
+  useEffect(() => {
     console.log('idtrip', idTrip);
   }, [idTrip])
 
   useEffect(() => {
-    getAllProduks();
-  }, [])
+    produks.map((produk) => {
+      setIdCustomer(produk.customer);
+    })
+  }, [produks]);
 
   const hapusSemuaProduk = () => {
     produks.map((produk) => {
@@ -105,6 +136,7 @@ const KeranjangSales = ({ location }) => {
           keterangan: keteranganOrderItem,
           idEvent: idEvent,
           totalHarga: totalHarga,
+          idTrip: idTrip,
         }
       })
         .then(response => {
@@ -151,12 +183,13 @@ const KeranjangSales = ({ location }) => {
         {isLoading && loadingDataUser && <LoadingIndicator />}
         {successMessage && <AlertComponent successMsg={successMessage} />}
         {errorMessage && <AlertComponent errorMsg={errorMessage} />}
+        {limitPembelian != 0 && <div>Limit pembelian: {limitPembelian ? limitPembelian : "Tak terbatas"} </div>}
+
         {produks.length === 0 && <p className='text-danger text-center'>Keranjang Kosong</p>}
         {produks.length !== 0 && <button className='btn btn-danger' onClick={hapusSemuaProduk}>Hapus Semua</button>}
 
         {produks.length > 0 && produks.map((produk) => (
           <div className="cart_item mb-3" key={produk.id}>
-
             <div className="d-flex">
               <div className="form-check pl-0">
                 <label className="customCheckbox_wrapper">
@@ -167,7 +200,8 @@ const KeranjangSales = ({ location }) => {
                   <span className="custom_checkbox"></span>
                 </label>
               </div>
-              {/* <img className="item_image" src={item.gambar} alt="" /> */}
+
+              <img src={`${urlAsset}/storage/item/${produk.gambar}`} className="item_image" />
             </div>
 
             <div className={produk.isSelected ? "grid_item" : ""}>
@@ -236,7 +270,6 @@ const KeranjangSales = ({ location }) => {
             </div>
           </Fragment>
         }
-
       </div>
     </main>
   );

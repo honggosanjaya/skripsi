@@ -315,8 +315,8 @@ const TripSales = () => {
             <button className="btn btn-success" onClick={handleOrder}>Order</button>
           </div>
         </form>
-      </div >
-    </main >
+      </div>
+    </main>
   );
 }
 
