@@ -13,8 +13,11 @@ use PDF;
 class ReturController extends Controller
 {
     public function index(){
-        $returs = Retur::paginate(5);       
-
+        $returs = Retur::select('no_retur','id_customer','id_staff_pengaju', 'created_at','status')        
+        ->groupBy('no_retur','id_customer','id_staff_pengaju','created_at','status')
+        ->with(['linkCustomer','linkStaffPengaju','linkStatus'])
+        ->paginate(5);       
+        
         return view('administrasi/retur.index',[
             'returs' => $returs
         ]);
@@ -28,13 +31,12 @@ class ReturController extends Controller
     }
 
     public function search(){
-        // $returs = Retur::join('customers','returs.id_customer','=','customers.id')
-        //         ->where(strtolower('no_retur'),'like','%'.request('cari').'%')
-        //         ->orWhere(strtolower('nama'),'like','%'.request('cari').'%')
-        //         ->paginate(5);
-        $returs = Retur::where(strtolower('no_retur'),'like','%'.request('cari').'%')
-                ->paginate(5);
-        
+        $returs = Retur::select('no_retur','id_customer','id_staff_pengaju', 'created_at','status')        
+        ->groupBy('no_retur','id_customer','id_staff_pengaju','created_at','status')
+        ->where(strtolower('no_retur'),'like','%'.request('cari').'%')
+        ->with(['linkCustomer','linkStaffPengaju','linkStatus'])        
+        ->paginate(5); 
+                
         return view('administrasi/retur.index',[
             'returs' => $returs
         ]);
