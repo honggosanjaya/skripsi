@@ -130,4 +130,10 @@ class DistrictController extends Controller
 
         return redirect('/supervisor/wilayah')->with('updateWilayahSuccess','Update Wilayah Berhasil');
     }
+
+    public function lihat(){
+        $parentCategories = District::where('id_parent',null)->get();
+        //dd($parentCategories);
+        return view('supervisor/wilayah.wilayahTree', compact('parentCategories'));
+    }
 }

@@ -43,8 +43,11 @@
         
       </div>
     </div>
-    <div class="col-4">
+    <div class="col-3">
       <a href="/supervisor/wilayah/tambah" class="btn btn-primary my-3 py-2">Tambah Wilayah</a>
+    </div>
+    <div class="col-2">
+      <a href="/supervisor/wilayah/lihat" class="btn btn-primary my-3 py-2">Lihat Wilayah</a>
     </div>
   </div>
 </div>

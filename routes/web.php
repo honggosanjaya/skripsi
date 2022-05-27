@@ -46,6 +46,7 @@ Route::prefix('supervisor')->middleware('supervisor')->group(function() {
   Route::get('/wilayah', [DistrictController::class, 'index']);
   Route::get('/wilayah/cari', [DistrictController::class, 'search']);
   Route::get('/wilayah/tambah', [DistrictController::class, 'create']);
+  Route::get('/wilayah/lihat', [DistrictController::class, 'lihat']);
   Route::post('/wilayah/tambahwilayah', [DistrictController::class, 'store']);
   Route::get('/wilayah/ubah/{district:id}', [DistrictController::class, 'edit']);
   Route::put('/wilayah/ubahwilayah/{district:id}', [DistrictController::class, 'update']);
