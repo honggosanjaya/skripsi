@@ -9,6 +9,7 @@ use App\Models\OrderItem;
 use App\Models\Staff;
 use App\Models\Item;
 use App\Models\Trip;
+use App\Models\Event;
 use App\Models\Customer;
 use App\Models\Invoice;
 use App\Models\Vehicle;
@@ -20,139 +21,149 @@ use Illuminate\Support\Facades\Validator;
 
 class OrderController extends Controller
 {
-    public function simpanDataOrderSalesmanAPI(Request $request){
-      $totalPesanan = $request->totalHarga;
-      $keranjangItems = $request->keranjang;
-      $idStaf = $request->idStaf;
-      $estimasiWaktuPengiriman = $request->estimasiWaktuPengiriman;
-      $keterangan = $request->keterangan;
-      $id_order = null;
-      $id_customer = null;
+  public function simpanDataOrderSalesmanAPI(Request $request){
+    $totalPesanan = $request->totalHarga;
+    $keranjangItems = $request->keranjang;
+    $idStaf = $request->idStaf;
+    $estimasiWaktuPengiriman = $request->estimasiWaktuPengiriman;
+    $keterangan = $request->keterangan;
+    $id_order = null;
+    $id_customer = null;
+    $tipeRetur = $request -> tipeRetur;
 
-      if(sizeof($keranjangItems) > 0){
-        foreach($keranjangItems as $item){
-          $id_customer = $item['customer'];
-          if($item['orderId'] != 'belum ada'){
-            $id_order = $item['orderId'];
-          }
-          if($item['orderId'] == 'belum ada'){
-            $id_order = 'belum ada';
-          }
+    if(sizeof($keranjangItems) > 0){
+      foreach($keranjangItems as $item){
+        $id_customer = $item['customer'];
+        if($item['orderId'] != 'belum ada'){
+          $id_order = $item['orderId'];
+        }
+        if($item['orderId'] == 'belum ada'){
+          $id_order = 'belum ada';
         }
       }
+    }
 
-      if($id_order == "belum ada"){
-        $limitPembelian = Customer::find($id_customer)->limit_pembelian;
+    if($id_order == "belum ada"){
+      $limitPembelian = Customer::find($id_customer)->limit_pembelian;
+      if($limitPembelian == null || $limitPembelian>=$totalPesanan){
+        $id_order=Order::insertGetId([
+          'id_customer' => $id_customer,
+          'id_staff' => $idStaf,
+          'status' => 15,
+          'created_at'=> now(),
+        ]);
         
-        if($limitPembelian == null || $limitPembelian>=$totalPesanan){
-          $id_order=Order::insertGetId([
-            'id_customer' => $id_customer,
-            'id_staff' => $idStaf,
-            'status' => 15,
-            'created_at'=> now(),
+        $data = [];
+        foreach($keranjangItems as $item){
+          array_push($data,[
+            'id_order' => $id_order,
+            'id_item' => $item['id'],
+            'kuantitas' => $item['jumlah'],
+            'harga_satuan' => $item['harga'],
+            'keterangan' => $request->keterangan??null,
           ]);
-          
-          $data = [];
-          foreach($keranjangItems as $item){
-            array_push($data,[
+        }
+
+        OrderTrack::insert([
+          'id_order' => $id_order,
+          'status' => 20,
+          'waktu_order'=> now(),
+          'created_at'=> now(),
+          'waktu_diteruskan' => now(),
+          'estimasi_waktu_pengiriman' => $estimasiWaktuPengiriman,
+        ]);
+        OrderItem::insert($data);
+        Customer::find($id_customer) -> update([
+          'tipe_retur' => $tipeRetur
+        ]);
+      }else{
+        return response()->json([
+          'status' => 'error',
+          'error_message' => 'Total pesanan melebihi limit pembelian'
+        ]);
+      }
+    }
+    else{   
+      $limitPembelian = Customer::find($id_customer)->limit_pembelian;
+      if($limitPembelian == null || $limitPembelian>=$totalPesanan){
+        foreach($keranjangItems as $item){
+          $updateitem=OrderItem::where('id_order', $id_order)->where('id_item', $item['id'])->first();
+          //jika data order item di database ditemukan
+          if ($updateitem??null) {
+            # update...
+            $updateitem->update([
               'id_order' => $id_order,
               'id_item' => $item['id'],
               'kuantitas' => $item['jumlah'],
               'harga_satuan' => $item['harga'],
-              'keterangan' => $request->keterangan??null,
+              'keterangan' => $keterangan,
             ]);
-          }
-  
-          OrderTrack::insert([
-            'id_order' => $id_order,
-            'status' => 20,
-            'waktu_order'=> now(),
-            'created_at'=> now(),
-            'waktu_diteruskan' => now(),
-            'estimasi_waktu_pengiriman' => $estimasiWaktuPengiriman,
-          ]);
-          OrderItem::insert($data);
-        }else{
-          return response()->json([
-            'status' => 'error',
-            'error_message' => 'Total pesanan melebihi limit pembelian'
-          ]);
+          } else {
+            # create...
+            OrderItem::insert([
+              'id_order' => $id_order,
+              'id_item' => $item['id'],
+              'kuantitas' => $item['jumlah'],
+              'harga_satuan' => $item['harga'],
+              'keterangan' => $keterangan,
+            ]);
+          } 
         }
-      }
-      // =========== JIKA SUDAH ADA ============
-      else{   
-        $limitPembelian = Customer::find($id_customer)->limit_pembelian;
-        if($limitPembelian == null || $limitPembelian>=$totalPesanan){
-          foreach($keranjangItems as $item){
-            $updateitem=OrderItem::where('id_order', $id_order)->where('id_item', $item['id'])->first();
-            //jika data order item di database ditemukan
-            if ($updateitem??null) {
-              # update...
-              $updateitem->update([
-                'id_order' => $id_order,
-                'id_item' => $item['id'],
-                'kuantitas' => $item['jumlah'],
-                'harga_satuan' => $item['harga'],
-                'keterangan' => $keterangan,
-              ]);
-            } else {
-              # create...
-              OrderItem::insert([
-                'id_order' => $id_order,
-                'id_item' => $item['id'],
-                'kuantitas' => $item['jumlah'],
-                'harga_satuan' => $item['harga'],
-                'keterangan' => $keterangan,
-              ]);
-            } 
-          }
 
-          $orderItems=OrderItem::where('id_order', $id_order)->get();
-          foreach($orderItems as $orderItem){
-            // cari $orderItem->id_item ada tidak di id item di cart, jika tidak ada jalankan if
-            $key = array_search($orderItem->id_item, array_column($keranjangItems, 'id'));
-              if($key === false){
-                # delete...
-                $orderItem->delete();
-              }
-          }
+        $orderItems=OrderItem::where('id_order', $id_order)->get();
+        foreach($orderItems as $orderItem){
+          // cari $orderItem->id_item ada tidak di id item di cart, jika tidak ada jalankan if
+          $key = array_search($orderItem->id_item, array_column($keranjangItems, 'id'));
+            if($key === false){
+              # delete...
+              $orderItem->delete();
+            }
+        }
 
+        Order::where('id', $id_order)->update([
+          'id_staff' => $idStaf,
+        ]);
 
-          Order::where('id', $id_order)->update([
-            'id_staff' => $idStaf,
-          ]);
-
-          OrderTrack::where('id_order', $id_order)->update([
-            'waktu_diteruskan' => now(),
-            'estimasi_waktu_pengiriman' => $estimasiWaktuPengiriman,
-          ]);    
-        }else{
-          return response()->json([
-            'status' => 'error',
-            'error_message' => 'Total pesanan melebihi limit pembelian'
-          ]);
-        }   
-      }
-
-      Trip::find($request->idTrip)->update([
-        'waktu_keluar' => now(),
-        'updated_at' => now(),
-        'alasan_penolakan' => $request->alasan_penolakan
-      ]);
-
-      Invoice::insert([
-        'id_order' => $id_order,
-        'id_event' => $request->idEvent ?? null,
-        'nomor_invoice' => (Invoice::orderBy("nomor_invoice", "DESC")->first()->nomor_invoice ?? 0) + 1,
-        'harga_total' => $totalPesanan,
-        'created_at' => now()
-      ]);
-
-      return response()->json([
-        'status' => 'success',
-        'success_message' => 'berhasil membuat pesanan'
-      ]);
+        OrderTrack::where('id_order', $id_order)->update([
+          'waktu_diteruskan' => now(),
+          'estimasi_waktu_pengiriman' => $estimasiWaktuPengiriman,
+        ]);
+        Customer::find($id_customer) -> update([
+          'tipe_retur' => $tipeRetur
+        ]);    
+      }else{
+        return response()->json([
+          'status' => 'error',
+          'error_message' => 'Total pesanan melebihi limit pembelian'
+        ]);
+      }   
     }
+
+    Trip::find($request->idTrip)->update([
+      'waktu_keluar' => now(),
+      'updated_at' => now(),
+      'alasan_penolakan' => $request->alasan_penolakan
+    ]);
+
+    $kode_event = $request -> kodeEvent ?? null;
+    $id_event = null;
+    if ($kode_event != null) {
+      $id_event = Event::where('kode', $kode_event)->first()->id;
+    }
+
+    Invoice::insert([
+      'id_order' => $id_order,
+      'id_event' => $id_event,
+      'nomor_invoice' => (Invoice::orderBy("nomor_invoice", "DESC")->first()->nomor_invoice ?? 0) + 1,
+      'harga_total' => $totalPesanan,
+      'created_at' => now()
+    ]);
+
+    return response()->json([
+      'status' => 'success',
+      'success_message' => 'berhasil membuat pesanan'
+    ]);
+  }
 
     public function keluarTripOrderApi(Request $request, $id){ 
         Trip::find($id)->update([

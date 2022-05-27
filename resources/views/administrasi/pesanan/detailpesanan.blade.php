@@ -112,7 +112,7 @@
             </tr>
           @endforeach
           <tr>
-            <td colspan="4" class="text-center fw-bold">Total : </td>
+            <td colspan="4" class="text-center fw-bold">Total (Setelah Diskon/Potongan) : </td>
             @if ($order->linkInvoice->harga_total ?? null)
               <td>{{ number_format($order->linkInvoice->harga_total, 0, '', '.') }}</td>
             @else

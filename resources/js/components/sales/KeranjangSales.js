@@ -16,15 +16,19 @@ const KeranjangSales = ({ location }) => {
   const { idCust } = useParams();
   const { token } = useContext(AuthContext);
   const { produks, setProduks, getAllProduks } = useContext(KeranjangSalesContext);
-
   const [errorMessage, setErrorMessage] = useState(null);
   const [successMessage, setSuccessMessage] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
   const [estimasiWaktuPengiriman, setEstimasiWaktuPengiriman] = useState(null);
   const [keteranganOrderItem, setKeteranganOrderItem] = useState(null);
-  const [idEvent, setIdEvent] = useState(null);
   const [idCustomer, setIdCustomer] = useState(null);
   const [limitPembelian, setLimitPembelian] = useState(0);
+  const [pilihanRetur, setPilihanRetur] = useState([]);
+  const [tipeRetur, setTipeRetur] = useState("1");
+
+  const [kodeEvent, setKodeEvent] = useState('');
+  const [errorKodeEvent, setErrorKodeEvent] = useState(null);
+  const [totalHargaSetelahPromo, setTotalHargaSetelahPromo] = useState(null);
 
   const { state: idTrip } = location;
 
@@ -39,6 +43,20 @@ const KeranjangSales = ({ location }) => {
 
   useEffect(() => {
     getAllProduks();
+    axios({
+      method: "get",
+      url: `${window.location.origin}/api/tipeRetur`,
+      headers: {
+        Accept: "application/json",
+      },
+    })
+      .then(response => {
+        console.log('type retur', response.data.data);
+        setPilihanRetur(response.data.data);
+      })
+      .catch(error => {
+        setErrorMessage(error.message);
+      });
   }, [])
 
   useEffect(() => {
@@ -69,11 +87,56 @@ const KeranjangSales = ({ location }) => {
     })
   }, [produks]);
 
+  const handleKodeEvent = (e) => {
+    e.preventDefault();
+    setIsLoading(true);
+    axios({
+      method: "get",
+      url: `${window.location.origin}/api/kodeEvent/${kodeEvent}`,
+      headers: {
+        Accept: "application/json",
+      },
+    })
+      .then(response => {
+        console.log('handle kodeevent', response.data);
+
+        if (response.data.status === 'success') {
+          setIsLoading(false);
+          setErrorKodeEvent(null);
+
+          if (response.data.data.min_pembelian !== null && totalHarga > response.data.data.min_pembelian) {
+            if (response.data.data.potongan) {
+              setTotalHargaSetelahPromo(totalHarga - response.data.data.potongan);
+            } else {
+              setTotalHargaSetelahPromo(totalHarga - (totalHarga * (response.data.data.diskon / 100)));
+            }
+          } else if (totalHarga > response.data.data.min_pembelian) {
+            if (response.data.data.potongan) {
+              setTotalHargaSetelahPromo(totalHarga - response.data.data.potongan);
+            } else {
+              setTotalHargaSetelahPromo(totalHarga - (totalHarga * (response.data.data.diskon / 100)));
+            }
+          } else {
+            setErrorKodeEvent('Anda tidak mencapai minimal pembelian')
+          }
+        } else {
+          throw Error(response.data.message);
+        }
+      })
+      .catch(error => {
+        setIsLoading(false);
+        setErrorKodeEvent(error.message);
+      });
+  }
+
   const hapusSemuaProduk = () => {
     produks.map((produk) => {
       KeranjangDB.deleteProduk(produk.id);
       getAllProduks();
     })
+    setKodeEvent('');
+    setErrorKodeEvent(null);
+    setTotalHargaSetelahPromo(null);
   }
 
   const handlePilihProdukChange = (item) => {
@@ -100,6 +163,9 @@ const KeranjangSales = ({ location }) => {
     };
     KeranjangDB.updateProduk(produk);
     getAllProduks();
+    setKodeEvent('');
+    setErrorKodeEvent(null);
+    setTotalHargaSetelahPromo(null);
   }
 
   const kurangJumlahProduk = (item, orderid) => {
@@ -112,11 +178,17 @@ const KeranjangSales = ({ location }) => {
     };
     KeranjangDB.updateProduk(produk);
     getAllProduks();
+    setKodeEvent('');
+    setErrorKodeEvent(null);
+    setTotalHargaSetelahPromo(null);
   }
 
   const hapusProduk = (item) => {
     KeranjangDB.deleteProduk(item.id);
     getAllProduks();
+    setKodeEvent('');
+    setErrorKodeEvent(null);
+    setTotalHargaSetelahPromo(null);
   }
 
   const checkout = (e) => {
@@ -134,9 +206,10 @@ const KeranjangSales = ({ location }) => {
           idStaf: dataUser.id_staff,
           estimasiWaktuPengiriman: estimasiWaktuPengiriman,
           keterangan: keteranganOrderItem,
-          idEvent: idEvent,
-          totalHarga: totalHarga,
+          kodeEvent: kodeEvent,
+          totalHarga: totalHargaSetelahPromo ? totalHargaSetelahPromo : totalHarga,
           idTrip: idTrip,
+          tipeRetur: parseInt(tipeRetur)
         }
       })
         .then(response => {
@@ -252,11 +325,24 @@ const KeranjangSales = ({ location }) => {
               onChange={(e) => setKeteranganOrderItem(e.target.value)}
             />
 
-            <label className="form-label mt-3">Id Event</label>
-            <input type="text" className="form-control mb-btnBottom"
-              value={idEvent || ''}
-              onChange={(e) => setIdEvent(e.target.value)}
-            />
+            <form onSubmit={handleKodeEvent}>
+              <label className="form-label mt-3">Kode Event</label>
+              <div className="input-group">
+                <input type="text" className="form-control"
+                  value={kodeEvent}
+                  onChange={(e) => setKodeEvent(e.target.value)}
+                />
+                <button type="submit" className="btn btn-primary">Gunakan</button>
+              </div>
+            </form>
+            {errorKodeEvent && <p className='text-danger'>{errorKodeEvent}</p>}
+
+            <label className="form-label mt-3">Tipe Retur</label>
+            <select className="form-select mb-btnBottom" value={tipeRetur} onChange={(e) => setTipeRetur(e.target.value)}>
+              {pilihanRetur.length && pilihanRetur.map((pilihan, index) => (
+                <option value={pilihan.id} key={index}>{pilihan.nama}</option>
+              ))}
+            </select>
 
             <div className="button_bottom d-flex justify-content-between">
               <div>
@@ -264,7 +350,8 @@ const KeranjangSales = ({ location }) => {
                 {produks.map((produk) => {
                   totalHarga = totalHarga + (produk.jumlah * produk.harga);
                 })}
-                <h1 className='mb-0 fs-4'>{convertPrice(totalHarga)}</h1>
+                <h1 className={`mb-0 fs-4 ${totalHargaSetelahPromo ? "text-decoration-line-through" : ''}`}>{convertPrice(totalHarga)}</h1>
+                {totalHargaSetelahPromo && <h1 className='text-danger fs-4'>{convertPrice(totalHargaSetelahPromo)}</h1>}
               </div>
               <button className='btn btn-success' onClick={checkout}>CHECKOUT</button>
             </div>

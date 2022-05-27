@@ -167,6 +167,7 @@ const Pemesanan = ({ location }) => {
         console.log('handlekode', response.data);
 
         if (response.data.status === 'success') {
+          setErrorKodeCustomer(null);
           const dataOrderItems = response.data.dataOrderItem;
           const dataOrder = response.data.dataOrder;
 

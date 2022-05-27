@@ -9,6 +9,22 @@ use Illuminate\Support\Facades\Storage;
 
 class EventController extends Controller
 {
+  public function dataKodeEventAPI($kode){
+      $event = Event::where('kode', $kode)->first();
+    
+      if($event!==null){
+        return response()->json([
+          'status' => 'success',
+          'data' => $event,
+        ]);
+      } else{
+        return response()->json([
+          'status' => 'error',
+          'message' => 'kode event tidak ditemukan'
+        ]);
+      }
+  }
+
     public function index(){
         $events = Event::paginate(5);
         return view('supervisor/event.index',[

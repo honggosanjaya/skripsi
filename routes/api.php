@@ -4,7 +4,9 @@ use App\Http\Controllers\Api\LoginController;
 use App\Http\Controllers\CustomerController;
 use App\Http\Controllers\ItemController;
 use App\Http\Controllers\CartController;
+use App\Http\Controllers\EventController;
 use App\Http\Controllers\OrderController;
+use App\Http\Controllers\ReturController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -30,24 +32,22 @@ Route::get('/dataFormTrip', [CustomerController::class, 'dataFormTripApi']);
 Route::get('/tripCustomer/{id}', [CustomerController::class, 'dataCustomerApi']);
 Route::post('/tripCustomer', [CustomerController::class, 'simpanCustomerApi']);
 Route::post('/tripCustomer/foto/{id}', [CustomerController::class, 'simpanCustomerFotoApi']);
-// sales cari produk berdasarkan nama
-Route::get('/products/search/{name}', [ItemController::class, 'searchProductAPI']); 
-//customer dan sales melakukan filter item
+
+
+// filter item
 Route::get('/filterProduk', [ItemController::class, 'filterProdukApi']);
 //customer menambahkan data di keranjang
 Route::post('/customer/order/cart', [CartController::class, 'addToCart']);
 
-// sales checkout
+
+// sales pemesanan
+Route::get('/products/search/{name}', [ItemController::class, 'searchProductAPI']); 
 Route::post('/salesman/buatOrder', [OrderController::class, 'simpanDataOrderSalesmanAPI']);
-
-// sales sudah ada kode customer
 Route::get('/kodeCustomer/{id}', [OrderController::class, 'dataKodeCustomer']);
-
-// catat trip untuk order
 Route::post('/tripOrderCustomer', [OrderController::class, 'catatTripOrderApi']);
-
-// ubah trip untuk keluar
 Route::post('/keluarToko/{id}', [OrderController::class, 'keluarTripOrderApi']);
+Route::get('/tipeRetur', [ReturController::class, 'getTypeReturAPI']);
+Route::get('/kodeEvent/{kode}', [EventController::class, 'dataKodeEventAPI']);
 
 Route::get('/forceLogout', [LoginController::class, 'logoutUnauthorizedSPAApi']);
 

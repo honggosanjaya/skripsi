@@ -20,6 +20,13 @@ class ReturController extends Controller
         ]);
     }
 
+    public function getTypeReturAPI(){
+      return response()->json([
+        "status" => "success",
+        "data" => ReturType::all(),
+      ], 200);
+    }
+
     public function search(){
         // $returs = Retur::join('customers','returs.id_customer','=','customers.id')
         //         ->where(strtolower('no_retur'),'like','%'.request('cari').'%')

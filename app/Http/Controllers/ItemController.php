@@ -25,7 +25,7 @@ class ItemController extends Controller
     try {
       $items = Item::orderBy("status", "ASC")->paginate(4);
       $this->data = $items;
-      $this->status = "success";
+      $this->status = "error";
     } catch (QueryException $e) {
         $this->status = "failed";
         $this->error = $e;
