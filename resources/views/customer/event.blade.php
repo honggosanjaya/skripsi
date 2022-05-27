@@ -84,7 +84,7 @@
             {{-- <p class="text-primary fw-bold"><a data-bs-toggle="modal" data-bs-target="#testing">Lihat Detail >>></a></p>             --}}
             <!-- Button trigger modal -->
           <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#event{{ $event->id }}">
-            Launch demo modal
+            Lihat Detail >>>
           </button>
 
           <!-- Modal -->
@@ -96,6 +96,11 @@
                   <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
+                  <div class="text-center mb-4">
+                    <img src="{{ asset('storage/event/'.$event->gambar) }}" class="img-preview img-fluid"
+                    width="350px" height="350px" alt="Gambar tidak tersedia">
+                  </div>                  
+                  
                   @if($event->diskon != null)
                   <h6>Promo Diskon {{ $event->diskon }} %</h6>
                   @else
@@ -103,7 +108,7 @@
                   @endif
                   <p>{{ $event->keterangan }}</p>
                   <h6> Berlaku sampai {{ date('d F Y', strtotime($event->date_end)) }}</h6>
-                  <p> NB: Tanyakan pada sales, saat sales datang</p>
+                  <p> NB: Tanyakan pada sales, saat sales datang untuk info lebih lanjut</p>
                 </div>
                 <div class="modal-footer">
                   <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
