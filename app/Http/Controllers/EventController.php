@@ -174,12 +174,13 @@ class EventController extends Controller
         ]);
     }
 
-    public function customerDetail(Event $event){
-        dd($event);
-        // $event = Event::paginate(5);
-
-        // return view('customer.event',[
-        //     'events' => $events
-        // ]);
+    public function customerSearch(){
+        $events = Event::where(strtolower('nama'),'like','%'.request('cari').'%')
+        ->orWhere(strtolower('kode'),'like','%'.request('cari').'%')
+        ->paginate(5);
+               
+        return view('customer.event',[
+            'events' => $events
+        ]);
     }
 }
