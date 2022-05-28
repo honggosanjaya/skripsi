@@ -19,6 +19,11 @@
   </a>
   @yield('breadcrumbs')
   <ul class="dropdown-menu p-3" aria-labelledby="navbarDropdown">
+    <a class="btn btn-warning w-100 mb-3 p-1" 
+    href="/{{ auth()->user()->linkStaff->linkStaffRole->nama }}/profil">
+      <i class="bi bi-person fs-5"></i> Profil
+    </a>
+    
     <form method="POST" action="{{ route('logout') }}">
       @csrf
       <button class="btn btn-danger d-block w-100">Log Out</button>

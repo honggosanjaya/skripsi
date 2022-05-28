@@ -30,6 +30,7 @@ Route::get('/', function () {
 
 Route::prefix('owner')->middleware('owner')->group(function() {
   Route::get('/', [HomeController::class, 'indexOwner']);
+  Route::get('/profil', [HomeController::class, 'lihatProfil']);
 });
 Route::prefix('supervisor')->middleware('supervisor')->group(function() {
   Route::get('/', [HomeController::class, 'indexSupervisor']);
@@ -70,7 +71,9 @@ Route::prefix('supervisor')->middleware('supervisor')->group(function() {
   // Route untuk data staf
   Route::resource('/datastaf', StaffController::class);
   Route::post('/datastaf/ubahstatus/{staf:id}', [StaffController::class, 'supervisorEditStatusStaf']);
-  
+
+  //Route untuk profil supervisor
+  Route::get('/profil', [HomeController::class, 'lihatProfil']);
 });
 // Route::prefix('salesman')->middleware('salesman')->group(function() {
 //   Route::get('/', [HomeController::class, 'indexSalesman']);
@@ -141,6 +144,7 @@ Route::prefix('administrasi')->middleware('administrasi')->group(function() {
 
   });
 
+  //Route untuk data customer
   Route::get('/datacustomer', [CustomerController::class, 'administrasiIndex']);
   Route::get('/datacustomer/cari', [CustomerController::class, 'administrasiSearch']);
   Route::get('/datacustomer/create', [CustomerController::class, 'administrasiCreate']);
@@ -149,6 +153,9 @@ Route::prefix('administrasi')->middleware('administrasi')->group(function() {
   Route::put('/datacustomer/ubahcustomer/{customer:id}', [CustomerController::class, 'administrasiUpdate']);
   Route::get('/datacustomer/{customer:id}', [CustomerController::class, 'administrasiShow']);
   Route::post('/datacustomer/ubahstatus/{customer:id}', [CustomerController::class, 'administrasiEditStatusCustomer']);
+
+  //Route untuk profil administrasi
+  Route::get('/profil', [HomeController::class, 'lihatProfil']);
 });
 
 

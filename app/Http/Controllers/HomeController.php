@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 use App\Models\Customer;
+use App\Models\Staff;
 
 use Illuminate\Http\Request;
 
@@ -41,5 +42,21 @@ class HomeController extends Controller
     {
         $role='indexCustomer';
         return view('customer/dashboard',compact('role'));
+    }
+
+
+    public function lihatProfil(){
+        $data = '';
+        if(auth()->user()->tabel == 'staffs'){
+            $data = Staff::where('id','=',auth()->user()->id_users)->first();
+            return view($data->linkStaffRole->nama.'/profil.index',[
+                'data' => $data
+            ]);
+        }
+        else{
+            $data = Customer::where('id','=',auth()->user()->id_users)->first();
+        }
+
+        
     }
 }
