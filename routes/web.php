@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\CustomerTypeController;
 use App\Http\Controllers\HomeController;
+use App\Http\Controllers\AuthController;
 use App\Http\Controllers\ItemController;
 use App\Http\Controllers\CartController;
 use App\Http\Controllers\CustomerController;
@@ -156,6 +157,10 @@ Route::prefix('administrasi')->middleware('administrasi')->group(function() {
 
   //Route untuk profil administrasi
   Route::get('/profil', [HomeController::class, 'lihatProfil']);
+  Route::get('/profil/ubahpassword', [HomeController::class, 'lihatPassword']);
+  Route::post('/profil/check/{user:id_users}', [AuthController::class, 'check']);
+  Route::get('/profil/ubahpasswordbaru/{user:id_users}', [AuthController::class, 'passwordBaru']);
+  Route::post('/profil/gantipassword/{user:id_users}', [AuthController::class, 'gantiPassword']);
 });
 
 

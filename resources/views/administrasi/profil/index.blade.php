@@ -10,7 +10,16 @@
 </ol>
 @endsection
 @section('main_content')
-
+<div class="mt-4">
+@if(session()->has('passwordSuccess'))
+    <div id="hideMeAfter3Seconds">
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+        {{ session('passwordSuccess') }}
+        <button type="button" class="btn btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    </div>
+@endif
+</div>
 <div class="container">
     <a class="btn btn-primary mt-4" href="/administrasi">
         <i class="bi bi-arrow-left"></i> Kembali
@@ -63,7 +72,7 @@
         </div>
     </div>
     
-    <a class="btn btn-warning mt-4">
+    <a class="btn btn-warning mt-4" href="/administrasi/profil/ubahpassword">
         Ubah Password
     </a>
 </div>

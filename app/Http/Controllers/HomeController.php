@@ -55,8 +55,18 @@ class HomeController extends Controller
         }
         else{
             $data = Customer::where('id','=',auth()->user()->id_users)->first();
-        }
+            return view('customer/profil.index',[
+                'data' => $data
+            ]);
+        }        
+    }
 
-        
+    public function lihatPassword(){
+        if(auth()->user()->tabel == 'staffs'){
+            return view(auth()->user()->linkStaff->linkStaffRole->nama.'/profil.ubahpasswordlama');
+        }
+        else{
+            return view('customer/profil.ubahpasswordlama');
+        }
     }
 }
