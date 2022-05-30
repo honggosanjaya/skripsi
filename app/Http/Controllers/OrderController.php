@@ -299,8 +299,7 @@ class OrderController extends Controller
       $itemData = '';
       $volume = 0;
       $totalVolume = 0;
-      
-                  
+                       
       for($i=0; $i<$orderItemDatas->count(); $i++){
          $itemData = Item::where('id','=',$orderItemDatas[$i]->id_item)->first();
          $volume = $itemData->volume * $orderItemDatas[$i]->kuantitas;
@@ -317,7 +316,7 @@ class OrderController extends Controller
         [$kendaraans[$j]->nama,$kendaraans[$j]->kode_kendaraan,(($invoice->harga_total/$kendaraans[$j]->kapasitas_harga)*100)]);
       }
      
-      return view('administrasi/pesanan.kapasitaskendaraan',[
+      return view('administrasi.pesanan.kapasitaskendaraan',[
           'order' => $order,
           'persentaseVolumes' => $tempPersentaseVolume,
           'persentaseHargas' => $tempPersentaseHarga
@@ -335,7 +334,6 @@ class OrderController extends Controller
           ]);
   
         return $pdf->download('invoice-'.$order->linkInvoice->nomor_invoice.'.pdf');  
-        
     }
 
     public function cetakSJ(Order $order){
@@ -507,5 +505,67 @@ class OrderController extends Controller
       Invoice::where('id_order', $order->id)->delete();
         
       return redirect('/administrasi/pesanan/detail/'.$order->id) -> with('addPesananSuccess', 'Berhasil menolak pesanan');
+    }
+
+    public function viewPengiriman(order $order){
+      $orderItems = OrderItem::where('id_order', $order->id)->get();
+      $stafs = Staff::where('status', 8)->where('role', 4)->get();
+
+      $kapasitas_harga = 0;
+      $kapasitas_volume = 0;
+      foreach($orderItems as $orderItem){
+        $item = Item::where('id', $orderItem->id_item)->first();
+        $kapasitas_harga += $item->harga_satuan * $orderItem->kuantitas;
+        $kapasitas_volume += $item->volume * $orderItem->kuantitas;
+      };
+
+      $vehicles = Vehicle::where('kapasitas_volume', '>=', $kapasitas_volume)
+                  ->orWhere('kapasitas_harga', '>=', $kapasitas_harga)->get();
+
+      return view('administrasi.pesanan.pengiriman.keberangkatan',[
+        'order' => $order,
+        'stafs' => $stafs,
+        'vehicles' => $vehicles
+      ]);
+    }
+
+    public function konfirmasiPengiriman(Request $request, order $order){
+      if($request && $order->linkOrderTrack->status == 21){
+        $rules = [
+          'id_staff_pengirim' => ['required'],
+          'id_vehicle' => ['required']
+        ];
+        $validatedData = $request->validate($rules);
+        $validatedData['status'] = 22;
+        $validatedData['waktu_berangkat'] = now();
+        OrderTrack::where('id_order', $order->id)->update($validatedData);        
+        return redirect('/administrasi/pesanan/detail/'.$order->id) -> with('addPesananSuccess', 'Berhasil mengonfirmasi keberangkatan pengiriman untuk '.$order->linkCustomer->nama);
+      }
+
+      if($order->linkOrderTrack->status == 22){
+        $rules = [
+          'foto' => 'image|file|max:1024',
+        ];
+        if ($request->foto) {
+          $file_name = time() . '.' . $request->foto->extension();
+          $request->foto->move(public_path('storage/pengiriman'), $file_name);
+          $validatedData['foto'] = $file_name;
+        }
+        $validatedData['status'] = 23;
+        $validatedData['waktu_sampai'] = now();
+        OrderTrack::where('id_order', $order->id)->update($validatedData);
+
+        return response()->json([
+          'status' => 'success',
+          'message' => 'Pengiriman untuk '.$order->linkCustomer->nama.' telah sampai'
+        ]);
+      }
+
+      if($order->linkOrderTrack->status == 23){
+        OrderTrack::where('id_order', $order->id)->update([
+          'status' => 24
+        ]);
+        return redirect('/administrasi/pesanan/detail/'.$order->id) -> with('addPesananSuccess', 'Pesanan untuk '.$order->linkCustomer->nama.' telah selesai');
+      }
     }
 }
