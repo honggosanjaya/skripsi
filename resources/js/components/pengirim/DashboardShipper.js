@@ -23,7 +23,10 @@ const DashboardShipper = () => {
         <div className="word d-flex justify-content-center">
           {splitCharacter("shipper")}
         </div>
-        <button className='btn btn-primary w-100'><span className="iconify" data-icon="fa-solid:shipping-fast"></span>Pengiriman</button>
+        <a type="button" href={`/shipper/jadwal`} className='btn btn-primary w-100'> 
+          <span className="iconify" data-icon="fa-solid:shipping-fast"></span>
+          Pengiriman
+        </a>
       </div>
     </main>
   );
