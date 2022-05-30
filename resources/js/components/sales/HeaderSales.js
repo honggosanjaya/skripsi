@@ -6,7 +6,7 @@ import { Dropdown } from 'react-bootstrap';
 import { AuthContext } from '../../contexts/AuthContext';
 import LoadingIndicator from '../reuse/LoadingIndicator';
 
-const HeaderSales = ({ title, isDashboard, isOrder, lihatKeranjang }) => {
+const HeaderSales = ({ title, isDashboard, isOrder, lihatKeranjang, toBack }) => {
   const { token, setToken, setIsAuth, setErrorAuth } = useContext(AuthContext);
   const history = useHistory();
   const { produks, getAllProduks } = useContext(KeranjangSalesContext);
@@ -15,7 +15,6 @@ const HeaderSales = ({ title, isDashboard, isOrder, lihatKeranjang }) => {
   useEffect(() => {
     getAllProduks();
   }, [produks])
-
 
   const goback = () => {
     history.go(-1);
@@ -54,9 +53,12 @@ const HeaderSales = ({ title, isDashboard, isOrder, lihatKeranjang }) => {
       {!isDashboard &&
         <Fragment>
           <div className='d-flex align-items-center'>
-            <button className='btn' onClick={goback}>
+            {toBack ? <button className='btn' onClick={toBack}>
               <span className="iconify" data-icon="eva:arrow-back-fill"></span>
-            </button>
+            </button> :
+              <button className='btn' onClick={goback}>
+                <span className="iconify" data-icon="eva:arrow-back-fill"></span>
+              </button>}
             <h1 className='page_title'>{title}</h1>
           </div>
           {isOrder &&
@@ -98,5 +100,5 @@ export default HeaderSales;
 
 HeaderSales.defaultProps = {
   isDashboard: false,
-  isOrder: false
+  isOrder: false,
 }

@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Api\LoginController;
+use App\Http\Controllers\AuthController;
 use App\Http\Controllers\CustomerController;
 use App\Http\Controllers\ItemController;
 use App\Http\Controllers\CartController;
@@ -74,3 +75,6 @@ Route::prefix('shipper')->group(function() {
 Route::get('/test/{id}', [Controller::class, 'test']);
 
 Route::post('v1/login', [LoginController::class, 'index']);
+
+Route::post('/checkpassword/{staff:id}', [AuthController::class, 'checkPasswordAPI']);
+Route::post('/changepassword/{staff:id}', [AuthController::class, 'changePasswordAPI']);
