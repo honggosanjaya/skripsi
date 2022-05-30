@@ -6,9 +6,9 @@ const ProductSales = ({ listItems, handleTambahJumlah, checkifexist, handleValue
   return (
     <div className="productCard_wrapper">
       {listItems.map((item, index) => (
-        <div className={`card product_card ${item.status == 11 ? 'inactive_product' : ''}`} key={index}>
-          {item.stok < 10 && <span className="badge badge_stok">Stok Menipis</span>}
-          {item.status == 11 &&
+        <div className={`card product_card ${(item.status == 11 || item.stok == 0) ? 'inactive_product' : ''}`} key={index}>
+          {item.stok < 10 && item.stok > 0 && item.status != 11 && <span className="badge badge_stok">Stok Menipis</span>}
+          {(item.status == 11 || item.stok == 0) &&
             <div className='inactive_sign'>
               <p className='mb-0'>Tidak Tersedia</p>
             </div>}

@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\CustomerTypeController;
 use App\Http\Controllers\HomeController;
+use App\Http\Controllers\AuthController;
 use App\Http\Controllers\ItemController;
 use App\Http\Controllers\CartController;
 use App\Http\Controllers\CustomerController;
@@ -30,6 +31,7 @@ Route::get('/', function () {
 
 Route::prefix('owner')->middleware('owner')->group(function() {
   Route::get('/', [HomeController::class, 'indexOwner']);
+  Route::get('/profil', [HomeController::class, 'lihatProfil']);
 });
 Route::prefix('supervisor')->middleware('supervisor')->group(function() {
   Route::get('/', [HomeController::class, 'indexSupervisor']);
@@ -46,6 +48,7 @@ Route::prefix('supervisor')->middleware('supervisor')->group(function() {
   Route::get('/wilayah', [DistrictController::class, 'index']);
   Route::get('/wilayah/cari', [DistrictController::class, 'search']);
   Route::get('/wilayah/tambah', [DistrictController::class, 'create']);
+  Route::get('/wilayah/lihat', [DistrictController::class, 'lihat']);
   Route::post('/wilayah/tambahwilayah', [DistrictController::class, 'store']);
   Route::get('/wilayah/ubah/{district:id}', [DistrictController::class, 'edit']);
   Route::put('/wilayah/ubahwilayah/{district:id}', [DistrictController::class, 'update']);
@@ -69,7 +72,9 @@ Route::prefix('supervisor')->middleware('supervisor')->group(function() {
   // Route untuk data staf
   Route::resource('/datastaf', StaffController::class);
   Route::post('/datastaf/ubahstatus/{staf:id}', [StaffController::class, 'supervisorEditStatusStaf']);
-  
+
+  //Route untuk profil supervisor
+  Route::get('/profil', [HomeController::class, 'lihatProfil']);
 });
 // Route::prefix('salesman')->middleware('salesman')->group(function() {
 //   Route::get('/', [HomeController::class, 'indexSalesman']);
@@ -89,6 +94,10 @@ Route::prefix('administrasi')->middleware('administrasi')->group(function() {
   Route::get('/pesanan/detail/{order:id}/cetak-memo', [OrderController::class, 'cetakMemo']);
   Route::get('/pesanan/detail/{order:id}/cetak-invoice', [OrderController::class, 'cetakInvoice']);
   Route::get('/pesanan/detail/{order:id}/cetak-sj', [OrderController::class, 'cetakSJ']);
+  Route::post('/pesanan/setuju/{order:id}', [OrderController::class, 'setujuPesanan']);
+  Route::post('/pesanan/tolak/{order:id}', [OrderController::class, 'tolakPesanan']);
+  Route::get('/pesanan/detail/{order:id}/pengiriman', [OrderController::class, 'viewPengiriman']);
+  Route::post('/pesanan/detail/{order:id}/dikirimkan', [OrderController::class, 'konfirmasiPengiriman']);
 
   //Route untuk retur
   Route::get('/retur', [ReturController::class, 'index']);
@@ -134,11 +143,10 @@ Route::prefix('administrasi')->middleware('administrasi')->group(function() {
     Route::post('/opname/update-final', [CartController::class, 'updateCart']);
     Route::post('/opname/remove', [CartController::class, 'removeCart']);
     Route::get('/opname/clear', [CartController::class, 'clearAllCart']);
-
     Route::get('/opname/tambahopname', [ItemController::class, 'simpanDataOpname']);
-
   });
 
+  //Route untuk data customer
   Route::get('/datacustomer', [CustomerController::class, 'administrasiIndex']);
   Route::get('/datacustomer/cari', [CustomerController::class, 'administrasiSearch']);
   Route::get('/datacustomer/create', [CustomerController::class, 'administrasiCreate']);
@@ -147,6 +155,13 @@ Route::prefix('administrasi')->middleware('administrasi')->group(function() {
   Route::put('/datacustomer/ubahcustomer/{customer:id}', [CustomerController::class, 'administrasiUpdate']);
   Route::get('/datacustomer/{customer:id}', [CustomerController::class, 'administrasiShow']);
   Route::post('/datacustomer/ubahstatus/{customer:id}', [CustomerController::class, 'administrasiEditStatusCustomer']);
+
+  //Route untuk profil administrasi
+  Route::get('/profil', [HomeController::class, 'lihatProfil']);
+  Route::get('/profil/ubahpassword', [HomeController::class, 'lihatPassword']);
+  Route::post('/profil/check/{user:id_users}', [AuthController::class, 'check']);
+  Route::get('/profil/ubahpasswordbaru/{user:id_users}', [AuthController::class, 'passwordBaru']);
+  Route::post('/profil/gantipassword/{user:id_users}', [AuthController::class, 'gantiPassword']);
 });
 
 
@@ -161,7 +176,7 @@ Route::prefix('customer')->middleware('customer')->group(function() {
   Route::get('/cart/tambahorder', [OrderController::class, 'simpanDataOrderCustomer']);
   //Route untuk event
   Route::get('/event', [EventController::class, 'customerIndex']);
-  Route::get('/event/{event:id}', [EventController::class, 'customerDetail']);
+  Route::get('/event/cari', [EventController::class, 'customerSearch']);
 });
 
 require __DIR__.'/auth.php';

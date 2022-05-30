@@ -78,7 +78,7 @@
           <td>{{ $order->linkStaff->nama }}</td>
           <td>{{ $order->linkInvoice->nomor_invoice ?? null }}</td>
           <td>{{ $order->linkInvoice->harga_total ?? null }}</td>
-          <td>{{ $order->linkOrderTrack->linkStatus->nama }}</td>
+          <td>{{ $order->linkOrderTrack->linkStatus->nama ?? null }}</td>
           <td>{{ date('d-m-Y', strtotime($order->created_at)) }}</td>
           <td>
             <a href="/administrasi/pesanan/detail/{{ $order->id }}" class="btn btn-primary">Detail</a>

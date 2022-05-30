@@ -84,31 +84,31 @@ const LoginReact = () => {
           }
         }
 
-        if (token != null) {
-          console.log('dijaankan');
-          axios({
-            method: "get",
-            url: `${window.location.origin}/api/user`,
-            headers: {
-              Accept: "application/json",
-              Authorization: "Bearer " + token,
-            }
-          })
-            .then((response) => {
-              if (response.data.status === 'error') {
-                axios({
-                  method: "get",
-                  url: `${window.location.origin}/api/forceLogout`,
-                  headers: {
-                    Accept: "application/json",
-                  }
-                })
-              }
-            })
-          // .catch((error) => {
-          //   setErrorDataUser(error.message);
-          // });
-        }
+        // if (token != null) {
+        //   console.log('dijaankan');
+        //   axios({
+        //     method: "get",
+        //     url: `${window.location.origin}/api/user`,
+        //     headers: {
+        //       Accept: "application/json",
+        //       Authorization: "Bearer " + token,
+        //     }
+        //   })
+        //     .then((response) => {
+        //       if (response.data.status === 'error') {
+        //         axios({
+        //           method: "get",
+        //           url: `${window.location.origin}/api/forceLogout`,
+        //           headers: {
+        //             Accept: "application/json",
+        //           }
+        //         })
+        //       }
+        //     })
+        //   // .catch((error) => {
+        //   //   setErrorDataUser(error.message);
+        //   // });
+        // }
       })
       .catch((error) => {
         setIsLoading(false);

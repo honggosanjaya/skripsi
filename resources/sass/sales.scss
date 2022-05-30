@@ -110,8 +110,16 @@ textarea {
     max-height: 80px;
 }
 
+.button_bottom.big {
+    max-height: 120px;
+}
+
+.mb-btnBottom.big {
+    margin-bottom: 120px;
+}
+
 .mb-btnBottom {
-    margin-bottom: 80px;
+    margin-bottom: 100px;
 }
 
 // ================ LOGIN ===================
@@ -180,6 +188,11 @@ textarea {
 
 .trip_aksi {
     float: right;
+}
+
+.item_image {
+    max-width: 50px;
+    max-height: 50px;
 }
 
 // ============== ORDER ================
@@ -453,5 +466,21 @@ input:checked ~ .custom_checkbox:after {
     }
     90% {
         transform: translateY(-3vh) scaleY(1);
+    }
+}
+
+// ============= PROFIL ============
+ul.info-list {
+    list-style-type: none;
+    li b {
+        position: relative;
+        display: inline-block;
+        min-width: 144px;
+        margin-right: 4px;
+        &:after {
+            content: ":";
+            position: absolute;
+            right: 0;
+        }
     }
 }

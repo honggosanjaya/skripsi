@@ -44,6 +44,10 @@ const HeaderSales = ({ title, isDashboard, isOrder, lihatKeranjang }) => {
       });
   }
 
+  const handleViewProfile = () => {
+    history.push('/salesman/profil');
+  }
+
   return (
     <header className='header_mobile d-flex justify-content-between align-items-center'>
       {isLoading && <LoadingIndicator />}
@@ -73,13 +77,20 @@ const HeaderSales = ({ title, isDashboard, isOrder, lihatKeranjang }) => {
 
             <Dropdown.Menu>
               <Dropdown.Item>
-                <div className="btn btn-danger" onClick={handleLogout}>Logout</div>
+                <div className="btn btn-warning w-100" onClick={handleViewProfile}>
+                  <span className="iconify me-2" data-icon="carbon:user-profile"></span>Profil
+                </div>
+              </Dropdown.Item>
+              <Dropdown.Item>
+                <div className="btn btn-danger w-100" onClick={handleLogout}>
+                  <span className="iconify me-2" data-icon="carbon:logout"></span>Logout
+                </div>
               </Dropdown.Item>
             </Dropdown.Menu>
           </Dropdown>
         </Fragment>
       }
-    </header >
+    </header>
   );
 }
 

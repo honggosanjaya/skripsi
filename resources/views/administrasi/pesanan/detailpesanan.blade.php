@@ -20,11 +20,21 @@
     </div>
   @endif
 
+  @if (session()->has('pesanError'))
+    <div id="hideMeAfter3Seconds">
+      <div class="alert alert-danger alert-dismissible fade show" role="alert">
+        {{ session('pesanError') }}
+        <button type="button" class="btn btn-close" data-bs-dismiss="alert"></button>
+      </div>
+    </div>
+  @endif
+
 
   <div class="container">
     <div class="row mt-3">
       <div class="d-flex flex-row justify-content-between">
-        <a href="/administrasi/pesanan" class="btn btn-primary mx-1"><i class="bi bi-arrow-left-short fs-5"></i>Kembali</a>
+        <a href="/administrasi/pesanan" class="btn btn-primary mx-1"><i
+            class="bi bi-arrow-left-short fs-5"></i>Kembali</a>
 
         <div>
           <a href="/administrasi/pesanan/detail/{{ $order->id }}/cetak-memo" class="btn btn-primary mx-1"><i
@@ -77,6 +87,9 @@
       <div class="col-6">
         <a class="btn btn-warning" href="/administrasi/pesanan/detail/{{ $order->id }}/kapasitas"><i
             class="bi bi-eye-fill p-1"></i>Lihat Kapasitas Kendaraan</a>
+        <a class="btn btn-primary mt-3" href="/administrasi/pesanan/detail/{{ $order->id }}/pengiriman">
+          <i class="bi bi-truck me-2"></i>Atur Keberangkatan Pengiriman
+        </a>
       </div>
     </div>
 
@@ -102,13 +115,33 @@
             </tr>
           @endforeach
           <tr>
-            <td colspan="4" class="text-center fw-bold">Total : </td>
-            <td>{{ number_format($order->linkInvoice->harga_total ?? 0, 0, '', '.') }}</td>
+            <td colspan="4" class="text-center fw-bold">Total (Setelah Diskon/Potongan) : </td>
+            @if ($order->linkInvoice->harga_total ?? null)
+              <td>{{ number_format($order->linkInvoice->harga_total, 0, '', '.') }}</td>
+            @else
+              <td>menunggu pesanan dikonfirmasi</td>
+            @endif
           </tr>
         </tbody>
       </table>
+
+      @if ($order->linkStatus->nama == 'inactive')
+        <div class="float-end">
+          <form action="/administrasi/pesanan/setuju/{{ $order->id }}" method="POST" class="d-inline">
+            @csrf
+            <button type="submit" class="btn btn-sm btn-success me-4">
+              Setuju
+            </button>
+          </form>
+
+          <form action="/administrasi/pesanan/tolak/{{ $order->id }}" method="POST" class="d-inline">
+            @csrf
+            <button type="submit" class="btn btn-sm btn-danger">
+              Tolak
+            </button>
+          </form>
+        </div>
+      @endif
     </div>
-
-
   </div>
 @endsection
