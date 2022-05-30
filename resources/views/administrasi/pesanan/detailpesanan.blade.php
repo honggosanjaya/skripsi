@@ -87,6 +87,9 @@
       <div class="col-6">
         <a class="btn btn-warning" href="/administrasi/pesanan/detail/{{ $order->id }}/kapasitas"><i
             class="bi bi-eye-fill p-1"></i>Lihat Kapasitas Kendaraan</a>
+        <a class="btn btn-primary mt-3" href="/administrasi/pesanan/detail/{{ $order->id }}/pengiriman">
+          <i class="bi bi-truck me-2"></i>Atur Keberangkatan Pengiriman
+        </a>
       </div>
     </div>
 

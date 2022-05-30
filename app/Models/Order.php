@@ -32,7 +32,7 @@ class Order extends Model
     }
 
     public function linkOrderTrack(){
-        return $this->hasOne(OrderTrack::class,'id_order','id');
+        return $this->hasOne(OrderTrack::class,'id_order','id')->with(['linkStatus']);
     }
 
     public function linkInvoice(){
