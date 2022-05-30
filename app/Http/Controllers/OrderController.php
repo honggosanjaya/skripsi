@@ -420,6 +420,31 @@ class OrderController extends Controller
         return redirect('/customer/produk')->with('pesanSukses', 'Produk berhasil ditambahkan ke database');
     }
 
+    public function getListShippingAPI(Request $request){
+      $id_staff=$request->id_staff;
+
+      $data=Order::
+        whereHas('linkOrderTrack',function($q) use( $id_staff) {
+          $q->where('status',22)->where('id_staff_pengirim', $id_staff);
+        })
+        ->with(['linkOrderTrack','linkInvoice','linkCustomer','linkOrderItem'])->get();
+
+      // dd($data);
+     
+      return response()->json([
+        'data' => $data,
+        'status' => 'success'
+      ]);
+    }
+
+    public function getDetailShippingAPI(Request $request){
+      $data=Order::with(['linkOrderTrack','linkInvoice','linkCustomer','linkOrderItem.linkItem'])->find($request->id);
+      return response()->json([
+        'data' => $data,
+        'status' => 'success'
+      ]);
+    }
+
     public function setujuPesanan(Order $order){
       $order = Order::find($order->id);
       $totalHarga = 0;
