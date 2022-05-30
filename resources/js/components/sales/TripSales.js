@@ -141,8 +141,7 @@ const TripSales = () => {
         if (response.data.status == 'success') {
           setErrorValidasi([]);
           return response.data.data;
-        }
-        else {
+        } else {
           setErrorValidasi(response.data.validate_err);
           throw Error("Error validasi");
         }

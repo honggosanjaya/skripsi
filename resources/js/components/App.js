@@ -17,6 +17,7 @@ import Pemesanan from './sales/Pemesanan';
 import KeranjangSalesContextProvider from '../contexts/KeranjangSalesContext';
 import UserContextProvider from '../contexts/UserContext';
 import Profil from './reuse/Profil';
+import ChangePassword from './reuse/ChangePassword';
 
 function App() {
   return (
@@ -41,6 +42,8 @@ function App() {
                 <Route exact path="/salesman/profil" component={Profil} />
               </KeranjangSalesContextProvider>
             </Route>
+
+            <Route exact path="/changepassword" component={ChangePassword} />
 
 
             <Route path="*" component={NotFound} />
