@@ -11,6 +11,7 @@ import TripSales from './sales/TripSales';
 
 // Shipper Page
 import DashboardShipper from './pengirim/DashboardShipper';
+import JadwalShipper from './pengirim/JadwalShipper';
 import LoginReact from './reuse/LoginReact';
 import AuthContextProvider from '../contexts/AuthContext';
 import Pemesanan from './sales/Pemesanan';
@@ -28,6 +29,7 @@ function App() {
 
             <Route path={["/shipper"]}>
               <Route exact path="/shipper" component={DashboardShipper} />
+              <Route exact path="/shipper/jadwal" component={JadwalShipper} />
             </Route>
 
 

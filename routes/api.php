@@ -7,6 +7,7 @@ use App\Http\Controllers\CartController;
 use App\Http\Controllers\EventController;
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\ReturController;
+use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -32,19 +33,24 @@ Route::get('/dataFormTrip', [CustomerController::class, 'dataFormTripApi']);
 Route::get('/tripCustomer/{id}', [CustomerController::class, 'dataCustomerApi']);
 Route::post('/tripCustomer', [CustomerController::class, 'simpanCustomerApi']);
 Route::post('/tripCustomer/foto/{id}', [CustomerController::class, 'simpanCustomerFotoApi']);
-
-
-// filter item
+// sales cari produk berdasarkan nama
+Route::get('/products/search/{name}', [ItemController::class, 'searchProductAPI']); 
+//customer dan sales melakukan filter item
 Route::get('/filterProduk', [ItemController::class, 'filterProdukApi']);
 //customer menambahkan data di keranjang
 Route::post('/customer/order/cart', [CartController::class, 'addToCart']);
 
-
-// sales pemesanan
+// sales checkout
 Route::get('/products/search/{name}', [ItemController::class, 'searchProductAPI']); 
 Route::post('/salesman/buatOrder', [OrderController::class, 'simpanDataOrderSalesmanAPI']);
+
+// sales sudah ada kode customer
 Route::get('/kodeCustomer/{id}', [OrderController::class, 'dataKodeCustomer']);
+
+// catat trip untuk order
 Route::post('/tripOrderCustomer', [OrderController::class, 'catatTripOrderApi']);
+
+// ubah trip untuk keluar
 Route::post('/keluarToko/{id}', [OrderController::class, 'keluarTripOrderApi']);
 Route::get('/tipeRetur', [ReturController::class, 'getTypeReturAPI']);
 Route::get('/kodeEvent/{kode}', [EventController::class, 'dataKodeEventAPI']);
@@ -55,9 +61,16 @@ Route::group(['middleware' => 'auth:sanctum'], function(){
   Route::post('v1/logout', [LoginController::class, 'logoutApi']);
   Route::get('/user', [LoginController::class, 'checkUser']);
 
+
+
   Route::prefix('salesman')->group(function() {
     Route::get('/listitems', [ItemController::class, 'getListAllProductAPI']);
   });
 });
+Route::prefix('shipper')->group(function() {
+  Route::get('/jadwalPengiriman', [OrderController::class, 'getListShippingAPI']);
+  Route::get('/jadwalPengiriman/{id}', [OrderController::class, 'getdetailShippingAPI']);
+});
+Route::get('/test/{id}', [Controller::class, 'test']);
 
 Route::post('v1/login', [LoginController::class, 'index']);
