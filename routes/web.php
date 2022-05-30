@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\CustomerTypeController;
 use App\Http\Controllers\HomeController;
+use App\Http\Controllers\AuthController;
 use App\Http\Controllers\ItemController;
 use App\Http\Controllers\CartController;
 use App\Http\Controllers\CustomerController;
@@ -30,6 +31,7 @@ Route::get('/', function () {
 
 Route::prefix('owner')->middleware('owner')->group(function() {
   Route::get('/', [HomeController::class, 'indexOwner']);
+  Route::get('/profil', [HomeController::class, 'lihatProfil']);
 });
 Route::prefix('supervisor')->middleware('supervisor')->group(function() {
   Route::get('/', [HomeController::class, 'indexSupervisor']);
@@ -70,7 +72,9 @@ Route::prefix('supervisor')->middleware('supervisor')->group(function() {
   // Route untuk data staf
   Route::resource('/datastaf', StaffController::class);
   Route::post('/datastaf/ubahstatus/{staf:id}', [StaffController::class, 'supervisorEditStatusStaf']);
-  
+
+  //Route untuk profil supervisor
+  Route::get('/profil', [HomeController::class, 'lihatProfil']);
 });
 // Route::prefix('salesman')->middleware('salesman')->group(function() {
 //   Route::get('/', [HomeController::class, 'indexSalesman']);
@@ -142,6 +146,7 @@ Route::prefix('administrasi')->middleware('administrasi')->group(function() {
     Route::get('/opname/tambahopname', [ItemController::class, 'simpanDataOpname']);
   });
 
+  //Route untuk data customer
   Route::get('/datacustomer', [CustomerController::class, 'administrasiIndex']);
   Route::get('/datacustomer/cari', [CustomerController::class, 'administrasiSearch']);
   Route::get('/datacustomer/create', [CustomerController::class, 'administrasiCreate']);
@@ -150,6 +155,13 @@ Route::prefix('administrasi')->middleware('administrasi')->group(function() {
   Route::put('/datacustomer/ubahcustomer/{customer:id}', [CustomerController::class, 'administrasiUpdate']);
   Route::get('/datacustomer/{customer:id}', [CustomerController::class, 'administrasiShow']);
   Route::post('/datacustomer/ubahstatus/{customer:id}', [CustomerController::class, 'administrasiEditStatusCustomer']);
+
+  //Route untuk profil administrasi
+  Route::get('/profil', [HomeController::class, 'lihatProfil']);
+  Route::get('/profil/ubahpassword', [HomeController::class, 'lihatPassword']);
+  Route::post('/profil/check/{user:id_users}', [AuthController::class, 'check']);
+  Route::get('/profil/ubahpasswordbaru/{user:id_users}', [AuthController::class, 'passwordBaru']);
+  Route::post('/profil/gantipassword/{user:id_users}', [AuthController::class, 'gantiPassword']);
 });
 
 
