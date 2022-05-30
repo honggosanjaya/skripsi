@@ -16,6 +16,7 @@ import AuthContextProvider from '../contexts/AuthContext';
 import Pemesanan from './sales/Pemesanan';
 import KeranjangSalesContextProvider from '../contexts/KeranjangSalesContext';
 import UserContextProvider from '../contexts/UserContext';
+import Profil from './reuse/Profil';
 
 function App() {
   return (
@@ -25,7 +26,9 @@ function App() {
           <Switch>
             <Route path="/spa/login" component={LoginReact} />
 
-            <Route exact path="/shipper/dashboard" component={DashboardShipper} />
+            <Route path={["/shipper"]}>
+              <Route exact path="/shipper" component={DashboardShipper} />
+            </Route>
 
 
             <Route path={["/salesman"]}>
@@ -35,6 +38,7 @@ function App() {
                 <Route exact path="/salesman/trip/:id" component={TripSales} />
                 <Route exact path="/salesman/order/:idCust" component={Pemesanan} />
                 <Route exact path="/salesman/keranjang/:idCust" component={KeranjangSales} />
+                <Route exact path="/salesman/profil" component={Profil} />
               </KeranjangSalesContextProvider>
             </Route>
 
