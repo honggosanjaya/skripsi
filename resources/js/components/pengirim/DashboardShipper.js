@@ -2,6 +2,7 @@ import React, { Component, useState, useEffect, useContext } from 'react';
 import { splitCharacter } from '../reuse/HelperFunction';
 import HeaderShipper from './HeaderShipper';
 import { useHistory } from 'react-router';
+import { Link } from 'react-router-dom';
 
 const DashboardShipper = () => {
   // const { token, isAuth, setErrorAuth } = useContext(AuthContext);
@@ -23,10 +24,10 @@ const DashboardShipper = () => {
         <div className="word d-flex justify-content-center">
           {splitCharacter("shipper")}
         </div>
-        <a type="button" href={`/shipper/jadwal`} className='btn btn-primary w-100'> 
+        <Link to='/shipper/jadwal' className='btn btn-primary w-100'>
           <span className="iconify" data-icon="fa-solid:shipping-fast"></span>
           Pengiriman
-        </a>
+        </Link>
       </div>
     </main>
   );

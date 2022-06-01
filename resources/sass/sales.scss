@@ -486,3 +486,20 @@ ul.info-list {
         }
     }
 }
+
+ul.info-shipping {
+    list-style-type: none;
+    list-style-position: outside;
+    margin-left: -15px;
+    li b {
+        position: relative;
+        display: inline-block;
+        min-width: 180px;
+        margin-right: 4px;
+        &:after {
+            content: ":";
+            position: absolute;
+            right: 0;
+        }
+    }
+}
