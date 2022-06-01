@@ -9,7 +9,8 @@ mix
   .sass('resources/sass/sales.scss', 'public/css/sales.css')
   .sass('resources/sass/customer.scss', 'public/css/customer.css')
   .sass('resources/sass/supervisor.scss', 'public/css/supervisor.css')
-  .sass('resources/sass/administrasi.scss', 'public/css/administrasi.css');
+  .sass('resources/sass/administrasi.scss', 'public/css/administrasi.css')
+  .sass('resources/sass/owner.scss', 'public/css/owner.css');
 // react
 mix
   .js('resources/js/app.js', 'public/js/react.js')
