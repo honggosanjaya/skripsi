@@ -112,7 +112,6 @@ const LoginReact = () => {
       })
       .catch((error) => {
         setIsLoading(false);
-        console.log(error.response.data.message);
         setIsAuth('false');
         if (error.response.status === 401) {
           setErrorAuth(error.response.data.message);

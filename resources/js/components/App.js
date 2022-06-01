@@ -31,6 +31,7 @@ function App() {
             <Route path={["/shipper"]}>
               <Route exact path="/shipper" component={DashboardShipper} />
               <Route exact path="/shipper/jadwal" component={JadwalShipper} />
+              <Route exact path="/shipper/profil" component={Profil} />
             </Route>
 
 
