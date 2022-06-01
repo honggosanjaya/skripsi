@@ -32,9 +32,23 @@ Route::get('/', function () {
 Route::prefix('owner')->middleware('owner')->group(function() {
   Route::get('/', [HomeController::class, 'indexOwner']);
   Route::get('/profil', [HomeController::class, 'lihatProfil']);
+
+  //Route untuk profil owner
+  Route::get('/profil', [HomeController::class, 'lihatProfil']);
+  Route::get('/profil/ubahpassword', [HomeController::class, 'lihatPassword']);
+  Route::post('/profil/check/{user:id_users}', [AuthController::class, 'check']);
+  Route::get('/profil/ubahpasswordbaru/{user:id}', [AuthController::class, 'passwordBaru']);
+  Route::post('/profil/gantipassword/{user:id}', [AuthController::class, 'gantiPassword']);
 });
 Route::prefix('supervisor')->middleware('supervisor')->group(function() {
   Route::get('/', [HomeController::class, 'indexSupervisor']);
+
+  //Route untuk profil supervisor
+  Route::get('/profil', [HomeController::class, 'lihatProfil']);
+  Route::get('/profil/ubahpassword', [HomeController::class, 'lihatPassword']);
+  Route::post('/profil/check/{user:id_users}', [AuthController::class, 'check']);
+  Route::get('/profil/ubahpasswordbaru/{user:id}', [AuthController::class, 'passwordBaru']);
+  Route::post('/profil/gantipassword/{user:id}', [AuthController::class, 'gantiPassword']);
 
   //Route untuk event
   Route::get('/event', [EventController::class, 'index']);
@@ -160,8 +174,8 @@ Route::prefix('administrasi')->middleware('administrasi')->group(function() {
   Route::get('/profil', [HomeController::class, 'lihatProfil']);
   Route::get('/profil/ubahpassword', [HomeController::class, 'lihatPassword']);
   Route::post('/profil/check/{user:id_users}', [AuthController::class, 'check']);
-  Route::get('/profil/ubahpasswordbaru/{user:id_users}', [AuthController::class, 'passwordBaru']);
-  Route::post('/profil/gantipassword/{user:id_users}', [AuthController::class, 'gantiPassword']);
+  Route::get('/profil/ubahpasswordbaru/{user:id}', [AuthController::class, 'passwordBaru']);
+  Route::post('/profil/gantipassword/{user:id}', [AuthController::class, 'gantiPassword']);
 });
 
 

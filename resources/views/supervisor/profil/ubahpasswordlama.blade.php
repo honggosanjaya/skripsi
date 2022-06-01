@@ -1,6 +1,6 @@
 @extends('layouts/main')
 @push('CSS')
-  <link href=" {{ mix('css/administrasi.css') }}" rel="stylesheet">
+  <link href=" {{ mix('css/supervisor.css') }}" rel="stylesheet">
 @endpush
 @section('main_content')
   {{-- ide: masukkan password lama, sistem cek kesesuaian password --}}
@@ -15,7 +15,7 @@
     </div>
     @endif
 
-    <form method="POST" action="/administrasi/profil/check/{{ auth()->user()->id }}">
+    <form method="POST" action="/supervisor/profil/check/{{ auth()->user()->id }}">
       @csrf
       <div class="mb-3">
         <label class="form-label" hidden>User ID</label>
@@ -33,7 +33,7 @@
       </div>
 
       <button type="submit" class="btn btn-primary">Submit</button>
-      <a href="/administrasi" class="batalkanAksi_btn btn btn-danger ms-3">Batal</a>
+      <a href="/supervisor" class="batalkanAksi_btn btn btn-danger ms-3">Batal</a>
     </form>
   </div>
 @endsection
