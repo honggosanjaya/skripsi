@@ -12,7 +12,7 @@ class Session
      * Get the view / contents that represents the component.
      *
      */
-    static function getId($id)
+    static function getSC($id)
     {
         $user=User::find($id);
         if ($user->tabel=='staffs') {

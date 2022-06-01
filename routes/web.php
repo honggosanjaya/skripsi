@@ -177,6 +177,12 @@ Route::prefix('customer')->middleware('customer')->group(function() {
   //Route untuk event
   Route::get('/event', [EventController::class, 'customerIndex']);
   Route::get('/event/cari', [EventController::class, 'customerSearch']);
+  //Route untuk event
+  Route::get('/profil', [HomeController::class, 'lihatProfil']);
+  Route::get('/profil/ubahpassword', [HomeController::class, 'lihatPassword']);
+  Route::post('/profil/check/{user:id}', [AuthController::class, 'check']);
+  Route::get('/profil/ubahpasswordbaru/{user:id}', [AuthController::class, 'passwordBaru']);
+  Route::post('/profil/gantipassword/{user:id}', [AuthController::class, 'gantiPassword']);
 });
 
 require __DIR__.'/auth.php';

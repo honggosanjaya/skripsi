@@ -13,7 +13,8 @@ class Controller extends BaseController
 {
     use AuthorizesRequests, DispatchesJobs, ValidatesRequests;
 
-    public function test(){
+    public function test($id){
+        dd(Session::getId($id));
         return null;
     }
 }

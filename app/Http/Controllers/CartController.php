@@ -82,7 +82,8 @@ class CartController extends Controller
       }
 
       return response()->json([
-        'status' => 'success'
+        'status' => 'success',
+        'quantityCart'=>\Cart::session(auth()->user()->id.$request->route)->getTotalQuantity()
       ]); 
       
     }elseif ($request->route=="opname") {
