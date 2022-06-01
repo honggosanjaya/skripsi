@@ -571,11 +571,10 @@ class OrderController extends Controller
         $rules = [
           'foto' => 'image|file|max:1024',
         ];
-        if ($request->foto) {
-          $file_name = time() . '.' . $request->foto->extension();
-          $request->foto->move(public_path('storage/pengiriman'), $file_name);
-          $validatedData['foto'] = $file_name;
-        }
+
+        $file_name = time() . '.' . $request->foto->extension();
+        $request->foto->move(public_path('storage/pengiriman'), $file_name);
+        $validatedData['foto_pengiriman'] = $file_name;
         $validatedData['status'] = 23;
         $validatedData['waktu_sampai'] = now();
         OrderTrack::where('id_order', $order->id)->update($validatedData);
