@@ -32,7 +32,15 @@ Route::get('/', function () {
 Route::prefix('owner')->middleware('owner')->group(function() {
   Route::get('/', [HomeController::class, 'indexOwner']);
   Route::get('/profil', [HomeController::class, 'lihatProfil']);
+  Route::get('/datasupervisor', [StaffController::class, 'datasupervisor']);
+  Route::get('/datasupervisor/create', [StaffController::class, 'createSupervisor']);
+  Route::post('/datasupervisor', [StaffController::class, 'store']);
+  Route::get('/datasupervisor/edit/{staff:id}', [StaffController::class, 'editSupervisor']);
+  Route::put('/datasupervisor/{id}/edit', [StaffController::class, 'update']);
+  Route::post('/datasupervisor/ubahstatus/{staf:id}', [StaffController::class, 'editStatusStaf']);
+  Route::get('/datasupervisor/cari', [StaffController::class, 'cariSupervisor']);
 });
+
 Route::prefix('supervisor')->middleware('supervisor')->group(function() {
   Route::get('/', [HomeController::class, 'indexSupervisor']);
 
@@ -70,8 +78,8 @@ Route::prefix('supervisor')->middleware('supervisor')->group(function() {
   Route::put('/jenis/ubahjenis/{customertype:id}', [CustomerTypeController::class, 'update']);
 
   // Route untuk data staf
-  Route::resource('/datastaf', StaffController::class);
-  Route::post('/datastaf/ubahstatus/{staf:id}', [StaffController::class, 'supervisorEditStatusStaf']);
+  Route::resource('/datastaf', StaffController::class)->except(['show', 'destroy']);
+  Route::post('/datastaf/ubahstatus/{staf:id}', [StaffController::class, 'editStatusStaf']);
 
   //Route untuk profil supervisor
   Route::get('/profil', [HomeController::class, 'lihatProfil']);

@@ -113,7 +113,7 @@
           </a>
         </li>
         <li class="mb-3">
-          <a class="" href="">
+          <a class="{{ Request::is('owner/datasupervisor*') ? 'active' : '' }}" href="/owner/datasupervisor">
             <i class="bi bi-people-fill me-2"></i><span>Data Supervisor</span>
           </a>
         </li>
