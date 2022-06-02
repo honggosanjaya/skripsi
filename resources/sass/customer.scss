@@ -44,3 +44,12 @@
     color: black;
     text-decoration: none;
 }
+
+.nav-tabs {
+    overflow-x: auto;
+    overflow-y: hidden;
+    flex-wrap: nowrap;
+  }
+  .nav-tabs>li {
+    float: none;
+  }

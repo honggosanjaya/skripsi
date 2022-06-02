@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 use App\Models\Customer;
 use App\Models\Staff;
+use App\Models\Order;
 
 use Illuminate\Http\Request;
 
@@ -59,6 +60,47 @@ class HomeController extends Controller
                 'data' => $data
             ]);
         }        
+    }
+
+    public function lihatPesanan(Customer $customer){
+        $diajukanCustomer = Order::whereHas('linkOrderTrack', function($q){
+            $q->where('status',19);
+        })->where('id_customer','=',$customer->id)->with(['linkOrderTrack','linkInvoice','linkOrderItem.linkItem'])
+        ->get();
+
+        $diajukanSalesman = Order::whereHas('linkOrderTrack', function($q){
+            $q->where('status',20);
+        })->where('id_customer','=',$customer->id)->with(['linkOrderTrack','linkInvoice','linkOrderItem.linkItem'])
+        ->get();
+
+        $dikonfirmasiAdministrasi = Order::whereHas('linkOrderTrack', function($q){
+            $q->where('status',21);
+        })->where('id_customer','=',$customer->id)->with(['linkOrderTrack','linkInvoice','linkOrderItem.linkItem'])
+        ->get();
+
+        $dalamPerjalanan = Order::whereHas('linkOrderTrack', function($q){
+            $q->where('status',22);
+        })->where('id_customer','=',$customer->id)->with(['linkOrderTrack','linkInvoice','linkOrderItem.linkItem'])
+        ->get();
+
+        $telahSampai = Order::whereHas('linkOrderTrack', function($q){
+            $q->where('status',23)->orWhere('status',24);
+        })->where('id_customer','=',$customer->id)->with(['linkOrderTrack','linkInvoice','linkOrderItem.linkItem'])
+        ->get();
+
+        $ditolak = Order::whereHas('linkOrderTrack', function($q){
+            $q->where('status',25);
+        })->where('id_customer','=',$customer->id)->with(['linkOrderTrack','linkInvoice','linkOrderItem.linkItem'])
+        ->get();           
+          
+        return view('customer/profil.detailpesanan',[
+            'diajukanCustomer' => $diajukanCustomer,
+            'diajukanSalesman' => $diajukanSalesman,
+            'dikonfirmasiAdministrasi' => $dikonfirmasiAdministrasi,
+            'dalamPerjalanan' => $dalamPerjalanan,
+            'telahSampai' => $telahSampai,
+            'ditolak' => $ditolak
+        ]);          
     }
 
     public function lihatPassword(){
