@@ -31,16 +31,6 @@ const ShippingShipper = () => {
   let $imagePreview = null;
   const [successMessage, setSuccessMessage] = useState(null);
 
-  useEffect(() => {
-    axios.get(`${window.location.origin}/api/shipper/jadwalPengiriman?id_staff=${dataUser.id_staff}`)
-      .then(response => {
-        setListShipping(response.data.data);
-      })
-      .catch(error => {
-        console.log(error.message);
-      });
-  }, [dataUser, successMessage])
-
   const handleClose = () => {
     setShow(false);
   }
@@ -77,14 +67,14 @@ const ShippingShipper = () => {
 
   const handleShow = (shippingid) => {
     axios.get(`${window.location.origin}/api/shipper/jadwalPengiriman/${shippingid}`).then(response => {
-      // console.log('jadwal', response.data.data);
+      console.log('jadwal', response.data.data);
       setDetailShipping(response.data.data);
       setListDetailItem(response.data.data.link_order_item);
     })
     setShow(true);
   };
   const getListShipping= () => {
-    axios.get(`${window.location.origin}/api/shipper/jadwalPengiriman?id_staff=${dataUser.id_staff}&status=${statusShipping}`).then(response => {
+    axios.get(`${window.location.origin}/api/shipper/jadwalPengiriman?id_staff=${dataUser.id_staff}`).then(response => {
     setListShipping(response.data.data);
     console.log(response.data.data);
     return response.data.data;
@@ -92,11 +82,11 @@ const ShippingShipper = () => {
 
   useEffect(() => {
     getListShipping()
-  }, [listShipping])
+  }, [dataUser,successMessage])
 
   const showListShipping = listShipping.map((data, index) => {
     return (
-      <button className="mb-3 btn btn-primary d-block" onClick={() => handleShow(data.id)} style={{ width: '100%' }} key={`jadwal${index}`} >
+      <button className={`mb-3 btn btn-primary  ${data.link_order_track.status!=statusShipping?"d-none":"d-block"}`} onClick={() => handleShow(data.id)} style={{ width: '100%' }} key={`jadwal${index}`} >
         <div className="d-flex flex-column">
           <h1>{data.link_invoice.nomor_invoice ?? null}</h1>
           <div>
@@ -161,11 +151,10 @@ const ShippingShipper = () => {
       <HeaderShipper isDashboard={true} />
       <div className="page_container pt-4">
         {successMessage && <AlertComponent successMsg={successMessage} />}
-        <div className="word d-flex justify-content-center">
-          {splitCharacter("shipper")}
+        <div className="word d-flex flex-column justify-content-center text-center">
            {/* {splitCharacter("shipper")} */}
            LIST PENGIRIMAN
-          <ButtonGroup>
+          <ButtonGroup className='my-3'>
             {radios.map((radio, idx) => (
               <ToggleButton
                 key={idx}
@@ -177,7 +166,8 @@ const ShippingShipper = () => {
                 checked={statusShipping == radio.value}
                 onChange={(e) => {
                   setStatusShipping(e.currentTarget.value);
-                  getListShipping()}
+                  // getListShipping()
+                }
                 }
               >
                 {radio.name}
@@ -198,7 +188,9 @@ const ShippingShipper = () => {
                   <ul className="info-shipping">
                     <li><b>Nama Customer</b>{detailShipping.link_customer.nama}</li>
                     <li><b>Telepon</b>{detailShipping.link_customer.telepon}</li>
-                    <li><b>Alamat</b>{detailShipping.link_customer.full_alamat}</li>
+                    <li><b>Alamat</b>
+                    <a target="_blank" href={`https://www.google.com/maps/search/?api=1&query=${detailShipping.link_customer.koordinat.replace("@", ",")}`}>{detailShipping.link_customer.full_alamat}</a>
+                    </li>
                     <li><b>Keterangan Alamat</b>{detailShipping.link_customer.keterangan_alamat}</li>
                     <li><b>Waktu Keberangkatan</b>{detailShipping.link_order_track.waktu_berangkat}</li>
                     <li><b>No Invoice</b>{detailShipping.link_invoice.nomor_invoice}</li>
