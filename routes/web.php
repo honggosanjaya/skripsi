@@ -5,6 +5,7 @@ use App\Http\Controllers\HomeController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\ItemController;
 use App\Http\Controllers\CartController;
+use App\Http\Controllers\ReportController;
 use App\Http\Controllers\CustomerController;
 use App\Http\Controllers\StaffController;
 use App\Http\Controllers\DistrictController;
@@ -94,6 +95,10 @@ Route::prefix('supervisor')->middleware('supervisor')->group(function() {
   // Route untuk data staf
   Route::resource('/datastaf', StaffController::class)->except(['show', 'destroy']);
   Route::post('/datastaf/ubahstatus/{staf:id}', [StaffController::class, 'editStatusStaf']);
+
+  // Route untuk data report
+  Route::get('/report/penjualan', [ReportController::class,'penjualan']);
+  Route::get('/report/kinerja', [ReportController::class,'kinerja']);
 
   //Route untuk profil supervisor
   Route::get('/profil', [HomeController::class, 'lihatProfil']);

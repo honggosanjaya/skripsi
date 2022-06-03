@@ -38,7 +38,7 @@
 
 
   @php
-  $totalAkhir = null;
+  $totalAkhir = 0;
   foreach ($cartItems as $item) {
       $totalAkhir += $item->attributes->total_harga;
   }
@@ -78,7 +78,7 @@
 
 
   <div>
-    <form action="{{ route('cart.clear') }}" method="POST">
+    <form action="{{ route('cart.clear').'?route=pengadaan' }}" method="POST">
       @csrf
       <button class="btn btn-danger">Remove All Cart</button>
     </form>

@@ -26,7 +26,8 @@
       @enderror
     </div>
 
-    <div class="my-3">
+{{-- item tidak boleh ubah stok --}}
+    {{-- <div class="my-3">
       <label for="stok" class="form-label">Stok</label>
       <input type="text" class="form-control @error('stok') is-invalid @enderror" id="stok" name="stok"
         value="{{ old('stok', $item->stok) }}">
@@ -35,7 +36,7 @@
           {{ $message }}
         </div>
       @enderror
-    </div>
+    </div> --}}
 
     <div class="my-3">
       <label for="min_stok" class="form-label">Min Stok</label>
@@ -59,8 +60,8 @@
       @enderror
     </div>
 
-
-    <div class="my-3">
+{{-- takeout sementara --}}
+    {{-- <div class="my-3">
       <label for="max_pengadaan" class="form-label">Max Pengadaan</label>
       <input type="text" class="form-control @error('max_pengadaan') is-invalid @enderror" id="max_pengadaan"
         name="max_pengadaan" value="{{ old('max_pengadaan', $item->max_pengadaan) }}">
@@ -69,7 +70,7 @@
           {{ $message }}
         </div>
       @enderror
-    </div>
+    </div> --}}
 
     <div class="my-3">
       <label for="satuan" class="form-label">Satuan</label>

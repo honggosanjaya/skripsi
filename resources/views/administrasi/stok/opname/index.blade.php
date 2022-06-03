@@ -1,13 +1,16 @@
 @extends('layouts.main')
 
 @section('main_content')
+@push('JS')
+  <script src="{{ mix('js/administrasi.js') }}"></script>
+@endpush
   @if (session()->has('pesanSukses'))
     <div class="alert alert-success alert-dismissible fade show" role="alert">
       {{ session('pesanSukses') }}
       <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
     </div>
   @endif
-
+<div id="opname">
   <h1>Opname</h1>
   <a href="/administrasi/stok/opname/final?route=opname" class="btn btn-primary">Opname final</a>
 
@@ -48,13 +51,21 @@
                 <input type="hidden" name="quantity" value='{{ $product->stok }}'>
                 <input type="hidden" value="{{ $product->harga_satuan }}" name="harga_satuan">
                 <input type="hidden" value="{{$product->kode_barang }}" name="kode_barang">
-
-                  <input type="number" class="form-control" id="quantity" name="jumlah" 
+                <div class="d-flex justify-content-between">
+                  <div>jumlah</div>
+                  <input type="number" class="form-control" id="quantity" name="jumlah" style="width: 180px" data-iditem="{{ $product->id }}"
                     value="{{ $cartItem->attributes->jumlah??null }}">
-                  <input type="text" class="form-control" id="keterangan" name="keterangan"
+                </div>
+                <div class="d-flex justify-content-between">
+                  <div>keterangan</div>
+                  <input type="text" class="form-control" id="keterangan" name="keterangan" style="width: 180px" data-iditem="{{ $product->id }}"
                     value="{{ $cartItem->attributes->keterangan??null }}">
-
-                <button type="submit">Submit</button>
+                </div>
+                @if ($cartItem->attributes->keterangan??null)
+                  <button class="btn btn-success submit-cart-{{ $product->id }}" disabled type="submit">Submit</button>
+                @else
+                  <button class="btn btn-primary submit-cart-{{ $product->id }}" type="submit">Submit</button>
+                @endif
               </form>
             </td>
           </tr>
@@ -62,4 +73,5 @@
       </tbody>
     </table>
   </div>
+</div>
 @endsection

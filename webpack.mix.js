@@ -45,6 +45,13 @@ mix
     ]
     , 'public/js/d_customer.js'
   );
+mix
+.js(
+  [
+    'resources/js/administrasi.js',
+  ]
+  , 'public/js/administrasi.js'
+);
 
 
 mix.js('resources/js/app.js', 'public/js/app.js')
