@@ -4,7 +4,7 @@ import urlAsset from '../../config';
 import { AuthContext } from '../../contexts/AuthContext';
 import { Dropdown } from 'react-bootstrap';
 
-const HeaderShipper = ({ title, isDashboard }) => {
+const HeaderShipper = ({ title, isDashboard, toBack }) => {
   const { token, setToken, setIsAuth, setErrorAuth } = useContext(AuthContext);
   const history = useHistory();
   const [isLoading, setIsLoading] = useState(false);
@@ -37,7 +37,7 @@ const HeaderShipper = ({ title, isDashboard }) => {
   }
 
   const handleViewProfile = () => {
-    history.push('/salesman/profil');
+    history.push('/shipper/profil');
   }
 
   return (
@@ -45,9 +45,12 @@ const HeaderShipper = ({ title, isDashboard }) => {
       {!isDashboard &&
         <Fragment>
           <div className='d-flex align-items-center'>
-            <button className='btn' onClick={goback}>
+            {toBack ? <button className='btn' onClick={toBack}>
               <span className="iconify" data-icon="eva:arrow-back-fill"></span>
-            </button>
+            </button> :
+              <button className='btn' onClick={goback}>
+                <span className="iconify" data-icon="eva:arrow-back-fill"></span>
+              </button>}
             <h1 className='page_title'>{title}</h1>
           </div>
         </Fragment>

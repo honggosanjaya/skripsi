@@ -4,6 +4,7 @@ import urlAsset from '../../config';
 import HeaderSales from '../sales/HeaderSales';
 import LoadingIndicator from './LoadingIndicator';
 import { Link, useHistory } from "react-router-dom";
+import HeaderShipper from '../pengirim/HeaderShipper';
 
 const Profil = () => {
   const { dataUser, loadingDataUser } = useContext(UserContext);
@@ -19,7 +20,8 @@ const Profil = () => {
 
   return (
     <main className="page_main">
-      <HeaderSales title="Profil Saya" toBack={toBack} />
+      {dataUser.role == 'salesman' && <HeaderSales title="Profil Saya" toBack={toBack} />}
+      {dataUser.role == 'shipper' && <HeaderShipper title="Profil Saya" toBack={toBack} />}
       {loadingDataUser && <LoadingIndicator />}
       <div className="page_container pt-4">
         {!loadingDataUser &&
