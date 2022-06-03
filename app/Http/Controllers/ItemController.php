@@ -7,6 +7,7 @@ use App\Models\Order;
 use App\Models\OrderItem;
 use App\Models\Pengadaan;
 use App\Models\Status;
+use App\Models\History;
 use App\Models\Staff;
 use Barryvdh\DomPDF\Facade\Pdf as FacadePdf;
 use Barryvdh\DomPDF\PDF as DomPDFPDF;
@@ -20,7 +21,7 @@ class ItemController extends Controller
   protected $error = null;
   protected $data = null;
 
-  public function getListAllProductAPI()
+  public function getListAllProductAPI($id)
   {
     try {
       $items = Item::orderBy("status", "ASC")->paginate(4);
@@ -31,6 +32,16 @@ class ItemController extends Controller
         $this->error = $e;
     }
 
+    return response()->json([
+      "status" => $this->status,
+      "data" => $this->data,
+      "error" => $this->error
+    ], 200);
+  }
+
+  public function updateStockCustomer(Request $request)
+  {
+    History::where('id_customer',$request->id_customer)->where('id_item',$request->id_item)->update(['stok_terakhir_customer' => $request->q]);
     return response()->json([
       "status" => $this->status,
       "data" => $this->data,

@@ -422,11 +422,10 @@ class OrderController extends Controller
 
     public function getListShippingAPI(Request $request){
       $id_staff=$request->id_staff;
-      $status=$request->status;
       
       $data=Order::
-        whereHas('linkOrderTrack',function($q) use( $id_staff,$status) {
-          $q->where('status',$status)->where('id_staff_pengirim', $id_staff);
+        whereHas('linkOrderTrack',function($q) use( $id_staff) {
+          $q->where('id_staff_pengirim', $id_staff);
         })
         ->with(['linkOrderTrack','linkInvoice','linkCustomer','linkOrderItem'])->get();
 

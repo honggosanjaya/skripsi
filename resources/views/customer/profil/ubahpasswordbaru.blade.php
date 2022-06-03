@@ -25,8 +25,8 @@
     <form method="POST" action="/customer/profil/gantipassword/{{ auth()->user()->id }}">
       @csrf
       <div class="mb-3">
-        <label class="form-label">User ID</label>
-        <input type="text" class="form-control" value="{{ auth()->user()->id }}" readonly>    
+        <label class="form-label" hidden>User ID</label>
+        <input type="text" class="form-control" value="{{ auth()->user()->id }}" readonly hidden>    
       </div>
       <div class="mb-3">
         <label for="password" class="form-label">Password Baru</label>

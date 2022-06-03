@@ -15,9 +15,9 @@ import { useHistory } from "react-router-dom";
 import { Button, Modal } from 'react-bootstrap';
 
 const Pemesanan = ({ location }) => {
-  const [urlApi, setUrlApi] = useState('api/salesman/listitems');
-  const { page, setPage, erorFromInfinite, paginatedData, isReachedEnd } = useInfinite(`${urlApi}`, 4);
   const { idCust } = useParams();
+  const [urlApi, setUrlApi] = useState(`api/salesman/listitems`);
+  const { page, setPage, erorFromInfinite, paginatedData, isReachedEnd } = useInfinite(`${urlApi}`, 4);
   const { token } = useContext(AuthContext);
   const { dataUser } = useContext(UserContext);
   const history = useHistory();
@@ -310,6 +310,34 @@ const Pemesanan = ({ location }) => {
       setUrlApi('api/salesman/listitems')
     } else if (kataKunci !== '') {
       setUrlApi(`api/products/search/${kataKunci}`);
+    }
+  }
+
+  const handleUpdateStok = () => {
+    console.log('idTrip', idTrip);
+    if (idTrip) {
+      axios({
+        method: "post",
+        url: `${window.location.origin}/api/salesman/updateStock`,
+        headers: {
+          Accept: "application/json",
+        },
+        data: {
+          'id_customer': idCust,
+          'quantity': q,
+          'id_item': id,
+        }
+      })
+        .then((response) => {
+          console.log('trip', response.data.message);
+          hapusSemuaProduk();
+          history.push('/salesman');
+        })
+        .catch((error) => {
+          console.log(error.message);
+        });
+    } else {
+      console.log('silahkan melakukan trip terlebih dahulu');
     }
   }
 
