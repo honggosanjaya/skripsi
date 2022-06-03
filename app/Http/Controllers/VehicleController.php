@@ -36,6 +36,11 @@ class VehicleController extends Controller
             'kapasitas_volume' => 'required|numeric'
         ]);
 
+        $searchPlats = Vehicle::where('kode_kendaraan',$request->plat_kendaraan)->get();
+        if($searchPlats->count()>0){
+            return redirect('/administrasi/kendaraan/tambah')->with('error','Plat Nomor sudah ada')->withInput();
+        }
+
         Vehicle::create([
             'nama' => $request->nama_kendaraan,
             'kode_kendaraan' => $request->plat_kendaraan,

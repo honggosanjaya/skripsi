@@ -59,8 +59,8 @@
       @enderror
     </div>
 
-
-    <div class="my-3">
+{{-- takeout sementara --}}
+    {{-- <div class="my-3">
       <label for="max_pengadaan" class="form-label">Max Pengadaan</label>
       <input type="text" class="form-control @error('max_pengadaan') is-invalid @enderror" id="max_pengadaan"
         name="max_pengadaan" value="{{ old('max_pengadaan') }}">
@@ -69,7 +69,7 @@
           {{ $message }}
         </div>
       @enderror
-    </div>
+    </div> --}}
 
 
     <div class="my-3">
@@ -95,7 +95,7 @@
     </div>
 
     <div class="my-3">
-      <label for="volume" class="form-label">Volume Barang</label>
+      <label for="volume" class="form-label">Volume Barang (cm3)</label>
       <input type="number" class="form-control @error('volume') is-invalid @enderror" id="volume" name="volume"
         value="{{ old('volume') }}" step=".01">
       @error('volume')
@@ -107,7 +107,7 @@
 
 
     <div class="my-3">
-      <label for="status" class="form-label">Satus</label>
+      <label for="status" class="form-label">Status</label>
       <select class="form-select" name="status">
         @foreach ($statuses as $status)
           @if (old('status') == $status->id)

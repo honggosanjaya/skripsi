@@ -62,7 +62,7 @@
               <div class="col-6">
                 <label for="min_pembelian" class="form-label">Minimal Pembelian</label>
                 <input type="number" class="form-control @error('min_pembelian') is-invalid @enderror" id="min_pembelian" name="min_pembelian"
-                  value="{{ old('min_pembelian') }}" step=".01">
+                  value="{{ old('min_pembelian')??0 }}" step=".01">
                 @error('min_pembelian')
                   <div class="invalid-feedback">
                     {{ $message }}

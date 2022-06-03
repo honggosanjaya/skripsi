@@ -165,6 +165,10 @@ main {
     min-height: calc(100vh - 90px);
     position: relative;
 }
+.breadcrumbs-container {
+    position: absolute;
+    top: -53px;
+}
 
 @media only screen and (max-width: 768px) {
     html {
