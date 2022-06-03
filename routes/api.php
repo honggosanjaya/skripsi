@@ -61,15 +61,14 @@ Route::get('/forceLogout', [LoginController::class, 'logoutUnauthorizedSPAApi'])
 Route::group(['middleware' => 'auth:sanctum'], function(){
   Route::post('v1/logout', [LoginController::class, 'logoutApi']);
   Route::get('/user', [LoginController::class, 'checkUser']);
-
-
-
-  Route::prefix('salesman')->group(function() {
-    Route::get('/listitems/{id}', [ItemController::class, 'getListAllProductAPI']);
-    Route::get('/historyitems/{id}', [ItemController::class, 'getListHistoryProductAPI']);
-    Route::post('/updateStock/', [ItemController::class, 'updateStockCustomer']);
-  });
 });
+
+Route::prefix('salesman')->group(function() {
+  Route::get('/listitems/{id}', [ItemController::class, 'getListAllProductAPI']);
+  Route::get('/historyitems/{id}', [ItemController::class, 'getListHistoryProductAPI']);
+  Route::post('/updateStock', [ItemController::class, 'updateStockCustomer']);
+});
+
 Route::prefix('shipper')->group(function() {
   Route::get('/jadwalPengiriman', [OrderController::class, 'getListShippingAPI']);
   Route::get('/jadwalPengiriman/{id}', [OrderController::class, 'getdetailShippingAPI']);
