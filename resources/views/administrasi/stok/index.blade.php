@@ -60,7 +60,16 @@
       </thead>
       <tbody>
         @foreach ($items as $item)
-        <tr>
+        @php
+          $stock25=(($item->max_stok-$item->min_stok)*25/100)+$item->min_stok;
+        @endphp
+        @if ($item->stok<$item->min_stok)
+          <tr class="bg-danger">
+        @elseif($item->stok<$stock25)
+          <tr class="bg-warning">
+        @else
+          <tr>
+        @endif
           <th scope="row">{{ ($items->currentPage() - 1) * $items->perPage() + $loop->iteration }}</th>
           <td>{{ $item->kode_barang }}</td>
           <td>{{ $item->nama }}</td>

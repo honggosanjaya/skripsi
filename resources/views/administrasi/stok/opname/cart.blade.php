@@ -14,20 +14,23 @@
         <th scope="col">Jumlah setelah berubah</th>
         <th scope="col">perubahan</th>
         <th scope="col">keterangan</th>
-        <th scope="col">action</th>
+        {{-- <th scope="col">action</th> --}}
       </tr>
     </thead>
     <tbody>
 
       @foreach ($cartItems as $item)
         <tr>
-          <form action="{{ '/administrasi/stok/opname/update-final?route=opname' }}" method="POST" enctype="multipart/form-data">
-            @csrf
+          {{-- <form action="{{ '/administrasi/stok/opname/update-final?route=opname' }}" method="POST" enctype="multipart/form-data"> --}}
+            {{-- @csrf --}}
             <td>{{ $item->attributes->kode_barang }}</td>
             <td>{{ $item->name }}</td>
             <td>{{ $item->quantity }}</td>
             <td>{{ $item->quantity + $item->attributes->jumlah}}</td>
-            <td>
+            <td>{{ $item->attributes->jumlah}}</td>
+            <td>{{ $item->attributes->keterangan}}</td>
+
+            {{-- <td>
               <input type="hidden" value="{{ $item->id }}" name="id">
               <input type="hidden" value="{{$item->attributes->kode_barang }}" name="kode_barang">
               <input type="number" class="form-control" id="quantity" name="jumlah" 
@@ -35,7 +38,7 @@
             <td><input type="text" class="form-control" id="keterangan" name="keterangan"
                 value="{{ $item->attributes->keterangan??null }}"></td>
 
-            <td><button type="submit">Submit</button></td>
+            <td><button type="submit">Submit</button></td> --}}
           </form>
 
           {{-- <td>

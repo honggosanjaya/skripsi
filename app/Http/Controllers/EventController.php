@@ -80,7 +80,7 @@ class EventController extends Controller
         }
         
         Event::create([
-            'id_staff' => auth()->user()->id,
+            'id_staff' => auth()->user()->id_users,
             'nama' => $request->nama_event,
             'keterangan' => $request->keterangan,
             'diskon' => $diskon,
@@ -164,7 +164,7 @@ class EventController extends Controller
             $diskon = $request->potongan_diskon;
         }
         
-        $event->id_staff = auth()->user()->id;
+        $event->id_staff = auth()->user()->id_users;
         $event->nama = $request->nama_event;
         $event->keterangan = $request->keterangan;
         $event->diskon = $diskon;
