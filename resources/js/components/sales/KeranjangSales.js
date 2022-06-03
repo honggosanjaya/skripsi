@@ -78,10 +78,6 @@ const KeranjangSales = ({ location }) => {
   }, [idCustomer])
 
   useEffect(() => {
-    console.log('idtrip', idTrip);
-  }, [idTrip])
-
-  useEffect(() => {
     produks.map((produk) => {
       setIdCustomer(produk.customer);
     })

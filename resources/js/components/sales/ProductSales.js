@@ -49,7 +49,6 @@ const ProductSales = ({ listItems, handleTambahJumlah, checkifexist, handleValue
                 +
               </button>
             </div>
-
           </div>
         </div>
       ))}

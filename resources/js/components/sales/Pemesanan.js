@@ -13,28 +13,35 @@ import { AuthContext } from '../../contexts/AuthContext';
 import { UserContext } from '../../contexts/UserContext';
 import { useHistory } from "react-router-dom";
 import { Button, Modal } from 'react-bootstrap';
+import HitungStok from './HitungStok';
+import { HitungStokContext } from '../../contexts/HitungStokContext';
 
 const Pemesanan = ({ location }) => {
   const { idCust } = useParams();
-  const [urlApi, setUrlApi] = useState(`api/salesman/listitems`);
+  const [urlApi, setUrlApi] = useState(`api/salesman/listitems/${idCust}`);
   const { page, setPage, erorFromInfinite, paginatedData, isReachedEnd } = useInfinite(`${urlApi}`, 4);
   const { token } = useContext(AuthContext);
   const { dataUser } = useContext(UserContext);
   const history = useHistory();
+  const { produks, getAllProduks } = useContext(KeranjangSalesContext);
   const [kodePesanan, setKodePesanan] = useState('');
   const [kataKunci, setKataKunci] = useState('');
-  const { produks, getAllProduks } = useContext(KeranjangSalesContext);
   const [errorMessage, setErrorMessage] = useState(null);
   const [orderId, setOrderId] = useState(null);
   const [errorKodeCustomer, setErrorKodeCustomer] = useState(null);
   const [koordinat, setKoordinat] = useState(null);
-  const jamMasuk = Date.now() / 1000;
   const [idTrip, setIdTrip] = useState(null);
-  const { state: idTripTetap } = location;
   const [show, setShow] = useState(false);
-  const handleClose = () => setShow(false);
-  const handleShow = () => setShow(true);
   const [alasanPenolakan, setAlasanPenolakan] = useState(null);
+  const { state: idTripTetap } = location;
+  const jamMasuk = Date.now() / 1000;
+
+  const [historyItem, setHistoryItem] = useState([]);
+  const { newHistoryItem, setNewHistoryItem } = useContext(HitungStokContext);
+
+  useEffect(() => {
+    setNewHistoryItem(historyItem);
+  }, [historyItem]);
 
   const { data: dataCustomer, error } = useSWR(
     [`${window.location.origin}/api/tripCustomer/${idCust}`, token], {
@@ -51,15 +58,24 @@ const Pemesanan = ({ location }) => {
     });
 
     getAllProduks();
+
+    axios({
+      method: "get",
+      url: `${window.location.origin}/api/salesman/historyitems/${idCust}`,
+      headers: {
+        Accept: "application/json",
+      },
+    })
+      .then((response) => {
+        console.log('history produk', response.data);
+        setHistoryItem(response.data.data);
+      })
+      .catch((error) => {
+        console.log(error.message);
+      });
   }, []);
 
   useEffect(() => {
-    // console.log('idtrip', idTrip);
-    // console.log('idtriptetap', idTripTetap);
-    // console.log('isnan', isNaN(idTripTetap));
-    // console.log(koordinat);
-    // console.log(dataUser.nama);
-
     if (dataUser.nama && koordinat && isNaN(idTripTetap) && idTrip == null) {
       axios({
         method: "post",
@@ -112,6 +128,9 @@ const Pemesanan = ({ location }) => {
     </main>
   )
 
+  const handleClose = () => setShow(false);
+  const handleShow = () => setShow(true);
+
   const handleKeluarToko = () => {
     console.log('idTrip', idTrip);
     if (idTrip) {
@@ -139,7 +158,7 @@ const Pemesanan = ({ location }) => {
   }
 
   const lihatKeranjang = () => {
-    console.log('disini', idTrip);
+    // console.log('disini', idTrip);
     history.push({
       pathname: `/salesman/keranjang/${idCust}`,
       state: idTrip // your data array of objects
@@ -180,6 +199,7 @@ const Pemesanan = ({ location }) => {
                 customer: dataOrder.id_customer,
                 harga: dataOrderItem.harga_satuan,
                 jumlah: dataOrderItem.kuantitas,
+                // gambar
               };
               KeranjangDB.updateProduk(produk);
               getAllProduks();
@@ -299,6 +319,43 @@ const Pemesanan = ({ location }) => {
     }
   }
 
+  const handleSubmitStokTerakhir = (item, newVal) => {
+    axios({
+      method: "post",
+      url: `${window.location.origin}/api/salesman/updateStock`,
+      headers: {
+        Accept: "application/json",
+      },
+      data: {
+        'id_customer': idCust,
+        'id_item': item.link_item[0].id,
+        'quantity': newVal
+      }
+    })
+      .then((response) => {
+        console.log('stokchange', response.data);
+      })
+      .catch((error) => {
+        console.log(error.message);
+      });
+
+    const exist = newHistoryItem.find((x) => x.link_item[0].id === item.link_item[0].id);
+    if (exist) {
+      setNewHistoryItem(
+        newHistoryItem.map((x) => {
+          if (x.link_item[0].id === item.link_item[0].id) {
+            console.log('true');
+            return { ...exist, isSelected: !x.isSelected }
+          }
+          else {
+            console.log('false');
+            return x
+          }
+        }
+        ));
+    }
+  }
+
   const handleDeleteProduct = (item) => {
     KeranjangDB.deleteProduk(item.id);
     getAllProduks();
@@ -307,7 +364,7 @@ const Pemesanan = ({ location }) => {
   const handleCariProduk = (e) => {
     e.preventDefault();
     if (kataKunci == '') {
-      setUrlApi('api/salesman/listitems')
+      setUrlApi(`api/salesman/listitems/${idCust}`)
     } else if (kataKunci !== '') {
       setUrlApi(`api/products/search/${kataKunci}`);
     }
@@ -358,6 +415,10 @@ const Pemesanan = ({ location }) => {
           </form>
           {errorKodeCustomer && <p className='text-danger'>{errorKodeCustomer}</p>}
         </div>
+
+        <HitungStok historyItem={historyItem} handleTambahJumlah={handleTambahJumlah}
+          checkifexist={checkifexist} handleValueChange={handleValueChange}
+          handleKurangJumlah={handleKurangJumlah} handleSubmitStokTerakhir={handleSubmitStokTerakhir} />
 
         <div className="my-5">
           <h1 className="fs-6">Customer tidak jadi pesan?</h1>

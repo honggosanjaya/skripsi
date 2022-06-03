@@ -19,6 +19,7 @@ import KeranjangSalesContextProvider from '../contexts/KeranjangSalesContext';
 import UserContextProvider from '../contexts/UserContext';
 import Profil from './reuse/Profil';
 import ChangePassword from './reuse/ChangePassword';
+import HitungStokContextProvider from '../contexts/HitungStokContext';
 
 function App() {
   return (
@@ -40,7 +41,9 @@ function App() {
                 <Route exact path="/salesman" component={DashboardSales} />
                 <Route exact path="/salesman/trip" component={TripSales} />
                 <Route exact path="/salesman/trip/:id" component={TripSales} />
-                <Route exact path="/salesman/order/:idCust" component={Pemesanan} />
+                <HitungStokContextProvider>
+                  <Route exact path="/salesman/order/:idCust" component={Pemesanan} />
+                </HitungStokContextProvider>
                 <Route exact path="/salesman/keranjang/:idCust" component={KeranjangSales} />
                 <Route exact path="/salesman/profil" component={Profil} />
               </KeranjangSalesContextProvider>

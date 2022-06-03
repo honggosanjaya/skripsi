@@ -14,6 +14,7 @@ use Barryvdh\DomPDF\PDF as DomPDFPDF;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use PDF;
+use Illuminate\Database\QueryException;
 
 class ItemController extends Controller
 {
@@ -21,16 +22,15 @@ class ItemController extends Controller
   protected $error = null;
   protected $data = null;
 
-  public function getListAllProductAPI($id)
-  {
+  public function getListAllProductAPI($id){
     try {
       $history = History::where('id_customer',$id)->with('linkItem')->get();
       $items = $history->pluck('id_item');
-      $items = Item::orderBy("status", "ASC")->paginate(4)->except($items->toArray());
+      $items = Item::orderBy("status", "ASC")->whereNotIn('id',$items->toArray())->paginate(4);
       $this->data = $items;
-      $this->status = "error";
+      $this->status = "success";
     } catch (QueryException $e) {
-        $this->status = "failed";
+        $this->status = "error";
         $this->error = $e;
     }
 
@@ -41,8 +41,7 @@ class ItemController extends Controller
     ], 200);
   }
 
-  public function getListHistoryProductAPI($id)
-  {
+  public function getListHistoryProductAPI($id){
     $history = History::where('id_customer',$id)->with('linkItem')->get(); 
 
     return response()->json([
@@ -51,13 +50,11 @@ class ItemController extends Controller
     ], 200);
   }
 
-  public function updateStockCustomer(Request $request)
-  {
+  public function updateStockCustomer(Request $request){
     History::where('id_customer',$request->id_customer)->where('id_item',$request->id_item)->update(['stok_terakhir_customer' => $request->quantity]);
     return response()->json([
-      "status" => $this->status,
-      "data" => $this->data,
-      "error" => $this->error
+      "status" => "success",
+      "message" => "berhasil mengupdate stok terakhir customer"
     ], 200);
   }
 
