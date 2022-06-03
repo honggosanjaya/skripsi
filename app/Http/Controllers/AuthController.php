@@ -114,10 +114,15 @@ class AuthController extends Controller
       ]);
     }
 
-    $staff->update([
+    $user = User::where('tabel', 'staffs')->where('id_users', $staff->id);
+    $user->update([
       'password' => Hash::make($request->new_password),
     ]);
 
+    $staff->update([
+      'password' => Hash::make($request->new_password),
+    ]);
+    
     return response()->json([
       'status' => 'success',
       'message' => 'Password berhasil diubah',

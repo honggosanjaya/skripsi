@@ -22,7 +22,7 @@ const ChangePassword = () => {
     if (dataUser.role == 'salesman') {
       history.push('/salesman/profil');
     } else if (dataUser.role == 'shipper') {
-      history.push('/salesman/shipper');
+      history.push('/shipper/profil');
     }
   }
 

@@ -71,12 +71,12 @@
           </a>
         </li>
         <li class="mb-3">
-          <a class="" href="">
+          <a class="{{ Request::is('supervisor/report/penjualan*') ? 'active' : '' }}" href="/supervisor/report/penjualan">
             <i class="bi bi-cash me-2"></i><span>Penjualan</span>
           </a>
         </li>
         <li class="mb-3">
-          <a class="" href="">
+          <a class="{{ Request::is('supervisor/report/kinerja*') ? 'active' : '' }}" href="/supervisor/report/kinerja">
             <i class="bi bi-graph-up me-2"></i><span>Kinerja Salesman</span>
           </a>
         </li>
@@ -113,7 +113,7 @@
           </a>
         </li>
         <li class="mb-3">
-          <a class="" href="">
+          <a class="{{ Request::is('owner/datasupervisor*') ? 'active' : '' }}" href="/owner/datasupervisor">
             <i class="bi bi-people-fill me-2"></i><span>Data Supervisor</span>
           </a>
         </li>

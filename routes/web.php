@@ -5,6 +5,7 @@ use App\Http\Controllers\HomeController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\ItemController;
 use App\Http\Controllers\CartController;
+use App\Http\Controllers\ReportController;
 use App\Http\Controllers\CustomerController;
 use App\Http\Controllers\StaffController;
 use App\Http\Controllers\DistrictController;
@@ -32,6 +33,13 @@ Route::get('/', function () {
 Route::prefix('owner')->middleware('owner')->group(function() {
   Route::get('/', [HomeController::class, 'indexOwner']);
   Route::get('/profil', [HomeController::class, 'lihatProfil']);
+  Route::get('/datasupervisor', [StaffController::class, 'datasupervisor']);
+  Route::get('/datasupervisor/create', [StaffController::class, 'createSupervisor']);
+  Route::post('/datasupervisor', [StaffController::class, 'store']);
+  Route::get('/datasupervisor/edit/{staff:id}', [StaffController::class, 'editSupervisor']);
+  Route::put('/datasupervisor/{id}/edit', [StaffController::class, 'update']);
+  Route::post('/datasupervisor/ubahstatus/{staf:id}', [StaffController::class, 'editStatusStaf']);
+  Route::get('/datasupervisor/cari', [StaffController::class, 'cariSupervisor']);
 
   //Route untuk profil owner
   Route::get('/profil', [HomeController::class, 'lihatProfil']);
@@ -40,6 +48,7 @@ Route::prefix('owner')->middleware('owner')->group(function() {
   Route::get('/profil/ubahpasswordbaru/{user:id}', [AuthController::class, 'passwordBaru']);
   Route::post('/profil/gantipassword/{user:id}', [AuthController::class, 'gantiPassword']);
 });
+
 Route::prefix('supervisor')->middleware('supervisor')->group(function() {
   Route::get('/', [HomeController::class, 'indexSupervisor']);
 
@@ -84,8 +93,12 @@ Route::prefix('supervisor')->middleware('supervisor')->group(function() {
   Route::put('/jenis/ubahjenis/{customertype:id}', [CustomerTypeController::class, 'update']);
 
   // Route untuk data staf
-  Route::resource('/datastaf', StaffController::class);
-  Route::post('/datastaf/ubahstatus/{staf:id}', [StaffController::class, 'supervisorEditStatusStaf']);
+  Route::resource('/datastaf', StaffController::class)->except(['show', 'destroy']);
+  Route::post('/datastaf/ubahstatus/{staf:id}', [StaffController::class, 'editStatusStaf']);
+
+  // Route untuk data report
+  Route::get('/report/penjualan', [ReportController::class,'penjualan']);
+  Route::get('/report/kinerja', [ReportController::class,'kinerja']);
 
   //Route untuk profil supervisor
   Route::get('/profil', [HomeController::class, 'lihatProfil']);

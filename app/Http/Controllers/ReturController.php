@@ -44,49 +44,48 @@ class ReturController extends Controller
     }
 
     public function viewRetur(Retur $retur){
-        $districtTotal = District::count();
-        $districts = District::all();
-        $temp = array();
+      $districtTotal = District::count();
+      $districts = District::all();
+      $temp = array();
+      
+      for($i=0; $i<$districtTotal; $i++)
+      {
+        $get1 = '';
+        $get2 = '';
+        $value = 0;
         
-        for($i=0; $i<$districtTotal; $i++)
+        if($districts[$i]->id_parent == null)
         {
-            $get1 = '';
-	        $get2 = '';
-	        $value = 0;
-	        
-            if($districts[$i]->id_parent == null)
-	        {
-		        $get1 = $districts[$i]->nama;
-		        $value = $districts[$i]->id;
-		        array_push($temp, [$get1, $value]);
-	        }
-	        else if($districts[$i]->id_parent != null)
-	        {
-		        for($j=$districtTotal-1; $j>=0; $j--)
-		        {
-			        if($districts[$i]->id_parent == $districts[$j]->id)
-			        {
-				        $get2 = $temp[$j][0] . " - " .$districts[$i]->nama;
-                        $value = $districts[$i]->id;
-				        array_push($temp, [$get2,$value]);
-			        }
-		        }
-        	}
-            
+          $get1 = $districts[$i]->nama;
+          $value = $districts[$i]->id;
+          array_push($temp, [$get1, $value]);
         }
+        else if($districts[$i]->id_parent != null)
+        {
+          for($j=$districtTotal-1; $j>=0; $j--)
+          {
+            if($districts[$i]->id_parent == $districts[$j]->id)
+            {
+              $get2 = $temp[$j][0] . " - " .$districts[$i]->nama;
+                      $value = $districts[$i]->id;
+              array_push($temp, [$get2,$value]);
+            }
+          }
+        }
+      }
 
-        $joins = Retur::join('items','returs.id_item','=','items.id')
-                ->where('returs.no_retur','=',$retur->no_retur)->get();
-        $administrasi = Staff::select('nama')->where('id','=',auth()->user()->id_users)->first();
-        $retur_type = ReturType::get();
+      $joins = Retur::join('items','returs.id_item','=','items.id')
+              ->where('returs.no_retur','=',$retur->no_retur)->get();
+      $administrasi = Staff::select('nama')->where('id','=',auth()->user()->id_users)->first();
+      $retur_type = ReturType::get();
 
-        return view('administrasi/retur.detail',[
-            'retur' => $retur,
-            'wilayah' => $temp[($retur->linkCustomer->id_wilayah)-1],
-            'items' => $joins,
-            'administrasi' => $administrasi,
-            'tipeReturs' => $retur_type
-        ]);
+      return view('administrasi/retur.detail',[
+        'retur' => $retur,
+        'wilayah' => $temp[($retur->linkCustomer->id_wilayah)-1],
+        'items' => $joins,
+        'administrasi' => $administrasi,
+        'tipeReturs' => $retur_type
+      ]);
     }
 
     public function cetakRetur(Retur $retur){
