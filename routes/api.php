@@ -65,8 +65,9 @@ Route::group(['middleware' => 'auth:sanctum'], function(){
 
 
   Route::prefix('salesman')->group(function() {
-    Route::get('/listitems', [ItemController::class, 'getListAllProductAPI']);
-    Route::get('/updateStock/', [ItemController::class, 'updateStockCustomer']);
+    Route::get('/listitems/{id}', [ItemController::class, 'getListAllProductAPI']);
+    Route::get('/historyitems/{id}', [ItemController::class, 'getListHistoryProductAPI']);
+    Route::post('/updateStock/', [ItemController::class, 'updateStockCustomer']);
   });
 });
 Route::prefix('shipper')->group(function() {
