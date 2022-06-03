@@ -39,10 +39,24 @@ Route::prefix('owner')->middleware('owner')->group(function() {
   Route::put('/datasupervisor/{id}/edit', [StaffController::class, 'update']);
   Route::post('/datasupervisor/ubahstatus/{staf:id}', [StaffController::class, 'editStatusStaf']);
   Route::get('/datasupervisor/cari', [StaffController::class, 'cariSupervisor']);
+
+  //Route untuk profil owner
+  Route::get('/profil', [HomeController::class, 'lihatProfil']);
+  Route::get('/profil/ubahpassword', [HomeController::class, 'lihatPassword']);
+  Route::post('/profil/check/{user:id_users}', [AuthController::class, 'check']);
+  Route::get('/profil/ubahpasswordbaru/{user:id}', [AuthController::class, 'passwordBaru']);
+  Route::post('/profil/gantipassword/{user:id}', [AuthController::class, 'gantiPassword']);
 });
 
 Route::prefix('supervisor')->middleware('supervisor')->group(function() {
   Route::get('/', [HomeController::class, 'indexSupervisor']);
+
+  //Route untuk profil supervisor
+  Route::get('/profil', [HomeController::class, 'lihatProfil']);
+  Route::get('/profil/ubahpassword', [HomeController::class, 'lihatPassword']);
+  Route::post('/profil/check/{user:id_users}', [AuthController::class, 'check']);
+  Route::get('/profil/ubahpasswordbaru/{user:id}', [AuthController::class, 'passwordBaru']);
+  Route::post('/profil/gantipassword/{user:id}', [AuthController::class, 'gantiPassword']);
 
   //Route untuk event
   Route::get('/event', [EventController::class, 'index']);
@@ -168,8 +182,8 @@ Route::prefix('administrasi')->middleware('administrasi')->group(function() {
   Route::get('/profil', [HomeController::class, 'lihatProfil']);
   Route::get('/profil/ubahpassword', [HomeController::class, 'lihatPassword']);
   Route::post('/profil/check/{user:id_users}', [AuthController::class, 'check']);
-  Route::get('/profil/ubahpasswordbaru/{user:id_users}', [AuthController::class, 'passwordBaru']);
-  Route::post('/profil/gantipassword/{user:id_users}', [AuthController::class, 'gantiPassword']);
+  Route::get('/profil/ubahpasswordbaru/{user:id}', [AuthController::class, 'passwordBaru']);
+  Route::post('/profil/gantipassword/{user:id}', [AuthController::class, 'gantiPassword']);
 });
 
 
@@ -185,6 +199,12 @@ Route::prefix('customer')->middleware('customer')->group(function() {
   //Route untuk event
   Route::get('/event', [EventController::class, 'customerIndex']);
   Route::get('/event/cari', [EventController::class, 'customerSearch']);
+  //Route untuk event
+  Route::get('/profil', [HomeController::class, 'lihatProfil']);
+  Route::get('/profil/ubahpassword', [HomeController::class, 'lihatPassword']);
+  Route::post('/profil/check/{user:id}', [AuthController::class, 'check']);
+  Route::get('/profil/ubahpasswordbaru/{user:id}', [AuthController::class, 'passwordBaru']);
+  Route::post('/profil/gantipassword/{user:id}', [AuthController::class, 'gantiPassword']);
 });
 
 require __DIR__.'/auth.php';

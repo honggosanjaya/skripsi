@@ -6,7 +6,7 @@ $(document).on('click', '.submit-filter-produk', function () {
   filter()
 });
 
-$(document).on('keyup', 'input[name=quantity]', function () {
+$(document).on('change', 'input[name=quantity]', function () {
   var form = $(this).parent("form").serialize()
   setTimeout(function () {
     $.ajax({
@@ -15,11 +15,15 @@ $(document).on('keyup', 'input[name=quantity]', function () {
       data: form,
       success: function (data) {
         if (data.status = 'success') {
+          if(data.quantityCart!=null&&data.quantityCart!=0){
+            $('.cart-quantity').text(data.quantityCart).removeClass( "d-none" )
+          }else{
+            $('.cart-quantity').text(0).addClass( "d-none" )
+          }
           if (filtered == true) {
             filter()
           }
         }
-        return callback(null);
       },
     });
   }, 1500);

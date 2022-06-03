@@ -3,6 +3,8 @@ import { splitCharacter } from '../reuse/HelperFunction';
 import HeaderShipper from './HeaderShipper';
 import Modal from 'react-bootstrap/Modal'
 import { UserContext } from "../../contexts/UserContext";
+import ButtonGroup from 'react-bootstrap/ButtonGroup';
+import ToggleButton from 'react-bootstrap/ToggleButton'
 import Button from 'react-bootstrap/Button'
 import { useHistory } from 'react-router';
 import AlertComponent from '../reuse/AlertComponent';
@@ -14,6 +16,13 @@ const ShippingShipper = () => {
   const [listShipping, setListShipping] = useState([]);
   const [listDetailItem, setListDetailItem] = useState([]);
   const [show, setShow] = useState(false);
+  const [statusShipping, setStatusShipping] = useState(22);
+
+  const radios = [
+    { name: 'telah berangkat', value: 22 },
+    { name: 'telah sampai', value: 23 },
+  ];
+  
   const [showBuktiPengiriman, setShowBuktiPengiriman] = useState(false);
   const [detailShipping, setDetailShipping] = useState(null);
 
@@ -74,6 +83,16 @@ const ShippingShipper = () => {
     })
     setShow(true);
   };
+  const getListShipping= () => {
+    axios.get(`${window.location.origin}/api/shipper/jadwalPengiriman?id_staff=${dataUser.id_staff}&status=${statusShipping}`).then(response => {
+    setListShipping(response.data.data);
+    console.log(response.data.data);
+    return response.data.data;
+  })}
+
+  useEffect(() => {
+    getListShipping()
+  }, [listShipping])
 
   const showListShipping = listShipping.map((data, index) => {
     return (
@@ -144,6 +163,27 @@ const ShippingShipper = () => {
         {successMessage && <AlertComponent successMsg={successMessage} />}
         <div className="word d-flex justify-content-center">
           {splitCharacter("shipper")}
+           {/* {splitCharacter("shipper")} */}
+           LIST PENGIRIMAN
+          <ButtonGroup>
+            {radios.map((radio, idx) => (
+              <ToggleButton
+                key={idx}
+                id={`radio-${idx}`}
+                type="radio"
+                variant={idx % 2 ? 'outline-success' : 'outline-warning'}
+                name="radio"
+                value={radio.value}
+                checked={statusShipping == radio.value}
+                onChange={(e) => {
+                  setStatusShipping(e.currentTarget.value);
+                  getListShipping()}
+                }
+              >
+                {radio.name}
+              </ToggleButton>
+            ))}
+          </ButtonGroup>
         </div>
         {showListShipping}
 

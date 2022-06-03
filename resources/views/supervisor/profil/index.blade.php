@@ -63,7 +63,7 @@
         </div>
     </div>
     
-    <a class="btn btn-warning mt-4">
+    <a class="btn btn-warning mt-4" href="/supervisor/profil/ubahpassword">
         Ubah Password
     </a>
 </div>

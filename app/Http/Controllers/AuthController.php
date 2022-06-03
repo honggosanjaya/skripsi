@@ -24,11 +24,11 @@ class AuthController extends Controller
     }
     
     if(Hash::check($validatePassword['passwordLama'],$dataUser->password) && $user->tabel == 'staffs'){
-      return redirect($user->linkStaff->linkStaffRole->nama.'/profil/ubahpasswordbaru/'.$user->id_users)
+      return redirect($user->linkStaff->linkStaffRole->nama.'/profil/ubahpasswordbaru/'.$user->id)
       ->with('passwordSuccess','Password ditemukan, silakan ganti password baru');            
     }
     else if(Hash::check($validatePassword['passwordLama'],$dataUser->password) && $user->tabel == 'customers'){
-      return redirect('customer/profil/ubahpasswordbaru/'.$user->id_users)
+      return redirect('customer/profil/ubahpasswordbaru/'.$user->id)
       ->with('passwordSuccess','Password ditemukan, silakan ganti password baru');   
     }
     return back()->with('passwordError','Password tidak sama');
