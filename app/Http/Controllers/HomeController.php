@@ -62,6 +62,13 @@ class HomeController extends Controller
         }        
     }
 
+    public function lihatDetailProfil(){
+        $data = Customer::where('id','=',auth()->user()->id_users)->first();
+        return view('customer/profil.detailprofil',[
+            'data' => $data
+        ]);                
+    }
+
     public function lihatPesanan(Customer $customer){
         $diajukanCustomer = Order::whereHas('linkOrderTrack', function($q){
             $q->where('status',19);

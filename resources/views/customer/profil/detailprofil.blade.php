@@ -13,7 +13,7 @@
     @endif
     </div>
     <div class="container">
-        <a class="btn btn-primary mt-4" href="/customer">
+        <a class="btn btn-primary mt-4" href="/customer/profil">
             <i class="bi bi-arrow-left"></i> Kembali
         </a>
 
