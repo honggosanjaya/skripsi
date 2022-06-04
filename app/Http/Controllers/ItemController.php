@@ -95,6 +95,23 @@ class ItemController extends Controller
       ]);
   }
 
+  public function riwayatOpname()
+  {
+      $orders = Order::where('id_customer',0)->with(['linkStaff'])->paginate();
+      return view('administrasi.stok.opname.riwayat', [
+        "orders" => $orders
+      ]);
+  }
+
+  public function detailRiwayatOpname(Order $order)
+  {
+      $order_items = OrderItem::where('id_order',$order->id)->with(['linkItem'])->paginate();
+      
+      return view('administrasi.stok.opname.riwayatdetail', [
+        "order_items" => $order_items
+      ]);
+  }
+
   public function simpanDataPengadaan(Request $request)
   {
     $cartItems = \Cart::session(auth()->user()->id.$request->route)->getContent();
