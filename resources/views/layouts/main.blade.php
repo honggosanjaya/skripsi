@@ -24,14 +24,17 @@
     @include('partials/header')
     <div class="container-fluid">
       <main>
+        <div class="breadcrumbs-container">
+          @yield('breadcrumbs')
+        </div>
         @yield('main_content')
       </main>
     </div>
   </div>
 
-  @stack('JS')
   <script src="{{ mix('js/bootstrap.js') }}"></script>
   <script src="{{ mix('js/main.js') }}"></script>
+  @stack('JS')
 </body>
 
 </html>

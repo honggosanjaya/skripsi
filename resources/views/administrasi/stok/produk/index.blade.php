@@ -42,7 +42,7 @@
           <th scope="col">Stok</th>
           <th scope="col">Min Stok</th>
           <th scope="col">Max Stok</th>
-          <th scope="col">Max Pengadaan</th>
+          {{-- <th scope="col">Max Pengadaan</th> --}}
           <th scope="col">Harga Satuan</th>
           <th scope="col">Volume</th>
           <th scope="col">Status</th>
@@ -51,7 +51,16 @@
       </thead>
       <tbody>
         @foreach ($items as $item)
+        @php
+          $stock25=(($item->max_stok-$item->min_stok)*25/100)+$item->min_stok;
+        @endphp
+        @if ($item->stok<$item->min_stok)
+          <tr class="bg-danger">
+        @elseif($item->stok<$stock25)
+          <tr class="bg-warning">
+        @else
           <tr>
+        @endif
             <td class="text-center">{{ ($items->currentPage() - 1) * $items->perPage() + $loop->iteration }}</td>
             <td>{{ $item->kode_barang }}</td>
             <td class="text-center">
@@ -65,7 +74,7 @@
             <td>{{ $item->stok }}</td>
             <td>{{ $item->min_stok }}</td>
             <td>{{ $item->max_stok }}</td>
-            <td>{{ $item->max_pengadaan }}</td>
+            {{-- <td>{{ $item->max_pengadaan }}</td> --}}
             <td>{{ $item->harga_satuan }}</td>
             <td>{{ $item->volume }}</td>
             <td>{{ $item->linkStatus->nama }}</td>

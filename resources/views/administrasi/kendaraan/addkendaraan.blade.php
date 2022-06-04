@@ -9,6 +9,15 @@
 @endsection
 
 @section('main_content')
+@if(session()->has('error'))
+<div id="hideMeAfter3Seconds">
+  <div class="alert alert-danger alert-dismissible fade show mt-4" role="alert" >
+    {{ session('error') }}
+    <button type="button" class="btn btn-close" data-bs-dismiss="alert"></button>
+</div>
+</div>
+            
+@endif
   <div class="p-4">
     <a class="btn btn-primary mt-2 mb-3" href="/administrasi/kendaraan"><i class="bi bi-arrow-left-short fs-5"></i>Kembali</a>
     

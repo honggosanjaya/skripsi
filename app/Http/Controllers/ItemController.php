@@ -14,6 +14,7 @@ use Barryvdh\DomPDF\PDF as DomPDFPDF;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use PDF;
+use Illuminate\Database\QueryException;
 
 class ItemController extends Controller
 {
@@ -21,16 +22,15 @@ class ItemController extends Controller
   protected $error = null;
   protected $data = null;
 
-  public function getListAllProductAPI($id)
-  {
+  public function getListAllProductAPI($id){
     try {
       $history = History::where('id_customer',$id)->with('linkItem')->get();
       $items = $history->pluck('id_item');
-      $items = Item::orderBy("status", "ASC")->paginate(4)->except($items->toArray());
+      $items = Item::orderBy("status", "ASC")->whereNotIn('id',$items->toArray())->paginate(4);
       $this->data = $items;
-      $this->status = "error";
+      $this->status = "success";
     } catch (QueryException $e) {
-        $this->status = "failed";
+        $this->status = "error";
         $this->error = $e;
     }
 
@@ -41,8 +41,7 @@ class ItemController extends Controller
     ], 200);
   }
 
-  public function getListHistoryProductAPI($id)
-  {
+  public function getListHistoryProductAPI($id){
     $history = History::where('id_customer',$id)->with('linkItem')->get(); 
 
     return response()->json([
@@ -51,13 +50,11 @@ class ItemController extends Controller
     ], 200);
   }
 
-  public function updateStockCustomer(Request $request)
-  {
+  public function updateStockCustomer(Request $request){
     History::where('id_customer',$request->id_customer)->where('id_item',$request->id_item)->update(['stok_terakhir_customer' => $request->quantity]);
     return response()->json([
-      "status" => $this->status,
-      "data" => $this->data,
-      "error" => $this->error
+      "status" => "success",
+      "message" => "berhasil mengupdate stok terakhir customer"
     ], 200);
   }
 
@@ -114,7 +111,7 @@ class ItemController extends Controller
     foreach($cartItems as $item){
       array_push($data,[
         'id_item' => $item->id,
-        'id_staff' => auth()->user()->id,
+        'id_staff' => auth()->user()->id_users,
         'no_pengadaan' => (Pengadaan::orderBy("no_pengadaan", "DESC")->first()->no_pengadaan ?? 0) + 1,
         'no_nota' => $request->no_nota,
         'kuantitas' => $item->quantity,
@@ -139,7 +136,7 @@ class ItemController extends Controller
 
     $order_id= Order::insertGetId([
       'id_customer' => 0,
-      'id_staff' => auth()->user()->id,
+      'id_staff' => auth()->user()->id_users,
       'status' => 14,
       'created_at' => now(),
     ]);
@@ -147,7 +144,7 @@ class ItemController extends Controller
     $data = [];
     foreach($cartItems as $item){
       array_push($data,[
-        'id_item' => auth()->user()->id,
+        'id_item' => $item->id,
         'id_order' => $order_id,
         'kuantitas' => $item->attributes->jumlah,
         'harga_satuan' => 0,
@@ -225,13 +222,14 @@ class ItemController extends Controller
         $rules['max_stok'] = ['integer', 'min:0'];
       }
 
-      if($request->max_pengadaan){
-        $rules['max_pengadaan'] = ['integer', 'min:0'];
-      }
+      // if($request->max_pengadaan){
+      //   $rules['max_pengadaan'] = ['integer', 'min:0'];
+      // }
 
       $validatedData = $request->validate($rules);
 
       $validatedData['status'] = $request->status;
+      $validatedData['max_pengadaan'] = $request->max_stok??0 - $request->min_stok??0;
 
       if ($request->gambar) {
         $file_name = time() . '.' . $request->gambar->extension();
@@ -281,10 +279,8 @@ class ItemController extends Controller
       $rules = ([
         'nama' => ['required', 'string', 'max:255'],
         'gambar' => 'image|file|max:1024',
-        'stok' => ['required', 'integer', 'min:0'],
         'min_stok' => ['required', 'integer', 'min:0'],
         'max_stok' => ['required', 'integer', 'min:0'],
-        'max_pengadaan' => ['required', 'integer', 'min:0'],
         'satuan' => ['required', 'string', 'max:30'],
         'harga_satuan' => ['required', 'numeric'],
         'volume' => ['required'],
@@ -414,7 +410,7 @@ class ItemController extends Controller
             'administrasi' => $administrasi            
         ]);
 
-        return $pdf->download('laporan-NPB-pdf.pdf');
+        return $pdf->download('laporan-NPB-pdf-'.$pengadaan->no_pengadaan.'.pdf');
 
         
     }

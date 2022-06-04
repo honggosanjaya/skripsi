@@ -15,7 +15,7 @@ const useInfinite = (url, per_page) => {
       },
     })
       .then((response) => {
-        // console.log(response.data.data);
+        // console.log('res', response.data.data.data);
         return response.data.data.data;
       })
 
