@@ -31,7 +31,7 @@
       </div>
 
       <button type="submit" class="btn btn-primary">Submit</button>
-      <a href="/customer" class="batalkanAksi_btn btn btn-danger ms-3">Batal</a>
+      <a href="/customer/profil" class="batalkanAksi_btn btn btn-danger ms-3">Batal</a>
     </form>
   </div>
 @endsection
