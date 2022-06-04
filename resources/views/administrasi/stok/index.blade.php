@@ -1,5 +1,10 @@
 @extends('layouts/main')
-
+@section('breadcrumbs')
+<ol class="breadcrumb">
+  <li class="breadcrumb-item"><a href="/administrasi">Dashboard</a></li>
+  <li class="breadcrumb-item active" aria-current="page">Stok</li>
+</ol>
+@endsection
 @section('main_content')
   
   <div class="container">
@@ -23,6 +28,7 @@
         <a href="/administrasi/stok/riwayat" class="btn btn-primary">Riwayat Pengadaan</a>
         <a href="/administrasi/stok/pengadaan?route=pengadaan" class="btn btn-primary">Pengadaan</a>
         <a href="/administrasi/stok/opname?route=opname" class="btn btn-primary">Stok Opname</a>
+        <a href="/administrasi/stok/opname/riwayat" class="btn btn-primary mt-1">Riwayat Stok Opname</a>
       </div>
     </div>
 

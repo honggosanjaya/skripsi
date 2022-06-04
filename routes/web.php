@@ -165,6 +165,8 @@ Route::prefix('administrasi')->middleware('administrasi')->group(function() {
 
     //Route untuk stok
     Route::get('/opname', [ItemController::class, 'productListOpname']);
+    Route::get('/opname/riwayat', [ItemController::class, 'riwayatOpname']);
+    Route::get('/opname/riwayat/detail/{order:id}', [ItemController::class, 'detailRiwayatOpname']);
     Route::get('/opname/final', [CartController::class, 'cartList']);
     Route::post('/opname/final', [CartController::class, 'addToCart']);
     Route::post('/opname/update-final', [CartController::class, 'updateCart']);
