@@ -70,12 +70,12 @@ class HomeController extends Controller
 
         $diajukanSalesman = Order::whereHas('linkOrderTrack', function($q){
             $q->where('status',20);
-        })->where('id_customer','=',$customer->id)->with(['linkOrderTrack','linkInvoice','linkOrderItem.linkItem'])
+        })->where('id_customer','=',$customer->id)->with(['linkOrderTrack','linkInvoice','linkOrderItem.linkItem','linkStaff'])
         ->get();
 
         $dikonfirmasiAdministrasi = Order::whereHas('linkOrderTrack', function($q){
             $q->where('status',21);
-        })->where('id_customer','=',$customer->id)->with(['linkOrderTrack','linkInvoice','linkOrderItem.linkItem'])
+        })->where('id_customer','=',$customer->id)->with(['linkOrderTrack.linkStaffPengonfirmasi','linkInvoice','linkOrderItem.linkItem'])
         ->get();
 
         $dalamPerjalanan = Order::whereHas('linkOrderTrack', function($q){
@@ -91,15 +91,16 @@ class HomeController extends Controller
         $ditolak = Order::whereHas('linkOrderTrack', function($q){
             $q->where('status',25);
         })->where('id_customer','=',$customer->id)->with(['linkOrderTrack','linkInvoice','linkOrderItem.linkItem'])
-        ->get();           
-          
+        ->get();      
+        //dd($ditolak);
+             
         return view('customer/profil.detailpesanan',[
-            'diajukanCustomer' => $diajukanCustomer,
-            'diajukanSalesman' => $diajukanSalesman,
-            'dikonfirmasiAdministrasi' => $dikonfirmasiAdministrasi,
-            'dalamPerjalanan' => $dalamPerjalanan,
-            'telahSampai' => $telahSampai,
-            'ditolak' => $ditolak
+            'diajukanCustomers' => $diajukanCustomer,
+            'diajukanSalesmans' => $diajukanSalesman,
+            'dikonfirmasiAdministrasis' => $dikonfirmasiAdministrasi,
+            'dalamPerjalanans' => $dalamPerjalanan,
+            'telahSampais' => $telahSampai,
+            'ditolaks' => $ditolak
         ]);          
     }
 

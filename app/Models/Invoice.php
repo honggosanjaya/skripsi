@@ -25,6 +25,6 @@ class Invoice extends Model
     }
 
     public function linkEvent(){
-        return $this->belongsTo(Event::class,'id','id_event');
+        return $this->belongsTo(Event::class,'id_event');
     }
 }
