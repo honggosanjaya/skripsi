@@ -1,7 +1,7 @@
 import axios from 'axios';
-import React, { Component, useEffect, useState, useContext } from 'react';
+import React, { useEffect, useState, useContext } from 'react';
 import HeaderSales from './HeaderSales';
-import { useNavigate, useParams } from 'react-router-dom'
+import { useParams } from 'react-router-dom'
 import { useHistory } from 'react-router-dom';
 import { UserContext } from '../../contexts/UserContext';
 import AlertComponent from '../reuse/AlertComponent';
@@ -21,6 +21,7 @@ const TripSales = () => {
   const [telepon, setTelepon] = useState('');
   const [durasiTrip, setDurasiTrip] = useState(7);
   const [alasanPenolakan, setAlasanPenolakan] = useState('');
+
   const [error, setError] = useState(null);
   const [errorValidasi, setErrorValidasi] = useState([]);
 
@@ -38,15 +39,12 @@ const TripSales = () => {
   let $imagePreview = null;
   const jamMasuk = Date.now() / 1000;
 
-
   useEffect(() => {
     navigator.geolocation.getCurrentPosition(function (position) {
       setKoordinat(position.coords.latitude + '@' + position.coords.longitude)
     });
     if (id != null) {
-      // console.log(id);
       axios.get(`${window.location.origin}/api/tripCustomer/${id}`).then(response => {
-        console.log(response.data.data);
         setNamaCust(response.data.data.nama);
         setJenis(response.data.data.id_jenis);
         setWilayah(response.data.data.id_wilayah);
@@ -60,14 +58,12 @@ const TripSales = () => {
         setTotalTripEC(response.data.data.counter_to_effective_call);
         setImagePreviewUrl(response.data.data.image_url);
         setPrevImage(response.data.data.foto);
-        return response.data.data;
       })
     }
     axios.get(`${window.location.origin}/api/dataFormTrip/`).then(response => {
       console.log(response.data);
       setDistrictArr(response.data.district)
       setCustomerTypeArr(response.data.customerType)
-      return response.data.data;
     })
   }, [])
 
@@ -77,7 +73,7 @@ const TripSales = () => {
         <option value={data.id} key={index}>{data.nama}</option>
       );
     }))
-    // console.log(districtArr);
+
     setShowListDistrict(districtArr?.map((data, index) => {
       return (
         <option value={data.id} key={index}>{data.nama}</option>

@@ -3,37 +3,14 @@ import { Link, useHistory } from "react-router-dom";
 import urlAsset from '../../config';
 import { AuthContext } from '../../contexts/AuthContext';
 import { Dropdown } from 'react-bootstrap';
+import LoadingIndicator from '../reuse/LoadingIndicator';
 
 const HeaderShipper = ({ title, isDashboard, toBack }) => {
-  const { token, setToken, setIsAuth, setErrorAuth } = useContext(AuthContext);
+  const { isLoadingAuth, handleLogout } = useContext(AuthContext);
   const history = useHistory();
-  const [isLoading, setIsLoading] = useState(false);
 
   const goback = () => {
     history.go(-1);
-  }
-
-  const handleLogout = () => {
-    setIsLoading(true);
-    axios({
-      method: "post",
-      url: `${window.location.origin}/api/v1/logout`,
-      headers: {
-        Authorization: "Bearer " + token,
-      }
-    })
-      .then((response) => {
-        console.log('logout', response.data);
-        setIsLoading(false);
-        setIsAuth('false');
-        setToken(null);
-        history.push('/spa/login');
-      })
-      .catch((error) => {
-        setIsLoading(false);
-        setErrorAuth(error.message);
-        console.log('eror logout', error.message);
-      });
   }
 
   const handleViewProfile = () => {
@@ -55,6 +32,9 @@ const HeaderShipper = ({ title, isDashboard, toBack }) => {
           </div>
         </Fragment>
       }
+
+      {isLoadingAuth && <LoadingIndicator />}
+
       {isDashboard &&
         <Fragment>
           <h1 className='logo'>salesMan</h1>

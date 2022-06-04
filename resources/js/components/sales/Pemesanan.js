@@ -15,6 +15,7 @@ import { useHistory } from "react-router-dom";
 import { Button, Modal } from 'react-bootstrap';
 import HitungStok from './HitungStok';
 import { HitungStokContext } from '../../contexts/HitungStokContext';
+import KeluarToko from './KeluarToko';
 
 const Pemesanan = ({ location }) => {
   const { idCust } = useParams();
@@ -158,7 +159,6 @@ const Pemesanan = ({ location }) => {
   }
 
   const lihatKeranjang = () => {
-    // console.log('disini', idTrip);
     history.push({
       pathname: `/salesman/keranjang/${idCust}`,
       state: idTrip // your data array of objects
@@ -343,16 +343,10 @@ const Pemesanan = ({ location }) => {
     if (exist) {
       setNewHistoryItem(
         newHistoryItem.map((x) => {
-          if (x.link_item[0].id === item.link_item[0].id) {
-            console.log('true');
+          if (x.link_item[0].id === item.link_item[0].id)
             return { ...exist, isSelected: !x.isSelected }
-          }
-          else {
-            console.log('false');
-            return x
-          }
-        }
-        ));
+          else return x
+        }));
     }
   }
 
@@ -370,33 +364,6 @@ const Pemesanan = ({ location }) => {
     }
   }
 
-  const handleUpdateStok = () => {
-    console.log('idTrip', idTrip);
-    if (idTrip) {
-      axios({
-        method: "post",
-        url: `${window.location.origin}/api/salesman/updateStock`,
-        headers: {
-          Accept: "application/json",
-        },
-        data: {
-          'id_customer': idCust,
-          'quantity': q,
-          'id_item': id,
-        }
-      })
-        .then((response) => {
-          console.log('trip', response.data.message);
-          hapusSemuaProduk();
-          history.push('/salesman');
-        })
-        .catch((error) => {
-          console.log(error.message);
-        });
-    } else {
-      console.log('silahkan melakukan trip terlebih dahulu');
-    }
-  }
 
   return (
     <main className='page_main'>
@@ -420,42 +387,17 @@ const Pemesanan = ({ location }) => {
           checkifexist={checkifexist} handleValueChange={handleValueChange}
           handleKurangJumlah={handleKurangJumlah} handleSubmitStokTerakhir={handleSubmitStokTerakhir} />
 
-        <div className="my-5">
-          <h1 className="fs-6">Customer tidak jadi pesan?</h1>
-          <Button variant="danger" onClick={handleShow}>
-            Keluar
-          </Button>
+        <KeluarToko handleShow={handleShow} alasanPenolakan={alasanPenolakan}
+          setAlasanPenolakan={setAlasanPenolakan} handleClose={handleClose}
+          handleKeluarToko={handleKeluarToko} show={show} />
 
-          <Modal show={show} onHide={handleClose}>
-            <Modal.Header closeButton>
-              <Modal.Title>Keluar Toko</Modal.Title>
-            </Modal.Header>
-            <Modal.Body>
-              <label className="form-label mt-3">Alasan Penolakan</label>
-              <input type="text" className="form-control"
-                value={alasanPenolakan || ''}
-                onChange={(e) => setAlasanPenolakan(e.target.value)}
-              />
-            </Modal.Body>
-            <Modal.Footer>
-              <Button variant="secondary" onClick={handleClose}>
-                Batal
-              </Button>
-              <Button variant="primary" onClick={handleKeluarToko}>
-                Keluar
-              </Button>
-            </Modal.Footer>
-          </Modal>
-        </div>
-
-        <div className="item">
+        <div>
           <h1 className='fs-4'>Item</h1>
           <div className='mb-3'>
             <form onSubmit={handleCariProduk}>
               <div className="input-group">
                 <input type="text" className="form-control" placeholder="Cari Produk..."
-                  value={kataKunci}
-                  onChange={(e) => setKataKunci(e.target.value)}
+                  value={kataKunci} onChange={(e) => setKataKunci(e.target.value)}
                 />
                 <button type="submit" className="btn btn-primary">Cari</button>
               </div>

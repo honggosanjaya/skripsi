@@ -1,5 +1,5 @@
-import React, { Fragment, useContext, useEffect, useState } from 'react';
-import { Link, useHistory } from "react-router-dom";
+import React, { Fragment, useContext, useEffect } from 'react';
+import { useHistory } from "react-router-dom";
 import urlAsset from '../../config';
 import { KeranjangSalesContext } from '../../contexts/KeranjangSalesContext';
 import { Dropdown } from 'react-bootstrap';
@@ -7,10 +7,9 @@ import { AuthContext } from '../../contexts/AuthContext';
 import LoadingIndicator from '../reuse/LoadingIndicator';
 
 const HeaderSales = ({ title, isDashboard, isOrder, lihatKeranjang, toBack }) => {
-  const { token, setToken, setIsAuth, setErrorAuth } = useContext(AuthContext);
+  const { isLoadingAuth, handleLogout } = useContext(AuthContext);
   const history = useHistory();
   const { produks, getAllProduks } = useContext(KeranjangSalesContext);
-  const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
     getAllProduks();
@@ -20,36 +19,13 @@ const HeaderSales = ({ title, isDashboard, isOrder, lihatKeranjang, toBack }) =>
     history.go(-1);
   }
 
-  const handleLogout = () => {
-    setIsLoading(true);
-    axios({
-      method: "post",
-      url: `${window.location.origin}/api/v1/logout`,
-      headers: {
-        Authorization: "Bearer " + token,
-      }
-    })
-      .then((response) => {
-        console.log('logout', response.data);
-        setIsLoading(false);
-        setIsAuth('false');
-        setToken(null);
-        history.push('/spa/login');
-      })
-      .catch((error) => {
-        setIsLoading(false);
-        setErrorAuth(error.message);
-        console.log('eror logout', error.message);
-      });
-  }
-
   const handleViewProfile = () => {
     history.push('/salesman/profil');
   }
 
   return (
     <header className='header_mobile d-flex justify-content-between align-items-center'>
-      {isLoading && <LoadingIndicator />}
+
       {!isDashboard &&
         <Fragment>
           <div className='d-flex align-items-center'>
@@ -69,6 +45,9 @@ const HeaderSales = ({ title, isDashboard, isOrder, lihatKeranjang, toBack }) =>
           }
         </Fragment>
       }
+
+      {isLoadingAuth && <LoadingIndicator />}
+
       {isDashboard &&
         <Fragment>
           <h1 className='logo'>salesMan</h1>

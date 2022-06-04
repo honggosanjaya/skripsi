@@ -12,17 +12,40 @@ const AuthContextProvider = (props) => {
   const [errorAuth, setErrorAuth] = useState('');
   const [successAuth, setSuccessAuth] = useState('');
   const [isAuth, setIsAuth] = useState(prevLogin);
+  const [isLoadingAuth, setIsLoadingAuth] = useState(false);
 
   useEffect(() => {
     window.localStorage.setItem('token', token);
     window.localStorage.setItem('isAuth ', isAuth);
   }, [token, isAuth]);
 
+  const handleLogout = () => {
+    setIsLoadingAuth(true);
+    axios({
+      method: "post",
+      url: `${window.location.origin}/api/v1/logout`,
+      headers: {
+        Authorization: "Bearer " + token,
+      }
+    })
+      .then((response) => {
+        setIsLoadingAuth(false);
+        setIsAuth('false');
+        setToken(null);
+        history.push('/spa/login');
+      })
+      .catch((error) => {
+        setIsLoadingAuth(false);
+        setErrorAuth(error.message);
+      });
+  }
+
   const defaultContext = {
     token, setToken,
     errorAuth, setErrorAuth,
     successAuth, setSuccessAuth,
     isAuth, setIsAuth,
+    isLoadingAuth, handleLogout
   }
 
   return (
