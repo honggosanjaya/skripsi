@@ -206,6 +206,7 @@ Route::prefix('customer')->middleware('customer')->group(function() {
   Route::get('/event/cari', [EventController::class, 'customerSearch']);
   //Route untuk event
   Route::get('/profil', [HomeController::class, 'lihatProfil']);
+  Route::get('/profil/pesanan/{customer:id}', [HomeController::class, 'lihatPesanan']);
   Route::get('/profil/ubahpassword', [HomeController::class, 'lihatPassword']);
   Route::post('/profil/check/{user:id}', [AuthController::class, 'check']);
   Route::get('/profil/ubahpasswordbaru/{user:id}', [AuthController::class, 'passwordBaru']);
