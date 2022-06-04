@@ -130,6 +130,7 @@ Route::prefix('administrasi')->middleware('administrasi')->group(function() {
   Route::get('/retur', [ReturController::class, 'index']);
   Route::get('/retur/cari', [ReturController::class, 'search']);
   Route::get('/retur/{retur:no_retur}', [ReturController::class, 'viewRetur']);
+  Route::post('/retur/konfirmasi', [ReturController::class, 'confirmRetur']);
   Route::get('/retur/cetak-retur/{retur:no_retur}', [ReturController::class, 'cetakRetur']);
 
   //Route untuk kendaraan
