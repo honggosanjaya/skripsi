@@ -6,6 +6,9 @@ use App\Models\Retur;
 use App\Models\ReturType;
 use App\Models\District;
 use App\Models\Staff;
+use App\Models\Order;
+use App\Models\OrderTrack;
+use App\Models\Invoice;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Http\Request;
 use PDF;
@@ -41,6 +44,30 @@ class ReturController extends Controller
             'returs' => $returs
         ]);
         
+    }
+    public function confirmRetur(Request $request){
+      $rules = ([
+        'tipe_retur' => ['required'],
+        'no_retur' => ['required'],
+        'id_invoice' => ['required'],
+      ]);
+
+      $validatedData = $request->validate($rules);
+      $retur=Retur::where('no_retur',  $request->no_retur);
+      $retur->update([
+        'tipe_retur' => $request->tipe_retur,
+        'id_invoice' => $request->id_invoice,
+        'status' => 12
+      ]
+      );
+      $harga_total=Retur::select('no_retur',DB::raw('SUM(harga_satuan * kuantitas) as harga'))
+        ->groupBy('no_retur')->where('no_retur',  $request->no_retur)->first()->harga;
+      $invoice=Invoice::find($request->id_invoice);
+      if ($request->tipe_retur==1) {
+        $invoice->update(["harga_total"=>($invoice->harga_total - $harga_total)]);
+      }
+    
+      return redirect('/administrasi/retur') -> with('pesanSukses', 'Berhasil mengubah data');
     }
 
     public function viewRetur(Retur $retur){
@@ -78,13 +105,18 @@ class ReturController extends Controller
               ->where('returs.no_retur','=',$retur->no_retur)->get();
       $administrasi = Staff::select('nama')->where('id','=',auth()->user()->id_users)->first();
       $retur_type = ReturType::get();
+      $invoices = Order::whereHas('linkOrderTrack', function($q){
+        $q->whereIn('status', [21,22,23,24]);
+      })->where('id_customer','=',$retur->linkCustomer->id)->with(['linkOrderTrack','linkInvoice'])
+      ->get();
 
       return view('administrasi/retur.detail',[
         'retur' => $retur,
         'wilayah' => $temp[($retur->linkCustomer->id_wilayah)-1],
         'items' => $joins,
         'administrasi' => $administrasi,
-        'tipeReturs' => $retur_type
+        'tipeReturs' => $retur_type,
+        'invoices' => $invoices
       ]);
     }
 

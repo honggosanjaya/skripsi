@@ -1,4 +1,6 @@
 import { getJSON } from 'jquery';
+import { Modal } from 'bootstrap'
+const Swal = require('sweetalert2')
 
 $(document).on('change', '#pengadaan input[name=total_harga]', function () {
     let iditem=$(this).data('iditem')
@@ -26,4 +28,43 @@ $(document).on('change', '#opname input[name=keterangan]', function () {
     $('#opname .submit-cart-'+iditem).removeClass('btn-success')
     $('#opname .submit-cart-'+iditem).removeAttr('disabled')
     $('#opname .submit-cart-'+iditem).addClass('btn-primary')
+});
+
+$(document).on('click', '#retur-admin .button-submit', function () {
+    if ($('#retur-admin select[name=tipe_retur]').val()==1) {
+        var myModal = new Modal(document.getElementById('staticBackdrop'));
+        myModal.show()
+    }else{
+        Swal.fire({
+            title: 'Apakah anda yakin untuk menyimpan data ?',
+            showDenyButton: true,
+            confirmButtonText: 'Ya',
+            denyButtonText: `Tidak`,
+        }).then((result) => {
+            if (result.isConfirmed) {
+                console.log('testing');
+                $('#form_submit').submit();
+
+            } else if (result.isDenied) {
+                Swal.fire('Changes are not saved', '', 'info');
+            }
+        })
+    }
+});
+
+$(document).on('click', '#retur-admin .button-submit-modal', function () {
+    Swal.fire({
+        title: 'Apakah anda yakin untuk menyimpan data ?',
+        showDenyButton: true,
+        confirmButtonText: 'Ya',
+        denyButtonText: `Tidak`,
+    }).then((result) => {
+        if (result.isConfirmed) {
+            console.log('testing');
+            $('#form_submit').submit();
+
+        } else if (result.isDenied) {
+            Swal.fire('Changes are not saved', '', 'info');
+        }
+    })
 });
