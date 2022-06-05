@@ -7,7 +7,7 @@ import { useHistory } from 'react-router';
 import { UserContext } from '../../contexts/UserContext';
 
 const DashboardSales = () => {
-  const { token, isAuth, setErrorAuth } = useContext(AuthContext);
+  const { token, isAuth, checkIsAuth } = useContext(AuthContext);
   const history = useHistory();
   // const { dataUser } = useContext(UserContext);
   const [namaCust, setNamaCust] = useState('');
@@ -17,10 +17,7 @@ const DashboardSales = () => {
   const [dataShow, setDataShow] = useState('inactive');
 
   useEffect(() => {
-    if (isAuth === 'true' && token !== null) {
-    } else {
-      history.push('/spa/login');
-    }
+    checkIsAuth();
   }, [token, isAuth])
 
   const cariCustomer = (e) => {

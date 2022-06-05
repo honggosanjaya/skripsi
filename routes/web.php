@@ -130,6 +130,7 @@ Route::prefix('administrasi')->middleware('administrasi')->group(function() {
   Route::get('/retur', [ReturController::class, 'index']);
   Route::get('/retur/cari', [ReturController::class, 'search']);
   Route::get('/retur/{retur:no_retur}', [ReturController::class, 'viewRetur']);
+  Route::post('/retur/konfirmasi', [ReturController::class, 'confirmRetur']);
   Route::get('/retur/cetak-retur/{retur:no_retur}', [ReturController::class, 'cetakRetur']);
 
   //Route untuk kendaraan
@@ -165,6 +166,8 @@ Route::prefix('administrasi')->middleware('administrasi')->group(function() {
 
     //Route untuk stok
     Route::get('/opname', [ItemController::class, 'productListOpname']);
+    Route::get('/opname/riwayat', [ItemController::class, 'riwayatOpname']);
+    Route::get('/opname/riwayat/detail/{order:id}', [ItemController::class, 'detailRiwayatOpname']);
     Route::get('/opname/final', [CartController::class, 'cartList']);
     Route::post('/opname/final', [CartController::class, 'addToCart']);
     Route::post('/opname/update-final', [CartController::class, 'updateCart']);
@@ -206,6 +209,8 @@ Route::prefix('customer')->middleware('customer')->group(function() {
   Route::get('/event/cari', [EventController::class, 'customerSearch']);
   //Route untuk event
   Route::get('/profil', [HomeController::class, 'lihatProfil']);
+  Route::get('/profil/detailprofil', [HomeController::class, 'lihatDetailProfil']);
+  Route::get('/profil/pesanan/{customer:id}', [HomeController::class, 'lihatPesanan']);
   Route::get('/profil/ubahpassword', [HomeController::class, 'lihatPassword']);
   Route::post('/profil/check/{user:id}', [AuthController::class, 'check']);
   Route::get('/profil/ubahpasswordbaru/{user:id}', [AuthController::class, 'passwordBaru']);

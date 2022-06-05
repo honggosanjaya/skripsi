@@ -25,15 +25,14 @@ const HeaderSales = ({ title, isDashboard, isOrder, lihatKeranjang, toBack }) =>
 
   return (
     <header className='header_mobile d-flex justify-content-between align-items-center'>
-
       {!isDashboard &&
         <Fragment>
           <div className='d-flex align-items-center'>
             {toBack ? <button className='btn' onClick={toBack}>
-              <span className="iconify" data-icon="eva:arrow-back-fill"></span>
+              <span className="iconify text-white" data-icon="eva:arrow-back-fill"></span>
             </button> :
               <button className='btn' onClick={goback}>
-                <span className="iconify" data-icon="eva:arrow-back-fill"></span>
+                <span className="iconify text-white" data-icon="eva:arrow-back-fill"></span>
               </button>}
             <h1 className='page_title'>{title}</h1>
           </div>

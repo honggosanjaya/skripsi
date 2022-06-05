@@ -1,13 +1,16 @@
-import React, { useState, useEffect, useContext } from 'react';
+import React, { useState, useEffect, useContext, Fragment } from 'react';
 import HeaderShipper from './HeaderShipper';
 import { UserContext } from "../../contexts/UserContext";
 import { useHistory } from 'react-router';
 import AlertComponent from '../reuse/AlertComponent';
 import ButtonGroup from 'react-bootstrap/ButtonGroup';
-import ToggleButton from 'react-bootstrap/ToggleButton'
-import Modal from 'react-bootstrap/Modal'
-import Button from 'react-bootstrap/Button'
+import ToggleButton from 'react-bootstrap/ToggleButton';
+import Modal from 'react-bootstrap/Modal';
+import Button from 'react-bootstrap/Button';
 import LoadingIndicator from '../reuse/LoadingIndicator';
+
+import ListShipping from './ListShipping';
+import DetailShipping from './DetailShipping';
 
 const ShippingShipper = () => {
   // const { token, isAuth, setErrorAuth } = useContext(AuthContext);
@@ -23,7 +26,7 @@ const ShippingShipper = () => {
   const [imagePreviewUrl, setImagePreviewUrl] = useState('');
   const [successMessage, setSuccessMessage] = useState(null);
 
-  const [loadingDetailShipping, setLoadingDetailShipping] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
   const radios = [
     { name: 'Perlu Dikirim', value: 22 },
@@ -33,8 +36,10 @@ const ShippingShipper = () => {
   let $imagePreview = null;
 
   useEffect(() => {
+    setIsLoading(true);
     axios.get(`${window.location.origin}/api/shipper/jadwalPengiriman?id_staff=${dataUser.id_staff}`)
       .then(response => {
+        setIsLoading(false);
         console.log('jadwal pengiriman', response.data.data);
         setListShipping(response.data.data);
       })
@@ -72,13 +77,13 @@ const ShippingShipper = () => {
   }
 
   const handleShow = (shippingid) => {
-    setLoadingDetailShipping(true);
+    setIsLoading(true);
     axios.get(`${window.location.origin}/api/shipper/jadwalPengiriman/${shippingid}`)
       .then(response => {
         console.log('show', response.data.data);
         setDetailShipping(response.data.data);
         setListDetailItem(response.data.data.link_order_item);
-        setLoadingDetailShipping(false);
+        setIsLoading(false);
       })
     setShow(true);
   };
@@ -103,39 +108,19 @@ const ShippingShipper = () => {
     $imagePreview = <img src={imagePreviewUrl} className="preview_tempatUsaha" />
   }
 
-  const showListShipping = listShipping.map((data, index) => (
-    <button className={`mb-3 btn btn-primary  ${data.link_order_track.status != statusShipping ? "d-none" : "d-block"}`} onClick={() => handleShow(data.id)} style={{ width: '100%' }} key={`jadwal${index}`} >
-      <div className="d-flex flex-column">
-        <h1 className='mb-0'>Invoice: {data.link_invoice.nomor_invoice ?? null}</h1>
-        <p className='mb-0'>{data.link_customer.nama ?? null}</p>
-        <p className='mb-0'>{data.link_customer.telepon ?? null}</p>
-        <p className='mb-0'>{data.link_customer.full_alamat ?? null}</p>
-        <p className='mb-0'>{data.link_customer.waktu_berangkat ?? null}</p>
-      </div>
-    </button>
-  ));
-
-  const showListDetailItem = listDetailItem.map((data, index) => (
-    <div className='row' key={`item${index}`}>
-      <div className='col-3'>{index}</div>
-      <div className='col-4'>{data.link_item.nama}</div>
-      <div className='col-2'>{data.kuantitas}</div>
-      <div className='col-2'>{data.link_item.satuan}</div>
-    </div>
-  ));
-
   const handlePengajuanRetur = (idCust) => {
     history.push(`/shipper/retur/${idCust}`);
   }
 
   return (
     <main className="page_main shipper-css">
-      <HeaderShipper isDashboard={true} />
+      <HeaderShipper title="Jadwal Pengiriman" />
+      {isLoading && <LoadingIndicator />}
       <div className="page_container pt-4">
         {successMessage && <AlertComponent successMsg={successMessage} />}
-        <div className="d-flex flex-column justify-content-center text-center">
-          <h1 className="fs-4">Data Pengiriman</h1>
-          <ButtonGroup className='my-3'>
+        <div className="d-flex flex-column justify-content-center">
+          <h1 className="fs-6 fw-bold mb-0">Data Pengiriman</h1>
+          <ButtonGroup className='mt-2 mb-4'>
             {radios.map((radio, idx) => (
               <ToggleButton
                 key={idx}
@@ -152,56 +137,16 @@ const ShippingShipper = () => {
           </ButtonGroup>
         </div>
 
-        {showListShipping}
 
-        {loadingDetailShipping && <LoadingIndicator />}
 
-        {detailShipping && !loadingDetailShipping &&
-          <Modal show={show} onHide={handleClose}>
-            <Modal.Header closeButton>
-              <Modal.Title>{detailShipping.link_invoice.nomor_invoice}</Modal.Title>
-            </Modal.Header>
-            <Modal.Body>
-              <div className='container'>
-                <div className='row'>
-                  <ul className="info-shipping">
-                    <li><b>Nama Customer</b>{detailShipping.link_customer.nama}</li>
-                    <li><b>Telepon</b>{detailShipping.link_customer.telepon}</li>
-                    <li><b>Alamat</b>
-                      <a target="_blank" href={`https://www.google.com/maps/search/?api=1&query=${detailShipping.link_customer.koordinat.replace("@", ",")}`}>{detailShipping.link_customer.full_alamat}</a>
-                    </li>
-                    <li><b>Keterangan Alamat</b>{detailShipping.link_customer.keterangan_alamat}</li>
-                    <li><b>Waktu Keberangkatan</b>{detailShipping.link_order_track.waktu_berangkat}</li>
-                    <li><b>No Invoice</b>{detailShipping.link_invoice.nomor_invoice}</li>
-                    <li><b>Total Pembayaran</b>{detailShipping.link_invoice.harga_total}</li>
-                  </ul>
+        <ListShipping listShipping={listShipping} statusShipping={statusShipping} handleShow={handleShow} />
 
-                  <div className="d-flex flex-column ">
-                    <div className='row'>
-                      <div className='col-3'>No</div>
-                      <div className='col-4'>Nama</div>
-                      <div className='col-2'>Qty</div>
-                      <div className='col-2'>Stn</div>
-                    </div>
-                    {showListDetailItem}
-                  </div>
-                </div>
-              </div>
-            </Modal.Body>
-            <Modal.Footer>
-              <Button variant="secondary" onClick={handleClose}>
-                Close
-              </Button>
-              {detailShipping.link_order_track.status == 22 &&
-                <Button variant="primary" onClick={handlePengirimanSampai}>
-                  Pengiriman Sampai
-                </Button>}
-              {detailShipping.link_order_track.status == 23 &&
-                <Button variant="primary" onClick={() => handlePengajuanRetur(detailShipping.id_customer)}>
-                  Ajukan Retur
-                </Button>}
-            </Modal.Footer>
-          </Modal>}
+
+
+        <DetailShipping detailShipping={detailShipping}
+          isLoading={isLoading} show={show} handleClose={handleClose}
+          handlePengirimanSampai={handlePengirimanSampai} handlePengajuanRetur={handlePengajuanRetur}
+          listDetailItem={listDetailItem} />
 
 
         <Modal show={showBuktiPengiriman} onHide={handleCloseBuktiPengirimanModal}>

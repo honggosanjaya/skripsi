@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 use App\Models\Customer;
 use App\Models\Staff;
+use App\Models\Order;
 
 use Illuminate\Http\Request;
 
@@ -59,6 +60,55 @@ class HomeController extends Controller
                 'data' => $data
             ]);
         }        
+    }
+
+    public function lihatDetailProfil(){
+        $data = Customer::where('id','=',auth()->user()->id_users)->first();
+        return view('customer/profil.detailprofil',[
+            'data' => $data
+        ]);                
+    }
+
+    public function lihatPesanan(Customer $customer){
+        $diajukanCustomer = Order::whereHas('linkOrderTrack', function($q){
+            $q->where('status',19);
+        })->where('id_customer','=',$customer->id)->with(['linkOrderTrack','linkInvoice','linkOrderItem.linkItem'])
+        ->get();
+
+        $diajukanSalesman = Order::whereHas('linkOrderTrack', function($q){
+            $q->where('status',20);
+        })->where('id_customer','=',$customer->id)->with(['linkOrderTrack','linkInvoice','linkOrderItem.linkItem','linkStaff'])
+        ->get();
+
+        $dikonfirmasiAdministrasi = Order::whereHas('linkOrderTrack', function($q){
+            $q->where('status',21);
+        })->where('id_customer','=',$customer->id)->with(['linkOrderTrack.linkStaffPengonfirmasi','linkInvoice','linkOrderItem.linkItem'])
+        ->get();
+
+        $dalamPerjalanan = Order::whereHas('linkOrderTrack', function($q){
+            $q->where('status',22);
+        })->where('id_customer','=',$customer->id)->with(['linkOrderTrack','linkInvoice','linkOrderItem.linkItem'])
+        ->get();
+
+        $telahSampai = Order::whereHas('linkOrderTrack', function($q){
+            $q->where('status',23)->orWhere('status',24);
+        })->where('id_customer','=',$customer->id)->with(['linkOrderTrack','linkInvoice','linkOrderItem.linkItem'])
+        ->get();
+
+        $ditolak = Order::whereHas('linkOrderTrack', function($q){
+            $q->where('status',25);
+        })->where('id_customer','=',$customer->id)->with(['linkOrderTrack','linkInvoice','linkOrderItem.linkItem'])
+        ->get();      
+        //dd($ditolak);
+             
+        return view('customer/profil.detailpesanan',[
+            'diajukanCustomers' => $diajukanCustomer,
+            'diajukanSalesmans' => $diajukanSalesman,
+            'dikonfirmasiAdministrasis' => $dikonfirmasiAdministrasi,
+            'dalamPerjalanans' => $dalamPerjalanan,
+            'telahSampais' => $telahSampai,
+            'ditolaks' => $ditolak
+        ]);          
     }
 
     public function lihatPassword(){

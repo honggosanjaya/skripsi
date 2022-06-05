@@ -40,12 +40,20 @@ const AuthContextProvider = (props) => {
       });
   }
 
+  const checkIsAuth = () => {
+    if (isAuth === 'true' && token !== null) {
+    } else {
+      history.push('/spa/login');
+    }
+  }
+
   const defaultContext = {
     token, setToken,
     errorAuth, setErrorAuth,
     successAuth, setSuccessAuth,
     isAuth, setIsAuth,
-    isLoadingAuth, handleLogout
+    isLoadingAuth, handleLogout,
+    checkIsAuth
   }
 
   return (

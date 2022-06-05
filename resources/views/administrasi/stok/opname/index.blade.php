@@ -1,5 +1,11 @@
 @extends('layouts.main')
-
+@section('breadcrumbs')
+<ol class="breadcrumb">
+  <li class="breadcrumb-item"><a href="/administrasi">Dashboard</a></li>
+  <li class="breadcrumb-item"><a href="/administrasi/stok">Stok</a></li>
+  <li class="breadcrumb-item active" aria-current="page">Stok Opname</li>
+</ol>
+@endsection
 @section('main_content')
 @push('JS')
   <script src="{{ mix('js/administrasi.js') }}"></script>
