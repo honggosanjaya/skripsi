@@ -1,5 +1,5 @@
-import React, { Component, useContext, useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
+import React, { useContext, useEffect, useState } from 'react';
+import { useHistory, useParams } from 'react-router-dom';
 import useSWR from 'swr';
 import AlertComponent from '../reuse/AlertComponent';
 import LoadingIndicator from '../reuse/LoadingIndicator';
@@ -11,8 +11,6 @@ import ProductSales from './ProductSales';
 import { KeranjangSalesContext } from '../../contexts/KeranjangSalesContext';
 import { AuthContext } from '../../contexts/AuthContext';
 import { UserContext } from '../../contexts/UserContext';
-import { useHistory } from "react-router-dom";
-import { Button, Modal } from 'react-bootstrap';
 import HitungStok from './HitungStok';
 import { HitungStokContext } from '../../contexts/HitungStokContext';
 import KeluarToko from './KeluarToko';
@@ -277,15 +275,10 @@ const Pemesanan = ({ location }) => {
   const checkifexist = (item) => {
     const exist = produks.find((x) => x.id === item.id);
     if (exist) {
-      if (isNaN(exist.jumlah)) {
-        return 0
-      } else {
-        return exist.jumlah;
-      }
+      if (isNaN(exist.jumlah)) return 0
+      else return exist.jumlah;
     }
-    else {
-      return 0;
-    }
+    else return 0;
   }
 
   const handleValueChange = (item, newVal) => {
@@ -363,7 +356,6 @@ const Pemesanan = ({ location }) => {
       setUrlApi(`api/products/search/${kataKunci}`);
     }
   }
-
 
   return (
     <main className='page_main'>

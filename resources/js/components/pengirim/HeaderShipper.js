@@ -18,7 +18,7 @@ const HeaderShipper = ({ title, isDashboard, toBack }) => {
   }
 
   return (
-    <header className='header_mobile d-flex justify-content-between align-items-center'>
+    <header className='header_mobile d-flex justify-content-between align-items-center header-shipper'>
       {!isDashboard &&
         <Fragment>
           <div className='d-flex align-items-center'>

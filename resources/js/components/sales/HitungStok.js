@@ -42,7 +42,7 @@ const HitungStok = ({ historyItem, checkifexist, handleValueChange, handleTambah
           <h1 className="fs-6 text-capitalize">{item.link_item[0].nama}</h1>
           <div className="row">
             <div className="col-4">
-              {item.link_item.gambar ?
+              {item.link_item[0].gambar ?
                 <img src={`${urlAsset}/images/${item.link_item[0].gambar}`} className="item_image" />
                 : <img src={`${urlAsset}/images/default_fotoprofil.png`} className="item_image" />}
             </div>

@@ -24,6 +24,7 @@ import Pemesanan from './sales/Pemesanan';
 
 import DashboardShipper from './pengirim/DashboardShipper';
 import JadwalShipper from './pengirim/JadwalShipper';
+import ReturShipper from './pengirim/ReturShipper';
 
 
 function App() {
@@ -38,8 +39,8 @@ function App() {
               <Route exact path="/shipper" component={DashboardShipper} />
               <Route exact path="/shipper/jadwal" component={JadwalShipper} />
               <Route exact path="/shipper/profil" component={Profil} />
+              <Route exact path="/shipper/retur/:idCust" component={ReturShipper} />
             </Route>
-
 
             <Route path={["/salesman"]}>
               <KeranjangSalesContextProvider>
@@ -55,7 +56,6 @@ function App() {
             </Route>
 
             <Route exact path="/changepassword" component={ChangePassword} />
-
 
             <Route path="*" component={NotFound} />
           </Switch>
