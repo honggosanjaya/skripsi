@@ -19,7 +19,7 @@ const DashboardShipper = () => {
           {splitCharacter("shipper")}
         </div>
 
-        <div className="car-movement">
+        <div className="object-movement">
           <div className="car"><span className="iconify fs-2" data-icon="twemoji:delivery-truck"></span></div>
         </div>
 

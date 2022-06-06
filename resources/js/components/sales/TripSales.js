@@ -307,7 +307,9 @@ const TripSales = () => {
 
           <div className="trip_aksi">
             <button className="btn btn-danger me-3" onClick={kirimCustomer}>Keluar</button>
-            <button className="btn btn-success" onClick={handleOrder}>Order</button>
+            <button className="btn btn-success" onClick={handleOrder}>
+              <span className="iconify me-1" data-icon="carbon:ibm-watson-orders"></span>Order
+            </button>
           </div>
         </form>
       </div>

@@ -1,10 +1,12 @@
 import React, { Fragment, Component, useState, useEffect, useContext } from 'react';
-import { splitCharacter } from '../reuse/HelperFunction';
 import HeaderSales from './HeaderSales';
-import { Accordion } from 'react-bootstrap';
-import { AuthContext } from '../../contexts/AuthContext';
+import ListCustomer from './ListCustomer';
+import { splitCharacter } from '../reuse/HelperFunction';
 import { useHistory } from 'react-router';
+import { Link } from 'react-router-dom';
+import { AuthContext } from '../../contexts/AuthContext';
 import { UserContext } from '../../contexts/UserContext';
+import Modal from 'react-bootstrap/Modal';
 
 const DashboardSales = () => {
   const { token, isAuth, checkIsAuth } = useContext(AuthContext);
@@ -16,9 +18,16 @@ const DashboardSales = () => {
   const [addButton, setAddButton] = useState('');
   const [dataShow, setDataShow] = useState('inactive');
 
+  const [showModal, setShowModal] = useState(false);
+  const [isOrder, setIsOrder] = useState();
+
   useEffect(() => {
     checkIsAuth();
   }, [token, isAuth])
+
+  useEffect(() => {
+    console.log(listCustomer);
+  }, [listCustomer])
 
   const cariCustomer = (e) => {
     e.preventDefault();
@@ -46,35 +55,16 @@ const DashboardSales = () => {
       });
   }
 
-  const showListCustomer = listCustomer.map((data, index) => {
-    return (
-      <Accordion.Item eventKey={data.id} key={index}>
-        <Accordion.Header>
-          <div className="container-fluid">
-            <div className="row">
-              <div className="col-5">
-                {data.nama}
-              </div>
-              <div className="col-4">
-                {data.full_alamat}
-              </div>
-              <div className="col-3">
-                {data.id_wilayah}
-              </div>
-            </div>
-          </div>
-        </Accordion.Header>
-        <Accordion.Body>
-          <h5> Keterangan alamat</h5>
-          {data.keterangan_alamat}
-          <div className="action d-flex justify-content-between mt-3">
-            <button type="button" className="btn btn-primary">gambar</button>
-            <a type="button" href={`/salesman/trip/${data.id}`} className="btn btn-success">trip</a>
-          </div>
-        </Accordion.Body>
-      </Accordion.Item>
-    );
-  });
+  const handleShowModal = (order) => {
+    if (order) {
+      setIsOrder(true);
+    } else {
+      setIsOrder(false);
+    }
+    setShowModal(true);
+  }
+
+  const handleCloseModal = () => setShowModal(false);
 
   return (
     <main className="page_main">
@@ -85,46 +75,51 @@ const DashboardSales = () => {
             <div className="word d-flex justify-content-center">
               {splitCharacter("salesman")}
             </div>
-            <button className='btn btn-primary w-100' data-bs-toggle="modal" data-bs-target="#cariDataCustomer">Trip</button>
-            <button className='btn btn-success w-100 mt-4' data-bs-toggle="modal" data-bs-target="#cariDataCustomer">Order</button>
+
+            <div className="object-movement">
+              <div className="salesman"><span class="iconify fs-2" data-icon="emojione:person-walking-light-skin-tone"></span></div>
+            </div>
+
+            <h1 className='fs-6 fw-bold'>Menu untuk Salesman</h1>
+            <button className='btn btn-primary btn-lg w-100' onClick={() => handleShowModal(false)}>
+              <span className="iconify fs-4 me-2" data-icon="bx:trip"></span> Trip
+            </button>
+            <button className='btn btn-success btn-lg w-100 mt-4' onClick={() => handleShowModal(true)}>
+              <span className="iconify fs-4 me-2" data-icon="carbon:ibm-watson-orders"></span> Order
+            </button>
           </div>
 
-          <div className="modal fade modal_cariCust" id="cariDataCustomer" tabIndex="-1" aria-labelledby="cariDataCustomerLabel" aria-hidden="true">
-            <div className="modal-dialog">
-              <div className="modal-content">
-                <div className="modal-header">
-                  <h5 className="modal-title" id="exampleModalLabel">Cari Customer</h5>
-                  <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          <Modal show={showModal} onHide={handleCloseModal}>
+            <Modal.Header closeButton>
+              <Modal.Title>Cari Customer</Modal.Title>
+            </Modal.Header>
+            <Modal.Body>
+              <form onSubmit={cariCustomer}>
+                <div className="mb-3">
+                  <label className="form-label">Nama Customer</label>
+                  <input type="text" value={namaCust || ''} onChange={(e) => setNamaCust(e.target.value)} className="form-control" />
                 </div>
-                <div className="modal-body">
-                  <form onSubmit={cariCustomer}>
-                    <div className="mb-3">
-                      <label className="form-label">Nama Customer</label>
-                      <input type="text" value={namaCust || ''} onChange={(e) => setNamaCust(e.target.value)} className="form-control" />
-                    </div>
-                    <div className="mb-3">
-                      <label className="form-label">Alamat Utama</label>
-                      <input type="text" value={alamatUtama || ''} onChange={(e) => setAlamatUtama(e.target.value)} className="form-control" />
-                    </div>
-                    <button type="submit" className="btn btn-primary">Search</button>
-                  </form>
-                  <div className="box-list-customer mt-5">
-                    <h1 className={`d-block text-center ${dataShow == 'active' ? '' : 'd-none'}`}>
-                      Data Not Found
-                    </h1>
-                    <Accordion defaultActiveKey="0">
-                      {showListCustomer}
-                    </Accordion>
+                <div className="mb-3">
+                  <label className="form-label">Alamat Utama</label>
+                  <input type="text" value={alamatUtama || ''} onChange={(e) => setAlamatUtama(e.target.value)} className="form-control" />
+                </div>
+                <div className="row">
+                  <div className="col-5 offset-7">
+                    <button type="submit" className="btn btn-primary w-100"><span className="iconify me-2" data-icon="fe:search"></span>Cari</button>
                   </div>
-                  {/* ini nanti pakai <Link> di recat tidak pakai a kalau a refresh halaman */}
-                  <a type="button" href="/salesman/trip"
-                    className={`btn btn-primary d-block ${addButton == 'active' ? '' : 'd-none'}`}>
-                    masih belum menemukan silahkan tambah baru
-                  </a>
                 </div>
+              </form>
+              <div className="box-list-customer mt-3">
+                <h1 className={`fs-6 fw-bold text-center ${dataShow == 'active' ? 'd-block' : 'd-none'}`}>Data Tidak Ditemukan</h1>
+                <ListCustomer listCustomer={listCustomer} isOrder={isOrder} />
               </div>
-            </div>
-          </div>
+
+              <Link to="/salesman/trip"
+                className={`btn btn-primary mt-2 ${addButton == 'active' ? 'd-block' : 'd-none'}`}>
+                Masih belum menemukan? <br /> Silahkan tambah baru!
+              </Link>
+            </Modal.Body>
+          </Modal>
         </Fragment>
         : ''}
     </main>
