@@ -46,7 +46,6 @@ const LoginReact = () => {
     }
   }, [dataUser])
 
-
   const toggleShow = (e) => {
     e.preventDefault();
     setHiddenPassword(!hiddenPassword);
@@ -83,32 +82,6 @@ const LoginReact = () => {
             history.push('/shipper');
           }
         }
-
-        // if (token != null) {
-        //   console.log('dijaankan');
-        //   axios({
-        //     method: "get",
-        //     url: `${window.location.origin}/api/user`,
-        //     headers: {
-        //       Accept: "application/json",
-        //       Authorization: "Bearer " + token,
-        //     }
-        //   })
-        //     .then((response) => {
-        //       if (response.data.status === 'error') {
-        //         axios({
-        //           method: "get",
-        //           url: `${window.location.origin}/api/forceLogout`,
-        //           headers: {
-        //             Accept: "application/json",
-        //           }
-        //         })
-        //       }
-        //     })
-        //   // .catch((error) => {
-        //   //   setErrorDataUser(error.message);
-        //   // });
-        // }
       })
       .catch((error) => {
         setIsLoading(false);
@@ -127,7 +100,9 @@ const LoginReact = () => {
         <div className="page_container pt-5">
           {isLoading && <LoadingIndicator />}
 
-          <h1 className='fs-3 text-center'>Selamat Datang</h1>
+          <h1 className='logo text-center fs-1 mb-5'>salesMan</h1>
+
+          <h1 className='fs-3 text-center'>Selamat Datang<span className="iconify ms-2" data-icon="emojione:hand-with-fingers-splayed"></span></h1>
           <h2 className='fs-6 text-center'>Aplikasi web salesMan <br /> UD Mandiri</h2>
 
           {errorAuth && <AlertComponent errorMsg={errorAuth} />}
@@ -136,7 +111,7 @@ const LoginReact = () => {
             <a href="/login" className="custom-form-input"> disini</a>
           </p>}
 
-          <form onSubmit={handleSubmit} className="mt-4">
+          <form onSubmit={handleSubmit} className="mt-5">
             <div className="mb-3">
               <label htmlFor="email">Email</label>
               <input
@@ -169,7 +144,6 @@ const LoginReact = () => {
             </div>
 
             <button type="submit" className="btn btn-primary w-100 my-4">MASUK</button>
-            <p className="hyperlink"><Link to="#" className="lupa_sandi">Lupa Password?</Link></p>
           </form>
         </div>
       }

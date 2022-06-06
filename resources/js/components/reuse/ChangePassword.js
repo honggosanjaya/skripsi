@@ -1,7 +1,9 @@
 import React, { Component, useContext, useState } from 'react';
 import { UserContext } from '../../contexts/UserContext';
-import AlertComponent from './AlertComponent';
 import { useHistory } from 'react-router';
+import AlertComponent from './AlertComponent';
+import HeaderShipper from '../pengirim/HeaderShipper';
+import HeaderSales from '../sales/HeaderSales';
 
 const ChangePassword = () => {
   const { dataUser } = useContext(UserContext);
@@ -18,7 +20,7 @@ const ChangePassword = () => {
   const [successMessage, setSuccessMessage] = useState(null);
   const history = useHistory();
 
-  const goback = () => {
+  const toBack = () => {
     if (dataUser.role == 'salesman') {
       history.push('/salesman/profil');
     } else if (dataUser.role == 'shipper') {
@@ -115,14 +117,8 @@ const ChangePassword = () => {
 
   return (
     <main className="page_main">
-      <header className='header_mobile d-flex justify-content-between align-items-center'>
-        <div className='d-flex align-items-center'>
-          <button className='btn' onClick={goback}>
-            <span className="iconify" data-icon="eva:arrow-back-fill"></span>
-          </button>
-          <h1 className='page_title'>Ubah Password</h1>
-        </div>
-      </header>
+      {dataUser.role == 'salesman' && <HeaderSales title="Ubah Password" toBack={toBack} />}
+      {dataUser.role == 'shipper' && <HeaderShipper title="Ubah Password" toBack={toBack} />}
 
       <div className="page_container pt-4">
         {errorMessage && <AlertComponent errorMsg={errorMessage} />}
@@ -148,7 +144,7 @@ const ChangePassword = () => {
               </div>
               {errorValidasi && <small className="text-danger mb-3">{errorValidasi.old_password}</small>}
             </div>
-            <button type="submit" className="btn btn-primary w-100">Kirim</button>
+            <button type="submit" className="btn btn-outline-primary w-100 mt-4">Kirim</button>
           </form>}
 
         {isAllowChangePassword &&
@@ -192,7 +188,7 @@ const ChangePassword = () => {
               </div>
               {errorValidasi && (errorValidasi.confirm_newpassword && <small className="text-danger mb-3">{errorValidasi.confirm_newpassword}</small>)}
             </div>
-            <button type="submit" className="btn btn-primary w-100">Kirim</button>
+            <button type="submit" className="btn btn-outline-primary w-100 mt-4">Kirim</button>
           </form>
         }
       </div>

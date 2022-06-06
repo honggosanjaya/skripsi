@@ -1,9 +1,8 @@
-import React, { Component, useContext, useEffect, useRef, useState } from 'react';
+import React, { useContext, useEffect } from 'react';
 import urlAsset from '../../config';
 import { HitungStokContext } from '../../contexts/HitungStokContext';
 
 const HitungStok = ({ historyItem, checkifexist, handleValueChange, handleTambahJumlah, handleKurangJumlah, handleSubmitStokTerakhir }) => {
-  const [stokTerakhir, setStokTerakhir] = useState(null);
   const { newHistoryItem, setNewHistoryItem } = useContext(HitungStokContext);
 
   useEffect(() => {
@@ -13,16 +12,12 @@ const HitungStok = ({ historyItem, checkifexist, handleValueChange, handleTambah
   const handlePilihProdukChange = (item) => {
     const exist = newHistoryItem.find((x) => x.link_item[0].id === item.link_item[0].id);
     if (exist) {
-      setNewHistoryItem(
-        newHistoryItem.map((x) => {
-          if (x.link_item[0].id === item.link_item[0].id) {
-            return { ...exist, isSelected: !x.isSelected }
-          }
-          else {
-            return x
-          }
-        }
-        ));
+      setNewHistoryItem(newHistoryItem.map((x) => {
+        if (x.link_item[0].id === item.link_item[0].id)
+          return { ...exist, isSelected: !x.isSelected }
+        else
+          return x
+      }));
     }
   }
 
@@ -31,14 +26,11 @@ const HitungStok = ({ historyItem, checkifexist, handleValueChange, handleTambah
     if (exist) {
       setNewHistoryItem(
         newHistoryItem.map((x) => {
-          if (x.link_item[0].id === item.link_item[0].id) {
+          if (x.link_item[0].id === item.link_item[0].id)
             return { ...exist, newStok: newValue }
-          }
-          else {
+          else
             return x
-          }
-        }
-        ));
+        }));
     }
   }
 
@@ -50,7 +42,7 @@ const HitungStok = ({ historyItem, checkifexist, handleValueChange, handleTambah
           <h1 className="fs-6 text-capitalize">{item.link_item[0].nama}</h1>
           <div className="row">
             <div className="col-4">
-              {item.link_item.gambar ?
+              {item.link_item[0].gambar ?
                 <img src={`${urlAsset}/images/${item.link_item[0].gambar}`} className="item_image" />
                 : <img src={`${urlAsset}/images/default_fotoprofil.png`} className="item_image" />}
             </div>
