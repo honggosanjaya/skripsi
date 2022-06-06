@@ -107,7 +107,7 @@ class CustomerController extends Controller
             'password' => Hash::make(12345678),
             'tabel' => 'customers',
           ]);
-          Customer::find($customer)->update(['password'=>Hash::make(12345678)]);
+          Customer::find($id_customer)->update(['password'=>Hash::make(12345678)]);
         }
       } else {
         $id_customer = $request->id;

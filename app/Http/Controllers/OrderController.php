@@ -169,6 +169,7 @@ class OrderController extends Controller
         Trip::find($id)->update([
           'waktu_keluar' => now(),
           'updated_at' => now(),
+          'status' => 1,
           'alasan_penolakan' => $request->alasan_penolakan
         ]);
 
