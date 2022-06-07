@@ -297,7 +297,7 @@ const ReturShipper = () => {
               <span className='title'>Alasan</span><span className='desc'>{item.alasan}</span>
             </div>
           ))}
-          {cartItems.length > 0 && <button class="btn btn-warning mt-3 float-end" onClick={handlePengajuanRetur}>Ajukan Retur</button>}
+          {cartItems.length > 0 && <button className="btn btn-warning mt-3 float-end" onClick={handlePengajuanRetur}>Ajukan Retur</button>}
         </div>
       </div>
     </main>

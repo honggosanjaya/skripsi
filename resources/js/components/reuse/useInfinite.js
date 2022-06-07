@@ -1,10 +1,12 @@
-import { useContext } from 'react';
+import { useContext, useState } from 'react';
 import { AuthContext } from '../../contexts/AuthContext';
 import useSWRInfinite from 'swr/infinite';
 import axios from 'axios';
 
 const useInfinite = (url, per_page) => {
   const { token } = useContext(AuthContext);
+  const [orderRealTime, setOrderRealTime] = useState([]);
+
   const fetcher = (url) =>
     axios({
       method: "get",
@@ -15,7 +17,8 @@ const useInfinite = (url, per_page) => {
       },
     })
       .then((response) => {
-        // console.log('res', response.data.data.data);
+        console.log('item', response.data);
+        setOrderRealTime(response.data.orderRealTime);
         return response.data.data.data;
       })
 
@@ -37,7 +40,8 @@ const useInfinite = (url, per_page) => {
     setPage,
     erorFromInfinite,
     paginatedData,
-    isReachedEnd
+    isReachedEnd,
+    orderRealTime
   };
 }
 

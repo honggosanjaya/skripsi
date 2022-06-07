@@ -271,7 +271,8 @@ const KeranjangSales = ({ location }) => {
                 </label>
               </div>
 
-              <img src={`${urlAsset}/storage/item/${produk.gambar}`} className="item_image" />
+              {produk.gambar ? <img src={`${urlAsset}/storage/item/${produk.gambar}`} className="item_image" />
+                : <img src={`${urlAsset}/images/default_produk.png`} className="item_image" />}
             </div>
 
             <div className={produk.isSelected ? "grid_item" : ""}>
