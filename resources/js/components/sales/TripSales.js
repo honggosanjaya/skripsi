@@ -1,10 +1,11 @@
 import axios from 'axios';
-import React, { Component, useEffect, useState, useContext } from 'react';
+import React, { useEffect, useState, useContext } from 'react';
 import HeaderSales from './HeaderSales';
-import { useNavigate, useParams } from 'react-router-dom'
+import { useParams } from 'react-router-dom'
 import { useHistory } from 'react-router-dom';
 import { UserContext } from '../../contexts/UserContext';
 import AlertComponent from '../reuse/AlertComponent';
+import urlAsset from '../../config';
 
 const TripSales = () => {
   const { id } = useParams();
@@ -21,32 +22,30 @@ const TripSales = () => {
   const [telepon, setTelepon] = useState('');
   const [durasiTrip, setDurasiTrip] = useState(7);
   const [alasanPenolakan, setAlasanPenolakan] = useState('');
+  const [file, setFile] = useState(null);
+  const [prevImage, setPrevImage] = useState(null);
+  const [imagePreviewUrl, setImagePreviewUrl] = useState('');
+
   const [error, setError] = useState(null);
   const [errorValidasi, setErrorValidasi] = useState([]);
 
   const [totalTripEC, setTotalTripEC] = useState(0);
   const [koordinat, setKoordinat] = useState('');
-  const [file, setFile] = useState(null);
-  const [prevImage, setPrevImage] = useState(null);
-  const [imagePreviewUrl, setImagePreviewUrl] = useState('');
   const [emailInput, setEmailInput] = useState(false);
   const [districtArr, setDistrictArr] = useState([]);
   const [customerTypeArr, setCustomerTypeArr] = useState([]);
   const [showListCustomerType, setShowListCustomerType] = useState([]);
   const [showListDistrict, setShowListDistrict] = useState([]);
   const Swal = require('sweetalert2');
-  let $imagePreview = null;
   const jamMasuk = Date.now() / 1000;
-
 
   useEffect(() => {
     navigator.geolocation.getCurrentPosition(function (position) {
       setKoordinat(position.coords.latitude + '@' + position.coords.longitude)
     });
     if (id != null) {
-      // console.log(id);
       axios.get(`${window.location.origin}/api/tripCustomer/${id}`).then(response => {
-        console.log(response.data.data);
+        console.log('cust', response.data.data)
         setNamaCust(response.data.data.nama);
         setJenis(response.data.data.id_jenis);
         setWilayah(response.data.data.id_wilayah);
@@ -58,16 +57,13 @@ const TripSales = () => {
         setTelepon(response.data.data.telepon == null ? '' : response.data.data.telepon);
         setDurasiTrip(response.data.data.durasi_kunjungan);
         setTotalTripEC(response.data.data.counter_to_effective_call);
-        setImagePreviewUrl(response.data.data.image_url);
         setPrevImage(response.data.data.foto);
-        return response.data.data;
       })
     }
     axios.get(`${window.location.origin}/api/dataFormTrip/`).then(response => {
       console.log(response.data);
       setDistrictArr(response.data.district)
       setCustomerTypeArr(response.data.customerType)
-      return response.data.data;
     })
   }, [])
 
@@ -77,7 +73,7 @@ const TripSales = () => {
         <option value={data.id} key={index}>{data.nama}</option>
       );
     }))
-    // console.log(districtArr);
+
     setShowListDistrict(districtArr?.map((data, index) => {
       return (
         <option value={data.id} key={index}>{data.nama}</option>
@@ -95,15 +91,6 @@ const TripSales = () => {
     };
     reader.readAsDataURL(file);
   };
-
-  if (imagePreviewUrl) {
-    $imagePreview = <img src={imagePreviewUrl} className="preview_tempatUsaha" />
-  } else {
-    if (prevImage) {
-      let image = prevImage.replace('public', '');
-      $imagePreview = <img src={image} className="preview_tempatUsaha" />
-    }
-  }
 
   let objData = {
     id: id ?? null,
@@ -152,16 +139,15 @@ const TripSales = () => {
           Accept: "application/json",
         }
       }))
-      .then(() => {
+      .then((response) => {
         setError(null);
         Swal.fire({
           title: 'success',
-          text: 'berhasil menyimpan data, ayo tetap semangat bekerja',
+          text: response.data.message,
           icon: 'success',
-          confirmButtonText: 'next trip'
+          confirmButtonText: 'Trip Selanjutnya'
         }).then((result) => {
           history.push('/salesman');
-          console.log(result);
         })
       })
       .catch(error => {
@@ -206,6 +192,16 @@ const TripSales = () => {
       .catch(error => {
         setError(error.message);
       });
+  }
+
+  let $imagePreview = null;
+  if (imagePreviewUrl) {
+    $imagePreview = <img src={imagePreviewUrl} className="preview_tempatUsaha" />
+  } else {
+    if (prevImage) {
+      let image = prevImage.replace('public', '');
+      $imagePreview = <img src={`${urlAsset}/storage/customer/${image}`} className="preview_tempatUsaha" />
+    }
   }
 
   return (
@@ -300,7 +296,7 @@ const TripSales = () => {
 
           <div className="mb-5">
             <label className="form-label">Foto Tempat Usaha</label>
-            {prevImage ? $imagePreview : <p>Belum ada foto</p>}
+            {(imagePreviewUrl || prevImage) ? $imagePreview : <p>Belum ada foto</p>}
             <input
               type="file"
               name="foto"
@@ -311,7 +307,9 @@ const TripSales = () => {
 
           <div className="trip_aksi">
             <button className="btn btn-danger me-3" onClick={kirimCustomer}>Keluar</button>
-            <button className="btn btn-success" onClick={handleOrder}>Order</button>
+            <button className="btn btn-success" onClick={handleOrder}>
+              <span className="iconify me-1" data-icon="carbon:ibm-watson-orders"></span>Order
+            </button>
           </div>
         </form>
       </div>

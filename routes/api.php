@@ -69,6 +69,8 @@ Route::prefix('salesman')->group(function() {
   Route::post('/updateStock', [ItemController::class, 'updateStockCustomer']);
 });
 
+Route::post('/shipper/retur', [ReturController::class, 'pengajuanReturAPI']);
+
 Route::prefix('shipper')->group(function() {
   Route::get('/jadwalPengiriman', [OrderController::class, 'getListShippingAPI']);
   Route::get('/jadwalPengiriman/{id}', [OrderController::class, 'getdetailShippingAPI']);

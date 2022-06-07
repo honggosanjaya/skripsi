@@ -2,16 +2,17 @@
 
 namespace App\Http\Controllers;
 
+use PDF;
 use App\Models\Retur;
-use App\Models\ReturType;
-use App\Models\District;
 use App\Models\Staff;
+use App\Models\Customer;
+use App\Models\District;
+use App\Models\ReturType;
 use App\Models\Order;
 use App\Models\OrderTrack;
 use App\Models\Invoice;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Http\Request;
-use PDF;
+use Illuminate\Support\Facades\DB;
 
 class ReturController extends Controller
 {
@@ -24,6 +25,33 @@ class ReturController extends Controller
         return view('administrasi/retur.index',[
             'returs' => $returs
         ]);
+    }
+
+    public function pengajuanReturAPI(Request $request){
+      $cartItems = $request->cartItems;
+      $id_staff_pengaju = $request->id_staff_pengaju;
+      $id_customer = $request->id_customer;
+      $customer = Customer::find($id_customer);
+      $data = [];
+      foreach($cartItems as $item){
+        array_push($data,[
+          'id_customer' => $item['id_customer'],
+          'id_staff_pengaju' => $id_staff_pengaju,
+          'id_item' => $item['id'],
+          'no_retur' => (Retur::orderBy("no_retur", "DESC")->first()->no_retur ?? 0) + 1,
+          'kuantitas' => $item['kuantitas'],
+          'harga_satuan' => $item['harga_satuan'],
+          'tipe_retur' => $customer->tipe_retur,
+          'alasan' => $item['alasan'],
+          'status' => 13,
+        ]);
+      }
+      Retur::insert($data);
+
+      return response()->json([
+        "status" => "success",
+        "message" => "berhasil mengajukan retur",
+      ], 200); 
     }
 
     public function getTypeReturAPI(){

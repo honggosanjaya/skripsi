@@ -3,23 +3,29 @@ import ReactDOM from "react-dom";
 import { SWRConfig } from 'swr';
 import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
 
-// Sales Page
+
+import AuthContextProvider from '../contexts/AuthContext';
+import KeranjangSalesContextProvider from '../contexts/KeranjangSalesContext';
+import UserContextProvider from '../contexts/UserContext';
+
+
+import LoginReact from './reuse/LoginReact';
+import Profil from './reuse/Profil';
+import ChangePassword from './reuse/ChangePassword';
+
+
 import NotFound from './reuse/NotFound';
 import DashboardSales from './sales/DashboardSales';
 import KeranjangSales from './sales/KeranjangSales';
 import TripSales from './sales/TripSales';
+import HitungStokContextProvider from '../contexts/HitungStokContext';
+import Pemesanan from './sales/Pemesanan';
 
-// Shipper Page
+
 import DashboardShipper from './pengirim/DashboardShipper';
 import JadwalShipper from './pengirim/JadwalShipper';
-import LoginReact from './reuse/LoginReact';
-import AuthContextProvider from '../contexts/AuthContext';
-import Pemesanan from './sales/Pemesanan';
-import KeranjangSalesContextProvider from '../contexts/KeranjangSalesContext';
-import UserContextProvider from '../contexts/UserContext';
-import Profil from './reuse/Profil';
-import ChangePassword from './reuse/ChangePassword';
-import HitungStokContextProvider from '../contexts/HitungStokContext';
+import ReturShipper from './pengirim/ReturShipper';
+
 
 function App() {
   return (
@@ -33,8 +39,8 @@ function App() {
               <Route exact path="/shipper" component={DashboardShipper} />
               <Route exact path="/shipper/jadwal" component={JadwalShipper} />
               <Route exact path="/shipper/profil" component={Profil} />
+              <Route exact path="/shipper/retur/:idCust" component={ReturShipper} />
             </Route>
-
 
             <Route path={["/salesman"]}>
               <KeranjangSalesContextProvider>
@@ -50,7 +56,6 @@ function App() {
             </Route>
 
             <Route exact path="/changepassword" component={ChangePassword} />
-
 
             <Route path="*" component={NotFound} />
           </Switch>

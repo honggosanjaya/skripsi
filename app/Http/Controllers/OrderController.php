@@ -490,20 +490,17 @@ class OrderController extends Controller
           $stokMaksimalTerakhir = History::where("id_item", $item->id)->orderBy("id", "DESC")->first()->stok_maksimal_customer ?? 0;
           $stokSekarang = (History::where("id_item", $item->id)->orderBy("id", "DESC")->first()->stok_terakhir_customer ?? 0) + $orderItem->kuantitas;
 
+
           if($stokSekarang > $stokMaksimalTerakhir){
-            History::insert([
-              'id_customer' => $order->id_customer,
-              'id_item' => $item->id,
-              'stok_maksimal_customer' => $stokSekarang,
-              'stok_terakhir_customer' => $stokSekarang,
-            ]);
+            History::updateOrCreate(
+              ['id_customer' => $order->id_customer, 'id_item' => $item->id],
+              ['stok_maksimal_customer' => $stokSekarang, 'stok_terakhir_customer' => $stokSekarang]
+            );
           }else{
-            History::insert([
-              'id_customer' => $order->id_customer,
-              'id_item' => $item->id,
-              'stok_maksimal_customer' => $stokMaksimalTerakhir,
-              'stok_terakhir_customer' => $stokSekarang,
-            ]);
+            History::updateOrCreate(
+              ['id_customer' => $order->id_customer, 'id_item' => $item->id],
+              ['stok_maksimal_customer' => $stokMaksimalTerakhir, 'stok_terakhir_customer' => $stokSekarang]
+            );
           }
         }
 

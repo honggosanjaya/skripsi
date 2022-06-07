@@ -189,7 +189,8 @@ class CustomerController extends Controller
 
       return response()->json([
         'data' => $customer,
-        'status' => 'success'
+        'status' => 'success',
+        'message' => 'Berhasil menyimpan data. Ayo tetap semangat bekerja'
       ]);
     }
 

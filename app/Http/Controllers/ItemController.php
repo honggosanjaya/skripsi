@@ -23,30 +23,36 @@ class ItemController extends Controller
   protected $data = null;
 
   public function getListAllProductAPI($id){
-    try {
-      $history = History::where('id_customer',$id)->with('linkItem')->get();
-      $items = $history->pluck('id_item');
-      $items = Item::orderBy("status", "ASC")->whereNotIn('id',$items->toArray())->paginate(4);
-      $this->data = $items;
-      $this->status = "success";
-    } catch (QueryException $e) {
-        $this->status = "error";
-        $this->error = $e;
-    }
+    $history = History::where('id_customer',$id)->with('linkItem')->get();
+    $items = $history->pluck('id_item');
+    $items = Item::orderBy("status", "ASC")->whereNotIn('id',$items->toArray())->paginate(1);
 
+    $orderItemUnconfirmed=OrderItem::
+    whereHas('linkOrder',function($q) {
+      $q->where('status', 15);
+    })->select('id_item', DB::raw('SUM(kuantitas) as jumlah_blmkonfirmasi'))      
+    ->groupBy('id_item')->pluck('id_item', 'jumlah_blmkonfirmasi');
+  
     return response()->json([
-      "status" => $this->status,
-      "data" => $this->data,
-      "error" => $this->error
+      "status" => 'success',
+      "data" => $items,
+      "orderRealTime" => $orderItemUnconfirmed
     ], 200);
   }
 
   public function getListHistoryProductAPI($id){
-    $history = History::where('id_customer',$id)->with('linkItem')->get(); 
+    $history = History::where('id_customer',$id)->with('linkItem')->get();
+
+    $orderItemUnconfirmed=OrderItem::
+    whereHas('linkOrder',function($q) {
+      $q->where('status', 15);
+    })->select('id_item', DB::raw('SUM(kuantitas) as jumlah_blmkonfirmasi'))      
+    ->groupBy('id_item')->pluck('id_item', 'jumlah_blmkonfirmasi');
 
     return response()->json([
       "status" => "success",
-      "data" => $history ,
+      "data" => $history,
+      "orderRealTime" => $orderItemUnconfirmed
     ], 200);
   }
 
@@ -58,27 +64,25 @@ class ItemController extends Controller
     ], 200);
   }
 
-  public function searchProductAPI($name)
-  {
-      try {
-        $items = DB::table('items')->where(strtolower('nama'), 'like', '%'.$name.'%')->orderBy("status", "ASC")->paginate(4);
-        $this->data = $items;
-        $this->status = "success";
-      } catch (QueryException $e) {
-          $this->status = "failed";
-          $this->error = $e;
-      }
-  
-      return response()->json([
-        "status" => $this->status,
-        "data" => $this->data,
-        "error" => $this->error
-      ], 200);
+  public function searchProductAPI($name){
+    try {
+      $items = DB::table('items')->where(strtolower('nama'), 'like', '%'.$name.'%')->orderBy("status", "ASC")->paginate(4);
+      $this->data = $items;
+      $this->status = "success";
+    } catch (QueryException $e) {
+        $this->status = "failed";
+        $this->error = $e;
+    }
+
+    return response()->json([
+      "status" => $this->status,
+      "data" => $this->data,
+      "error" => $this->error
+    ], 200);
   }
 
-//pengadaan
-  public function productList()
-  {
+  //pengadaan
+  public function productList(){
       $products = Item::all();
       return view('administrasi.stok.pengadaan.index', [
         "products" => $products,

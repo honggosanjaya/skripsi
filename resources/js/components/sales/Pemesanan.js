@@ -1,5 +1,5 @@
-import React, { Component, useContext, useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
+import React, { useContext, useEffect, useState } from 'react';
+import { useHistory, useParams } from 'react-router-dom';
 import useSWR from 'swr';
 import AlertComponent from '../reuse/AlertComponent';
 import LoadingIndicator from '../reuse/LoadingIndicator';
@@ -11,15 +11,14 @@ import ProductSales from './ProductSales';
 import { KeranjangSalesContext } from '../../contexts/KeranjangSalesContext';
 import { AuthContext } from '../../contexts/AuthContext';
 import { UserContext } from '../../contexts/UserContext';
-import { useHistory } from "react-router-dom";
-import { Button, Modal } from 'react-bootstrap';
 import HitungStok from './HitungStok';
 import { HitungStokContext } from '../../contexts/HitungStokContext';
+import KeluarToko from './KeluarToko';
 
 const Pemesanan = ({ location }) => {
   const { idCust } = useParams();
   const [urlApi, setUrlApi] = useState(`api/salesman/listitems/${idCust}`);
-  const { page, setPage, erorFromInfinite, paginatedData, isReachedEnd } = useInfinite(`${urlApi}`, 4);
+  const { page, setPage, erorFromInfinite, paginatedData, isReachedEnd, orderRealTime } = useInfinite(`${urlApi}`, 4);
   const { token } = useContext(AuthContext);
   const { dataUser } = useContext(UserContext);
   const history = useHistory();
@@ -38,6 +37,16 @@ const Pemesanan = ({ location }) => {
 
   const [historyItem, setHistoryItem] = useState([]);
   const { newHistoryItem, setNewHistoryItem } = useContext(HitungStokContext);
+  const [jmlItem, setJmlItem] = useState(null);
+  let jumlahProdukKeranjang = 0;
+  const [jumlahOrderRealTime, setJumlahOrderRealTime] = useState([]);
+
+  useEffect(() => {
+    produks.map((produk) => {
+      jumlahProdukKeranjang += produk.jumlah;
+    })
+    setJmlItem(jumlahProdukKeranjang);
+  }, [produks])
 
   useEffect(() => {
     setNewHistoryItem(historyItem);
@@ -69,6 +78,7 @@ const Pemesanan = ({ location }) => {
       .then((response) => {
         console.log('history produk', response.data);
         setHistoryItem(response.data.data);
+        setJumlahOrderRealTime(response.data.orderRealTime);
       })
       .catch((error) => {
         console.log(error.message);
@@ -102,9 +112,7 @@ const Pemesanan = ({ location }) => {
 
   useEffect(() => {
     produks.map((produk) => {
-      if (produk.jumlah == 0) {
-        handleDeleteProduct(produk);
-      }
+      if (produk.jumlah == 0) handleDeleteProduct(produk);
     })
   }, [produks]);
 
@@ -158,7 +166,6 @@ const Pemesanan = ({ location }) => {
   }
 
   const lihatKeranjang = () => {
-    // console.log('disini', idTrip);
     history.push({
       pathname: `/salesman/keranjang/${idCust}`,
       state: idTrip // your data array of objects
@@ -221,9 +228,11 @@ const Pemesanan = ({ location }) => {
 
   const handleTambahJumlah = (item) => {
     const exist = produks.find((x) => x.id === item.id);
-    if (exist) {
+
+    if (exist && item.stok > 0) {
       const produk = {
         id: item.id,
+        nama: item.nama,
         orderId: orderId ? parseInt(orderId) : 'belum ada',
         customer: parseInt(idCust),
         harga: item.harga_satuan,
@@ -236,9 +245,10 @@ const Pemesanan = ({ location }) => {
         alert('maksimal stok di keranjang');
       }
     }
-    else {
+    else if (!exist && item.stok > 0) {
       const produk = {
         id: item.id,
+        nama: item.nama,
         orderId: orderId ? parseInt(orderId) : 'belum ada',
         customer: parseInt(idCust),
         harga: item.harga_satuan,
@@ -255,6 +265,7 @@ const Pemesanan = ({ location }) => {
     if (exist && exist.jumlah > 1) {
       const produk = {
         id: item.id,
+        nama: item.nama,
         orderId: orderId ? parseInt(orderId) : 'belum ada',
         customer: parseInt(idCust),
         harga: item.harga_satuan,
@@ -277,15 +288,10 @@ const Pemesanan = ({ location }) => {
   const checkifexist = (item) => {
     const exist = produks.find((x) => x.id === item.id);
     if (exist) {
-      if (isNaN(exist.jumlah)) {
-        return 0
-      } else {
-        return exist.jumlah;
-      }
+      if (isNaN(exist.jumlah)) return 0
+      else return exist.jumlah;
     }
-    else {
-      return 0;
-    }
+    else return 0;
   }
 
   const handleValueChange = (item, newVal) => {
@@ -294,6 +300,7 @@ const Pemesanan = ({ location }) => {
       if (isNaN(newVal) == false) {
         const produk = {
           id: item.id,
+          nama: item.nama,
           orderId: orderId ? parseInt(orderId) : 'belum ada',
           customer: parseInt(idCust),
           harga: item.harga_satuan,
@@ -307,6 +314,7 @@ const Pemesanan = ({ location }) => {
       if (isNaN(newVal) == false) {
         const produk = {
           id: item.id,
+          nama: item.nama,
           orderId: orderId ? parseInt(orderId) : 'belum ada',
           customer: parseInt(idCust),
           harga: item.harga_satuan,
@@ -333,7 +341,7 @@ const Pemesanan = ({ location }) => {
       }
     })
       .then((response) => {
-        console.log('stokchange', response.data);
+        console.log('stok terakhir customer', response.data);
       })
       .catch((error) => {
         console.log(error.message);
@@ -343,16 +351,10 @@ const Pemesanan = ({ location }) => {
     if (exist) {
       setNewHistoryItem(
         newHistoryItem.map((x) => {
-          if (x.link_item[0].id === item.link_item[0].id) {
-            console.log('true');
+          if (x.link_item[0].id === item.link_item[0].id)
             return { ...exist, isSelected: !x.isSelected }
-          }
-          else {
-            console.log('false');
-            return x
-          }
-        }
-        ));
+          else return x
+        }));
     }
   }
 
@@ -370,37 +372,9 @@ const Pemesanan = ({ location }) => {
     }
   }
 
-  const handleUpdateStok = () => {
-    console.log('idTrip', idTrip);
-    if (idTrip) {
-      axios({
-        method: "post",
-        url: `${window.location.origin}/api/salesman/updateStock`,
-        headers: {
-          Accept: "application/json",
-        },
-        data: {
-          'id_customer': idCust,
-          'quantity': q,
-          'id_item': id,
-        }
-      })
-        .then((response) => {
-          console.log('trip', response.data.message);
-          hapusSemuaProduk();
-          history.push('/salesman');
-        })
-        .catch((error) => {
-          console.log(error.message);
-        });
-    } else {
-      console.log('silahkan melakukan trip terlebih dahulu');
-    }
-  }
-
   return (
     <main className='page_main'>
-      <HeaderSales title="Salesman" isOrder={true} lihatKeranjang={lihatKeranjang} />
+      <HeaderSales title="Salesman" isOrder={true} lihatKeranjang={lihatKeranjang} produks={produks} jumlahProdukKeranjang={jmlItem} />
       <div className="page_container pt-4">
         <div className="kode_customer">
           <p>Sudah punya kode customer?</p>
@@ -418,44 +392,20 @@ const Pemesanan = ({ location }) => {
 
         <HitungStok historyItem={historyItem} handleTambahJumlah={handleTambahJumlah}
           checkifexist={checkifexist} handleValueChange={handleValueChange}
-          handleKurangJumlah={handleKurangJumlah} handleSubmitStokTerakhir={handleSubmitStokTerakhir} />
+          handleKurangJumlah={handleKurangJumlah} handleSubmitStokTerakhir={handleSubmitStokTerakhir}
+          jumlahOrderRealTime={jumlahOrderRealTime} />
 
-        <div className="my-5">
-          <h1 className="fs-6">Customer tidak jadi pesan?</h1>
-          <Button variant="danger" onClick={handleShow}>
-            Keluar
-          </Button>
+        <KeluarToko handleShow={handleShow} alasanPenolakan={alasanPenolakan}
+          setAlasanPenolakan={setAlasanPenolakan} handleClose={handleClose}
+          handleKeluarToko={handleKeluarToko} show={show} />
 
-          <Modal show={show} onHide={handleClose}>
-            <Modal.Header closeButton>
-              <Modal.Title>Keluar Toko</Modal.Title>
-            </Modal.Header>
-            <Modal.Body>
-              <label className="form-label mt-3">Alasan Penolakan</label>
-              <input type="text" className="form-control"
-                value={alasanPenolakan || ''}
-                onChange={(e) => setAlasanPenolakan(e.target.value)}
-              />
-            </Modal.Body>
-            <Modal.Footer>
-              <Button variant="secondary" onClick={handleClose}>
-                Batal
-              </Button>
-              <Button variant="primary" onClick={handleKeluarToko}>
-                Keluar
-              </Button>
-            </Modal.Footer>
-          </Modal>
-        </div>
-
-        <div className="item">
+        <div>
           <h1 className='fs-4'>Item</h1>
           <div className='mb-3'>
             <form onSubmit={handleCariProduk}>
               <div className="input-group">
                 <input type="text" className="form-control" placeholder="Cari Produk..."
-                  value={kataKunci}
-                  onChange={(e) => setKataKunci(e.target.value)}
+                  value={kataKunci} onChange={(e) => setKataKunci(e.target.value)}
                 />
                 <button type="submit" className="btn btn-primary">Cari</button>
               </div>
@@ -472,7 +422,7 @@ const Pemesanan = ({ location }) => {
             {paginatedData &&
               <ProductSales listItems={paginatedData} handleTambahJumlah={handleTambahJumlah}
                 checkifexist={checkifexist} handleValueChange={handleValueChange}
-                handleKurangJumlah={handleKurangJumlah} />
+                handleKurangJumlah={handleKurangJumlah} orderRealTime={orderRealTime} />
             }
           </InfiniteScroll>
         </div>
