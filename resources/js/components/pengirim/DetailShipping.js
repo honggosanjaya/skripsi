@@ -23,7 +23,7 @@ const DetailShipping = ({ detailShipping, isLoading, show, handleClose, handlePe
               <span><b>Keterangan Alamat</b>{detailShipping.link_customer.keterangan_alamat}</span>
               <span><b>Jam Berangkat </b></span><br />{convertDate(detailShipping.link_order_track.waktu_berangkat)}<br />
               <span><b>Total Pembayaran</b>{detailShipping.link_invoice.harga_total}</span>
-              <table class="table mt-3">
+              <table className="table mt-3">
                 <thead>
                   <tr>
                     <th scope="col">No</th>

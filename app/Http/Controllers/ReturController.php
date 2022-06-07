@@ -5,16 +5,12 @@ namespace App\Http\Controllers;
 use PDF;
 use App\Models\Retur;
 use App\Models\Staff;
-<<<<<<< HEAD
 use App\Models\Customer;
 use App\Models\District;
 use App\Models\ReturType;
-=======
 use App\Models\Order;
 use App\Models\OrderTrack;
 use App\Models\Invoice;
-use Illuminate\Support\Facades\DB;
->>>>>>> a26bfc7389c490d8986c510067e0ecfc8b66c123
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 

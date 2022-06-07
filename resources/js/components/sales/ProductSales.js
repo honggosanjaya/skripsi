@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { convertPrice } from "../reuse/HelperFunction";
 import urlAsset from '../../config';
 
-const ProductSales = ({ listItems, handleTambahJumlah, checkifexist, handleValueChange, handleKurangJumlah }) => {
+const ProductSales = ({ listItems, handleTambahJumlah, checkifexist, handleValueChange, handleKurangJumlah, orderRealTime }) => {
   return (
     <div className="productCard_wrapper">
       {listItems.map((item, index) => (
@@ -31,7 +31,7 @@ const ProductSales = ({ listItems, handleTambahJumlah, checkifexist, handleValue
               </thead>
               <tbody>
                 <tr>
-                  <td>none</td>
+                  <td>{item.stok - (orderRealTime[item.id] ?? 0)} {item.satuan}</td>
                   <td>{item.stok} {item.satuan}</td>
                 </tr>
               </tbody>

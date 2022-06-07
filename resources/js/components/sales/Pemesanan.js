@@ -18,7 +18,7 @@ import KeluarToko from './KeluarToko';
 const Pemesanan = ({ location }) => {
   const { idCust } = useParams();
   const [urlApi, setUrlApi] = useState(`api/salesman/listitems/${idCust}`);
-  const { page, setPage, erorFromInfinite, paginatedData, isReachedEnd } = useInfinite(`${urlApi}`, 4);
+  const { page, setPage, erorFromInfinite, paginatedData, isReachedEnd, orderRealTime } = useInfinite(`${urlApi}`, 4);
   const { token } = useContext(AuthContext);
   const { dataUser } = useContext(UserContext);
   const history = useHistory();
@@ -37,6 +37,16 @@ const Pemesanan = ({ location }) => {
 
   const [historyItem, setHistoryItem] = useState([]);
   const { newHistoryItem, setNewHistoryItem } = useContext(HitungStokContext);
+  const [jmlItem, setJmlItem] = useState(null);
+  let jumlahProdukKeranjang = 0;
+  const [jumlahOrderRealTime, setJumlahOrderRealTime] = useState([]);
+
+  useEffect(() => {
+    produks.map((produk) => {
+      jumlahProdukKeranjang += produk.jumlah;
+    })
+    setJmlItem(jumlahProdukKeranjang);
+  }, [produks])
 
   useEffect(() => {
     setNewHistoryItem(historyItem);
@@ -68,6 +78,7 @@ const Pemesanan = ({ location }) => {
       .then((response) => {
         console.log('history produk', response.data);
         setHistoryItem(response.data.data);
+        setJumlahOrderRealTime(response.data.orderRealTime);
       })
       .catch((error) => {
         console.log(error.message);
@@ -101,9 +112,7 @@ const Pemesanan = ({ location }) => {
 
   useEffect(() => {
     produks.map((produk) => {
-      if (produk.jumlah == 0) {
-        handleDeleteProduct(produk);
-      }
+      if (produk.jumlah == 0) handleDeleteProduct(produk);
     })
   }, [produks]);
 
@@ -219,9 +228,11 @@ const Pemesanan = ({ location }) => {
 
   const handleTambahJumlah = (item) => {
     const exist = produks.find((x) => x.id === item.id);
-    if (exist) {
+
+    if (exist && item.stok > 0) {
       const produk = {
         id: item.id,
+        nama: item.nama,
         orderId: orderId ? parseInt(orderId) : 'belum ada',
         customer: parseInt(idCust),
         harga: item.harga_satuan,
@@ -234,9 +245,10 @@ const Pemesanan = ({ location }) => {
         alert('maksimal stok di keranjang');
       }
     }
-    else {
+    else if (!exist && item.stok > 0) {
       const produk = {
         id: item.id,
+        nama: item.nama,
         orderId: orderId ? parseInt(orderId) : 'belum ada',
         customer: parseInt(idCust),
         harga: item.harga_satuan,
@@ -253,6 +265,7 @@ const Pemesanan = ({ location }) => {
     if (exist && exist.jumlah > 1) {
       const produk = {
         id: item.id,
+        nama: item.nama,
         orderId: orderId ? parseInt(orderId) : 'belum ada',
         customer: parseInt(idCust),
         harga: item.harga_satuan,
@@ -287,6 +300,7 @@ const Pemesanan = ({ location }) => {
       if (isNaN(newVal) == false) {
         const produk = {
           id: item.id,
+          nama: item.nama,
           orderId: orderId ? parseInt(orderId) : 'belum ada',
           customer: parseInt(idCust),
           harga: item.harga_satuan,
@@ -300,6 +314,7 @@ const Pemesanan = ({ location }) => {
       if (isNaN(newVal) == false) {
         const produk = {
           id: item.id,
+          nama: item.nama,
           orderId: orderId ? parseInt(orderId) : 'belum ada',
           customer: parseInt(idCust),
           harga: item.harga_satuan,
@@ -326,7 +341,7 @@ const Pemesanan = ({ location }) => {
       }
     })
       .then((response) => {
-        console.log('stokchange', response.data);
+        console.log('stok terakhir customer', response.data);
       })
       .catch((error) => {
         console.log(error.message);
@@ -359,7 +374,7 @@ const Pemesanan = ({ location }) => {
 
   return (
     <main className='page_main'>
-      <HeaderSales title="Salesman" isOrder={true} lihatKeranjang={lihatKeranjang} />
+      <HeaderSales title="Salesman" isOrder={true} lihatKeranjang={lihatKeranjang} produks={produks} jumlahProdukKeranjang={jmlItem} />
       <div className="page_container pt-4">
         <div className="kode_customer">
           <p>Sudah punya kode customer?</p>
@@ -377,7 +392,8 @@ const Pemesanan = ({ location }) => {
 
         <HitungStok historyItem={historyItem} handleTambahJumlah={handleTambahJumlah}
           checkifexist={checkifexist} handleValueChange={handleValueChange}
-          handleKurangJumlah={handleKurangJumlah} handleSubmitStokTerakhir={handleSubmitStokTerakhir} />
+          handleKurangJumlah={handleKurangJumlah} handleSubmitStokTerakhir={handleSubmitStokTerakhir}
+          jumlahOrderRealTime={jumlahOrderRealTime} />
 
         <KeluarToko handleShow={handleShow} alasanPenolakan={alasanPenolakan}
           setAlasanPenolakan={setAlasanPenolakan} handleClose={handleClose}
@@ -406,7 +422,7 @@ const Pemesanan = ({ location }) => {
             {paginatedData &&
               <ProductSales listItems={paginatedData} handleTambahJumlah={handleTambahJumlah}
                 checkifexist={checkifexist} handleValueChange={handleValueChange}
-                handleKurangJumlah={handleKurangJumlah} />
+                handleKurangJumlah={handleKurangJumlah} orderRealTime={orderRealTime} />
             }
           </InfiniteScroll>
         </div>

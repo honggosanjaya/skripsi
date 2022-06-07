@@ -77,7 +77,7 @@ const DashboardSales = () => {
             </div>
 
             <div className="object-movement">
-              <div className="salesman"><span class="iconify fs-2" data-icon="emojione:person-walking-light-skin-tone"></span></div>
+              <div className="salesman"><span className="iconify fs-2" data-icon="emojione:person-walking-light-skin-tone"></span></div>
             </div>
 
             <h1 className='fs-6 fw-bold'>Menu untuk Salesman</h1>

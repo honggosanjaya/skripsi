@@ -2,12 +2,16 @@ import React, { useContext, useEffect } from 'react';
 import urlAsset from '../../config';
 import { HitungStokContext } from '../../contexts/HitungStokContext';
 
-const HitungStok = ({ historyItem, checkifexist, handleValueChange, handleTambahJumlah, handleKurangJumlah, handleSubmitStokTerakhir }) => {
+const HitungStok = ({ historyItem, checkifexist, handleValueChange, handleTambahJumlah, handleKurangJumlah, handleSubmitStokTerakhir, jumlahOrderRealTime }) => {
   const { newHistoryItem, setNewHistoryItem } = useContext(HitungStokContext);
 
   useEffect(() => {
     setNewHistoryItem(historyItem);
   }, [historyItem]);
+
+  // useEffect(() => {
+  //   setNewHistoryItem(historyItem);
+  // }, []);
 
   const handlePilihProdukChange = (item) => {
     const exist = newHistoryItem.find((x) => x.link_item[0].id === item.link_item[0].id);
@@ -90,8 +94,8 @@ const HitungStok = ({ historyItem, checkifexist, handleValueChange, handleTambah
                 </thead>
                 <tbody>
                   <tr>
-                    <td>{item.link_item[0].stok}</td>
-                    <td>none</td>
+                    <td>{item.link_item[0].stok - (jumlahOrderRealTime[item.link_item[0].id] ?? 0)} {item.satuan}</td>
+                    <td>{item.link_item[0].stok} {item.satuan}</td>
                   </tr>
                 </tbody>
               </table>
