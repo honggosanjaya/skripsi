@@ -30,8 +30,14 @@ class ItemController extends Controller
     $orderItemUnconfirmed=OrderItem::
     whereHas('linkOrder',function($q) {
       $q->where('status', 15);
-    })->select('id_item', DB::raw('SUM(kuantitas) as jumlah_blmkonfirmasi'))      
-    ->groupBy('id_item')->pluck('id_item', 'jumlah_blmkonfirmasi');
+    })
+    ->whereHas('linkOrder',function($q) {
+      $q->whereHas('linkOrderTrack',function($q) {
+        $q->where('status','!=', 25);
+      });
+    })
+    ->select('id_item', DB::raw('SUM(kuantitas) as jumlah_blmkonfirmasi'))      
+    ->groupBy('id_item')->pluck('jumlah_blmkonfirmasi','id_item')->all();
   
     return response()->json([
       "status" => 'success',

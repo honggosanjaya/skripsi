@@ -24,13 +24,13 @@
     <div class="row">
       <div class="col-5">
         <div class="mt-3 search-box">
-          <form method="GET" action="/administrasi/pesanan/cari">
+          {{-- <form method="GET" action="/administrasi/pesanan/cari">
             <div class="input-group">
               <input type="text" class="form-control" name="cari" placeholder="Cari Pesanan..."
                 value="{{ request('cari') }}">
               <button type="submit" class="btn btn-primary">Cari</button>
             </div>
-          </form>
+          </form> --}}
 
         </div>
       </div>
@@ -47,12 +47,11 @@
                 </option>
               @endforeach
             </select>
-
+          </div>
         </div>
-      </div>
-      <div class="col-3 mt-3">
-        <button type="submit" class="btn btn-primary"><i class="bi bi-eye p-1"></i>Lihat</button>
-      </div>
+        <div class="col-3 mt-3">
+          <button type="submit" class="btn btn-primary"><i class="bi bi-eye p-1"></i>Lihat</button>
+        </div>
       </form>
     </div>
   </div>
@@ -74,8 +73,8 @@
 
       @foreach ($orders as $order)
         <tr>
-          <td>{{ $order->linkCustomer->nama }}</td>
-          <td>{{ $order->linkStaff->nama }}</td>
+          <td>{{ $order->linkCustomer->nama  ?? null  }}</td>
+          <td>{{ $order->linkStaff->nama  ?? null  }}</td>
           <td>{{ $order->linkInvoice->nomor_invoice ?? null }}</td>
           <td>{{ $order->linkInvoice->harga_total ?? null }}</td>
           <td>{{ $order->linkOrderTrack->linkStatus->nama ?? null }}</td>

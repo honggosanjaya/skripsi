@@ -20,6 +20,6 @@ class OrderItem extends Model
     }
 
     public function linkOrder(){
-        return $this->belongsTo(Order::class,'id_order', 'id');
+        return $this->belongsTo(Order::class,'id_order', 'id')->with(['linkOrderTrack']);
     }
 }
