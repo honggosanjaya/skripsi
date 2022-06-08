@@ -37,12 +37,14 @@
             class="bi bi-arrow-left-short fs-5"></i>Kembali</a>
 
         <div>
+          @if ($order->linkOrderTrack->status > 20 && $order->linkOrderTrack->status < 25)
           <a href="/administrasi/pesanan/detail/{{ $order->id }}/cetak-memo" class="btn btn-primary mx-1"><i
               class="bi bi-download px-1"></i>Unduh Memo Persiapan Barang</a>
           <a href="/administrasi/pesanan/detail/{{ $order->id }}/cetak-invoice" class="btn btn-secondary mx-1"><i
               class="bi bi-download px-1"></i>Unduh Invoice</a>
           <a href="/administrasi/pesanan/detail/{{ $order->id }}/cetak-sj" class="btn btn-success mx-1"><i
               class="bi bi-download px-1"></i>Unduh Surat Jalan</a>
+          @endif
         </div>
       </div>
     </div>
@@ -82,14 +84,17 @@
         <h5>Status Pesanan : </h5>
       </div>
       <div class="col-3">
+        @if ($order->linkOrderTrack->status == 25)
+        <p class="text-danger fw-bold">{{ $order->linkOrderTrack->linkStatus->nama }}</p>
+        @else
         <p class="text-success fw-bold">{{ $order->linkOrderTrack->linkStatus->nama }}</p>
+        @endif
       </div>
       <div class="col-6">
+        @if ($order->linkOrderTrack->status > 20 && $order->linkOrderTrack->status < 25)
         <a class="btn btn-warning" href="/administrasi/pesanan/detail/{{ $order->id }}/kapasitas"><i
             class="bi bi-eye-fill p-1"></i>Lihat Kapasitas Kendaraan</a>
-        <a class="btn btn-primary mt-3" href="/administrasi/pesanan/detail/{{ $order->id }}/pengiriman">
-          <i class="bi bi-truck me-2"></i>Atur Keberangkatan Pengiriman
-        </a>
+        @endif
       </div>
     </div>
 
@@ -125,7 +130,7 @@
         </tbody>
       </table>
 
-      @if ($order->linkStatus->nama == 'inactive')
+      @if ($order->linkOrderTrack->status == 20)
         <div class="float-end">
           <form action="/administrasi/pesanan/setuju/{{ $order->id }}" method="POST" class="d-inline">
             @csrf
@@ -139,6 +144,19 @@
             <button type="submit" class="btn btn-sm btn-danger">
               Tolak
             </button>
+          </form>
+        </div>
+      @elseif($order->linkOrderTrack->status == 21)
+        <div class="float-end">
+          <a class="btn btn-primary mt-3" href="/administrasi/pesanan/detail/{{ $order->id }}/pengiriman">
+            <i class="bi bi-truck me-2"></i>Atur Keberangkatan Pengiriman
+          </a>
+        </div>
+      @elseif($order->linkOrderTrack->status == 23)
+        <div class="float-end">
+          <form class="form-submit" method="POST" action="/administrasi/pesanan/detail/{{ $order->id }}/dikirimkan">
+            @csrf
+            <button type="submit" class="btn btn-success mt-4">Pesanan Selesai</button>
           </form>
         </div>
       @endif

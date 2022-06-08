@@ -239,7 +239,7 @@ class OrderController extends Controller
     }
 
     public function index(){
-      $orders = Order::paginate(5);
+      $orders = Order::where('id_customer','>','0')->paginate(5);
       $statuses = Status::where('tabel','=','order_tracks')->get();
 
       return view('administrasi.pesanan.index',[
@@ -514,6 +514,10 @@ class OrderController extends Controller
           'updated_at' => now()
         ]);
 
+        Order::where('id', $order->id)->update([
+          'status' => 14
+        ]);
+
         OrderTrack::where('id_order', $order->id)->update([
           'id_staff_pengonfirmasi' => auth()->user()->id,
           'status' => 21,
@@ -531,7 +535,6 @@ class OrderController extends Controller
         'status' => 25
       ]);
 
-      Invoice::where('id_order', $order->id)->delete();
         
       return redirect('/administrasi/pesanan/detail/'.$order->id) -> with('addPesananSuccess', 'Berhasil menolak pesanan');
     }
