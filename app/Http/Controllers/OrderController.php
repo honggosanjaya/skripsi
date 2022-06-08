@@ -42,6 +42,7 @@ class OrderController extends Controller
         }
       }
     }
+    $customertype=Customer::with(['linkCustomerType'])->find($id_customer);
 
     if($id_order == "belum ada"){
       $limitPembelian = Customer::find($id_customer)->limit_pembelian;
@@ -59,7 +60,7 @@ class OrderController extends Controller
             'id_order' => $id_order,
             'id_item' => $item['id'],
             'kuantitas' => $item['jumlah'],
-            'harga_satuan' => $item['harga'],
+            'harga_satuan' => $item['harga']-($item['harga']*$customertype->diskon/100),
             'keterangan' => $request->keterangan??null,
           ]);
         }
@@ -95,7 +96,7 @@ class OrderController extends Controller
               'id_order' => $id_order,
               'id_item' => $item['id'],
               'kuantitas' => $item['jumlah'],
-              'harga_satuan' => $item['harga'],
+              'harga_satuan' => $item['harga']-($item['harga']*$customertype->diskon/100),
               'keterangan' => $keterangan,
             ]);
           } else {
@@ -104,7 +105,7 @@ class OrderController extends Controller
               'id_order' => $id_order,
               'id_item' => $item['id'],
               'kuantitas' => $item['jumlah'],
-              'harga_satuan' => $item['harga'],
+              'harga_satuan' => $item['harga']-($item['harga']*$customertype->diskon/100),
               'keterangan' => $keterangan,
             ]);
           } 
@@ -169,6 +170,7 @@ class OrderController extends Controller
         Trip::find($id)->update([
           'waktu_keluar' => now(),
           'updated_at' => now(),
+          'status' => 1,
           'alasan_penolakan' => $request->alasan_penolakan
         ]);
 
@@ -190,20 +192,25 @@ class OrderController extends Controller
         ]);
       }
 
-      $tripOrder = Trip::insertGetId(
-        [
-          'id_customer' => $id_customer,
-          'id_staff' => $id_staff,
-          'alasan_penolakan' => null,
-          'koordinat' => $request->koordinat,
-          'waktu_masuk' => date('Y-m-d H:i:s', $request->jam_masuk),
-          'waktu_keluar' => null,
-          'status' => 2,
-          'created_at'=> now()
-        ]
-      );
+      $trip=Trip::where('id_customer',$id_customer)->orderby('id','desc')->first();
+      if ($trip->waktu_keluar!=null) {
+        $tripOrder = Trip::insertGetId(
+          [
+            'id_customer' => $id_customer,
+            'id_staff' => $id_staff,
+            'alasan_penolakan' => null,
+            'koordinat' => $request->koordinat,
+            'waktu_masuk' => date('Y-m-d H:i:s', $request->jam_masuk),
+            'waktu_keluar' => null,
+            'status' => 2,
+            'created_at'=> now()
+          ]
+        );
+        $id_trip = $tripOrder;
+      }else{
+        $id_trip = $trip->id;
+      }
 
-      $id_trip = $tripOrder;
 
       return response()->json([
         'status' => 'success',

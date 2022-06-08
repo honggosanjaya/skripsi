@@ -30,7 +30,7 @@ class CustomerController extends Controller
     }
 
     public function dataCustomerApi($id){
-      $customer=Customer::find($id);
+      $customer=Customer::with(['linkCustomerType'])->find($id);
       
       if ($customer->count()>0) {
         return response()->json([
@@ -107,7 +107,7 @@ class CustomerController extends Controller
             'password' => Hash::make(12345678),
             'tabel' => 'customers',
           ]);
-          Customer::find($customer)->update(['password'=>Hash::make(12345678)]);
+          Customer::find($id_customer)->update(['password'=>Hash::make(12345678)]);
         }
       } else {
         $id_customer = $request->id;
