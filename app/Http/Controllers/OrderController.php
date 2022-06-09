@@ -42,6 +42,7 @@ class OrderController extends Controller
         }
       }
     }
+    $customertype=Customer::with(['linkCustomerType'])->find($id_customer);
 
     if($id_order == "belum ada"){
       $limitPembelian = Customer::find($id_customer)->limit_pembelian;
@@ -59,7 +60,7 @@ class OrderController extends Controller
             'id_order' => $id_order,
             'id_item' => $item['id'],
             'kuantitas' => $item['jumlah'],
-            'harga_satuan' => $item['harga'],
+            'harga_satuan' => $item['harga']-($item['harga']*$customertype->diskon/100),
             'keterangan' => $request->keterangan??null,
           ]);
         }
@@ -95,7 +96,7 @@ class OrderController extends Controller
               'id_order' => $id_order,
               'id_item' => $item['id'],
               'kuantitas' => $item['jumlah'],
-              'harga_satuan' => $item['harga'],
+              'harga_satuan' => $item['harga']-($item['harga']*$customertype->diskon/100),
               'keterangan' => $keterangan,
             ]);
           } else {
@@ -104,7 +105,7 @@ class OrderController extends Controller
               'id_order' => $id_order,
               'id_item' => $item['id'],
               'kuantitas' => $item['jumlah'],
-              'harga_satuan' => $item['harga'],
+              'harga_satuan' => $item['harga']-($item['harga']*$customertype->diskon/100),
               'keterangan' => $keterangan,
             ]);
           } 
@@ -169,6 +170,7 @@ class OrderController extends Controller
         Trip::find($id)->update([
           'waktu_keluar' => now(),
           'updated_at' => now(),
+          'status' => 1,
           'alasan_penolakan' => $request->alasan_penolakan
         ]);
 
@@ -190,20 +192,25 @@ class OrderController extends Controller
         ]);
       }
 
-      $tripOrder = Trip::insertGetId(
-        [
-          'id_customer' => $id_customer,
-          'id_staff' => $id_staff,
-          'alasan_penolakan' => null,
-          'koordinat' => $request->koordinat,
-          'waktu_masuk' => date('Y-m-d H:i:s', $request->jam_masuk),
-          'waktu_keluar' => null,
-          'status' => 2,
-          'created_at'=> now()
-        ]
-      );
+      $trip=Trip::where('id_customer',$id_customer)->orderby('id','desc')->first();
+      if ($trip->waktu_keluar!=null) {
+        $tripOrder = Trip::insertGetId(
+          [
+            'id_customer' => $id_customer,
+            'id_staff' => $id_staff,
+            'alasan_penolakan' => null,
+            'koordinat' => $request->koordinat,
+            'waktu_masuk' => date('Y-m-d H:i:s', $request->jam_masuk),
+            'waktu_keluar' => null,
+            'status' => 2,
+            'created_at'=> now()
+          ]
+        );
+        $id_trip = $tripOrder;
+      }else{
+        $id_trip = $trip->id;
+      }
 
-      $id_trip = $tripOrder;
 
       return response()->json([
         'status' => 'success',
@@ -232,7 +239,7 @@ class OrderController extends Controller
     }
 
     public function index(){
-      $orders = Order::paginate(5);
+      $orders = Order::where('id_customer','>','0')->paginate(5);
       $statuses = Status::where('tabel','=','order_tracks')->get();
 
       return view('administrasi.pesanan.index',[
@@ -507,6 +514,10 @@ class OrderController extends Controller
           'updated_at' => now()
         ]);
 
+        Order::where('id', $order->id)->update([
+          'status' => 14
+        ]);
+
         OrderTrack::where('id_order', $order->id)->update([
           'id_staff_pengonfirmasi' => auth()->user()->id,
           'status' => 21,
@@ -524,7 +535,6 @@ class OrderController extends Controller
         'status' => 25
       ]);
 
-      Invoice::where('id_order', $order->id)->delete();
         
       return redirect('/administrasi/pesanan/detail/'.$order->id) -> with('addPesananSuccess', 'Berhasil menolak pesanan');
     }

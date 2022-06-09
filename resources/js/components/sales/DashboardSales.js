@@ -49,6 +49,7 @@ const DashboardSales = () => {
         return response.data.data;
       })
       .catch(error => {
+        setListCustomer([])
         setDataShow('active')
         setAddButton('active')
         console.log(error.message);

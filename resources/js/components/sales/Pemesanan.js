@@ -86,7 +86,12 @@ const Pemesanan = ({ location }) => {
   }, []);
 
   useEffect(() => {
-    if (dataUser.nama && koordinat && isNaN(idTripTetap) && idTrip == null) {
+    // console.log(koordinat);
+    // console.log('trip tetap', idTripTetap);
+    // console.log('tp', isNaN(null));
+    // console.log(idTrip == null);
+    // if (dataUser.nama && koordinat && isNaN(idTripTetap) && idTrip == null) {
+    if (dataUser.nama && koordinat && idTripTetap == null && idTrip == null) {
       axios({
         method: "post",
         url: `${window.location.origin}/api/tripOrderCustomer`,

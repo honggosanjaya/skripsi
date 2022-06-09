@@ -7,6 +7,7 @@ import { KeranjangSalesContext } from '../../contexts/KeranjangSalesContext';
 import AlertComponent from '../reuse/AlertComponent';
 import { AuthContext } from '../../contexts/AuthContext';
 import { UserContext } from "../../contexts/UserContext";
+import Table from 'react-bootstrap/Table';
 import LoadingIndicator from '../reuse/LoadingIndicator';
 import urlAsset from '../../config';
 
@@ -24,12 +25,13 @@ const KeranjangSales = ({ location }) => {
   const [keteranganOrderItem, setKeteranganOrderItem] = useState(null);
   const [idCustomer, setIdCustomer] = useState(null);
   const [limitPembelian, setLimitPembelian] = useState(0);
+  const [dataCustType, setDataCustType] = useState({});
   const [pilihanRetur, setPilihanRetur] = useState([]);
   const [tipeRetur, setTipeRetur] = useState("1");
 
   const [kodeEvent, setKodeEvent] = useState('');
   const [errorKodeEvent, setErrorKodeEvent] = useState(null);
-  const [totalHargaSetelahPromo, setTotalHargaSetelahPromo] = useState(null);
+  const [hargaPromo, setHargaPromo] = useState(0);
 
   const { state: idTrip } = location;
 
@@ -58,7 +60,12 @@ const KeranjangSales = ({ location }) => {
       .catch(error => {
         setErrorMessage(error.message);
       });
+
+
+    console.log(idTrip);
   }, [])
+
+
 
   useEffect(() => {
     if (idCustomer) {
@@ -71,6 +78,7 @@ const KeranjangSales = ({ location }) => {
       })
         .then(response => {
           setLimitPembelian(response.data.data.limit_pembelian);
+          setDataCustType(response.data.data.link_customer_type);
         })
         .catch(error => {
           setErrorMessage(error.message);
@@ -103,15 +111,15 @@ const KeranjangSales = ({ location }) => {
 
           if (response.data.data.min_pembelian !== null && totalHarga > response.data.data.min_pembelian) {
             if (response.data.data.potongan) {
-              setTotalHargaSetelahPromo(totalHarga - response.data.data.potongan);
+              setHargaPromo(response.data.data.potongan);
             } else {
-              setTotalHargaSetelahPromo(totalHarga - (totalHarga * (response.data.data.diskon / 100)));
+              setHargaPromo((totalHarga * (response.data.data.diskon / 100)));
             }
           } else if (totalHarga > response.data.data.min_pembelian) {
             if (response.data.data.potongan) {
-              setTotalHargaSetelahPromo(totalHarga - response.data.data.potongan);
+              setHargaPromo(response.data.data.potongan);
             } else {
-              setTotalHargaSetelahPromo(totalHarga - (totalHarga * (response.data.data.diskon / 100)));
+              setHargaPromo((totalHarga * (response.data.data.diskon / 100)));
             }
           } else {
             setErrorKodeEvent('Anda tidak mencapai minimal pembelian')
@@ -133,7 +141,7 @@ const KeranjangSales = ({ location }) => {
     })
     setKodeEvent('');
     setErrorKodeEvent(null);
-    setTotalHargaSetelahPromo(null);
+    setHargaPromo(null);
   }
 
   const handlePilihProdukChange = (item) => {
@@ -162,7 +170,7 @@ const KeranjangSales = ({ location }) => {
     getAllProduks();
     setKodeEvent('');
     setErrorKodeEvent(null);
-    setTotalHargaSetelahPromo(null);
+    setHargaPromo(null);
   }
 
   const kurangJumlahProduk = (item, orderid) => {
@@ -177,7 +185,7 @@ const KeranjangSales = ({ location }) => {
     getAllProduks();
     setKodeEvent('');
     setErrorKodeEvent(null);
-    setTotalHargaSetelahPromo(null);
+    setHargaPromo(null);
   }
 
   const hapusProduk = (item) => {
@@ -185,7 +193,7 @@ const KeranjangSales = ({ location }) => {
     getAllProduks();
     setKodeEvent('');
     setErrorKodeEvent(null);
-    setTotalHargaSetelahPromo(null);
+    setHargaPromo(null);
   }
 
   const checkout = (e) => {
@@ -204,7 +212,7 @@ const KeranjangSales = ({ location }) => {
           estimasiWaktuPengiriman: estimasiWaktuPengiriman,
           keterangan: keteranganOrderItem,
           kodeEvent: kodeEvent,
-          totalHarga: totalHargaSetelahPromo ? totalHargaSetelahPromo : totalHarga,
+          totalHarga: (totalHarga - (totalHarga * (dataCustType.diskon ?? 0) / 100) - hargaPromo),
           idTrip: idTrip,
           tipeRetur: parseInt(tipeRetur)
         }
@@ -336,20 +344,45 @@ const KeranjangSales = ({ location }) => {
             {errorKodeEvent && <p className='text-danger'>{errorKodeEvent}</p>}
 
             <label className="form-label mt-3">Tipe Retur</label>
-            <select className="form-select mb-btnBottom" value={tipeRetur} onChange={(e) => setTipeRetur(e.target.value)}>
+            <select className="form-select mb-3" value={tipeRetur} onChange={(e) => setTipeRetur(e.target.value)}>
               {pilihanRetur.length && pilihanRetur.map((pilihan, index) => (
                 <option value={pilihan.id} key={index}>{pilihan.nama}</option>
               ))}
             </select>
+            {produks.map((produk) => {
+              totalHarga = totalHarga + (produk.jumlah * produk.harga);
+            })}
+            <Table striped bordered hover className="mb-btnBottom">
+              <thead>
+                <tr>
+                  <th>keterangan</th>
+                  <th>jumlah</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>Total</td>
+                  <td>{totalHarga}</td>
+                </tr>
+                <tr>
+                  <td>potongan {dataCustType.nama}</td>
+                  <td> - {totalHarga * (dataCustType.diskon ?? 0) / 100}</td>
+                </tr>
+                <tr>
+                  <td>event <span></span></td>
+                  <td>- {hargaPromo}</td>
+                </tr>
+                <tr>
+                  <td>total akhir<span></span></td>
+                  <td>{totalHarga - (totalHarga * (dataCustType.diskon ?? 0) / 100) - hargaPromo}</td>
+                </tr>
+              </tbody>
+            </Table>
 
             <div className="button_bottom d-flex justify-content-between">
               <div>
                 <p className='mb-0'>Total Pesanan:</p>
-                {produks.map((produk) => {
-                  totalHarga = totalHarga + (produk.jumlah * produk.harga);
-                })}
-                <h1 className={`mb-0 fs-4 ${totalHargaSetelahPromo ? "text-decoration-line-through" : ''}`}>{convertPrice(totalHarga)}</h1>
-                {totalHargaSetelahPromo && <h1 className='text-danger fs-4'>{convertPrice(totalHargaSetelahPromo)}</h1>}
+                <h1 className={`mb-0 fs-4 `}>{convertPrice(totalHarga - (totalHarga * (dataCustType.diskon ?? 0) / 100) - hargaPromo)}</h1>
               </div>
               <button className='btn btn-success' onClick={checkout}>CHECKOUT</button>
             </div>
