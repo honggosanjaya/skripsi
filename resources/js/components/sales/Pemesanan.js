@@ -374,7 +374,7 @@ const Pemesanan = ({ location }) => {
 
   return (
     <main className='page_main'>
-      <HeaderSales title="Salesman" isOrder={true} lihatKeranjang={lihatKeranjang} produks={produks} jumlahProdukKeranjang={jmlItem} />
+      <HeaderSales title="Order" isOrder={true} lihatKeranjang={lihatKeranjang} produks={produks} jumlahProdukKeranjang={jmlItem} />
       <div className="page_container pt-4">
         <div className="kode_customer">
           <p>Sudah punya kode customer?</p>
