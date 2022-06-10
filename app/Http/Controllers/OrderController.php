@@ -221,7 +221,7 @@ class OrderController extends Controller
 
     public function dataKodeCustomer($id){
       $order = Order::find($id);
-      $order_item = OrderItem::where('id_order', $id)->get();
+      $order_item = OrderItem::where('id_order', $id)->with(['linkItem'])->get();
 
       if($order!==null){
         return response()->json([
@@ -331,100 +331,99 @@ class OrderController extends Controller
   }
 
     public function cetakInvoice(Order $order){
-        $items = OrderItem::where('id_order','=',$order->id)->get();
-        $administrasi = Staff::select('nama')->where('id','=',auth()->user()->id_users)->first();
+      $items = OrderItem::where('id_order','=',$order->id)->get();
+      $administrasi = Staff::select('nama')->where('id','=',auth()->user()->id_users)->first();
 
-        $pdf = PDF::loadview('administrasi/pesanan/detail.cetakInvoice',[
-            'order' => $order,
-            'items' => $items,
-            'administrasi' => $administrasi           
-          ]);
-  
-        return $pdf->download('invoice-'.$order->linkInvoice->nomor_invoice.'.pdf');  
+      $pdf = PDF::loadview('administrasi/pesanan/detail.cetakInvoice',[
+          'order' => $order,
+          'items' => $items,
+          'administrasi' => $administrasi           
+        ]);
+
+      return $pdf->download('invoice-'.$order->linkInvoice->nomor_invoice.'.pdf');  
     }
 
     public function cetakSJ(Order $order){
-        $items = OrderItem::where('id_order','=',$order->id)->get();
-        $todayDate = date("d-m-Y");
-        $orderTrack = OrderTrack::first();
-                
-        $mengetahui = Staff::select('nama')->where('id','=',$orderTrack->id_staff_pengonfirmasi)->first();
-        $pengirim = Staff::select('nama')->where('id','=',$orderTrack->id_staff_pengirim)->first();
+      $items = OrderItem::where('id_order','=',$order->id)->get();
+      $todayDate = date("d-m-Y");
+      $orderTrack = OrderTrack::first();
+              
+      $mengetahui = Staff::select('nama')->where('id','=',$orderTrack->id_staff_pengonfirmasi)->first();
+      $pengirim = Staff::select('nama')->where('id','=',$orderTrack->id_staff_pengirim)->first();
 
-        $pdf = PDF::loadview('administrasi/pesanan/detail.cetakSJ',[
-            'order' => $order,
-            'items' => $items,
-            'date' => $todayDate,
-            'pengirim' => $pengirim,
-            'mengetahui' => $mengetahui            
-          ]);
-  
-        return $pdf->download('Surat Jalan-'.date("d F Y").'.pdf'); 
+      $pdf = PDF::loadview('administrasi/pesanan/detail.cetakSJ',[
+          'order' => $order,
+          'items' => $items,
+          'date' => $todayDate,
+          'pengirim' => $pengirim,
+          'mengetahui' => $mengetahui            
+        ]);
 
-        // return view('administrasi/pesanan/detail.cetakSJ', [
-        //     'order' => $order,
-        //     'items' => $items,
-        //     'date' => $todayDate,
-        //     'pengirim' => $pengirim,
-        //     'mengetahui' => $mengetahui            
-        // ]);
+      return $pdf->download('Surat Jalan-'.date("d F Y").'.pdf'); 
+
+      // return view('administrasi/pesanan/detail.cetakSJ', [
+      //     'order' => $order,
+      //     'items' => $items,
+      //     'date' => $todayDate,
+      //     'pengirim' => $pengirim,
+      //     'mengetahui' => $mengetahui            
+      // ]);
     }
 
     public function cetakMemo(Order $order){
-        $items = OrderItem::where('id_order','=',$order->id)->get();
-        $todayDate = date("d-m-Y");
-        $administrasi = Staff::select('nama')->where('id','=',auth()->user()->id_users)->first();
+      $items = OrderItem::where('id_order','=',$order->id)->get();
+      $todayDate = date("d-m-Y");
+      $administrasi = Staff::select('nama')->where('id','=',auth()->user()->id_users)->first();
 
-        $pdf = PDF::loadview('administrasi/pesanan/detail.cetakMemo',[
-            'order' => $order,
-            'items' => $items,
-            'date' => $todayDate,
-            'administrasi' => $administrasi          
-          ]);
-  
-        return $pdf->download('memo-'.$order->linkInvoice->nomor_invoice.'.pdf'); 
-        
-        // return view('administrasi/pesanan/detail.cetakMemo',[
-        //     'order' => $order,
-        //     'items' => $items,
-        //     'date' => $todayDate,
-        //     'administrasi' => $adminsitrasi
-        // ]);
-        
+      $pdf = PDF::loadview('administrasi/pesanan/detail.cetakMemo',[
+          'order' => $order,
+          'items' => $items,
+          'date' => $todayDate,
+          'administrasi' => $administrasi          
+        ]);
+
+      return $pdf->download('memo-'.$order->linkInvoice->nomor_invoice.'.pdf'); 
+      
+      // return view('administrasi/pesanan/detail.cetakMemo',[
+      //     'order' => $order,
+      //     'items' => $items,
+      //     'date' => $todayDate,
+      //     'administrasi' => $adminsitrasi
+      // ]);
     }
     
     public function simpanDataOrderCustomer(Request $request){
-        $cartItems = \Cart::session(auth()->user()->id.$request->route)->getContent();
+      $cartItems = \Cart::session(auth()->user()->id.$request->route)->getContent();
 
-        $order_id=Order::insertGetId([
-            'id_customer' => auth()->user()->id,
-            'status' => 15,
-            'created_at'=> now(),
-        ]);
+      $order_id=Order::insertGetId([
+          'id_customer' => auth()->user()->id_users,
+          'status' => 15,
+          'created_at'=> now(),
+      ]);
 
-        $data = [];
-        foreach($cartItems as $item){
-        array_push($data,[
-            'id_item' => $item->id,
-            'id_order' => $order_id,
-            'kuantitas' => $item->quantity,
-            'harga_satuan' => $item->price,
-            'keterangan' => $request->keterangan??null,
-        ]);
-        }
+      $data = [];
+      foreach($cartItems as $item){
+      array_push($data,[
+          'id_item' => $item->id,
+          'id_order' => $order_id,
+          'kuantitas' => $item->quantity,
+          'harga_satuan' => $item->price,
+          'keterangan' => $request->keterangan??null,
+      ]);
+      }
 
-        OrderTrack::insert([
-            'id_order' => $order_id,
-            'status' => 19,
-            'waktu_order'=> now(),
-            'created_at'=> now(),
-            // 'estimasi_waktu_pengiriman' => '1'
-        ]);
-        OrderItem::insert($data);
+      OrderTrack::insert([
+          'id_order' => $order_id,
+          'status' => 19,
+          'waktu_order'=> now(),
+          'created_at'=> now(),
+          // 'estimasi_waktu_pengiriman' => '1'
+      ]);
+      OrderItem::insert($data);
 
-        \Cart::session(auth()->user()->id.$request->route)->clear();
+      \Cart::session(auth()->user()->id.$request->route)->clear();
 
-        return redirect('/customer/produk')->with('pesanSukses', 'Produk berhasil ditambahkan ke database');
+      return redirect('/customer/produk')->with('pesanSukses', 'Produk berhasil ditambahkan ke database');
     }
 
     public function getListShippingAPI(Request $request){

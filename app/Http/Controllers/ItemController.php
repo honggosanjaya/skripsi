@@ -70,23 +70,6 @@ class ItemController extends Controller
     ], 200);
   }
 
-  public function searchProductAPI($name){
-    try {
-      $items = DB::table('items')->where(strtolower('nama'), 'like', '%'.$name.'%')->orderBy("status", "ASC")->paginate(4);
-      $this->data = $items;
-      $this->status = "success";
-    } catch (QueryException $e) {
-        $this->status = "failed";
-        $this->error = $e;
-    }
-
-    return response()->json([
-      "status" => $this->status,
-      "data" => $this->data,
-      "error" => $this->error
-    ], 200);
-  }
-
   //pengadaan
   public function productList(){
       $products = Item::all();
@@ -95,9 +78,8 @@ class ItemController extends Controller
         "title" => "Stok Marketing - Pengadaan",
       ]);
   }
-//opname
-  public function productListOpname()
-  {
+  //opname
+  public function productListOpname(){
       $products = Item::all();
       return view('administrasi.stok.opname.index', [
         "products" => $products,
@@ -105,16 +87,14 @@ class ItemController extends Controller
       ]);
   }
 
-  public function riwayatOpname()
-  {
+  public function riwayatOpname(){
       $orders = Order::where('id_customer',0)->with(['linkStaff'])->paginate();
       return view('administrasi.stok.opname.riwayat', [
         "orders" => $orders
       ]);
   }
 
-  public function detailRiwayatOpname(Order $order)
-  {
+  public function detailRiwayatOpname(Order $order){
       $order_items = OrderItem::where('id_order',$order->id)->with(['linkItem'])->paginate();
       
       return view('administrasi.stok.opname.riwayatdetail', [
@@ -122,8 +102,7 @@ class ItemController extends Controller
       ]);
   }
 
-  public function simpanDataPengadaan(Request $request)
-  {
+  public function simpanDataPengadaan(Request $request){
     $cartItems = \Cart::session(auth()->user()->id.$request->route)->getContent();
 
     $rules = ([
@@ -157,8 +136,7 @@ class ItemController extends Controller
     return redirect()->route('products.list')->with('pesanSukses', 'Produk berhasil ditambahkan ke database');
   }
 
-  public function simpanDataOpname(Request $request)
-  {
+  public function simpanDataOpname(Request $request){
     $cartItems = \Cart::session(auth()->user()->id.$request->route)->getContent();
 
     $order_id= Order::insertGetId([
@@ -190,29 +168,14 @@ class ItemController extends Controller
     return redirect('/administrasi/stok/')->with('pesanSukses', 'Produk berhasil ditambahkan ke database');
   }
 
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function index()
-    {      
+    public function index(){      
         return view('administrasi.stok.produk.index', [
           'items' => Item::paginate(5),
           "title" => "List Produk"
         ]);
     }
 
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-      // // (Staff::with('linkStaffRole')->find($staff)->linkStaffRole->nama=="supervisor")
-      // dd(Item::with('linkStatus')->linkStatus->nama);
-
+    public function create(){
       return view('administrasi.stok.produk.create', [
         'items' => Item::all(),
         'statuses' => Status::where('tabel', 'items')->get(),
@@ -220,14 +183,7 @@ class ItemController extends Controller
       ]);
     }
 
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
-    public function store(Request $request)
-    {
+    public function store(Request $request){
       $rules = ([
         'nama' => ['required', 'string', 'max:255'],
         'kode_barang' => ['required', 'string', 'max:20', 'unique:items'],
@@ -331,26 +287,13 @@ class ItemController extends Controller
       return redirect('/administrasi/stok/produk') -> with('pesanSukses', 'Berhasil mengubah data');
     }
 
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy($id)
-    {
-        //
-    }
-
-    public function customerIndex()
-    {
+    public function customerIndex(){
         return view('customer/produk',[
             'items' => Item::all()
         ]);
     }
 
-    public function itemSearch()
-    {
+    public function itemSearch(){
         $items = DB::table('items')->where(strtolower('nama'),'like','%'.request('cari').'%')->get();
        
         return view('customer/produk',[
@@ -358,17 +301,14 @@ class ItemController extends Controller
         ]);
     }
 
-    public function indexAdministrasi()
-    {
+    public function indexAdministrasi(){
         $items = Item::paginate(5);
         return view('administrasi/stok.index',[
             'items' => $items
         ]);
-        
     }
 
-    public function cariStok()
-    {
+    public function cariStok(){
         $items = Item::where(strtolower('nama'),'like','%'.request('cari').'%')
         ->orWhere(strtolower('kode_barang'),'like','%'.request('cari').'%')
         ->paginate(5);
@@ -378,15 +318,13 @@ class ItemController extends Controller
         ]);
     }
 
-    public function riwayatAdministrasi()
-    {
+    public function riwayatAdministrasi(){
         $pengadaans = Pengadaan::select('no_pengadaan','no_nota','keterangan','created_at', DB::raw('SUM(harga_total) as harga'))
         ->groupBy('no_pengadaan','no_nota','keterangan','created_at')->paginate(5);
         
         return view('administrasi/stok/riwayat.index',[
             'pengadaans' => $pengadaans
         ]);
-        
     }
 
     public function cariRiwayat()
@@ -417,9 +355,7 @@ class ItemController extends Controller
         ]);
     }
 
-    public function cetakPDF(Pengadaan $pengadaan)
-    {
-      
+    public function cetakPDF(Pengadaan $pengadaan){
         $pengadaans = Pengadaan::join('items','pengadaans.id_item','=','items.id')
         ->where('no_pengadaan','=',$pengadaan->no_pengadaan)
         ->get();
@@ -438,40 +374,37 @@ class ItemController extends Controller
         ]);
 
         return $pdf->download('laporan-NPB-pdf-'.$pengadaan->no_pengadaan.'.pdf');
-
-        
     }
 
-    public function filterProdukApi(Request $request)
-    {
-        $items=Item::orderBy('status','ASC');
-        if ($request->nama??null) {
-          $items=$items->where(strtolower('nama'),'like','%'.$request->nama.'%');
-        }
-        if ($request->filter=='price') {
-          $items=$items->orderBy('harga_satuan',$request->order);
-        }
-        if ($request->filter=='nama') {
-          $items=$items->orderBy('nama',$request->order);
-        }
-        if (($request->filterstockmerah??null)==true) {
-          $items=$items->where('stok', '<=', 'min_stok');
-        }
-        
-        $items=$items->get();
+    public function filterProdukApi(Request $request){
+      $items=Item::orderBy('status','ASC');
+      if ($request->nama??null) {
+        $items=$items->where(strtolower('nama'),'like','%'.$request->nama.'%');
+      }
+      if ($request->filter=='price') {
+        $items=$items->orderBy('harga_satuan',$request->order);
+      }
+      if ($request->filter=='nama') {
+        $items=$items->orderBy('nama',$request->order);
+      }
+      if (($request->filterstockmerah??null)==true) {
+        $items=$items->where('stok', '<=', 'min_stok');
+      }
+      
+      $items=$items->get();
 
-        if(!empty($items)){
-          return response()->json([
-            'html'=> view('customer.c_listproduk', compact('items'))->render(),
-            'status' => 'success'
-          ]);
-        }
-        else{
-          return response()->json([
-            'items' => $items,
-            'status' => 'error'
-          ],404);
-        }
+      if(!empty($items)){
+        return response()->json([
+          'html'=> view('customer.c_listproduk', compact('items'))->render(),
+          'status' => 'success'
+        ]);
+      }
+      else{
+        return response()->json([
+          'items' => $items,
+          'status' => 'error'
+        ],404);
+      }
     }
 
     public function produkSearch(){
@@ -482,5 +415,63 @@ class ItemController extends Controller
         'items' => $items,
         "title" => "List Produk"
       ]);
+    }
+
+    public function searchProductAPI($id, $name){
+      $history = History::where('id_customer',$id)->with('linkItem')->get();
+      $items = $history->pluck('id_item');
+      $items = Item::orderBy("status", "ASC")->whereNotIn('id',$items->toArray())->where(strtolower('nama'), 'like', '%'.$name.'%')->paginate(4);
+  
+      $orderItemUnconfirmed=OrderItem::
+      whereHas('linkOrder',function($q) {
+        $q->where('status', 15);
+      })
+      ->whereHas('linkOrder',function($q) {
+        $q->whereHas('linkOrderTrack',function($q) {
+          $q->where('status','!=', 25);
+        });
+      })
+      ->select('id_item', DB::raw('SUM(kuantitas) as jumlah_blmkonfirmasi'))      
+      ->groupBy('id_item')->pluck('jumlah_blmkonfirmasi','id_item')->all();
+  
+      return response()->json([
+        "status" => "success",
+        "data" => $items,
+        "orderRealTime" => $orderItemUnconfirmed
+      ], 200);
+    }
+
+    public function filterProductAPI($id, $filterby){
+      $history = History::where('id_customer',$id)->with('linkItem')->get();
+      $items = $history->pluck('id_item');
+      $items = Item::orderBy("status", "ASC")->whereNotIn('id',$items->toArray());
+
+      $orderItemUnconfirmed=OrderItem::
+    whereHas('linkOrder',function($q) {
+      $q->where('status', 15);
+    })
+    ->whereHas('linkOrder',function($q) {
+      $q->whereHas('linkOrderTrack',function($q) {
+        $q->where('status','!=', 25);
+      });
+    })
+    ->select('id_item', DB::raw('SUM(kuantitas) as jumlah_blmkonfirmasi'))      
+    ->groupBy('id_item')->pluck('jumlah_blmkonfirmasi','id_item')->all();
+
+      if($filterby == 'hargaterendah'){
+        $items=$items->orderBy('harga_satuan','ASC')->paginate(4);
+      }else if($filterby == 'hargatertinggi'){
+        $items=$items->orderBy('harga_satuan','DESC')->paginate(4);
+      } else if($filterby == 'namaasc'){
+        $items=$items->orderBy('nama','ASC')->paginate(4);
+      } else if($filterby == 'namadsc'){
+        $items=$items->orderBy('nama','DESC')->paginate(4);
+      }
+
+      return response()->json([
+        "status" => "success",
+        "data" => $items,
+        "orderRealTime" => $orderItemUnconfirmed
+      ], 200);
     }
 }

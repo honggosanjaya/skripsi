@@ -221,10 +221,15 @@ const ReturShipper = () => {
         Swal.fire({
           title: 'Success',
           text: response.data.message,
+          showDenyButton: false,
+          showCancelButton: false,
+          confirmButtonText: 'OK',
           icon: 'success',
-        });
-
-        redirect.push('/shipper/jadwal');
+        }).then((result) => {
+          if (result.isConfirmed) {
+            redirect.push('/shipper/jadwal');
+          }
+        })
       })
       .catch(error => {
         setIsLoading(false);

@@ -102,7 +102,7 @@ const LoginReact = () => {
 
           <h1 className='logo text-center fs-1 mb-5'>salesMan</h1>
 
-          <h1 className='fs-3 text-center'>Selamat Datang<span className="iconify ms-2" data-icon="emojione:hand-with-fingers-splayed"></span></h1>
+          <h1 className='fs-3 text-center fw-bold'>Selamat Datang<span className="iconify ms-2" data-icon="emojione:hand-with-fingers-splayed"></span></h1>
           <h2 className='fs-6 text-center'>Aplikasi web salesMan <br /> UD Mandiri</h2>
 
           {errorAuth && <AlertComponent errorMsg={errorAuth} />}

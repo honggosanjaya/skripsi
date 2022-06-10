@@ -16,7 +16,7 @@ use Illuminate\Support\Facades\Validator;
 class CustomerController extends Controller
 {
     public function cariCustomerApi(Request $request){
-      $customer=Customer::where(strtolower('nama'),'like','%'.$request->nama.'%')->where(strtolower('alamat_utama'),'like','%'.$request->alamat_utama.'%')->with('linkDistrict')->get();
+      $customer=Customer::where(strtolower('nama'),'like','%'.$request->nama.'%')->where(strtolower('alamat_utama'),'like','%'.$request->alamat_utama.'%')->with(['linkDistrict','linkCustomerType'])->get();
       if ($customer->count()>0) {
         return response()->json([
           'data' => $customer,
