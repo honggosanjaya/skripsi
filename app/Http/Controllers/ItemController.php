@@ -170,7 +170,7 @@ class ItemController extends Controller
 
     public function index(){      
         return view('administrasi.stok.produk.index', [
-          'items' => Item::paginate(5),
+          'items' => Item::paginate(10),
           "title" => "List Produk"
         ]);
     }
@@ -302,7 +302,7 @@ class ItemController extends Controller
     }
 
     public function indexAdministrasi(){
-        $items = Item::paginate(5);
+        $items = Item::paginate(10);
         return view('administrasi/stok.index',[
             'items' => $items
         ]);
@@ -311,7 +311,7 @@ class ItemController extends Controller
     public function cariStok(){
         $items = Item::where(strtolower('nama'),'like','%'.request('cari').'%')
         ->orWhere(strtolower('kode_barang'),'like','%'.request('cari').'%')
-        ->paginate(5);
+        ->paginate(10);
                
         return view('administrasi/stok.index',[
             'items' => $items
@@ -320,7 +320,7 @@ class ItemController extends Controller
 
     public function riwayatAdministrasi(){
         $pengadaans = Pengadaan::select('no_pengadaan','no_nota','keterangan','created_at', DB::raw('SUM(harga_total) as harga'))
-        ->groupBy('no_pengadaan','no_nota','keterangan','created_at')->paginate(5);
+        ->groupBy('no_pengadaan','no_nota','keterangan','created_at')->paginate(10);
         
         return view('administrasi/stok/riwayat.index',[
             'pengadaans' => $pengadaans
@@ -331,7 +331,7 @@ class ItemController extends Controller
     {
         $pengadaans = Pengadaan::select('no_pengadaan','no_nota','keterangan','created_at', DB::raw('SUM(harga_total) as harga'))
         ->where(strtolower('no_nota'),'like','%'.request('cari').'%')
-        ->groupBy('no_pengadaan','no_nota','keterangan','created_at')->paginate(5);
+        ->groupBy('no_pengadaan','no_nota','keterangan','created_at')->paginate(10);
         
         return view('administrasi/stok/riwayat.index',[
             'pengadaans' => $pengadaans
@@ -409,7 +409,7 @@ class ItemController extends Controller
 
     public function produkSearch(){
       $items =  Item::where(strtolower('nama'),'like','%'.request('cari').'%')
-        ->paginate(5);
+        ->paginate(10);
 
       return view('administrasi.stok.produk.index', [
         'items' => $items,

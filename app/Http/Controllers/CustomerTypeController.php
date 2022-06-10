@@ -14,7 +14,7 @@ class CustomerTypeController extends Controller
 {
     public function index()
     {
-        $jenises = CustomerType::paginate(5);
+        $jenises = CustomerType::paginate(10);
         return view('supervisor/jeniscustomer.index',[
             'jenises' => $jenises            
         ]);
@@ -22,7 +22,7 @@ class CustomerTypeController extends Controller
 
     public function search()
     {
-        $jenises =  CustomerType::where(strtolower('nama'),'like','%'.request('cari').'%')->paginate(5);
+        $jenises =  CustomerType::where(strtolower('nama'),'like','%'.request('cari').'%')->paginate(10);
        
         return view('supervisor/jeniscustomer.index',[
             'jenises' => $jenises

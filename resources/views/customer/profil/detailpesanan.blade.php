@@ -40,7 +40,7 @@
           <div class="container">      
           @foreach($diajukanCustomers as $diajukanCustomer)
             <div class="row border border-1">
-                <h3>{{ $diajukanCustomer->linkOrderItem[0]->linkItem->nama }}</h3>  
+                <h3>{{ $diajukanCustomer->linkOrderItem->count() }} jenis item</h3>  
                 <h5 class="fw-normal">{{ date('d F Y', strtotime($diajukanCustomer->linkOrderTrack->waktu_order)) }}</h5> 
                 <button type="button" class="btn btn-primary w-50 my-2 mx-2" data-bs-toggle="modal" data-bs-target="#order{{ $diajukanCustomer->id }}">
                     Lihat Detail >>>
@@ -112,9 +112,9 @@
           @foreach($diajukanSalesmans as $diajukanSalesman)
             <div class="row border border-1">
                 <h3>{{ $diajukanSalesman->linkInvoice->nomor_invoice }}</h3>  
-                <h5 class="fw-normal">{{ $diajukanSalesman->linkOrderItem[0]->linkItem->nama }}</h5>   
+                <h5 class="fw-normal">{{ $diajukanSalesman->linkOrderItem->count() }} jenis item</h5>   
                 <h5 class="fw-normal">Rp {{ number_format($diajukanSalesman->linkInvoice->harga_total,0,"",".") }}</h5>
-                <h5 class="fw-normal">{{ date('d F Y', strtotime($diajukanSalesman->linkOrderTrack->waktu_dikonfirmasi)) }}</h5> 
+                <h5 class="fw-normal">{{ date('d F Y', strtotime($diajukanSalesman->linkOrderTrack->waktu_diteruskan)) }}</h5> 
                 <button type="button" class="btn btn-primary w-50 my-2 mx-2" data-bs-toggle="modal" data-bs-target="#order{{ $diajukanSalesman->id }}">
                     Lihat Detail >>>
                 </button>
@@ -142,7 +142,7 @@
                                 <h5>Tanggal Diajukan : </h5>
                             </div>
                             <div class="col-5">
-                              <h5 class="fw-normal">{{ date('d F Y', strtotime($diajukanSalesman->linkOrderTrack->waktu_dikonfirmasi)) }}</h5>
+                              <h5 class="fw-normal">{{ date('d F Y', strtotime($diajukanSalesman->linkOrderTrack->waktu_diteruskan)) }}</h5>
                             </div>
                           </div>
                           <div class="row">
@@ -236,7 +236,7 @@
           @foreach($dikonfirmasiAdministrasis as $dikonfirmasiAdministrasi)
             <div class="row border border-1">
                 <h3>{{ $dikonfirmasiAdministrasi->linkInvoice->nomor_invoice }}</h3>  
-                <h5 class="fw-normal">{{ $dikonfirmasiAdministrasi->linkOrderItem[0]->linkItem->nama }}</h5>   
+                <h5 class="fw-normal">{{ $dikonfirmasiAdministrasi->linkOrderItem->count() }} jenis item</h5>   
                 <h5 class="fw-normal">Rp {{ number_format($dikonfirmasiAdministrasi->linkInvoice->harga_total,0,"",".") }}</h5>
                 <h5 class="fw-normal">{{ date('d F Y', strtotime($dikonfirmasiAdministrasi->linkOrderTrack->waktu_dikonfirmasi)) }}</h5> 
                 <button type="button" class="btn btn-primary w-50 my-2 mx-2" data-bs-toggle="modal" data-bs-target="#order{{ $dikonfirmasiAdministrasi->id }}">
@@ -274,7 +274,7 @@
                                 <h5>Dikonfirmasi oleh : </h5>
                             </div>
                             <div class="col-5">
-                              <h5 class="fw-normal">{{ $dikonfirmasiAdministrasi->linkOrderTrack->linkStaffPengonfirmasi[0]->nama }}</h5>
+                              <h5 class="fw-normal">{{ $dikonfirmasiAdministrasi->linkOrderTrack->linkStaffPengonfirmasi->nama }}</h5>
                             </div>
                           </div>
                           <div class="row">
@@ -359,9 +359,9 @@
           @foreach($dalamPerjalanans as $dalamPerjalanan)
             <div class="row border border-1">
                 <h3>{{ $dalamPerjalanan->linkInvoice->nomor_invoice }}</h3>  
-                <h5 class="fw-normal">{{ $dalamPerjalanan->linkOrderItem[0]->linkItem->nama }}</h5>   
+                <h5 class="fw-normal">{{ $dalamPerjalanan->linkOrderItem->count() }} jenis item</h5>   
                 <h5 class="fw-normal">Rp {{ number_format($dalamPerjalanan->linkInvoice->harga_total,0,"",".") }}</h5>
-                <h5 class="fw-normal">{{ date('d F Y', strtotime($dalamPerjalanan->linkOrderTrack->waktu_dikonfirmasi)) }}</h5> 
+                <h5 class="fw-normal">{{ date('d F Y', strtotime($dalamPerjalanan->linkOrderTrack->waktu_berangkat)) }}</h5> 
                 <button type="button" class="btn btn-primary w-50 my-2 mx-2" data-bs-toggle="modal" data-bs-target="#order{{ $dalamPerjalanan->id }}">
                     Lihat Detail >>>
                 </button>
@@ -397,7 +397,7 @@
                                 <h5>Dikonfirmasi oleh : </h5>
                             </div>
                             <div class="col-5">
-                              <h5 class="fw-normal">{{ $dalamPerjalanan->linkOrderTrack->linkStaffPengonfirmasi[0]->nama }}</h5>
+                              <h5 class="fw-normal">{{ $dalamPerjalanan->linkOrderTrack->linkStaffPengonfirmasi->nama }}</h5>
                             </div>
                           </div>
                           <div class="row">
@@ -405,7 +405,7 @@
                                 <h5>Dikirim oleh : </h5>
                             </div>
                             <div class="col-5">
-                              <h5 class="fw-normal">{{ $dalamPerjalanan->linkOrderTrack->linkStaffPengirim[0]->nama }}</h5>
+                              <h5 class="fw-normal">{{ $dalamPerjalanan->linkOrderTrack->linkStaffPengirim->nama }}</h5>
                             </div>
                           </div>
                           <div class="row">
@@ -491,9 +491,9 @@
           @foreach($telahSampais as $telahSampai)
             <div class="row border border-1">
                 <h3>{{ $telahSampai->linkInvoice->nomor_invoice }}</h3>  
-                <h5 class="fw-normal">{{ $telahSampai->linkOrderItem[0]->linkItem->nama }}</h5>   
+                <h5 class="fw-normal">{{ $telahSampai->linkOrderItem->count() }} jenis item</h5>   
                 <h5 class="fw-normal">Rp {{ number_format($telahSampai->linkInvoice->harga_total,0,"",".") }}</h5>
-                <h5 class="fw-normal">{{ date('d F Y', strtotime($telahSampai->linkOrderTrack->waktu_dikonfirmasi)) }}</h5> 
+                <h5 class="fw-normal">{{ date('d F Y', strtotime($telahSampai->linkOrderTrack->waktu_sampai)) }}</h5> 
                 <button type="button" class="btn btn-primary w-50 my-2 mx-2" data-bs-toggle="modal" data-bs-target="#order{{ $telahSampai->id }}">
                     Lihat Detail >>>
                 </button>
@@ -529,7 +529,7 @@
                                 <h5>Dikonfirmasi oleh : </h5>
                             </div>
                             <div class="col-5">
-                              <h5 class="fw-normal">{{ $telahSampai->linkOrderTrack->linkStaffPengonfirmasi[0]->nama }}</h5>
+                              <h5 class="fw-normal">{{ $telahSampai->linkOrderTrack->linkStaffPengonfirmasi->nama }}</h5>
                             </div>
                           </div>
                           <div class="row">
@@ -537,7 +537,7 @@
                                 <h5>Dikirim oleh : </h5>
                             </div>
                             <div class="col-5">
-                              <h5 class="fw-normal">{{ $telahSampai->linkOrderTrack->linkStaffPengirim[0]->nama }}</h5>
+                              <h5 class="fw-normal">{{ $telahSampai->linkOrderTrack->linkStaffPengirim->nama }}</h5>
                             </div>
                           </div>
                           <div class="row">
@@ -623,7 +623,7 @@
           @foreach($ditolaks as $ditolak)
             <div class="row border border-1">
                 <h3>{{ $ditolak->linkInvoice->nomor_invoice }}</h3>  
-                <h5 class="fw-normal">{{ $ditolak->linkOrderItem[0]->linkItem->nama }}</h5>   
+                <h5 class="fw-normal">{{ $ditolak->linkOrderItem->count() }} jenis item</h5>   
                 <h5 class="fw-normal">Rp {{ number_format($ditolak->linkInvoice->harga_total,0,"",".") }}</h5>
                 <h5 class="fw-normal">{{ date('d F Y', strtotime($ditolak->linkOrderTrack->waktu_dikonfirmasi)) }}</h5> 
                 <button type="button" class="btn btn-primary w-50 my-2 mx-2" data-bs-toggle="modal" data-bs-target="#order{{ $ditolak->id }}">

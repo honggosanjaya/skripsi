@@ -1,5 +1,5 @@
 import { getJSON } from 'jquery';
-import { Modal } from 'bootstrap'
+window.bootstrap = require('bootstrap');
 const Swal = require('sweetalert2')
 
 $(document).on('change', '#pengadaan input[name=total_harga]', function () {
@@ -32,7 +32,7 @@ $(document).on('change', '#opname input[name=keterangan]', function () {
 
 $(document).on('click', '#retur-admin .button-submit', function () {
     if ($('#retur-admin select[name=tipe_retur]').val()==1) {
-        var myModal = new Modal(document.getElementById('staticBackdrop'));
+        var myModal = new bootstrap.Modal(document.getElementById('staticBackdrop'));
         myModal.show()
     }else{
         Swal.fire({
@@ -68,3 +68,15 @@ $(document).on('click', '#retur-admin .button-submit-modal', function () {
         }
     })
 });
+if ($('.status-track').length>0) {
+    let statustrack=$('.status-track').data('status')+1
+    for (let index = 19; index <= statustrack; index++) {
+        if(index!=statustrack){
+            $('.s-'+index).addClass('completed');
+
+            $('.s-'+index).addClass('completed');
+        }else{
+            $('.s-'+index).addClass('active');
+        }
+    }
+}

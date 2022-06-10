@@ -18,15 +18,15 @@ class OrderTrack extends Model
       ];
   
     public function linkOrder(){
-        return $this->belongsTo(Order::class,'id','id_order');
+        return $this->belongsTo(Order::class,'id_order');
     }
 
     public function linkStaffPengonfirmasi(){
-        return $this->hasMany(Staff::class,'id','id_staff_pengonfirmasi');
+        return $this->belongsTo(Staff::class,'id_staff_pengonfirmasi');
     }
 
     public function linkStaffPengirim(){
-        return $this->hasMany(Staff::class,'id','id_staff_pengirim');
+        return $this->belongsTo(Staff::class,'id_staff_pengirim');
     }
 
     public function linkStatus(){
@@ -34,6 +34,6 @@ class OrderTrack extends Model
     }
 
     public function linkVehicle(){
-        return $this->belongsTo(Vehicle::class,'id','id_vehicle');
+        return $this->belongsTo(Vehicle::class,'id_vehicle');
     }
 }
