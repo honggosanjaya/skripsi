@@ -26,6 +26,22 @@ use Illuminate\Support\Facades\Route;
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
+Route::post('v1/login', [LoginController::class, 'index']);
+Route::group(['middleware' => 'auth:sanctum'], function(){
+  Route::post('v1/logout', [LoginController::class, 'logoutApi']);
+  Route::get('/user', [LoginController::class, 'checkUser']);
+});
+Route::get('/forceLogout', [LoginController::class, 'logoutUnauthorizedSPAApi']);
+
+Route::prefix('salesman')->group(function() {
+  Route::get('/listitems/{id}', [ItemController::class, 'getListAllProductAPI']);
+  Route::get('/historyitems/{id}', [ItemController::class, 'getListHistoryProductAPI']);
+  Route::post('/updateStock', [ItemController::class, 'updateStockCustomer']);
+
+  // sales cari produk berdasarkan nama
+  Route::get('/listitems/{id}/{name}', [ItemController::class, 'searchProductAPI']); 
+  Route::get('/filteritems/{id}/{filterby}', [ItemController::class, 'filterProductAPI']);
+});
 
 //sales cari customer
 Route::post('/cariCustomer', [CustomerController::class, 'cariCustomerApi']);
@@ -34,9 +50,8 @@ Route::get('/dataFormTrip', [CustomerController::class, 'dataFormTripApi']);
 Route::get('/tripCustomer/{id}', [CustomerController::class, 'dataCustomerApi']);
 Route::post('/tripCustomer', [CustomerController::class, 'simpanCustomerApi']);
 Route::post('/tripCustomer/foto/{id}', [CustomerController::class, 'simpanCustomerFotoApi']);
-// sales cari produk berdasarkan nama
-Route::get('/products/search/{name}', [ItemController::class, 'searchProductAPI']); 
-//customer dan sales melakukan filter item
+
+//customer melakukan filter item
 Route::get('/filterProduk', [ItemController::class, 'filterProdukApi']);
 //customer menambahkan data di keranjang
 Route::post('/customer/order/cart', [CartController::class, 'addToCart']);
@@ -56,29 +71,14 @@ Route::post('/keluarToko/{id}', [OrderController::class, 'keluarTripOrderApi']);
 Route::get('/tipeRetur', [ReturController::class, 'getTypeReturAPI']);
 Route::get('/kodeEvent/{kode}', [EventController::class, 'dataKodeEventAPI']);
 
-Route::get('/forceLogout', [LoginController::class, 'logoutUnauthorizedSPAApi']);
-
-Route::group(['middleware' => 'auth:sanctum'], function(){
-  Route::post('v1/logout', [LoginController::class, 'logoutApi']);
-  Route::get('/user', [LoginController::class, 'checkUser']);
-});
-
-Route::prefix('salesman')->group(function() {
-  Route::get('/listitems/{id}', [ItemController::class, 'getListAllProductAPI']);
-  Route::get('/historyitems/{id}', [ItemController::class, 'getListHistoryProductAPI']);
-  Route::post('/updateStock', [ItemController::class, 'updateStockCustomer']);
-});
-
-Route::post('/shipper/retur', [ReturController::class, 'pengajuanReturAPI']);
-
 Route::prefix('shipper')->group(function() {
+  Route::post('/retur', [ReturController::class, 'pengajuanReturAPI']);
   Route::get('/jadwalPengiriman', [OrderController::class, 'getListShippingAPI']);
   Route::get('/jadwalPengiriman/{id}', [OrderController::class, 'getdetailShippingAPI']);
 });
-Route::get('/test/{id}', [Controller::class, 'test']);
-
-Route::post('v1/login', [LoginController::class, 'index']);
 
 Route::post('/checkpassword/{staff:id}', [AuthController::class, 'checkPasswordAPI']);
 Route::post('/changepassword/{staff:id}', [AuthController::class, 'changePasswordAPI']);
 Route::post('/pesanan/detail/{order:id}/dikirimkan', [OrderController::class, 'konfirmasiPengiriman']);
+
+Route::get('/test/{id}', [Controller::class, 'test']);

@@ -5,7 +5,7 @@ import { Dropdown } from 'react-bootstrap';
 import { AuthContext } from '../../contexts/AuthContext';
 import LoadingIndicator from '../reuse/LoadingIndicator';
 
-const HeaderSales = ({ title, isDashboard, isOrder, lihatKeranjang, toBack, produks, jumlahProdukKeranjang }) => {
+const HeaderSales = ({ title, isDashboard, isOrder, lihatKeranjang, toBack, jumlahProdukKeranjang }) => {
   const { isLoadingAuth, handleLogout } = useContext(AuthContext);
   const history = useHistory();
 
@@ -28,13 +28,12 @@ const HeaderSales = ({ title, isDashboard, isOrder, lihatKeranjang, toBack, prod
               <button className='btn' onClick={goback}>
                 <span className="iconify text-white" data-icon="eva:arrow-back-fill"></span>
               </button>}
-            <h1 className='page_title'>{title}</h1>
+            <h1 className='page_title text-white'>{title}</h1>
           </div>
           {isOrder &&
             <button className="btn" onClick={lihatKeranjang}>
-              <span className="iconify" data-icon="clarity:shopping-cart-solid"></span>
-              {/* {produks && <span>{produks.length}</span>} */}
-              <span>{jumlahProdukKeranjang}</span>
+              <span className="iconify text-white" data-icon="clarity:shopping-cart-solid"></span>
+              <span className='text-white fw-bold'>{jumlahProdukKeranjang}</span>
             </button>
           }
         </Fragment>
@@ -74,6 +73,5 @@ export default HeaderSales;
 HeaderSales.defaultProps = {
   isDashboard: false,
   isOrder: false,
-  produks: null,
   jumlahProdukKeranjang: 0
 }

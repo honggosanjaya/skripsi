@@ -4,7 +4,7 @@ import { Button, Modal } from 'react-bootstrap';
 const KeluarToko = ({ handleShow, alasanPenolakan, setAlasanPenolakan, handleClose, handleKeluarToko, show }) => {
   return (
     <div className="my-5">
-      <h1 className="fs-6">Customer tidak jadi pesan?</h1>
+      <h1 className="fs-6 fw-bold">Customer tidak jadi pesan?</h1>
       <Button variant="danger" onClick={handleShow}>
         Keluar
       </Button>

@@ -221,10 +221,15 @@ const ReturShipper = () => {
         Swal.fire({
           title: 'Success',
           text: response.data.message,
+          showDenyButton: false,
+          showCancelButton: false,
+          confirmButtonText: 'OK',
           icon: 'success',
-        });
-
-        redirect.push('/shipper/jadwal');
+        }).then((result) => {
+          if (result.isConfirmed) {
+            redirect.push('/shipper/jadwal');
+          }
+        })
       })
       .catch(error => {
         setIsLoading(false);
@@ -243,7 +248,7 @@ const ReturShipper = () => {
         {isLoading && <LoadingIndicator />}
         <button className="btn btn-primary" onClick={handleToggleShowProduct}>{isShowProduct ? 'Sembunyikan Produk' : 'Lihat Produk'}</button>
         {isShowProduct &&
-          <div className="retur-product_wrapper my-3">
+          <div className="retur-product_wrapper my-3 border">
             {newHistoryItems.map((item) => (
               <div className="list_history-item p-3" key={item.id}>
                 <div className="d-flex align-items-center">
@@ -279,10 +284,8 @@ const ReturShipper = () => {
             ))}
           </div>}
 
-
-        <div className="mt-3">
+        {cartItems.length > 0 && <div className="mt-3">
           <h1 className='fs-5 fw-bold'>Rincian Retur</h1>
-          {cartItems.length == 0 && <small className='text-danger d-block text-center'>Tidak ada item</small>}
           {cartItems.map((item) => (
             <div className="info-product_retur mt-2" key={item.id}>
               <div className="d-flex align-items-center border-bottom">
@@ -298,7 +301,7 @@ const ReturShipper = () => {
             </div>
           ))}
           {cartItems.length > 0 && <button className="btn btn-warning mt-3 float-end" onClick={handlePengajuanRetur}>Ajukan Retur</button>}
-        </div>
+        </div>}
       </div>
     </main>
   );

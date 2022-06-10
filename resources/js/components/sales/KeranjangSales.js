@@ -21,7 +21,7 @@ const KeranjangSales = ({ location }) => {
   const [successMessage, setSuccessMessage] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
 
-  const [estimasiWaktuPengiriman, setEstimasiWaktuPengiriman] = useState(null);
+  const [estimasiWaktuPengiriman, setEstimasiWaktuPengiriman] = useState('');
   const [keteranganOrderItem, setKeteranganOrderItem] = useState(null);
   const [idCustomer, setIdCustomer] = useState(null);
   const [limitPembelian, setLimitPembelian] = useState(0);
@@ -33,9 +33,10 @@ const KeranjangSales = ({ location }) => {
   const [errorKodeEvent, setErrorKodeEvent] = useState(null);
   const [hargaPromo, setHargaPromo] = useState(0);
 
+  const [errorProdukDlmKeranjang, setErrorProdukDlmKeranjang] = useState(false);
   const { state: idTrip } = location;
-
   let totalHarga = 0;
+  let jmlProdukError = 0;
 
   const goback = () => {
     history.push({
@@ -60,12 +61,8 @@ const KeranjangSales = ({ location }) => {
       .catch(error => {
         setErrorMessage(error.message);
       });
-
-
-    console.log(idTrip);
+    console.log('idTrip', idTrip);
   }, [])
-
-
 
   useEffect(() => {
     if (idCustomer) {
@@ -89,6 +86,15 @@ const KeranjangSales = ({ location }) => {
   useEffect(() => {
     produks.map((produk) => {
       setIdCustomer(produk.customer);
+      if (produk.error) {
+        jmlProdukError = jmlProdukError + 1;
+      }
+
+      if (jmlProdukError > 0) {
+        setErrorProdukDlmKeranjang(true);
+      } else {
+        setErrorProdukDlmKeranjang(false);
+      }
     })
   }, [produks]);
 
@@ -231,7 +237,7 @@ const KeranjangSales = ({ location }) => {
               },
             })
               .then(response => {
-                console.log(response.message);
+                console.log('after checkout', response.message);
                 history.push('/salesman');
               })
           } else {
@@ -239,10 +245,18 @@ const KeranjangSales = ({ location }) => {
           }
         })
         .catch(error => {
-          console.log(error.message);
+          console.log('after checkout', error.message);
           setIsLoading(false);
           setErrorMessage(error.message);
         });
+    }
+  }
+
+  const handleChangeEstimasiPengiriman = (val) => {
+    if (val >= 0) {
+      setEstimasiWaktuPengiriman(val);
+    } else {
+      setEstimasiWaktuPengiriman(0);
     }
   }
 
@@ -278,7 +292,6 @@ const KeranjangSales = ({ location }) => {
                   <span className="custom_checkbox"></span>
                 </label>
               </div>
-
               {produk.gambar ? <img src={`${urlAsset}/storage/item/${produk.gambar}`} className="item_image" />
                 : <img src={`${urlAsset}/images/default_produk.png`} className="item_image" />}
             </div>
@@ -286,21 +299,22 @@ const KeranjangSales = ({ location }) => {
             <div className={produk.isSelected ? "grid_item" : ""}>
               <div className="detail_item pl-3">
                 <h5 className={`${produk.isSelected ? 'elipsis' : ''}`}>{produk.nama}</h5>
-
                 <div className="d-flex flex-row mt-3 mb-2">
-                  <button className="btn btn-primary"
-                    disabled={produk.jumlah === 1 ? true : false}
-                    onClick={() => kurangJumlahProduk(produk, produk.orderId)}> - </button>
+                  {produk.error ? <button className="btn btn-primary" disabled={true}> - </button>
+                    : <button className="btn btn-primary"
+                      disabled={produk.jumlah === 1 ? true : false}
+                      onClick={() => kurangJumlahProduk(produk, produk.orderId)}> - </button>}
                   <input type="text" className="text-center"
                     style={{ width: `${produk.jumlah.toString().length + 1}ch` }}
                     value={produk.jumlah}
                     disabled
                   />
-                  <button className="btn btn-primary"
-                    onClick={() => tambahJumlahProduk(produk, produk.orderId)}> + </button>
+                  {produk.error ? <button className="btn btn-primary" disabled={true}> + </button> :
+                    <button className="btn btn-primary"
+                      onClick={() => tambahJumlahProduk(produk, produk.orderId)}> + </button>}
                 </div>
-
                 <div>{convertPrice(produk.harga)}</div>
+                {produk.error && <small className="text-danger">{produk.error}</small>}
               </div>
 
               {produk.isSelected &&
@@ -318,12 +332,12 @@ const KeranjangSales = ({ location }) => {
             <label className="form-label">Estimasi Waktu Pengiriman</label>
             <div className="input-group">
               <input type="number" className="form-control"
-                value={estimasiWaktuPengiriman || ''}
-                onChange={(e) => setEstimasiWaktuPengiriman(e.target.value)}
+                value={estimasiWaktuPengiriman}
+                onChange={(e) => handleChangeEstimasiPengiriman(e.target.value)}
               />
               <button className="btn btn-secondary">Hari</button>
             </div>
-            {!estimasiWaktuPengiriman && <p className='text-danger'>Estimasi waktu pengiriman wajib diisi</p>}
+            {!estimasiWaktuPengiriman && <small className='text-danger'>Estimasi waktu pengiriman wajib diisi</small>}
 
             <label className="form-label mt-3">Keterangan Pesanan</label>
             <input type="text" className="form-control"
@@ -349,9 +363,13 @@ const KeranjangSales = ({ location }) => {
                 <option value={pilihan.id} key={index}>{pilihan.nama}</option>
               ))}
             </select>
+
             {produks.map((produk) => {
               totalHarga = totalHarga + (produk.jumlah * produk.harga);
             })}
+
+
+
             <Table striped bordered hover className="mb-btnBottom">
               <thead>
                 <tr>
@@ -384,7 +402,7 @@ const KeranjangSales = ({ location }) => {
                 <p className='mb-0'>Total Pesanan:</p>
                 <h1 className={`mb-0 fs-4 `}>{convertPrice(totalHarga - (totalHarga * (dataCustType.diskon ?? 0) / 100) - hargaPromo)}</h1>
               </div>
-              <button className='btn btn-success' onClick={checkout}>CHECKOUT</button>
+              {(errorProdukDlmKeranjang || estimasiWaktuPengiriman == '') ? <button className='btn btn-success' disabled={true}>CHECKOUT</button> : <button className='btn btn-success' onClick={checkout}>CHECKOUT</button>}
             </div>
           </Fragment>
         }

@@ -14,10 +14,12 @@ import { UserContext } from '../../contexts/UserContext';
 import HitungStok from './HitungStok';
 import { HitungStokContext } from '../../contexts/HitungStokContext';
 import KeluarToko from './KeluarToko';
+import FilterItem from './FilterItem';
 
 const Pemesanan = ({ location }) => {
   const { idCust } = useParams();
   const [urlApi, setUrlApi] = useState(`api/salesman/listitems/${idCust}`);
+  const [filterBy, setFilterBy] = useState(null);
   const { page, setPage, erorFromInfinite, paginatedData, isReachedEnd, orderRealTime } = useInfinite(`${urlApi}`, 4);
   const { token } = useContext(AuthContext);
   const { dataUser } = useContext(UserContext);
@@ -31,6 +33,7 @@ const Pemesanan = ({ location }) => {
   const [koordinat, setKoordinat] = useState(null);
   const [idTrip, setIdTrip] = useState(null);
   const [show, setShow] = useState(false);
+  const [showFilter, setShowFilter] = useState(false);
   const [alasanPenolakan, setAlasanPenolakan] = useState(null);
   const { state: idTripTetap } = location;
   const jamMasuk = Date.now() / 1000;
@@ -40,6 +43,17 @@ const Pemesanan = ({ location }) => {
   const [jmlItem, setJmlItem] = useState(null);
   let jumlahProdukKeranjang = 0;
   const [jumlahOrderRealTime, setJumlahOrderRealTime] = useState([]);
+
+  const [isHandleKodeCust, setIsHandleKodeCust] = useState(false);
+  const [shouldKeepOrder, setShouldKeepOrder] = useState(false);
+
+  useEffect(() => {
+    if (filterBy) {
+      setUrlApi(`api/salesman/filteritems/${idCust}/${filterBy}`);
+    } else {
+      setUrlApi(`api/salesman/listitems/${idCust}`);
+    }
+  }, [filterBy])
 
   useEffect(() => {
     produks.map((produk) => {
@@ -86,11 +100,6 @@ const Pemesanan = ({ location }) => {
   }, []);
 
   useEffect(() => {
-    // console.log(koordinat);
-    // console.log('trip tetap', idTripTetap);
-    // console.log('tp', isNaN(null));
-    // console.log(idTrip == null);
-    // if (dataUser.nama && koordinat && isNaN(idTripTetap) && idTrip == null) {
     if (dataUser.nama && koordinat && idTripTetap == null && idTrip == null) {
       axios({
         method: "post",
@@ -141,8 +150,10 @@ const Pemesanan = ({ location }) => {
     </main>
   )
 
-  const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
+  const handleClose = () => setShow(false);
+  const handleShowFilter = () => setShowFilter(true);
+  const handleCloseFilter = () => setShowFilter(false);
 
   const handleKeluarToko = () => {
     console.log('idTrip', idTrip);
@@ -196,8 +207,8 @@ const Pemesanan = ({ location }) => {
     })
       .then((response) => {
         console.log('handlekode', response.data);
-
         if (response.data.status === 'success') {
+          setIsHandleKodeCust(true);
           setErrorKodeCustomer(null);
           const dataOrderItems = response.data.dataOrderItem;
           const dataOrder = response.data.dataOrder;
@@ -205,33 +216,66 @@ const Pemesanan = ({ location }) => {
           if (dataOrder.id_customer == idCust) {
             setOrderId(dataOrder.id);
             dataOrderItems.map((dataOrderItem) => {
-              const produk = {
-                id: dataOrderItem.id_item,
-                orderId: dataOrder.id,
-                customer: dataOrder.id_customer,
-                harga: dataOrderItem.harga_satuan,
-                jumlah: dataOrderItem.kuantitas,
-                // gambar
-              };
-              KeranjangDB.updateProduk(produk);
-              getAllProduks();
+              console.log('data item', dataOrderItem.link_item);
+              if (dataOrderItem.link_item.stok < dataOrderItem.kuantitas) {
+                const produk = {
+                  id: dataOrderItem.id_item,
+                  orderId: dataOrder.id,
+                  customer: dataOrder.id_customer,
+                  harga: dataOrderItem.harga_satuan,
+                  jumlah: dataOrderItem.kuantitas,
+                  gambar: dataOrderItem.link_item.gambar,
+                  error: 'Stok tidak mencukupi'
+                };
+                KeranjangDB.updateProduk(produk);
+                getAllProduks();
+              } else if (dataOrderItem.link_item.status == 11) {
+                const produk = {
+                  id: dataOrderItem.id_item,
+                  orderId: dataOrder.id,
+                  customer: dataOrder.id_customer,
+                  harga: dataOrderItem.harga_satuan,
+                  jumlah: dataOrderItem.kuantitas,
+                  gambar: dataOrderItem.link_item.gambar,
+                  error: 'Item sudah tidak aktif'
+                };
+                KeranjangDB.updateProduk(produk);
+                getAllProduks();
+              } else {
+                const produk = {
+                  id: dataOrderItem.id_item,
+                  orderId: dataOrder.id,
+                  customer: dataOrder.id_customer,
+                  harga: dataOrderItem.harga_satuan,
+                  jumlah: dataOrderItem.kuantitas,
+                  gambar: dataOrderItem.link_item.gambar
+                };
+                KeranjangDB.updateProduk(produk);
+                getAllProduks();
+              }
             })
           }
           else {
             setErrorKodeCustomer('kode customer tidak sesusai');
+            setIsHandleKodeCust(false);
           }
         } else {
           throw Error(response.data.message);
         }
-
       })
       .catch((error) => {
         console.log(error.message);
         setErrorKodeCustomer(error.message);
+        setIsHandleKodeCust(false);
       });
   }
 
-  const handleTambahJumlah = (item) => {
+  const handleTambahJumlah = (item, keep) => {
+    setIsHandleKodeCust(false);
+    if (keep == true) {
+      setShouldKeepOrder(true);
+    }
+
     const exist = produks.find((x) => x.id === item.id);
 
     if (exist && item.stok > 0) {
@@ -265,7 +309,11 @@ const Pemesanan = ({ location }) => {
     }
   }
 
-  const handleKurangJumlah = (item) => {
+  const handleKurangJumlah = (item, keep) => {
+    setIsHandleKodeCust(false);
+    if (keep == true) {
+      setShouldKeepOrder(true);
+    }
     const exist = produks.find((x) => x.id === item.id);
     if (exist && exist.jumlah > 1) {
       const produk = {
@@ -292,6 +340,7 @@ const Pemesanan = ({ location }) => {
 
   const checkifexist = (item) => {
     const exist = produks.find((x) => x.id === item.id);
+
     if (exist) {
       if (isNaN(exist.jumlah)) return 0
       else return exist.jumlah;
@@ -299,7 +348,12 @@ const Pemesanan = ({ location }) => {
     else return 0;
   }
 
-  const handleValueChange = (item, newVal) => {
+  const handleValueChange = (item, newVal, keep) => {
+    setIsHandleKodeCust(false);
+    if (keep == true) {
+      setShouldKeepOrder(true);
+    }
+
     const exist = produks.find((x) => x.id === item.id);
     if (exist) {
       if (isNaN(newVal) == false) {
@@ -371,25 +425,37 @@ const Pemesanan = ({ location }) => {
   const handleCariProduk = (e) => {
     e.preventDefault();
     if (kataKunci == '') {
-      setUrlApi(`api/salesman/listitems/${idCust}`)
+      setUrlApi(`api/salesman/listitems/${idCust}`);
     } else if (kataKunci !== '') {
-      setUrlApi(`api/products/search/${kataKunci}`);
+      setUrlApi(`api/salesman/listitems/${idCust}/${kataKunci}`);
+    }
+  }
+
+  const toBack = () => {
+    hapusSemuaProduk();
+    history.push('/salesman');
+  }
+
+  const handleFilterChange = (newFilter) => {
+    setFilterBy(newFilter);
+    if (newFilter != null) {
+      setShouldKeepOrder(false);
     }
   }
 
   return (
     <main className='page_main'>
-      <HeaderSales title="Salesman" isOrder={true} lihatKeranjang={lihatKeranjang} produks={produks} jumlahProdukKeranjang={jmlItem} />
+      <HeaderSales title="Order" isOrder={true} lihatKeranjang={lihatKeranjang} jumlahProdukKeranjang={jmlItem} toBack={toBack} />
       <div className="page_container pt-4">
         <div className="kode_customer">
-          <p>Sudah punya kode customer?</p>
+          <p className='fw-bold'>Sudah punya kode customer?</p>
           <form onSubmit={handleKodeCustomer}>
             <div className="input-group">
               <input type="text" className="form-control"
                 value={kodePesanan}
                 onChange={(e) => setKodePesanan(e.target.value)}
               />
-              <button type="submit" className="btn btn-primary">Proses</button>
+              <button type="submit" className="btn btn-primary" disabled={kodePesanan !== '' ? false : true}>Proses</button>
             </div>
           </form>
           {errorKodeCustomer && <p className='text-danger'>{errorKodeCustomer}</p>}
@@ -404,8 +470,17 @@ const Pemesanan = ({ location }) => {
           setAlasanPenolakan={setAlasanPenolakan} handleClose={handleClose}
           handleKeluarToko={handleKeluarToko} show={show} />
 
+        <FilterItem showFilter={showFilter} handleCloseFilter={handleCloseFilter}
+          filterBy={filterBy} setFilterBy={setFilterBy} handleFilterChange={handleFilterChange} />
+
         <div>
-          <h1 className='fs-4'>Item</h1>
+          <div className="d-flex justify-content-between mb-3">
+            <h1 className='fs-4 mb-0 fw-bold'>Item</h1>
+            <button className='btn' onClick={handleShowFilter}>
+              <span className="iconify fs-3" data-icon="ci:filter"></span>
+            </button>
+          </div>
+
           <div className='mb-3'>
             <form onSubmit={handleCariProduk}>
               <div className="input-group">
@@ -427,7 +502,10 @@ const Pemesanan = ({ location }) => {
             {paginatedData &&
               <ProductSales listItems={paginatedData} handleTambahJumlah={handleTambahJumlah}
                 checkifexist={checkifexist} handleValueChange={handleValueChange}
-                handleKurangJumlah={handleKurangJumlah} orderRealTime={orderRealTime} />
+                handleKurangJumlah={handleKurangJumlah} orderRealTime={orderRealTime}
+                produkDlmKeranjang={produks} isHandleKodeCust={isHandleKodeCust}
+                shouldKeepOrder={shouldKeepOrder}
+              />
             }
           </InfiniteScroll>
         </div>

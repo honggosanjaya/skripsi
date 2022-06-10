@@ -9,7 +9,7 @@ const useInfinite = (url, per_page) => {
 
   const fetcher = (url) =>
     axios({
-      method: "get",
+      method: 'get',
       url: url,
       headers: {
         Accept: "application/json",
@@ -17,10 +17,11 @@ const useInfinite = (url, per_page) => {
       },
     })
       .then((response) => {
-        console.log('item', response.data);
+        console.log('infinite item', response.data);
         setOrderRealTime(response.data.orderRealTime);
         return response.data.data.data;
       })
+
 
   const getKey = (pageIndex, previousPageData) => {
     pageIndex = pageIndex + 1;

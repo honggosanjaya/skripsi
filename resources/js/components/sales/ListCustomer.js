@@ -18,13 +18,13 @@ const ListCustomer = ({ listCustomer, isOrder }) => {
             <div className="container-fluid">
               <div className="row">
                 <div className="col-5">
-                  {data.nama}
+                  {data.nama} | {data.link_customer_type.nama}
                 </div>
                 <div className="col-4">
                   {data.full_alamat}
                 </div>
                 <div className="col-3">
-                  {data.id_wilayah}
+                  {data.link_district.nama}
                 </div>
               </div>
             </div>
