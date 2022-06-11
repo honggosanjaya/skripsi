@@ -2,14 +2,10 @@ import React, { Component, useEffect, useState } from 'react';
 import { convertPrice } from "../reuse/HelperFunction";
 import urlAsset from '../../config';
 
-const ProductSales = ({ listItems, handleTambahJumlah, checkifexist, handleValueChange, handleKurangJumlah, orderRealTime, produkDlmKeranjang, isHandleKodeCust, shouldKeepOrder }) => {
-  // const [produkCart, setProdukCart] = useState(produkDlmKeranjang);
-
+const ProductSales = ({ listItems, handleTambahJumlah, checkifexist, handleValueChange, handleKurangJumlah, orderRealTime, produkDlmKeranjang, isHandleKodeCust, shouldKeepOrder, diskonTypeCust }) => {
   const [orderItems, setOrderItems] = useState([]);
 
   useEffect(() => {
-    // console.log('isHandleKodeCust', isHandleKodeCust);
-    // console.log('shouldKeepOrder', shouldKeepOrder);
     if (isHandleKodeCust) {
       let same = listItems.filter(function (o) {
         return produkDlmKeranjang.some(function (o2) {
@@ -33,11 +29,9 @@ const ProductSales = ({ listItems, handleTambahJumlah, checkifexist, handleValue
     }
   }, [isHandleKodeCust, listItems])
 
-
-
   return (
     <div className="productCard_wrapper">
-      {(isHandleKodeCust || shouldKeepOrder) && orderItems.map((item, index) => (
+      {(isHandleKodeCust || shouldKeepOrder) && orderItems.map((item) => (
         <div className={`card product_card ${(item.status == 11 || item.stok == 0) ? 'inactive_product' : ''}`} key={item.id}>
           {item.stok < 10 && item.stok > 0 && item.status != 11 && <span className="badge badge_stok">Stok Menipis</span>}
           {(item.status == 11 || item.stok == 0) &&
@@ -47,17 +41,17 @@ const ProductSales = ({ listItems, handleTambahJumlah, checkifexist, handleValue
           <div className="product_img">
             {item.gambar ?
               <img src={`${urlAsset}/storage/item/${item.gambar}`} className="img-fluid" /> :
-              <img src={`${urlAsset}/images/default_produk.png`} className="img-fluid" />
-            }
+              <img src={`${urlAsset}/images/default_produk.png`} className="img-fluid" />}
           </div>
           <div className="product_desc">
             <h1 className='nama_produk fs-6'>{item.nama}</h1>
-            <p className='mb-0'>{convertPrice(item.harga_satuan)} / {item.satuan}</p>
+            <p className='mb-0 text-decoration-line-through'>{convertPrice(item.harga_satuan)}</p>
+            <p className='mb-0'><b className='text-danger'>{convertPrice(item.harga_satuan - (item.harga_satuan * (diskonTypeCust ?? 0) / 100))}</b> / {item.satuan}</p>
             <p className='mb-0'>Stok: </p>
             <table className='table table-bordered border-secondary mb-0'>
               <thead>
                 <tr>
-                  <th scope="col">Real Time</th>
+                  <th scope="col">R.Time</th>
                   <th scope="col">Today</th>
                 </tr>
               </thead>
@@ -85,7 +79,7 @@ const ProductSales = ({ listItems, handleTambahJumlah, checkifexist, handleValue
         </div>
       ))}
 
-      {(!isHandleKodeCust && !shouldKeepOrder) && listItems.map((item, index) => (
+      {(!isHandleKodeCust && !shouldKeepOrder) && listItems.map((item) => (
         <div className={`card product_card ${(item.status == 11 || item.stok == 0) ? 'inactive_product' : ''}`} key={item.id}>
           {item.stok < 10 && item.stok > 0 && item.status != 11 && <span className="badge badge_stok">Stok Menipis</span>}
           {(item.status == 11 || item.stok == 0) &&
@@ -99,13 +93,14 @@ const ProductSales = ({ listItems, handleTambahJumlah, checkifexist, handleValue
             }
           </div>
           <div className="product_desc">
-            <h1 className='nama_produk fs-6'>{item.nama}</h1>
-            <p className='mb-0'>{convertPrice(item.harga_satuan)} / {item.satuan}</p>
+            <h1 className='nama_produk fs-6 fw-bold'>{item.nama}</h1>
+            <p className='mb-0 text-decoration-line-through'>{convertPrice(item.harga_satuan)}</p>
+            <p className='mb-0'><b className='text-danger'>{convertPrice(item.harga_satuan - (item.harga_satuan * (diskonTypeCust ?? 0) / 100))}</b> / {item.satuan}</p>
             <p className='mb-0'>Stok: </p>
             <table className='table table-bordered border-secondary mb-0'>
               <thead>
                 <tr>
-                  <th scope="col">Real Time</th>
+                  <th scope="col">R.Time</th>
                   <th scope="col">Today</th>
                 </tr>
               </thead>

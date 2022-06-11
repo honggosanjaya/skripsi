@@ -111,7 +111,7 @@ const DashboardSales = () => {
                 </div>
               </form>
               <div className="box-list-customer mt-3">
-                <h1 className={`fs-6 fw-bold text-center ${dataShow == 'active' ? 'd-block' : 'd-none'}`}>Data Tidak Ditemukan</h1>
+                <small className={`text-center text-danger fw-bold ${dataShow == 'active' ? 'd-block' : 'd-none'}`}>Data Tidak Ditemukan</small>
                 <ListCustomer listCustomer={listCustomer} isOrder={isOrder} />
               </div>
 

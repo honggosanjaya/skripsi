@@ -91,6 +91,75 @@ label {
     margin-bottom: 0;
 }
 
+// ============= LETTER ANIMATION ============
+@import url("https://fonts.googleapis.com/css2?family=Permanent+Marker&display=swap");
+
+.word span {
+    font-family: "Permanent Marker", cursive;
+    cursor: pointer;
+    display: inline-block;
+    font-size: 3rem;
+    &:nth-child(4n + 0).active {
+        animation: anim1 1.5s ease-out;
+        transform-origin: bottom left;
+    }
+    &:nth-child(4n + 1).active {
+        animation: anim2 1s ease-in-out;
+        transform-origin: bottom center;
+    }
+    &:nth-child(4n + 2).active {
+        animation: anim3 1s ease-out;
+    }
+    &:nth-child(4n + 3).active {
+        animation: anim4 1.5s linear;
+    }
+}
+
+@keyframes anim1 {
+    0%,
+    100% {
+        transform: rotate(0deg);
+    }
+    30%,
+    60% {
+        transform: rotate(-45deg);
+    }
+}
+
+@keyframes anim2 {
+    10%,
+    35% {
+        transform: scale(2, 0.2) translate(0, 0);
+    }
+    45%,
+    50% {
+        transform: scale(1) translate(0, -150px);
+    }
+    80% {
+        transform: scale(1) translate(0, 0);
+    }
+}
+
+@keyframes anim3 {
+    20%,
+    80% {
+        transform: rotateY(180deg);
+    }
+    100% {
+        transform: rotateY(360deg);
+    }
+}
+
+@keyframes anim4 {
+    10%,
+    25% {
+        transform: translateY(-10vh) scaleY(1);
+    }
+    90% {
+        transform: translateY(-3vh) scaleY(1);
+    }
+}
+
 // ==== MODAL =======
 .modal-dialog {
     max-width: 375px;
@@ -115,6 +184,10 @@ label {
 
     .row {
         flex-grow: 1;
+    }
+
+    .accordion-button {
+        padding: 0.8rem;
     }
 }
 
@@ -171,22 +244,12 @@ label {
 
 // ================ HEADER ===================
 .header_mobile {
-    // background-color: #9921e8;
-    // background-image: linear-gradient(315deg, #9921e8 0%, #5f72be 74%);
     padding: 1rem;
     max-height: 90px;
-
-    // background-color: #6c33a3;
-    // background-image: linear-gradient(316deg, #6c33a3 0%, #8241b8 74%);
-
-    // background: linear-gradient(359.62deg, #00cbb3 -11.41%, #5eb6de 178.68%);
-
     background: linear-gradient(359.62deg, #1e82c5 -11.41%, #8dc9f2 178.68%);
-
     .iconify {
         font-size: 2rem;
     }
-
     .page_title {
         font-size: 1.5rem;
         margin-bottom: 0;
@@ -204,10 +267,6 @@ label {
 
 .preview_tempatUsaha {
     max-width: 100%;
-}
-
-.trip_aksi {
-    float: right;
 }
 
 .item_image {
@@ -341,160 +400,115 @@ label {
     }
 }
 
+// ========= SWEET ALERT ===========
+.swal2-popup {
+    max-width: 375px !important;
+    position: relative;
+    left: -10px;
+}
+.swal2-title {
+    font-size: 1.2rem !important;
+    padding: 0.5em 1em 0 !important;
+}
+.swal2-html-container {
+    font-size: 1rem !important;
+}
+
+// ============= CART SALES ============
 .cart_item {
     display: grid;
     grid-template-columns: 1fr 2fr;
+    column-gap: 1rem;
     background-color: #fff;
     padding: 1rem 0;
-}
+    border-bottom: 1px solid lightgray;
+    .detail_item {
+        .elipsis {
+            overflow: hidden;
+            text-overflow: ellipsis;
+            display: -webkit-box;
+            -webkit-line-clamp: 1;
+            line-clamp: 1;
+            -webkit-box-orient: vertical;
+        }
+        input {
+            min-width: 30px;
+            border: 0;
+            border-bottom: 1px solid royalblue;
+            background-color: transparent;
+            margin: 0 0.625rem;
+            font-size: 0.875rem;
+        }
+    }
+    .form-check {
+        margin-top: 1.25rem;
+        padding-left: 0;
+    }
 
-.form-check {
-    margin-top: 1.25rem;
-}
+    .customCheckbox_wrapper {
+        position: relative;
+        padding-left: 2.5rem;
+        cursor: pointer;
+        font-weight: 400;
+    }
 
-.customCheckbox_wrapper {
-    position: relative;
-    padding-left: 2.5rem;
-    cursor: pointer;
-    font-weight: 400;
-}
+    input[type="checkbox"] {
+        visibility: hidden;
+    }
 
-input[type="checkbox"] {
-    visibility: hidden;
-}
-
-.custom_checkbox {
-    position: absolute;
-    top: 50%;
-    left: 0;
-    transform: translateY(-50%);
-    height: 1.5rem;
-    width: 1.5rem;
-    background-color: #fbfbfb;
-    border: 1px solid #bebebe;
-    border-radius: 4px;
-    &:after {
-        content: "";
+    .custom_checkbox {
         position: absolute;
-        display: none;
-        left: 50%;
         top: 50%;
-        transform: translate(-50%, -50%);
-        height: 1.2rem;
-        width: 1.2rem;
-        background: url("https://api.iconify.design/icon-park-outline/check-small.svg?color=%23fff")
-            no-repeat center center / contain;
+        left: 0;
+        transform: translateY(-50%);
+        height: 1.5rem;
+        width: 1.5rem;
+        background-color: #fbfbfb;
+        border: 1px solid #bebebe;
+        border-radius: 4px;
+        &:after {
+            content: "";
+            position: absolute;
+            display: none;
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%, -50%);
+            height: 1.2rem;
+            width: 1.2rem;
+            background: url("https://api.iconify.design/icon-park-outline/check-small.svg?color=%23fff")
+                no-repeat center center / contain;
+        }
     }
-}
 
-input:checked ~ .custom_checkbox {
-    background-color: #eb5757;
-    border-color: #eb5757;
-    &:after {
-        display: block;
+    input:checked ~ .custom_checkbox {
+        background-color: #eb5757;
+        border-color: #eb5757;
+        &:after {
+            display: block;
+        }
     }
-}
 
-.grid_item {
-    display: grid;
-    grid-template-columns: 4fr 1fr;
-    column-gap: 1rem;
-}
+    .grid_item {
+        display: grid;
+        grid-template-columns: 4fr 1fr;
+        column-gap: 1rem;
+    }
 
-.detail_item {
-    .elipsis {
-        overflow: hidden;
-        text-overflow: ellipsis;
-        display: -webkit-box;
-        -webkit-line-clamp: 1;
-        line-clamp: 1;
-        -webkit-box-orient: vertical;
+    .btn_deleteItem {
+        width: 2.25rem;
+        height: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 0;
     }
-    input {
-        min-width: 30px;
-        border: 0;
-        border-bottom: 1px solid royalblue;
-        background-color: transparent;
-        margin: 0 0.625rem;
-        font-size: 0.875rem;
-    }
-}
 
-.btn_deleteItem {
-    width: 2.25rem;
-    height: 100%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 0;
-}
-
-// ============= LETTER ANIMATION ============
-@import url("https://fonts.googleapis.com/css2?family=Permanent+Marker&display=swap");
-
-.word span {
-    font-family: "Permanent Marker", cursive;
-    cursor: pointer;
-    display: inline-block;
-    font-size: 3rem;
-    &:nth-child(4n + 0).active {
-        animation: anim1 1.5s ease-out;
-        transform-origin: bottom left;
-    }
-    &:nth-child(4n + 1).active {
-        animation: anim2 1s ease-in-out;
-        transform-origin: bottom center;
-    }
-    &:nth-child(4n + 2).active {
-        animation: anim3 1s ease-out;
-    }
-    &:nth-child(4n + 3).active {
-        animation: anim4 1.5s linear;
-    }
-}
-
-@keyframes anim1 {
-    0%,
-    100% {
-        transform: rotate(0deg);
-    }
-    30%,
-    60% {
-        transform: rotate(-45deg);
-    }
-}
-
-@keyframes anim2 {
-    10%,
-    35% {
-        transform: scale(2, 0.2) translate(0, 0);
-    }
-    45%,
-    50% {
-        transform: scale(1) translate(0, -150px);
-    }
-    80% {
-        transform: scale(1) translate(0, 0);
-    }
-}
-
-@keyframes anim3 {
-    20%,
-    80% {
-        transform: rotateY(180deg);
-    }
-    100% {
-        transform: rotateY(360deg);
-    }
-}
-
-@keyframes anim4 {
-    10%,
-    25% {
-        transform: translateY(-10vh) scaleY(1);
-    }
-    90% {
-        transform: translateY(-3vh) scaleY(1);
+    .item_cartimage {
+        max-width: 80px;
+        height: 80px;
+        object-fit: cover;
+        object-position: center;
+        border: 1px solid lightgray;
     }
 }
 
@@ -696,4 +710,10 @@ ul.info-list {
             right: 0;
         }
     }
+}
+
+.rincian-pesanan {
+    box-shadow: rgba(149, 157, 165, 0.2) 0px 8px 24px;
+    padding: 1rem;
+    border-radius: 0.5rem;
 }

@@ -10,6 +10,7 @@ import { UserContext } from "../../contexts/UserContext";
 import Table from 'react-bootstrap/Table';
 import LoadingIndicator from '../reuse/LoadingIndicator';
 import urlAsset from '../../config';
+import HeaderSales from './HeaderSales';
 
 const KeranjangSales = ({ location }) => {
   const { dataUser, loadingDataUser } = useContext(UserContext);
@@ -20,30 +21,37 @@ const KeranjangSales = ({ location }) => {
   const [errorMessage, setErrorMessage] = useState(null);
   const [successMessage, setSuccessMessage] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
-
   const [estimasiWaktuPengiriman, setEstimasiWaktuPengiriman] = useState('');
   const [keteranganOrderItem, setKeteranganOrderItem] = useState(null);
-  const [idCustomer, setIdCustomer] = useState(null);
   const [limitPembelian, setLimitPembelian] = useState(0);
   const [dataCustType, setDataCustType] = useState({});
   const [pilihanRetur, setPilihanRetur] = useState([]);
   const [tipeRetur, setTipeRetur] = useState("1");
-
   const [kodeEvent, setKodeEvent] = useState('');
   const [errorKodeEvent, setErrorKodeEvent] = useState(null);
   const [hargaPromo, setHargaPromo] = useState(0);
-
+  const [tipeEvent, setTipeEvent] = useState('');
+  const [besarEvent, setBesarEvent] = useState(0);
+  const [minPembelianEvent, setMinPembelianEvent] = useState(null);
   const [errorProdukDlmKeranjang, setErrorProdukDlmKeranjang] = useState(false);
+  const [totalHarga, setTotalHarga] = useState(0);
+  const [isShowRincian, setIsShowRincian] = useState(false);
+  const Swal = require('sweetalert2');
   const { state: idTrip } = location;
-  let totalHarga = 0;
   let jmlProdukError = 0;
+
+  let toHar = 0;
 
   const goback = () => {
     history.push({
       pathname: `/salesman/order/${idCust}`,
-      state: idTrip // your data array of objects
+      state: idTrip
     })
   }
+
+  useEffect(() => {
+    console.log('total', totalHarga);
+  }, [totalHarga])
 
   useEffect(() => {
     getAllProduks();
@@ -65,31 +73,32 @@ const KeranjangSales = ({ location }) => {
   }, [])
 
   useEffect(() => {
-    if (idCustomer) {
-      axios({
-        method: "get",
-        url: `${window.location.origin}/api/tripCustomer/${idCustomer}`,
-        headers: {
-          Accept: "application/json",
-        },
+    setIsLoading(true);
+    axios({
+      method: "get",
+      url: `${window.location.origin}/api/tripCustomer/${idCust}`,
+      headers: {
+        Accept: "application/json",
+      },
+    })
+      .then(response => {
+        setIsLoading(false);
+        setLimitPembelian(response.data.data.limit_pembelian);
+        setDataCustType(response.data.data.link_customer_type);
       })
-        .then(response => {
-          setLimitPembelian(response.data.data.limit_pembelian);
-          setDataCustType(response.data.data.link_customer_type);
-        })
-        .catch(error => {
-          setErrorMessage(error.message);
-        });
-    }
-  }, [idCustomer])
+      .catch(error => {
+        setIsLoading(false);
+        setErrorMessage(error.message);
+      });
+  }, [idCust])
 
   useEffect(() => {
     produks.map((produk) => {
-      setIdCustomer(produk.customer);
+      toHar = toHar + produk.jumlah * produk.harga;
+      setTotalHarga(toHar);
       if (produk.error) {
         jmlProdukError = jmlProdukError + 1;
       }
-
       if (jmlProdukError > 0) {
         setErrorProdukDlmKeranjang(true);
       } else {
@@ -98,47 +107,19 @@ const KeranjangSales = ({ location }) => {
     })
   }, [produks]);
 
-  const handleKodeEvent = (e) => {
-    e.preventDefault();
-    setIsLoading(true);
-    axios({
-      method: "get",
-      url: `${window.location.origin}/api/kodeEvent/${kodeEvent}`,
-      headers: {
-        Accept: "application/json",
-      },
-    })
-      .then(response => {
-        console.log('handle kodeevent', response.data);
-
-        if (response.data.status === 'success') {
-          setIsLoading(false);
-          setErrorKodeEvent(null);
-
-          if (response.data.data.min_pembelian !== null && totalHarga > response.data.data.min_pembelian) {
-            if (response.data.data.potongan) {
-              setHargaPromo(response.data.data.potongan);
-            } else {
-              setHargaPromo((totalHarga * (response.data.data.diskon / 100)));
-            }
-          } else if (totalHarga > response.data.data.min_pembelian) {
-            if (response.data.data.potongan) {
-              setHargaPromo(response.data.data.potongan);
-            } else {
-              setHargaPromo((totalHarga * (response.data.data.diskon / 100)));
-            }
-          } else {
-            setErrorKodeEvent('Anda tidak mencapai minimal pembelian')
-          }
-        } else {
-          throw Error(response.data.message);
-        }
-      })
-      .catch(error => {
-        setIsLoading(false);
-        setErrorKodeEvent(error.message);
-      });
-  }
+  useEffect(() => {
+    if (kodeEvent != '' && totalHarga > minPembelianEvent) {
+      setErrorKodeEvent(null);
+      if (tipeEvent == 'potongan') {
+        setHargaPromo(besarEvent);
+      } else {
+        setHargaPromo((totalHarga * (besarEvent / 100)));
+      }
+    } else if (kodeEvent != '') {
+      setErrorKodeEvent('Anda tidak mencapai minimal pembelian');
+      setHargaPromo(0);
+    }
+  }, [totalHarga, produks, kodeEvent])
 
   const hapusSemuaProduk = () => {
     produks.map((produk) => {
@@ -148,6 +129,33 @@ const KeranjangSales = ({ location }) => {
     setKodeEvent('');
     setErrorKodeEvent(null);
     setHargaPromo(null);
+  }
+
+  const handleHapusSemuaProduk = () => {
+    Swal.fire({
+      title: 'Apakah anda yakin?',
+      text: "Item yang dihapus akan hilang!",
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Ya, Hapus!'
+    }).then((result) => {
+      if (result.isConfirmed) {
+        produks.map((produk) => {
+          KeranjangDB.deleteProduk(produk.id);
+          getAllProduks();
+        })
+        setKodeEvent('');
+        setErrorKodeEvent(null);
+        setHargaPromo(null);
+        Swal.fire(
+          'Berhasil Dihapus!',
+          'Seluruh item telah dihapus',
+          'success'
+        )
+      }
+    })
   }
 
   const handlePilihProdukChange = (item) => {
@@ -171,12 +179,11 @@ const KeranjangSales = ({ location }) => {
       customer: parseInt(idCust),
       harga: item.harga,
       jumlah: item.jumlah + 1,
+      nama: item.nama,
+      stok: item.stok
     };
     KeranjangDB.updateProduk(produk);
     getAllProduks();
-    setKodeEvent('');
-    setErrorKodeEvent(null);
-    setHargaPromo(null);
   }
 
   const kurangJumlahProduk = (item, orderid) => {
@@ -186,12 +193,11 @@ const KeranjangSales = ({ location }) => {
       customer: parseInt(idCust),
       harga: item.harga,
       jumlah: item.jumlah - 1,
+      nama: item.nama,
+      stok: item.stok
     };
     KeranjangDB.updateProduk(produk);
     getAllProduks();
-    setKodeEvent('');
-    setErrorKodeEvent(null);
-    setHargaPromo(null);
   }
 
   const hapusProduk = (item) => {
@@ -252,6 +258,57 @@ const KeranjangSales = ({ location }) => {
     }
   }
 
+  const handleKodeEvent = (e) => {
+    e.preventDefault();
+    axios({
+      method: "get",
+      url: `${window.location.origin}/api/kodeEvent/${kodeEvent}`,
+      headers: {
+        Accept: "application/json",
+      },
+    })
+      .then(response => {
+        if (response.data.status === 'success') {
+          setErrorKodeEvent(null);
+          setMinPembelianEvent(response.data.data.min_pembelian);
+          if (response.data.data.min_pembelian !== null && totalHarga > response.data.data.min_pembelian) {
+            if (response.data.data.potongan) {
+              setHargaPromo(response.data.data.potongan);
+              setTipeEvent('potongan');
+              setBesarEvent(response.data.data.potongan);
+            } else {
+              setHargaPromo((totalHarga * (response.data.data.diskon / 100)));
+              setTipeEvent('diskon');
+              setBesarEvent(response.data.data.diskon);
+            }
+          } else if (totalHarga > response.data.data.min_pembelian) {
+            if (response.data.data.potongan) {
+              setHargaPromo(response.data.data.potongan);
+              setTipeEvent('potongan');
+              setBesarEvent(response.data.data.potongan);
+            } else {
+              setHargaPromo((totalHarga * (response.data.data.diskon / 100)));
+              setTipeEvent('diskon');
+              setBesarEvent(response.data.data.diskon);
+            }
+          } else {
+            setErrorKodeEvent('Anda tidak mencapai minimal pembelian');
+            setHargaPromo(0);
+            setTipeEvent('');
+            setBesarEvent(0);
+          }
+        } else {
+          throw Error(response.data.message);
+        }
+      })
+      .catch(error => {
+        setErrorKodeEvent(error.message);
+        setHargaPromo(0);
+        setTipeEvent('');
+        setBesarEvent(0);
+      });
+  }
+
   const handleChangeEstimasiPengiriman = (val) => {
     if (val >= 0) {
       setEstimasiWaktuPengiriman(val);
@@ -262,26 +319,22 @@ const KeranjangSales = ({ location }) => {
 
   return (
     <main className="page_main">
-      <header className='header_mobile'>
-        <div className='d-flex align-items-center'>
-          <button className='btn' onClick={goback}>
-            <span className="iconify" data-icon="eva:arrow-back-fill"></span>
-          </button>
-          <h1 className='page_title'>Keranjang</h1>
-        </div>
-      </header>
-
+      <HeaderSales title='Keranjang' toBack={goback} />
+      {limitPembelian != 0 && <div className="alert alert-secondary mb-0" role="alert">
+        <p className="mb-0 text-center"><b>Limit Pembelian :</b> {limitPembelian ? limitPembelian : "Tanpa Limit"}</p>
+      </div>}
       <div className="page_container pt-4">
-        {isLoading && loadingDataUser && <LoadingIndicator />}
-        {successMessage && <AlertComponent successMsg={successMessage} />}
-        {errorMessage && <AlertComponent errorMsg={errorMessage} />}
-        {limitPembelian != 0 && <div>Limit pembelian: {limitPembelian ? limitPembelian : "Tak terbatas"} </div>}
+        {(isLoading || loadingDataUser) && <LoadingIndicator />}
+        {successMessage ? <AlertComponent successMsg={successMessage} /> : errorMessage && <AlertComponent errorMsg={errorMessage} />}
+        {!isLoading && !loadingDataUser && produks.length === 0 && <small className='text-danger text-center d-block mt-5'>Keranjang Kosong</small>}
 
-        {produks.length === 0 && <p className='text-danger text-center'>Keranjang Kosong</p>}
-        {produks.length !== 0 && <button className='btn btn-danger' onClick={hapusSemuaProduk}>Hapus Semua</button>}
+        {!isLoading && !loadingDataUser && produks.length !== 0 && <div className="d-flex align-items-center justify-content-between mb-3">
+          <h1 className="fs-5 fw-bold">Keranjang Customer</h1>
+          <button className='btn btn-danger' onClick={handleHapusSemuaProduk}>Hapus Semua</button>
+        </div>}
 
-        {produks.length > 0 && produks.map((produk) => (
-          <div className="cart_item mb-3" key={produk.id}>
+        {!isLoading && !loadingDataUser && produks.length > 0 && produks.map((produk) => (
+          <div className="cart_item" key={produk.id}>
             <div className="d-flex">
               <div className="form-check pl-0">
                 <label className="customCheckbox_wrapper">
@@ -292,14 +345,18 @@ const KeranjangSales = ({ location }) => {
                   <span className="custom_checkbox"></span>
                 </label>
               </div>
-              {produk.gambar ? <img src={`${urlAsset}/storage/item/${produk.gambar}`} className="item_image" />
-                : <img src={`${urlAsset}/images/default_produk.png`} className="item_image" />}
+              {produk.gambar ? <img src={`${urlAsset}/storage/item/${produk.gambar}`} className="item_cartimage" />
+                : <img src={`${urlAsset}/images/default_produk.png`} className="item_cartimage" />}
             </div>
 
             <div className={produk.isSelected ? "grid_item" : ""}>
-              <div className="detail_item pl-3">
-                <h5 className={`${produk.isSelected ? 'elipsis' : ''}`}>{produk.nama}</h5>
-                <div className="d-flex flex-row mt-3 mb-2">
+              <div className="detail_item">
+                <h2 className={`mb-0 fs-6 fw-bold ${produk.isSelected ? 'elipsis' : ''}`}>{produk.nama}</h2>
+                {dataCustType.diskon ?
+                  <p className='mb-0 d-inline'>{convertPrice(produk.harga - (produk.harga * (dataCustType.diskon) / 100))}</p>
+                  : <p className='mb-0 d-inline'>{convertPrice(produk.harga)}</p>
+                }
+                <div className="d-flex my-2">
                   {produk.error ? <button className="btn btn-primary" disabled={true}> - </button>
                     : <button className="btn btn-primary"
                       disabled={produk.jumlah === 1 ? true : false}
@@ -311,9 +368,9 @@ const KeranjangSales = ({ location }) => {
                   />
                   {produk.error ? <button className="btn btn-primary" disabled={true}> + </button> :
                     <button className="btn btn-primary"
+                      disabled={produk.jumlah == produk.stok ? true : false}
                       onClick={() => tambahJumlahProduk(produk, produk.orderId)}> + </button>}
                 </div>
-                <div>{convertPrice(produk.harga)}</div>
                 {produk.error && <small className="text-danger">{produk.error}</small>}
               </div>
 
@@ -327,35 +384,34 @@ const KeranjangSales = ({ location }) => {
           </div>
         ))}
 
-        {produks.length > 0 &&
-          <Fragment>
-            <label className="form-label">Estimasi Waktu Pengiriman</label>
-            <div className="input-group">
-              <input type="number" className="form-control"
-                value={estimasiWaktuPengiriman}
-                onChange={(e) => handleChangeEstimasiPengiriman(e.target.value)}
-              />
-              <button className="btn btn-secondary">Hari</button>
-            </div>
-            {!estimasiWaktuPengiriman && <small className='text-danger'>Estimasi waktu pengiriman wajib diisi</small>}
-
+        {!isLoading && !loadingDataUser && produks.length > 0 &&
+          <div className="mb-btnBottom">
             <label className="form-label mt-3">Keterangan Pesanan</label>
             <input type="text" className="form-control"
               value={keteranganOrderItem || ''}
               onChange={(e) => setKeteranganOrderItem(e.target.value)}
             />
 
-            <form onSubmit={handleKodeEvent}>
-              <label className="form-label mt-3">Kode Event</label>
-              <div className="input-group">
-                <input type="text" className="form-control"
-                  value={kodeEvent}
-                  onChange={(e) => setKodeEvent(e.target.value)}
-                />
-                <button type="submit" className="btn btn-primary">Gunakan</button>
-              </div>
-            </form>
-            {errorKodeEvent && <p className='text-danger'>{errorKodeEvent}</p>}
+            <label className="form-label mt-3">Estimasi Waktu Pengiriman</label>
+            <div className="input-group">
+              <input type="number" className="form-control"
+                value={estimasiWaktuPengiriman}
+                onChange={(e) => handleChangeEstimasiPengiriman(e.target.value)}
+              />
+              <button className="btn btn-warning">Hari</button>
+            </div>
+            {!estimasiWaktuPengiriman && <small className='text-danger d-block'>Estimasi waktu pengiriman wajib diisi</small>}
+
+            <label className="form-label mt-3">Kode Event</label>
+            <div className="input-group">
+              <input type="text" className="form-control"
+                value={kodeEvent}
+                onChange={(e) => setKodeEvent(e.target.value)}
+              />
+              <button className="btn btn-warning" onClick={handleKodeEvent}>Gunakan</button>
+            </div>
+            {errorKodeEvent && <small className='text-danger d-block'>{errorKodeEvent}</small>}
+            {hargaPromo > 0 && <small className='text-success d-block'>Eksta potongan {hargaPromo}</small>}
 
             <label className="form-label mt-3">Tipe Retur</label>
             <select className="form-select mb-3" value={tipeRetur} onChange={(e) => setTipeRetur(e.target.value)}>
@@ -364,38 +420,29 @@ const KeranjangSales = ({ location }) => {
               ))}
             </select>
 
-            {produks.map((produk) => {
-              totalHarga = totalHarga + (produk.jumlah * produk.harga);
-            })}
-
-
-
-            <Table striped bordered hover className="mb-btnBottom">
-              <thead>
-                <tr>
-                  <th>keterangan</th>
-                  <th>jumlah</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <td>Total</td>
-                  <td>{totalHarga}</td>
-                </tr>
-                <tr>
-                  <td>potongan {dataCustType.nama}</td>
-                  <td> - {totalHarga * (dataCustType.diskon ?? 0) / 100}</td>
-                </tr>
-                <tr>
-                  <td>event <span></span></td>
-                  <td>- {hargaPromo}</td>
-                </tr>
-                <tr>
-                  <td>total akhir<span></span></td>
-                  <td>{totalHarga - (totalHarga * (dataCustType.diskon ?? 0) / 100) - hargaPromo}</td>
-                </tr>
-              </tbody>
-            </Table>
+            <button className="btn btn-primary mb-2" onClick={() => setIsShowRincian(!isShowRincian)}>
+              <span className="iconify me-2" data-icon="uil:invoice"></span>
+              {isShowRincian ? 'Sembunyikan Rincian' : 'Rincian Pesanan'}
+            </button>
+            {isShowRincian && <div className='rincian-pesanan'>
+              <div className="d-flex justify-content-between">
+                <p className='mb-0 fw-bold'>Subtotal pesanan</p>
+                <p className='mb-0'>{totalHarga}</p>
+              </div>
+              <div className="d-flex justify-content-between">
+                <p className='mb-0 fw-bold'>Diskon Customer ({dataCustType.nama})</p>
+                <p className='mb-0'>- {totalHarga * (dataCustType.diskon ?? 0) / 100}</p>
+              </div>
+              <div className="d-flex justify-content-between">
+                <p className='mb-0 fw-bold'>Event</p>
+                <p className='mb-0'>- {hargaPromo}</p>
+              </div>
+              <hr />
+              <div className="d-flex justify-content-between">
+                <p className='mb-0 fw-bold'>Total Akhir</p>
+                <p className='mb-0'>{totalHarga - (totalHarga * (dataCustType.diskon ?? 0) / 100) - hargaPromo}</p>
+              </div>
+            </div>}
 
             <div className="button_bottom d-flex justify-content-between">
               <div>
@@ -404,7 +451,7 @@ const KeranjangSales = ({ location }) => {
               </div>
               {(errorProdukDlmKeranjang || estimasiWaktuPengiriman == '') ? <button className='btn btn-success' disabled={true}>CHECKOUT</button> : <button className='btn btn-success' onClick={checkout}>CHECKOUT</button>}
             </div>
-          </Fragment>
+          </div>
         }
       </div>
     </main>
