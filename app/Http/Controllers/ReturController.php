@@ -20,7 +20,7 @@ class ReturController extends Controller
         $returs = Retur::select('no_retur','id_customer','id_staff_pengaju', 'created_at','status')        
         ->groupBy('no_retur','id_customer','id_staff_pengaju','created_at','status')
         ->with(['linkCustomer','linkStaffPengaju','linkStatus'])
-        ->paginate(5);       
+        ->paginate(10);       
         
         return view('administrasi/retur.index',[
             'returs' => $returs
@@ -66,7 +66,7 @@ class ReturController extends Controller
         ->groupBy('no_retur','id_customer','id_staff_pengaju','created_at','status')
         ->where(strtolower('no_retur'),'like','%'.request('cari').'%')
         ->with(['linkCustomer','linkStaffPengaju','linkStatus'])        
-        ->paginate(5); 
+        ->paginate(10); 
                 
         return view('administrasi/retur.index',[
             'returs' => $returs

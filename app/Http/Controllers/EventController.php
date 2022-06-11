@@ -26,7 +26,7 @@ class EventController extends Controller
   }
 
     public function index(){
-        $events = Event::paginate(5);
+        $events = Event::paginate(10);
         return view('supervisor/event.index',[
             'events' => $events
         ]);
@@ -35,7 +35,7 @@ class EventController extends Controller
     public function search(){
         $events = Event::where(strtolower('nama'),'like','%'.request('cari').'%')
         ->orWhere(strtolower('kode'),'like','%'.request('cari').'%')
-        ->paginate(5);
+        ->paginate(10);
                
         return view('supervisor/event.index',[
             'events' => $events
@@ -183,7 +183,7 @@ class EventController extends Controller
 
     //Controller untuk Customer
     public function customerIndex(){
-        $events = Event::paginate(5);
+        $events = Event::paginate(10);
 
         return view('customer.event',[
             'events' => $events
@@ -193,7 +193,7 @@ class EventController extends Controller
     public function customerSearch(){
         $events = Event::where(strtolower('nama'),'like','%'.request('cari').'%')
         ->orWhere(strtolower('kode'),'like','%'.request('cari').'%')
-        ->paginate(5);
+        ->paginate(10);
                
         return view('customer.event',[
             'events' => $events

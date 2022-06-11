@@ -3,6 +3,97 @@
     animation-fill-mode: forwards;
     
   }
+  #detail-pesanan-admin{
+    .stepper-wrapper {
+      margin-top: auto;
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 20px;
+    }
+    .stepper-item,.stepper-item-date {
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      flex: 1;
+      flex-wrap: wrap;
+    
+      @media (max-width: 768px) {
+        font-size: 12px;
+      }
+    }
+    .stepper-item-date .step-name{
+      max-width: 100%;
+      flex-wrap: wrap;
+      display: flex;
+      text-align: center;
+    }
+    
+    .stepper-item::before {
+      position: absolute;
+      content: "";
+      border-bottom: 5px solid #ccc;
+      border-top: 5px solid #ccc;
+      background-color: #ccc;
+      width: 100%;
+      top: 16px;
+      left: -50%;
+      z-index: 2;
+    }
+    
+    .stepper-item::after {
+      position: absolute;
+      content: "";
+      border-bottom: 5px solid #ccc;
+      border-top: 5px solid #ccc;
+      background-color: #ccc;
+      width: 100%;
+      top: 16px;
+      left: 50%;
+      z-index: 2;
+    }
+    
+    .stepper-item .step-counter {
+      position: relative;
+      z-index: 5;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background: #ccc;
+      margin-bottom: 6px;
+    }
+    
+    .stepper-item.active {
+      font-weight: bold;
+      color: red;
+    }
+    
+    .stepper-item.completed .step-counter {
+      background-color: #4bb543;
+    }
+    
+    .stepper-item.completed::after {
+      position: absolute;
+      content: "";
+      border-top: 5px solid #4bb543;
+      border-bottom: 5px solid #4bb543;
+      background-color: #4bb543;
+      width: 100%;
+      top: 16px;
+      left: 50%;
+      z-index: 3;
+    }
+    
+    .stepper-item:first-child::before {
+      content: none;
+    }
+    .stepper-item:last-child::after {
+      content: none;
+    }
+  }
   
   @keyframes hideAnimation {
     to {

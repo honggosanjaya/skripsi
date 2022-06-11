@@ -196,7 +196,7 @@ class CustomerController extends Controller
 
     public function administrasiIndex(){
       return view('administrasi.dataCustomer.index', [
-        'customers' => Customer::paginate(5),
+        'customers' => Customer::paginate(10),
         "title" => "Data Customer"
       ]);
     }
@@ -204,7 +204,7 @@ class CustomerController extends Controller
     public function administrasiSearch(){
       $customers =  Customer::where(strtolower('nama'),'like','%'.request('cari').'%')
         ->orWhere(strtolower('email'),'like','%'.request('cari').'%')
-        ->paginate(5);
+        ->paginate(10);
 
       return view('administrasi.dataCustomer.index', [
         'customers' => $customers,
@@ -215,7 +215,7 @@ class CustomerController extends Controller
     public function supervisorSearch(){
       $customers =  Customer::where(strtolower('nama'),'like','%'.request('cari').'%')
         ->orWhere(strtolower('email'),'like','%'.request('cari').'%')
-        ->paginate(5);
+        ->paginate(10);
 
       return view('supervisor.dataCustomer.dataCustomer', [
         'customers' => $customers,

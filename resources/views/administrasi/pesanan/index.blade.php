@@ -60,8 +60,9 @@
   <table class="table table-bordered mt-4">
     <thead>
       <tr>
+        <th scope="col">No</th>
         <th scope="col">Nama Customer</th>
-        <th scope="col">Nama Staff yang bersangkutan</th>
+        <th scope="col">Nama Sales</th>
         <th scope="col">Nomor Invoice</th>
         <th scope="col">Harga Total</th>
         <th scope="col">Status Pesanan</th>
@@ -73,6 +74,7 @@
 
       @foreach ($orders as $order)
         <tr>
+          <td>{{ $loop->iteration  }}</td>
           <td>{{ $order->linkCustomer->nama  ?? null  }}</td>
           <td>{{ $order->linkStaff->nama  ?? null  }}</td>
           <td>{{ $order->linkInvoice->nomor_invoice ?? null }}</td>

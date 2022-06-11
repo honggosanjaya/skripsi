@@ -16,10 +16,10 @@ class History extends Model
       ];
   
     public function linkCustomer(){
-        return $this->belongsTo(Customer::class,'id','id_customer');
+        return $this->belongsTo(Customer::class,'id_customer');
     }
 
     public function linkItem(){
-        return $this->hasMany(Item::class,'id','id_item');
+        return $this->belongsTo(Item::class,'id_item');
     }
 }

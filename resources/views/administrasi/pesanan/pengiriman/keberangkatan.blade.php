@@ -4,6 +4,7 @@
     <h1 class="fs-3">Detail Pengiriman</h1>
     <p>Nomor Invoice : {{ $order->linkInvoice->nomor_invoice }}</p>
     <p>Nama Customer : {{ $order->linkCustomer->nama }}</p>
+    <p>Nama Pengirim : {{ $order->linkOrderTrack->linkStaffPengirim->nama ??null}}</p>
     <p>Alamat Pengiriman : {{ $order->linkCustomer->full_alamat }}</p>
     <p>Telepon : {{ $order->linkCustomer->telepon ?? '-' }}</p>
     <p>Status pesanan : {{ $order->linkOrderTrack->linkStatus->nama }}</p>
@@ -15,7 +16,7 @@
       <p>Tidak ada foto</p>
     @endif
 
-    @if ($order->linkOrderTrack->linkStatus->nama == 'dikonfirmasi admin')
+    @if($order->linkOrderTrack->status == 21)
       <form class="form-submit" method="POST" action="/administrasi/pesanan/detail/{{ $order->id }}/dikirimkan">
         @csrf
         <div class="my-3">

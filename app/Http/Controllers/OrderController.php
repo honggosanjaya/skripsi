@@ -60,7 +60,7 @@ class OrderController extends Controller
             'id_order' => $id_order,
             'id_item' => $item['id'],
             'kuantitas' => $item['jumlah'],
-            'harga_satuan' => $item['harga']-($item['harga']*$customertype->diskon/100),
+            'harga_satuan' => $item['harga']-($item['harga']*$customertype->linkCustomerType->diskon/100),
             'keterangan' => $request->keterangan??null,
           ]);
         }
@@ -96,7 +96,7 @@ class OrderController extends Controller
               'id_order' => $id_order,
               'id_item' => $item['id'],
               'kuantitas' => $item['jumlah'],
-              'harga_satuan' => $item['harga']-($item['harga']*$customertype->diskon/100),
+              'harga_satuan' => $item['harga']-($item['harga']*$customertype->linkCustomerType->diskon/100),
               'keterangan' => $keterangan,
             ]);
           } else {
@@ -105,7 +105,7 @@ class OrderController extends Controller
               'id_order' => $id_order,
               'id_item' => $item['id'],
               'kuantitas' => $item['jumlah'],
-              'harga_satuan' => $item['harga']-($item['harga']*$customertype->diskon/100),
+              'harga_satuan' => $item['harga']-($item['harga']*$customertype->linkCustomerType->diskon/100),
               'keterangan' => $keterangan,
             ]);
           } 
@@ -239,7 +239,7 @@ class OrderController extends Controller
     }
 
     public function index(){
-      $orders = Order::where('id_customer','>','0')->paginate(5);
+      $orders = Order::where('id_customer','>','0')->paginate(10);
       $statuses = Status::where('tabel','=','order_tracks')->get();
 
       return view('administrasi.pesanan.index',[
@@ -253,7 +253,7 @@ class OrderController extends Controller
         ->join('statuses','order_tracks.status','=','statuses.id')
         ->join('invoices','orders.id','=','invoices.id_order')
         ->where(strtolower('nomor_invoice'),'like','%'.request('cari').'%')
-        ->paginate(5);  
+        ->paginate(10);  
       
         $statuses = Status::where('tabel','=','order_tracks')->get();
 
@@ -269,13 +269,13 @@ class OrderController extends Controller
         ->join('statuses','order_tracks.status','=','statuses.id')
         ->join('invoices','orders.id','=','invoices.id_order')
         ->where('statuses.id','=',request('status'))
-        ->paginate(5);
+        ->paginate(10);
       }
       else{
         $orders = Order::join('order_tracks','orders.id','=','order_tracks.id_order')
         ->join('statuses','order_tracks.status','=','statuses.id')
         ->join('invoices','orders.id','=','invoices.id_order')        
-        ->paginate(5);
+        ->paginate(10);
       }
       
         $statuses = Status::where('tabel','=','order_tracks')       
@@ -480,11 +480,11 @@ class OrderController extends Controller
       }
 
       if($i == $jumlahItem){
-        if($order->status == 15){
-          $order->update([
-            'status' => 14,
-          ]);
-        }
+        // if($order->status == 15){
+        //   $order->update([
+        //     'status' => 14,
+        //   ]);
+        // }
 
         foreach($orderItems as $orderItem){
           $item = Item::find($orderItem->id_item);
@@ -518,7 +518,7 @@ class OrderController extends Controller
         ]);
 
         OrderTrack::where('id_order', $order->id)->update([
-          'id_staff_pengonfirmasi' => auth()->user()->id,
+          'id_staff_pengonfirmasi' => auth()->user()->id_users,
           'status' => 21,
           'waktu_dikonfirmasi' => now()
         ]);
@@ -531,7 +531,8 @@ class OrderController extends Controller
       $order = Order::find($order->id);
 
       OrderTrack::where('id_order', $order->id)->update([
-        'status' => 25
+        'status' => 25,
+        'waktu_dikonfirmasi'=> now()
       ]);
 
         

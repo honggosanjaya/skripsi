@@ -14,10 +14,10 @@ const HitungStok = ({ historyItem, checkifexist, handleValueChange, handleTambah
   // }, []);
 
   const handlePilihProdukChange = (item) => {
-    const exist = newHistoryItem.find((x) => x.link_item[0].id === item.link_item[0].id);
+    const exist = newHistoryItem.find((x) => x.link_item.id === item.link_item.id);
     if (exist) {
       setNewHistoryItem(newHistoryItem.map((x) => {
-        if (x.link_item[0].id === item.link_item[0].id)
+        if (x.link_item.id === item.link_item.id)
           return { ...exist, isSelected: !x.isSelected }
         else
           return x
@@ -26,11 +26,11 @@ const HitungStok = ({ historyItem, checkifexist, handleValueChange, handleTambah
   }
 
   const handleStokTerakhirChange = (item, newValue) => {
-    const exist = newHistoryItem.find((x) => x.link_item[0].id === item.link_item[0].id);
+    const exist = newHistoryItem.find((x) => x.link_item.id === item.link_item.id);
     if (exist) {
       setNewHistoryItem(
         newHistoryItem.map((x) => {
-          if (x.link_item[0].id === item.link_item[0].id)
+          if (x.link_item.id === item.link_item.id)
             return { ...exist, newStok: newValue }
           else
             return x
@@ -43,9 +43,9 @@ const HitungStok = ({ historyItem, checkifexist, handleValueChange, handleTambah
       <h1 className='fs-5 fw-bold'>History Item</h1>
       {newHistoryItem.length == 0 && <small className="text-danger text-center d-block">Tidak Ada Riwayat Pembelian</small>}
       {newHistoryItem.map((item, index) => (
-        <div className={`card_historyItem position-relative p-3 ${(item.link_item[0].status == 11 || item.link_item[0].stok == 0) ? 'inactive_product' : ''}`} key={index}>
-          {item.link_item[0].stok < 10 && item.link_item[0].stok > 0 && item.link_item[0].status != 11 && <span className="badge badge_stok">Stok Menipis</span>}
-          {(item.link_item[0].status == 11 || item.link_item[0].stok == 0) &&
+        <div className={`card_historyItem position-relative p-3 ${(item.link_item.status == 11 || item.link_item.stok == 0) ? 'inactive_product' : ''}`} key={index}>
+          {item.link_item.stok < 10 && item.link_item.stok > 0 && item.link_item.status != 11 && <span className="badge badge_stok">Stok Menipis</span>}
+          {(item.link_item.status == 11 || item.link_item.stok == 0) &&
             <div className='inactive_sign'>
               <p className='mb-0'>Tidak Tersedia</p>
             </div>
@@ -53,13 +53,13 @@ const HitungStok = ({ historyItem, checkifexist, handleValueChange, handleTambah
 
           <div className="row">
             <div className="col-2">
-              {item.link_item[0].gambar ?
-                <img src={`${urlAsset}/images/${item.link_item[0].gambar}`} className="item_image" />
+              {item.link_item.gambar ?
+                <img src={`${urlAsset}/images/${item.link_item.gambar}`} className="item_image" />
                 : <img src={`${urlAsset}/images/default_produk.png`} className="item_image border" />}
             </div>
             <div className="col-10">
-              <h1 className="fs-6 ms-2 mb-1 text-capitalize fw-bold">{item.link_item[0].nama}</h1>
-              <p className="mb-0 ms-2">{item.link_item[0].harga_satuan} / {item.link_item[0].satuan}</p>
+              <h1 className="fs-6 ms-2 mb-1 text-capitalize fw-bold">{item.link_item.nama}</h1>
+              <p className="mb-0 ms-2">{item.link_item.harga_satuan} / {item.link_item.satuan}</p>
             </div>
 
             <p className="mb-0">Max stok : {item.stok_maksimal_customer}</p>
@@ -109,8 +109,8 @@ const HitungStok = ({ historyItem, checkifexist, handleValueChange, handleTambah
                 </thead>
                 <tbody>
                   <tr>
-                    <td>{item.link_item[0].stok - (jumlahOrderRealTime[item.link_item[0].id] ?? 0)} / {item.link_item[0].satuan}</td>
-                    <td>{item.link_item[0].stok} / {item.link_item[0].satuan}</td>
+                    <td>{item.link_item.stok - (jumlahOrderRealTime[item.link_item.id] ?? 0)} / {item.link_item.satuan}</td>
+                    <td>{item.link_item.stok} / {item.link_item.satuan}</td>
                   </tr>
                 </tbody>
               </table>
@@ -118,14 +118,14 @@ const HitungStok = ({ historyItem, checkifexist, handleValueChange, handleTambah
           </div>
 
           <div className="d-flex justify-content-between mt-2 w-75 mx-auto">
-            <button className="btn btn-sm btn-primary" onClick={() => handleKurangJumlah(item.link_item[0])}>
+            <button className="btn btn-sm btn-primary" onClick={() => handleKurangJumlah(item.link_item)}>
               -
             </button>
             <input type="number" className="form-control w-50"
-              value={checkifexist(item.link_item[0])}
-              onChange={(e) => handleValueChange(item.link_item[0], e.target.value)}
+              value={checkifexist(item.link_item)}
+              onChange={(e) => handleValueChange(item.link_item, e.target.value)}
             />
-            <button className="btn btn-sm btn-primary" onClick={() => handleTambahJumlah(item.link_item[0])}>
+            <button className="btn btn-sm btn-primary" onClick={() => handleTambahJumlah(item.link_item)}>
               +
             </button>
           </div>

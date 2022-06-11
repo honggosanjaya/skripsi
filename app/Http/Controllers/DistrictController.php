@@ -8,14 +8,14 @@ use Illuminate\Http\Request;
 class DistrictController extends Controller
 {
     public function index(){
-        $districts = District::paginate(5);
+        $districts = District::paginate(10);
         return view('supervisor/wilayah.index',[
             'districts' => $districts
         ]);
     }
 
     public function search(){
-        $districts = District::where(strtolower('nama'),'like','%'.request('cari').'%')->paginate(5);
+        $districts = District::where(strtolower('nama'),'like','%'.request('cari').'%')->paginate(10);
                
         return view('supervisor/wilayah.index',[
             'districts' => $districts

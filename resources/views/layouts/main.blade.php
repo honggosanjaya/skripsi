@@ -23,7 +23,7 @@
   <div class="main-content">
     @include('partials/header')
     <div class="container-fluid">
-      <main>
+      <main class="mb-5 pb-5">
         <div class="breadcrumbs-container">
           @yield('breadcrumbs')
         </div>
