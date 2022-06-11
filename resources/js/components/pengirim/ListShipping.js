@@ -15,7 +15,18 @@ const ListShipping = ({ listShipping, statusShipping, handleShow }) => {
                   <span><b>Telepon</b>{data.link_customer.telepon}</span>
                 </Fragment>}
               <span><b>Alamat</b>{data.link_customer.full_alamat}</span>
-              <span><b>Jam Berangkat</b></span><br />{convertDate(data.link_order_track.waktu_berangkat)}
+              <span className='d-flex'>
+                <b>Jam Berangkat</b>
+                <div>{convertDate(data.link_order_track.waktu_berangkat)}
+                </div>
+              </span>
+              {(data.link_order_track.waktu_sampai)
+              ? 
+              <span className='d-flex'>
+                <b>Jam Sampai</b>
+                <div>{convertDate(data.link_order_track.waktu_sampai)}
+                </div>
+              </span>:""}
             </div>
             <p className='mb-0 detail-pengiriman_link' onClick={() => handleShow(data.id)}>Lihat detail</p>
           </div>

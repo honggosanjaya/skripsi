@@ -16,7 +16,7 @@ class StaffController extends Controller
     public function index()
     {
       return view('supervisor.datastaf.index', [
-        'stafs' => Staff::whereNotIn('role', [1, 2])->paginate(5),
+        'stafs' => Staff::whereNotIn('role', [1, 2])->paginate(10),
         "title" => "List Tim Marketing UD Mandiri"
       ]);
     }
@@ -31,7 +31,7 @@ class StaffController extends Controller
       // }
 
       $role_spv = StaffRole::where('nama', 'supervisor')->first();
-      $supervisors = Staff::where('role', $role_spv->id)->paginate(5);
+      $supervisors = Staff::where('role', $role_spv->id)->paginate(10);
 
       return view('owner.dataSupervisor.index', [
         'supervisors' => $supervisors,
@@ -188,7 +188,7 @@ class StaffController extends Controller
     }
 
     public function cariSupervisor(){
-      $supervisors = Staff::where('role', 2)->where(strtolower('nama'),'like','%'.request('cari').'%')->paginate(5);
+      $supervisors = Staff::where('role', 2)->where(strtolower('nama'),'like','%'.request('cari').'%')->paginate(10);
              
       return view('owner.datasupervisor.index',[
           'supervisors' => $supervisors

@@ -16,10 +16,10 @@ class Pengadaan extends Model
       ];
   
     public function linkStaff(){
-        return $this->belongsTo(Staff::class,'id','id_staff');
+        return $this->belongsTo(Staff::class,'id_staff');
     }
 
     public function linkItem(){
-        return $this->hasMany(Item::class,'id','id_item');
+        return $this->belongsTo(Item::class,'id_item');
     }
 }

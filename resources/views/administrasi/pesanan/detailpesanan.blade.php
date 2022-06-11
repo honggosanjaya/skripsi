@@ -3,6 +3,9 @@
 @push('CSS')
   <link href=" {{ mix('css/administrasi.css') }}" rel="stylesheet">
 @endpush
+@push('JS')
+  <script src="{{ mix('js/administrasi.js') }}"></script>
+@endpush
 @section('breadcrumbs')
   <ol class="breadcrumb">
     <li class="breadcrumb-item"><a href="/administrasi">Dashboard</a></li>
@@ -11,6 +14,7 @@
   </ol>
 @endsection
 @section('main_content')
+<div id="detail-pesanan-admin">
   @if (session()->has('addPesananSuccess'))
     <div id="hideMeAfter3Seconds">
       <div class="alert alert-success alert-dismissible fade show mt-4" role="alert">
@@ -57,7 +61,7 @@
         <p>{{ $order->linkCustomer->nama }}</p>
       </div>
       <div class="col-3">
-        <h5>Staff Bersangkutan : </h5>
+        <h5>Sales Bersangkutan : </h5>
       </div>
       <div class="col-3">
         <p>{{ $order->linkStaff->nama }}</p>
@@ -93,7 +97,12 @@
       <div class="col-6">
         @if ($order->linkOrderTrack->status > 20 && $order->linkOrderTrack->status < 25)
         <a class="btn btn-warning" href="/administrasi/pesanan/detail/{{ $order->id }}/kapasitas"><i
-            class="bi bi-eye-fill p-1"></i>Lihat Kapasitas Kendaraan</a>
+            class="bi bi-eye-fill p-1"></i>Kapasitas Kendaraan</a>
+        @endif
+        @if($order->linkOrderTrack->status >= 22||$order->linkOrderTrack->status < 25)
+          <a class="btn btn-primary" href="/administrasi/pesanan/detail/{{ $order->id }}/pengiriman">
+            <i class="bi bi-truck me-2"></i>Detail Pengiriman
+          </a>
         @endif
       </div>
     </div>
@@ -110,6 +119,9 @@
           </tr>
         </thead>
         <tbody>
+          @php
+              $ttl=0
+          @endphp
           @foreach ($items as $item)
             <tr>
               <td>{{ $item->linkItem->kode_barang }}</td>
@@ -117,10 +129,19 @@
               <td>{{ number_format($item->harga_satuan, 0, '', '.') }}</td>
               <td>{{ $item->kuantitas }}</td>
               <td>{{ number_format($item->harga_satuan * $item->kuantitas, 0, '', '.') }}</td>
+              @php
+                $ttl+=$item->harga_satuan * $item->kuantitas;
+              @endphp
             </tr>
           @endforeach
+          @if ($order->linkInvoice->id_event!=null)
+            <tr>
+              <td colspan="4" class="text-center fw-bold">Potongan event {{$order->linkInvoice->linkEvent->nama}} : </td>
+                <td>{{ number_format($order->linkInvoice->harga_total-$ttl, 0, '', '.') }}</td>
+            </tr>
+          @endif
           <tr>
-            <td colspan="4" class="text-center fw-bold">Total (Setelah Diskon/Potongan) : </td>
+            <td colspan="4" class="text-center fw-bold">Total (Setelah event & diskon jenis Cust) : </td>
             @if ($order->linkInvoice->harga_total ?? null)
               <td>{{ number_format($order->linkInvoice->harga_total, 0, '', '.') }}</td>
             @else
@@ -129,6 +150,67 @@
           </tr>
         </tbody>
       </table>
+      @if ($order->linkOrderTrack->status != 25)
+        <div class="stepper-wrapper d-flex align-items-end">
+          <div class="stepper-item-date ">
+            <div class="step-name">
+              @if($order->linkOrderTrack->waktu_order)
+                {{date('F j, Y, g:i a', strtotime($order->linkOrderTrack->waktu_order))}}
+              @endif
+            </div>
+          </div>
+          <div class="stepper-item-date ">
+            <div class="step-name">
+              @if($order->linkOrderTrack->waktu_diteruskan)
+                {{date('F j, Y, g:i a', strtotime($order->linkOrderTrack->waktu_diteruskan))}}
+              @endif
+            </div>
+          </div>
+          <div class="stepper-item-date ">
+            <div class="step-name">
+              @if($order->linkOrderTrack->waktu_dikonfirmasi)
+                {{date('F j, Y, g:i a', strtotime($order->linkOrderTrack->waktu_dikonfirmasi))}}
+              @endif
+            </div>
+          </div>
+          <div class="stepper-item-date">
+            <div class="step-name">
+              @if($order->linkOrderTrack->waktu_berangkat)
+                {{date('F j, Y, g:i a', strtotime($order->linkOrderTrack->waktu_berangkat))}}
+              @endif
+            </div>
+          </div>
+          <div class="stepper-item-date">
+            <div class="step-name">
+              @if($order->linkOrderTrack->waktu_sampai)
+                {{date('F j, Y, g:i a', strtotime($order->linkOrderTrack->waktu_sampai))}}
+              @endif
+            </div>
+          </div>
+        </div>
+        <div class="stepper-wrapper status-track" data-status="{{$order->linkOrderTrack->status}}">
+          <div class="stepper-item s-19 ">
+            <div class="step-counter">1</div>
+            <div class="step-name">order</div>
+          </div>
+          <div class="stepper-item s-20 ">
+            <div class="step-counter">2</div>
+            <div class="step-name">sales</div>
+          </div>
+          <div class="stepper-item s-21 ">
+            <div class="step-counter">3</div>
+            <div class="step-name">dikonfirmasi</div>
+          </div>
+          <div class="stepper-item s-22">
+            <div class="step-counter">4</div>
+            <div class="step-name">dikirim</div>
+          </div>
+          <div class="stepper-item s-23">
+            <div class="step-counter">5</div>
+            <div class="step-name">sampai</div>
+          </div>
+        </div>
+      @endif
 
       @if ($order->linkOrderTrack->status == 20)
         <div class="float-end">
@@ -160,6 +242,12 @@
           </form>
         </div>
       @endif
+      @if($order->linkOrderTrack->status == 24)
+        <div class="alert alert-success alert-dismissible fade show mt-4" role="alert">
+          Pesanan telah dinyatakan sukses oleh {{ $order->linkOrderTrack->linkStaffPengonfirmasi->nama ??null}}
+        </div>
+      @endif
     </div>
   </div>
+</div>
 @endsection

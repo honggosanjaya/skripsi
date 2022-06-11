@@ -17,14 +17,14 @@ class Trip extends Model
       ];
   
     public function linkStaff(){
-        return $this->belongsTo(Staff::class,'id','id_staff');
+        return $this->belongsTo(Staff::class,'id_staff');
     }
 
     public function linkStatus(){
-        return $this->belongsTo(Status::class,'id','status');
+        return $this->belongsTo(Status::class,'status');
     }
 
     public function linkCustomer(){
-        return $this->belongsTo(Customer::class,'id','id_customer');
+        return $this->belongsTo(Customer::class,'id_customer');
     }
 }

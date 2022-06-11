@@ -20,7 +20,7 @@ class Retur extends Model
       ];
   
     public function linkItem(){
-        return $this->belongsTo(Item::class,'id','id_item');
+        return $this->belongsTo(Item::class,'id_item');
     }
 
     public function linkStaffPengaju(){
@@ -40,7 +40,7 @@ class Retur extends Model
     }
 
     public function linkReturType(){
-        return $this->belongsTo(ReturType::class,'id','tipe_retur');
+        return $this->belongsTo(ReturType::class,'tipe_retur');
     }
 
     public function linkStatus(){

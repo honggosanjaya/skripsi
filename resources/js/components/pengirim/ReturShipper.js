@@ -252,12 +252,12 @@ const ReturShipper = () => {
             {newHistoryItems.map((item) => (
               <div className="list_history-item p-3" key={item.id}>
                 <div className="d-flex align-items-center">
-                  {item.link_item[0].gambar ?
-                    <img src={`${urlAsset}/images/${item.link_item[0].gambar}`} className="item_image me-3" />
+                  {item.link_item.gambar ?
+                    <img src={`${urlAsset}/images/${item.link_item.gambar}`} className="item_image me-3" />
                     : <img src={`${urlAsset}/images/default_produk.png`} className="item_image me-3" />}
                   <div>
-                    <h2 className='fs-6 text-capitalize fw-bold'>{item.link_item[0].nama}</h2>
-                    <p className='mb-0'>{convertPrice(item.link_item[0].harga_satuan)}</p>
+                    <h2 className='fs-6 text-capitalize fw-bold'>{item.link_item.nama}</h2>
+                    <p className='mb-0'>{convertPrice(item.link_item.harga_satuan)}</p>
                   </div>
                 </div>
 
@@ -266,11 +266,11 @@ const ReturShipper = () => {
                     <label className="form-label">Jumlah Retur</label>
                   </div>
                   <div className="col-7 d-flex justify-content-around">
-                    <button className="btn btn-primary btn_qty" onClick={() => handleKurangJumlah(item.link_item[0], item.alasan)}> - </button>
+                    <button className="btn btn-primary btn_qty" onClick={() => handleKurangJumlah(item.link_item, item.alasan)}> - </button>
                     <input type="number" className="form-control mx-2"
-                      value={checkifexist(item.link_item[0])}
-                      onChange={(e) => handleValueChange(item.link_item[0], e.target.value, item.alasan)} />
-                    <button className="btn btn-primary btn_qty" onClick={() => handleTambahJumlah(item.link_item[0], item.alasan)}> + </button>
+                      value={checkifexist(item.link_item)}
+                      onChange={(e) => handleValueChange(item.link_item, e.target.value, item.alasan)} />
+                    <button className="btn btn-primary btn_qty" onClick={() => handleTambahJumlah(item.link_item, item.alasan)}> + </button>
                   </div>
                 </div>
 

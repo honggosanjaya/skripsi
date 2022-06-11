@@ -12,7 +12,7 @@ const DashboardShipper = () => {
   }, [token, isAuth])
 
   return (
-    <main className="page_main">
+    <main className="page_main" id="listShipper">
       <HeaderShipper isDashboard={true} />
       <div className="page_container pt-4 dashboard_shipper">
         <div className="word d-flex justify-content-center">

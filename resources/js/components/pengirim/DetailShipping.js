@@ -2,6 +2,7 @@ import React, { Component, Fragment } from 'react';
 import Modal from 'react-bootstrap/Modal';
 import Button from 'react-bootstrap/Button';
 import { convertDate } from "../reuse/HelperFunction";
+import urlAsset from '../../config';
 
 const DetailShipping = ({ detailShipping, isLoading, show, handleClose, handlePengirimanSampai, handlePengajuanRetur, listDetailItem }) => {
   return (
@@ -21,8 +22,11 @@ const DetailShipping = ({ detailShipping, isLoading, show, handleClose, handlePe
                 <a target="_blank" href={`https://www.google.com/maps/search/?api=1&query=${detailShipping.link_customer.koordinat.replace("@", ",")}`}>{detailShipping.link_customer.full_alamat}</a>
               </span>
               <span><b>Keterangan Alamat</b>{detailShipping.link_customer.keterangan_alamat}</span>
-              <span><b>Jam Berangkat </b></span><br />{convertDate(detailShipping.link_order_track.waktu_berangkat)}<br />
+              <span className='d-flex'><b>Jam Berangkat </b> <div>{convertDate(detailShipping.link_order_track.waktu_berangkat)}</div></span>
               <span><b>Total Pembayaran</b>{detailShipping.link_invoice.harga_total}</span>
+              {(detailShipping.link_customer.foto)
+              ? <img src={`${urlAsset}/storage/customer/${detailShipping.link_customer.foto}`} className="mt-2 img-fluid d-block mx-auto" />
+              : ''}
               <table className="table mt-3">
                 <thead>
                   <tr>
