@@ -395,7 +395,7 @@ const Pemesanan = ({ location }) => {
       },
       data: {
         'id_customer': idCust,
-        'id_item': item.link_item[0].id,
+        'id_item': item.link_item.id,
         'quantity': newVal
       }
     })
@@ -406,11 +406,11 @@ const Pemesanan = ({ location }) => {
         console.log(error.message);
       });
 
-    const exist = newHistoryItem.find((x) => x.link_item[0].id === item.link_item[0].id);
+    const exist = newHistoryItem.find((x) => x.link_item.id === item.link_item.id);
     if (exist) {
       setNewHistoryItem(
         newHistoryItem.map((x) => {
-          if (x.link_item[0].id === item.link_item[0].id)
+          if (x.link_item.id === item.link_item.id)
             return { ...exist, isSelected: !x.isSelected }
           else return x
         }));

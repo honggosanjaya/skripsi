@@ -62,7 +62,7 @@
             </tr>
             <tr>
                 <td><h5>Nomor Invoice : </h5></td>
-                <td>{{ $retur->linkInvoice->nomor_invoice }}</td>
+                <td>{{ $retur->linkInvoice->nomor_invoice??null }}</td>
             </tr>
             
         </tbody>
@@ -120,11 +120,13 @@
                 </div>
                 <div class="modal-body">
                   <select class="form-select" name="id_invoice">
-                    @foreach ($invoices as $invoice)
-                        <option value="{{ $invoice->linkInvoice->id }}" {{ ( $invoice->linkInvoice->id === ($retur->linkInvoice->id )) ? 'selected' : '' }}>
-                          {{ $invoice->linkInvoice->nomor_invoice.' - Rp.'.$invoice->linkInvoice->harga_total }}
-                        </option>
-                    @endforeach
+                    @if ($invoices->count()>0)
+                      @foreach ($invoices as $invoice)
+                          <option value="{{ $invoice->linkInvoice->id }}" {{ ( $invoice->linkInvoice->id === ($retur->linkInvoice->id??null )) ? 'selected' : '' }}>
+                            {{ $invoice->linkInvoice->nomor_invoice.' - Rp.'.$invoice->linkInvoice->harga_total }}
+                          </option>
+                      @endforeach
+                    @endif
                   </select>
                 </div>
                 <div class="modal-footer">
