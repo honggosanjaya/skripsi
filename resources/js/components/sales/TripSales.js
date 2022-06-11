@@ -16,8 +16,8 @@ const TripSales = () => {
   const [email, setEmail] = useState('');
   const [alamatUtama, setAlamatUtama] = useState('');
   const [alamatNomor, setAlamatNomor] = useState('');
-  const [jenis, setJenis] = useState('1');
-  const [wilayah, setWilayah] = useState('2');
+  const [jenis, setJenis] = useState('');
+  const [wilayah, setWilayah] = useState('');
   const [ketAlamat, setKetAlamat] = useState('');
   const [telepon, setTelepon] = useState('');
   const [durasiTrip, setDurasiTrip] = useState(7);
@@ -61,9 +61,11 @@ const TripSales = () => {
       })
     }
     axios.get(`${window.location.origin}/api/dataFormTrip/`).then(response => {
-      console.log(response.data);
-      setDistrictArr(response.data.district)
-      setCustomerTypeArr(response.data.customerType)
+      console.log('custtype', response.data);
+      setDistrictArr(response.data.district);
+      setCustomerTypeArr(response.data.customerType);
+      setJenis(response.data.customerType[0].id);
+      setWilayah(response.data.district[0].id);
     })
   }, [])
 
@@ -207,7 +209,7 @@ const TripSales = () => {
   return (
     <main className="page_main">
       <HeaderSales title="Trip" />
-      <div className="page_container pt-4">
+      <div className="page_container py-4">
         {error && <AlertComponent errorMsg={error} />}
         <form>
           <div className={`${errorValidasi.nama ? '' : 'mb-3'}`}>
@@ -294,7 +296,7 @@ const TripSales = () => {
               onChange={(e) => setAlasanPenolakan(e.target.value)} />
           </div>
 
-          <div className="mb-5">
+          <div className="mb-4">
             <label className="form-label">Foto Tempat Usaha</label>
             {(imagePreviewUrl || prevImage) ? $imagePreview : <p>Belum ada foto</p>}
             <input
@@ -305,8 +307,8 @@ const TripSales = () => {
               onChange={handleImageChange} />
           </div>
 
-          <div className="trip_aksi">
-            <button className="btn btn-danger me-3" onClick={kirimCustomer}>Keluar</button>
+          <div className="d-flex justify-content-end">
+            <button className="btn btn-danger me-3" onClick={kirimCustomer}>Selesai dan Keluar</button>
             <button className="btn btn-success" onClick={handleOrder}>
               <span className="iconify me-1" data-icon="carbon:ibm-watson-orders"></span>Order
             </button>

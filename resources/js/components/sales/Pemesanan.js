@@ -37,15 +37,15 @@ const Pemesanan = ({ location }) => {
   const [alasanPenolakan, setAlasanPenolakan] = useState(null);
   const { state: idTripTetap } = location;
   const jamMasuk = Date.now() / 1000;
-
+  const [customer, setCustomer] = useState([]);
   const [historyItem, setHistoryItem] = useState([]);
   const { newHistoryItem, setNewHistoryItem } = useContext(HitungStokContext);
   const [jmlItem, setJmlItem] = useState(null);
   let jumlahProdukKeranjang = 0;
   const [jumlahOrderRealTime, setJumlahOrderRealTime] = useState([]);
-
   const [isHandleKodeCust, setIsHandleKodeCust] = useState(false);
   const [shouldKeepOrder, setShouldKeepOrder] = useState(false);
+  const [diskon, setDiskon] = useState(0);
 
   useEffect(() => {
     if (filterBy) {
@@ -54,13 +54,6 @@ const Pemesanan = ({ location }) => {
       setUrlApi(`api/salesman/listitems/${idCust}`);
     }
   }, [filterBy])
-
-  useEffect(() => {
-    produks.map((produk) => {
-      jumlahProdukKeranjang += produk.jumlah;
-    })
-    setJmlItem(jumlahProdukKeranjang);
-  }, [produks])
 
   useEffect(() => {
     setNewHistoryItem(historyItem);
@@ -75,7 +68,6 @@ const Pemesanan = ({ location }) => {
     if (idTripTetap) {
       setIdTrip(idTripTetap);
     }
-
     navigator.geolocation.getCurrentPosition(function (position) {
       setKoordinat(position.coords.latitude + '@' + position.coords.longitude);
     });
@@ -95,6 +87,21 @@ const Pemesanan = ({ location }) => {
         setJumlahOrderRealTime(response.data.orderRealTime);
       })
       .catch((error) => {
+        console.log(error.message);
+      });
+
+    axios({
+      method: "get",
+      url: `${window.location.origin}/api/tripCustomer/${idCust}`,
+      headers: {
+        Accept: "application/json",
+      },
+    })
+      .then(response => {
+        setDiskon(response.data.data.link_customer_type.diskon);
+        setCustomer(response.data.data);
+      })
+      .catch(error => {
         console.log(error.message);
       });
   }, []);
@@ -126,14 +133,15 @@ const Pemesanan = ({ location }) => {
 
   useEffect(() => {
     produks.map((produk) => {
+      jumlahProdukKeranjang += produk.jumlah;
       if (produk.jumlah == 0) handleDeleteProduct(produk);
     })
+
+    setJmlItem(jumlahProdukKeranjang);
   }, [produks]);
 
   useEffect(() => {
-    if (error) {
-      setErrorMessage(error.message);
-    }
+    if (error) setErrorMessage(error.message);
   }, [error]);
 
   if (error) return (
@@ -217,46 +225,35 @@ const Pemesanan = ({ location }) => {
             setOrderId(dataOrder.id);
             dataOrderItems.map((dataOrderItem) => {
               console.log('data item', dataOrderItem.link_item);
+              let obj = {
+                id: dataOrderItem.id_item,
+                orderId: dataOrder.id,
+                customer: dataOrder.id_customer,
+                harga: dataOrderItem.harga_satuan,
+                jumlah: dataOrderItem.kuantitas,
+                gambar: dataOrderItem.link_item.gambar,
+                nama: dataOrderItem.link_item.nama,
+                stok: dataOrderItem.link_item.stok,
+              }
               if (dataOrderItem.link_item.stok < dataOrderItem.kuantitas) {
-                const produk = {
-                  id: dataOrderItem.id_item,
-                  orderId: dataOrder.id,
-                  customer: dataOrder.id_customer,
-                  harga: dataOrderItem.harga_satuan,
-                  jumlah: dataOrderItem.kuantitas,
-                  gambar: dataOrderItem.link_item.gambar,
-                  error: 'Stok tidak mencukupi'
-                };
+                obj["error"] = "Stok tidak mencukupi"
+                const produk = obj;
                 KeranjangDB.updateProduk(produk);
                 getAllProduks();
               } else if (dataOrderItem.link_item.status == 11) {
-                const produk = {
-                  id: dataOrderItem.id_item,
-                  orderId: dataOrder.id,
-                  customer: dataOrder.id_customer,
-                  harga: dataOrderItem.harga_satuan,
-                  jumlah: dataOrderItem.kuantitas,
-                  gambar: dataOrderItem.link_item.gambar,
-                  error: 'Item sudah tidak aktif'
-                };
+                obj["error"] = "Item sudah tidak aktif"
+                const produk = obj;
                 KeranjangDB.updateProduk(produk);
                 getAllProduks();
               } else {
-                const produk = {
-                  id: dataOrderItem.id_item,
-                  orderId: dataOrder.id,
-                  customer: dataOrder.id_customer,
-                  harga: dataOrderItem.harga_satuan,
-                  jumlah: dataOrderItem.kuantitas,
-                  gambar: dataOrderItem.link_item.gambar
-                };
+                const produk = obj;
                 KeranjangDB.updateProduk(produk);
                 getAllProduks();
               }
             })
           }
           else {
-            setErrorKodeCustomer('kode customer tidak sesusai');
+            setErrorKodeCustomer('Kode customer tidak sesusai');
             setIsHandleKodeCust(false);
           }
         } else {
@@ -286,7 +283,8 @@ const Pemesanan = ({ location }) => {
         customer: parseInt(idCust),
         harga: item.harga_satuan,
         jumlah: exist.jumlah < item.stok ? exist.jumlah + 1 : exist.jumlah,
-        gambar: item.gambar
+        gambar: item.gambar,
+        stok: item.stok
       };
       KeranjangDB.updateProduk(produk);
       getAllProduks();
@@ -302,7 +300,8 @@ const Pemesanan = ({ location }) => {
         customer: parseInt(idCust),
         harga: item.harga_satuan,
         jumlah: 1,
-        gambar: item.gambar
+        gambar: item.gambar,
+        stok: item.stok
       };
       KeranjangDB.putProduk(produk);
       getAllProduks();
@@ -323,7 +322,8 @@ const Pemesanan = ({ location }) => {
         customer: parseInt(idCust),
         harga: item.harga_satuan,
         jumlah: exist.jumlah - 1,
-        gambar: item.gambar
+        gambar: item.gambar,
+        stok: item.stok
       };
       KeranjangDB.updateProduk(produk);
       getAllProduks();
@@ -364,7 +364,8 @@ const Pemesanan = ({ location }) => {
           customer: parseInt(idCust),
           harga: item.harga_satuan,
           jumlah: isNaN(parseInt(newVal)) ? 0 : parseInt(newVal),
-          gambar: item.gambar
+          gambar: item.gambar,
+          stok: item.stok
         };
         KeranjangDB.updateProduk(produk);
         getAllProduks();
@@ -379,6 +380,7 @@ const Pemesanan = ({ location }) => {
           harga: item.harga_satuan,
           gambar: item.gambar,
           jumlah: isNaN(parseInt(newVal)) ? 0 : parseInt(newVal),
+          stok: item.stok
         };
         KeranjangDB.putProduk(produk);
         getAllProduks();
@@ -458,7 +460,7 @@ const Pemesanan = ({ location }) => {
               <button type="submit" className="btn btn-primary" disabled={kodePesanan !== '' ? false : true}>Proses</button>
             </div>
           </form>
-          {errorKodeCustomer && <p className='text-danger'>{errorKodeCustomer}</p>}
+          {errorKodeCustomer && <small className='text-danger'>{errorKodeCustomer}</small>}
         </div>
 
         <HitungStok historyItem={historyItem} handleTambahJumlah={handleTambahJumlah}
@@ -475,7 +477,7 @@ const Pemesanan = ({ location }) => {
 
         <div>
           <div className="d-flex justify-content-between mb-3">
-            <h1 className='fs-4 mb-0 fw-bold'>Item</h1>
+            <h1 className='fs-5 mb-0 fw-bold'>Item</h1>
             <button className='btn' onClick={handleShowFilter}>
               <span className="iconify fs-3" data-icon="ci:filter"></span>
             </button>
@@ -504,7 +506,7 @@ const Pemesanan = ({ location }) => {
                 checkifexist={checkifexist} handleValueChange={handleValueChange}
                 handleKurangJumlah={handleKurangJumlah} orderRealTime={orderRealTime}
                 produkDlmKeranjang={produks} isHandleKodeCust={isHandleKodeCust}
-                shouldKeepOrder={shouldKeepOrder}
+                shouldKeepOrder={shouldKeepOrder} diskonTypeCust={diskon}
               />
             }
           </InfiniteScroll>

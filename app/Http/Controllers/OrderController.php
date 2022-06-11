@@ -140,12 +140,6 @@ class OrderController extends Controller
       }   
     }
 
-    Trip::find($request->idTrip)->update([
-      'waktu_keluar' => now(),
-      'updated_at' => now(),
-      'alasan_penolakan' => $request->alasan_penolakan
-    ]);
-
     $kode_event = $request -> kodeEvent ?? null;
     $id_event = null;
     if ($kode_event != null) {
@@ -158,6 +152,12 @@ class OrderController extends Controller
       'nomor_invoice' => (Invoice::orderBy("nomor_invoice", "DESC")->first()->nomor_invoice ?? 0) + 1,
       'harga_total' => $totalPesanan,
       'created_at' => now()
+    ]);
+
+    Trip::find($request->idTrip)->update([
+      'waktu_keluar' => now(),
+      'updated_at' => now(),
+      'alasan_penolakan' => $request->alasan_penolakan
     ]);
 
     return response()->json([
