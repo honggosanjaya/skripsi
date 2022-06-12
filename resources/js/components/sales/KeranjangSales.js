@@ -244,8 +244,8 @@ const KeranjangSales = ({ location }) => {
               },
             })
               .then(response => {
-                console.log('after checkout', response.message);
                 history.push('/salesman');
+                // sweetalert berhasil membuat pesanan
               })
           } else {
             throw Error(response.data.error_message);

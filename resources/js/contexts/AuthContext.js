@@ -47,6 +47,10 @@ const AuthContextProvider = (props) => {
     }
   }
 
+  useEffect(() => {
+    checkIsAuth();
+  }, [token, isAuth]);
+
   const defaultContext = {
     token, setToken,
     errorAuth, setErrorAuth,

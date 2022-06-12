@@ -41,7 +41,9 @@ Route::group(['middleware' => 'auth:sanctum'], function(){
 });
 Route::get('/forceLogout', [LoginController::class, 'logoutUnauthorizedSPAApi']);
 
-// SALES
+// SALESMAN
+Route::post('/cariCustomer', [CustomerController::class, 'cariCustomerApi']);
+Route::get('/dataFormTrip', [CustomerController::class, 'dataFormTripApi']);
 Route::prefix('salesman')->group(function() {
   Route::get('/listitems/{id}', [ItemController::class, 'getListAllProductAPI']);
   Route::get('/historyitems/{id}', [ItemController::class, 'getListHistoryProductAPI']);
@@ -52,9 +54,8 @@ Route::prefix('salesman')->group(function() {
   Route::get('/filteritems/{id}/{filterby}', [ItemController::class, 'filterProductAPI']);
 });
 
-//sales cari customer
-Route::post('/cariCustomer', [CustomerController::class, 'cariCustomerApi']);
-Route::get('/dataFormTrip', [CustomerController::class, 'dataFormTripApi']);
+
+
 //sales add/update data customer
 Route::get('/tripCustomer/{id}', [CustomerController::class, 'dataCustomerApi']);
 Route::post('/tripCustomer', [CustomerController::class, 'simpanCustomerApi']);

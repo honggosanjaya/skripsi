@@ -5,11 +5,11 @@ import { Link } from 'react-router-dom';
 import { AuthContext } from '../../contexts/AuthContext';
 
 const DashboardShipper = () => {
-  const { token, isAuth, checkIsAuth } = useContext(AuthContext);
+  // const { token, isAuth, checkIsAuth } = useContext(AuthContext);
 
-  useEffect(() => {
-    checkIsAuth();
-  }, [token, isAuth])
+  // useEffect(() => {
+  //   checkIsAuth();
+  // }, [token, isAuth])
 
   return (
     <main className="page_main" id="listShipper">

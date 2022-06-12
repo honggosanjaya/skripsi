@@ -1,4 +1,5 @@
-import React, { Fragment, Component, useState, useEffect, useContext } from 'react';
+import React, { Fragment, useRef, useState, useEffect, useContext } from 'react';
+import axios from 'axios';
 import HeaderSales from './HeaderSales';
 import ListCustomer from './ListCustomer';
 import { splitCharacter } from '../reuse/HelperFunction';
@@ -8,6 +9,7 @@ import { AuthContext } from '../../contexts/AuthContext';
 import { UserContext } from '../../contexts/UserContext';
 import Modal from 'react-bootstrap/Modal';
 
+let source;
 const DashboardSales = () => {
   const { token, isAuth, checkIsAuth } = useContext(AuthContext);
   const history = useHistory();
@@ -17,25 +19,34 @@ const DashboardSales = () => {
   const [listCustomer, setListCustomer] = useState([]);
   const [addButton, setAddButton] = useState('');
   const [dataShow, setDataShow] = useState('inactive');
-
   const [showModal, setShowModal] = useState(false);
   const [isOrder, setIsOrder] = useState();
+  const _isMounted = useRef(true);
+
+  // useEffect(() => {
+  //   checkIsAuth();
+  // }, [token, isAuth]);
 
   useEffect(() => {
-    checkIsAuth();
-  }, [token, isAuth])
-
-  useEffect(() => {
-    console.log(listCustomer);
-  }, [listCustomer])
+    source = axios.CancelToken.source();
+    return () => {
+      _isMounted.current = false;
+      if (source) {
+        source.cancel("Cancelling in cleanup");
+      }
+    }
+  }, []);
 
   const cariCustomer = (e) => {
     e.preventDefault();
+    source = axios.CancelToken.source();
     axios({
       method: "post",
       url: `${window.location.origin}/api/cariCustomer`,
+      cancelToken: source.token,
       headers: {
         Accept: "application/json",
+        Authorization: "Bearer " + token,
       },
       data: {
         nama: namaCust,
@@ -43,16 +54,20 @@ const DashboardSales = () => {
       }
     })
       .then(response => {
-        setListCustomer(response.data.data)
-        setAddButton('active')
-        setDataShow('inactive')
-        return response.data.data;
+        if (_isMounted.current) {
+          setListCustomer(response.data.data);
+          setAddButton('active');
+          setDataShow('inactive');
+          return response.data.data;
+        }
       })
       .catch(error => {
-        setListCustomer([])
-        setDataShow('active')
-        setAddButton('active')
-        console.log(error.message);
+        if (_isMounted.current) {
+          setListCustomer([]);
+          setDataShow('active');
+          setAddButton('active');
+          console.log(error.message);
+        }
       });
   }
 
@@ -90,7 +105,7 @@ const DashboardSales = () => {
             </button>
           </div>
 
-          <Modal show={showModal} onHide={handleCloseModal}>
+          <Modal show={showModal} onHide={handleCloseModal} centered={true}>
             <Modal.Header closeButton>
               <Modal.Title>Cari Customer</Modal.Title>
             </Modal.Header>
