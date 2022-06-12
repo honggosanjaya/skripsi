@@ -11,6 +11,7 @@ import Table from 'react-bootstrap/Table';
 import LoadingIndicator from '../reuse/LoadingIndicator';
 import urlAsset from '../../config';
 import HeaderSales from './HeaderSales';
+import { Button, Modal } from 'react-bootstrap';
 
 const KeranjangSales = ({ location }) => {
   const { dataUser, loadingDataUser } = useContext(UserContext);
@@ -420,36 +421,62 @@ const KeranjangSales = ({ location }) => {
               ))}
             </select>
 
-            <button className="btn btn-primary mb-2" onClick={() => setIsShowRincian(!isShowRincian)}>
-              <span className="iconify me-2" data-icon="uil:invoice"></span>
-              {isShowRincian ? 'Sembunyikan Rincian' : 'Rincian Pesanan'}
-            </button>
-            {isShowRincian && <div className='rincian-pesanan'>
-              <div className="d-flex justify-content-between">
-                <p className='mb-0 fw-bold'>Subtotal pesanan</p>
-                <p className='mb-0'>{totalHarga}</p>
-              </div>
-              <div className="d-flex justify-content-between">
-                <p className='mb-0 fw-bold'>Diskon Customer ({dataCustType.nama})</p>
-                <p className='mb-0'>- {totalHarga * (dataCustType.diskon ?? 0) / 100}</p>
-              </div>
-              <div className="d-flex justify-content-between">
-                <p className='mb-0 fw-bold'>Event</p>
-                <p className='mb-0'>- {hargaPromo}</p>
-              </div>
-              <hr />
-              <div className="d-flex justify-content-between">
-                <p className='mb-0 fw-bold'>Total Akhir</p>
-                <p className='mb-0'>{totalHarga - (totalHarga * (dataCustType.diskon ?? 0) / 100) - hargaPromo}</p>
-              </div>
-            </div>}
+            <Modal show={isShowRincian} onHide={() => setIsShowRincian(false)}>
+              <Modal.Header closeButton>
+                <Modal.Title><span className="iconify me-2" data-icon="uil:invoice"></span>Rincian Pesanan</Modal.Title>
+              </Modal.Header>
+              <Modal.Body>
+                <Table>
+                  <thead>
+                    <tr>
+                      <th>Nama Item</th>
+                      <th>Kuantitas</th>
+                      <th>Harga</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {produks.map((produk) => (
+                      <tr key={produk.id}>
+                        <td>{produk.nama}</td>
+                        <td className='text-center'>{produk.jumlah} x {produk.harga}</td>
+                        <td className='text-center'>{produk.jumlah * produk.harga}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </Table>
+
+                <div className="d-flex justify-content-between px-2">
+                  <p className='mb-0 fw-bold'>Subtotal pesanan</p>
+                  <p className='mb-0'>{totalHarga}</p>
+                </div>
+                <div className="d-flex justify-content-between px-2">
+                  <p className='mb-0 fw-bold'>Diskon Customer ({dataCustType.nama})</p>
+                  <p className='mb-0'>- {totalHarga * (dataCustType.diskon ?? 0) / 100}</p>
+                </div>
+                <div className="d-flex justify-content-between px-2">
+                  <p className='mb-0 fw-bold'>Event</p>
+                  <p className='mb-0'>- {hargaPromo}</p>
+                </div>
+                <hr />
+                <div className="d-flex justify-content-between">
+                  <p className='mb-0 fw-bold'>Total Akhir</p>
+                  <p className='mb-0'>{totalHarga - (totalHarga * (dataCustType.diskon ?? 0) / 100) - hargaPromo}</p>
+                </div>
+              </Modal.Body>
+              <Modal.Footer>
+                <Button variant="danger" onClick={checkout}>
+                  CHEKOUT
+                </Button>
+              </Modal.Footer>
+            </Modal>
+
 
             <div className="button_bottom d-flex justify-content-between">
               <div>
                 <p className='mb-0'>Total Pesanan:</p>
                 <h1 className={`mb-0 fs-4 `}>{convertPrice(totalHarga - (totalHarga * (dataCustType.diskon ?? 0) / 100) - hargaPromo)}</h1>
               </div>
-              {(errorProdukDlmKeranjang || estimasiWaktuPengiriman == '') ? <button className='btn btn-success' disabled={true}>CHECKOUT</button> : <button className='btn btn-success' onClick={checkout}>CHECKOUT</button>}
+              {(errorProdukDlmKeranjang || estimasiWaktuPengiriman == '') ? <button className='btn btn-success' disabled={true}><span className="iconify me-2" data-icon="uil:invoice"></span> Rincian Pesanan</button> : <button className='btn btn-success' onClick={() => setIsShowRincian(true)}><span className="iconify me-2" data-icon="uil:invoice"></span> Rincian Pesanan</button>}
             </div>
           </div>
         }

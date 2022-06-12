@@ -162,7 +162,9 @@ label {
 
 // ==== MODAL =======
 .modal-dialog {
+    width: 100%;
     max-width: 375px;
+
     .modal-title {
         font-size: 1.2rem !important;
         text-align: center;
