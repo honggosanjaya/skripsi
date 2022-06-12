@@ -10,7 +10,6 @@ const UserContextProvider = (props) => {
   const [errorDataUser, setErrorDataUser] = useState(null);
   const history = useHistory();
 
-
   const forceLogout = () => {
     console.log('dari user context logout paksa');
     axios({
@@ -28,32 +27,44 @@ const UserContextProvider = (props) => {
   }
 
   useEffect(() => {
+    let unmounted = false;
+    let source = axios.CancelToken.source();
     if (isAuth === 'true' && token !== null & dataUser.length === 0) {
       setLoadingDataUser(true);
       axios({
         method: "get",
         url: `${window.location.origin}/api/user`,
+        cancelToken: source.token,
         headers: {
           Accept: "application/json",
           Authorization: "Bearer " + token,
         }
       })
         .then((response) => {
-          console.log("user context:", response.data.data);
-          setLoadingDataUser(false);
-          if (response.data.status === 'success') {
-            setDataUser(response.data.data);
-          } else {
-            forceLogout();
+          if (!unmounted) {
+            console.log("user context:", response.data.data);
+            setLoadingDataUser(false);
+            if (response.data.status === 'success') {
+              setDataUser(response.data.data);
+            } else {
+              forceLogout();
+            }
           }
         })
         .catch((error) => {
-          setLoadingDataUser(false);
-          setErrorDataUser(error.message);
-          // disini masih ragu, kalau error forceLogout(); dikomen aja
-          // forceLogout();
+          if (!unmounted) {
+            setLoadingDataUser(false);
+            setErrorDataUser(error.message);
+            // disini masih ragu, kalau error forceLogout(); dikomen aja
+            // forceLogout();
+          }
         });
     }
+
+    return function () {
+      unmounted = true;
+      source.cancel("Cancelling in cleanup");
+    };
   }, [dataUser]);
 
   return (

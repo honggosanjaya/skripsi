@@ -1,5 +1,4 @@
 import React, { Component, useContext, useEffect, useState } from 'react';
-import { Link } from "react-router-dom";
 import { useHistory } from "react-router";
 import axios from 'axios';
 import { AuthContext } from '../../contexts/AuthContext';
@@ -10,19 +9,14 @@ import { UserContext } from '../../contexts/UserContext';
 const LoginReact = () => {
   const history = useHistory();
   const { token, setToken, isAuth, setIsAuth, errorAuth, setErrorAuth } = useContext(AuthContext);
-  const { dataUser, setDataUser, setErrorDataUser } = useContext(UserContext);
+  const { dataUser, setDataUser } = useContext(UserContext);
   const [hiddenPassword, setHiddenPassword] = useState(true);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
-    console.log('auth', isAuth);
-    console.log('token', token);
-    console.log('data user', dataUser);
-
     if (isAuth === 'true' && token !== null && dataUser) {
-      console.log('sudah login', dataUser);
       if (dataUser.role == 'salesman') {
         history.push('/salesman');
       } else if (dataUser.role == 'shipper') {
@@ -54,7 +48,6 @@ const LoginReact = () => {
   const handleSubmit = (e) => {
     e.preventDefault();
     setIsLoading(true);
-
     axios({
       method: "post",
       url: `${window.location.origin}/api/v1/login`,
@@ -70,7 +63,6 @@ const LoginReact = () => {
         console.log('login', response.data.data);
         setIsLoading(false);
         setErrorAuth('');
-
         if (response.data.status == 'success') {
           setToken(response.data.token);
           setIsAuth('true');
@@ -99,12 +91,9 @@ const LoginReact = () => {
       {(isAuth !== 'true' || token === null) &&
         <div className="page_container pt-5">
           {isLoading && <LoadingIndicator />}
-
           <h1 className='logo text-center fs-1 mb-5'>salesMan</h1>
-
           <h1 className='fs-3 text-center fw-bold'>Selamat Datang<span className="iconify ms-2" data-icon="emojione:hand-with-fingers-splayed"></span></h1>
           <h2 className='fs-6 text-center'>Aplikasi web salesMan <br /> UD Mandiri</h2>
-
           {errorAuth && <AlertComponent errorMsg={errorAuth} />}
           {errorAuth == 'Anda mengakses halaman login yang salah' && <p className='mb-3 text-center'>
             Halaman login khusus untuk salesman dan tenaga pengirim, untuk staff lain silahkan login
@@ -142,7 +131,6 @@ const LoginReact = () => {
                 </button>
               </div>
             </div>
-
             <button type="submit" className="btn btn-primary w-100 my-4">MASUK</button>
           </form>
         </div>

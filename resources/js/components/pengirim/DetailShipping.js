@@ -10,7 +10,7 @@ const DetailShipping = ({ detailShipping, isLoading, show, handleClose, handlePe
       {detailShipping && !isLoading &&
         <Modal show={show} onHide={handleClose}>
           <Modal.Header closeButton>
-            <Modal.Title>Nomor invoice: {detailShipping.link_invoice.nomor_invoice}</Modal.Title>
+            <Modal.Title>Detail Pengiriman</Modal.Title>
           </Modal.Header>
           <Modal.Body>
 
@@ -25,8 +25,8 @@ const DetailShipping = ({ detailShipping, isLoading, show, handleClose, handlePe
               <span className='d-flex'><b>Jam Berangkat </b> <div>{convertDate(detailShipping.link_order_track.waktu_berangkat)}</div></span>
               <span><b>Total Pembayaran</b>{detailShipping.link_invoice.harga_total}</span>
               {(detailShipping.link_customer.foto)
-              ? <img src={`${urlAsset}/storage/customer/${detailShipping.link_customer.foto}`} className="mt-2 img-fluid d-block mx-auto" />
-              : ''}
+                ? <img src={`${urlAsset}/storage/customer/${detailShipping.link_customer.foto}`} className="mt-2 img-fluid d-block mx-auto" />
+                : ''}
               <table className="table mt-3">
                 <thead>
                   <tr>
