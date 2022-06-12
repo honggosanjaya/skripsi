@@ -43,7 +43,7 @@ const HeaderSales = ({ title, isDashboard, isOrder, lihatKeranjang, toBack, juml
 
       {isDashboard &&
         <Fragment>
-          <h1 className='logo'>salesMan</h1>
+          <h1 className='logo text-white'>salesMan</h1>
           <Dropdown align="end">
             <Dropdown.Toggle id="dropdown-basic">
               <img src={`${urlAsset}/images/default_fotoprofil.png`} className="avatar_pp" />

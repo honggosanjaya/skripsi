@@ -31,6 +31,8 @@ class ReturController extends Controller
       $cartItems = $request->cartItems;
       $id_staff_pengaju = $request->id_staff_pengaju;
       $id_customer = $request->id_customer;
+      $id_invoice = $request->id_invoice;
+      dd($id_invoice);
       $customer = Customer::find($id_customer);
       $data = [];
       foreach($cartItems as $item){

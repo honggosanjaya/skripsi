@@ -11,9 +11,11 @@ import LoadingIndicator from '../reuse/LoadingIndicator';
 
 import ListShipping from './ListShipping';
 import DetailShipping from './DetailShipping';
+import { ReturContext } from '../../contexts/ReturContext';
 
 const ShippingShipper = () => {
   // const { token, isAuth, setErrorAuth } = useContext(AuthContext);
+  const { setIdInvoice } = useContext(ReturContext);
   const history = useHistory();
   const { dataUser, loadingDataUser } = useContext(UserContext);
   const [listShipping, setListShipping] = useState([]);
@@ -81,6 +83,7 @@ const ShippingShipper = () => {
     axios.get(`${window.location.origin}/api/shipper/jadwalPengiriman/${shippingid}`)
       .then(response => {
         console.log('show', response.data.data);
+        setIdInvoice(response.data.data.link_invoice.id);
         setDetailShipping(response.data.data);
         setListDetailItem(response.data.data.link_order_item);
         setIsLoading(false);
@@ -137,17 +140,12 @@ const ShippingShipper = () => {
           </ButtonGroup>
         </div>
 
-
-
         <ListShipping listShipping={listShipping} statusShipping={statusShipping} handleShow={handleShow} />
-
-
 
         <DetailShipping detailShipping={detailShipping}
           isLoading={isLoading} show={show} handleClose={handleClose}
           handlePengirimanSampai={handlePengirimanSampai} handlePengajuanRetur={handlePengajuanRetur}
           listDetailItem={listDetailItem} />
-
 
         <Modal show={showBuktiPengiriman} onHide={handleCloseBuktiPengirimanModal}>
           <Modal.Header closeButton>
