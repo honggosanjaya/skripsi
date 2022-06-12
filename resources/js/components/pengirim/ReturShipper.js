@@ -6,9 +6,11 @@ import ReturDB from '../reuse/ReturDb';
 import urlAsset from '../../config';
 import { UserContext } from '../../contexts/UserContext';
 import LoadingIndicator from '../reuse/LoadingIndicator';
+import { ReturContext } from '../../contexts/ReturContext';
 
 const ReturShipper = () => {
   const { idCust } = useParams();
+  const { idInvoice } = useContext(ReturContext);
   const [historyItems, setHistoryItems] = useState([]);
   const [cartItems, setCartItems] = useState([]);
   const { dataUser } = useContext(UserContext);
@@ -213,6 +215,7 @@ const ReturShipper = () => {
         cartItems: cartItems,
         id_staff_pengaju: dataUser.id_staff,
         id_customer: idCust,
+        id_invoice: idInvoice
       }
     })
       .then(response => {
@@ -246,7 +249,7 @@ const ReturShipper = () => {
       <HeaderShipper title="Retur" />
       <div className="page_container pt-4">
         {isLoading && <LoadingIndicator />}
-        <button className="btn btn-primary" onClick={handleToggleShowProduct}>{isShowProduct ? 'Sembunyikan Produk' : 'Lihat Produk'}</button>
+        <button className="btn btn-primary" onClick={handleToggleShowProduct}>{isShowProduct ? 'Sembunyikan' : 'Lihat Produk'}</button>
         {isShowProduct &&
           <div className="retur-product_wrapper my-3 border">
             {newHistoryItems.map((item) => (

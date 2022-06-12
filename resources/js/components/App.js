@@ -25,6 +25,7 @@ import Pemesanan from './sales/Pemesanan';
 import DashboardShipper from './pengirim/DashboardShipper';
 import JadwalShipper from './pengirim/JadwalShipper';
 import ReturShipper from './pengirim/ReturShipper';
+import ReturContextProvider from '../contexts/ReturContext';
 
 
 function App() {
@@ -37,9 +38,11 @@ function App() {
 
             <Route path={["/shipper"]}>
               <Route exact path="/shipper" component={DashboardShipper} />
-              <Route exact path="/shipper/jadwal" component={JadwalShipper} />
+              <ReturContextProvider>
+                <Route exact path="/shipper/jadwal" component={JadwalShipper} />
+                <Route exact path="/shipper/retur/:idCust" component={ReturShipper} />
+              </ReturContextProvider>
               <Route exact path="/shipper/profil" component={Profil} />
-              <Route exact path="/shipper/retur/:idCust" component={ReturShipper} />
             </Route>
 
             <Route path={["/salesman"]}>
