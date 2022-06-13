@@ -25,6 +25,7 @@ class ReportController extends Controller
     }
     public function kinerja(){
         // $data['mostSellItem']=Item::get();
-        return view('supervisor.report.kinerja',compact('data'));
+        // return view('supervisor.report.kinerja',compact('data'));
+        return view('supervisor.report.kinerja');
     }
 }
