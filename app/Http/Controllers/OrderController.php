@@ -249,6 +249,7 @@ class OrderController extends Controller
     }
 
     public function search(){
+      //ini take out sementara
       $orders = Order::join('order_tracks','orders.id','=','order_tracks.id_order')
         ->join('statuses','order_tracks.status','=','statuses.id')
         ->join('invoices','orders.id','=','invoices.id_order')
@@ -265,17 +266,12 @@ class OrderController extends Controller
 
     public function filter(){
       if(request('status') != ""){
-        $orders = Order::join('order_tracks','orders.id','=','order_tracks.id_order')
-        ->join('statuses','order_tracks.status','=','statuses.id')
-        ->join('invoices','orders.id','=','invoices.id_order')
-        ->where('statuses.id','=',request('status'))
-        ->paginate(10);
+        $orders = Order::whereHas('linkOrderTrack',function($q) {
+            $q->where('status', request('status'));
+          })->with(['linkOrderTrack.linkStatus','linkInvoice'])->paginate(10);
       }
       else{
-        $orders = Order::join('order_tracks','orders.id','=','order_tracks.id_order')
-        ->join('statuses','order_tracks.status','=','statuses.id')
-        ->join('invoices','orders.id','=','invoices.id_order')        
-        ->paginate(10);
+        $orders = Order::with(['linkOrderTrack.linkStatus','linkInvoice'])->paginate(10);
       }
       
         $statuses = Status::where('tabel','=','order_tracks')       
@@ -433,9 +429,16 @@ class OrderController extends Controller
         whereHas('linkOrderTrack',function($q) use( $id_staff) {
           $q->where('id_staff_pengirim', $id_staff);
         })
-        ->with(['linkOrderTrack','linkInvoice','linkCustomer','linkOrderItem'])->get();
+        ->with(['linkOrderTrack','linkInvoice','linkCustomer','linkOrderItem'])
+        ->where(function ($query) {
+          $query->whereHas('linkOrderTrack',function($q) {
+                  $q->where('status', 22);
+                })
+                ->orWhereHas('linkOrderTrack',function($q) {
+                  $q->where('status','>', 22)->whereDate('waktu_sampai',now());
+                });
+        })->get();
 
-      // dd($data);
      
       return response()->json([
         'data' => $data,
@@ -444,7 +447,7 @@ class OrderController extends Controller
     }
 
     public function getDetailShippingAPI(Request $request){
-      $data=Order::with(['linkOrderTrack','linkInvoice','linkCustomer','linkOrderItem.linkItem'])->find($request->id);
+      $data=Order::with(['linkOrderTrack','linkInvoice.linkRetur','linkCustomer','linkOrderItem.linkItem'])->find($request->id);
       return response()->json([
         'data' => $data,
         'status' => 'success'

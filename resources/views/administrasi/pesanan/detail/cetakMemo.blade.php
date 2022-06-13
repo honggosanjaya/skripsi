@@ -21,14 +21,14 @@
 <div class="container">
   <h4 class="mb-4 text-center">Memo Persiapan Barang UD. Mandiri</h4>
   <br>
-  <h5>Nomor : <span class="font-weight-normal">{{ $order->linkInvoice->nomor_invoice }}/{{ $date }}</span></h5>
+  <h5>Nomor : <span class="font-weight-normal">{{ $order->linkInvoice->nomor_invoice }}/{{ date('d-m-Y', strtotime($order->linkOrderTrack->waktu_diteruskan)) }}</span></h5>
   <h5>Hal : <span class="font-weight-normal">Persiapan barang dari nomor invoice {{ $order->linkInvoice->nomor_invoice }}</span></h5>
   <br>
   <h5 class="text-right">Malang, {{ $date }}</h5>
   <br>
   <h6>Kepada Tenaga Pembantu,</h6>
   <p class="indent">Sehubungan dengan customer yang telah memesan barang dengan nomor invoice {{ $order->linkInvoice->nomor_invoice }},
-    kami meminta kepada saudara untuk mempersiapkan barang-barang yang dipesan untuk dilanjutkan ke bagian pengiriman. 
+    pada tanggal {{ date('d-m-Y', strtotime($order->linkOrderTrack->waktu_diteruskan)) }},kami meminta kepada saudara untuk mempersiapkan barang-barang yang dipesan untuk dilanjutkan ke bagian pengiriman. 
   </p>
   <p class="indent">
       Berikut detail barang yang perlu disiapkan : 
