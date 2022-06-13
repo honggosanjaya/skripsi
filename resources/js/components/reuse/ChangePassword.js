@@ -1,10 +1,13 @@
-import React, { Component, useContext, useState } from 'react';
+import React, { useRef, useEffect, useContext, useState } from 'react';
+import axios from 'axios';
 import { UserContext } from '../../contexts/UserContext';
 import { useHistory } from 'react-router';
 import AlertComponent from './AlertComponent';
 import HeaderShipper from '../pengirim/HeaderShipper';
 import HeaderSales from '../sales/HeaderSales';
+import LoadingIndicator from './LoadingIndicator';
 
+let source;
 const ChangePassword = () => {
   const { dataUser } = useContext(UserContext);
   const [oldPassword, setOldPassword] = useState('');
@@ -12,13 +15,24 @@ const ChangePassword = () => {
   const [confirmNewPassword, setConfirmNewPassword] = useState('');
   const [isAllowChangePassword, setIsAllowChangePassword] = useState(false);
   const [errorValidasi, setErrorValidasi] = useState([]);
-
+  const [isLoading, setIsLoading] = useState(false);
   const [hiddenOldPassword, setHiddenOldPassword] = useState(true);
   const [hiddenNewPassword, setHiddenNewPassword] = useState(true);
   const [hiddenConfirmNewPassword, setHiddenConfirmNewPassword] = useState(true);
   const [errorMessage, setErrorMessage] = useState(null);
   const [successMessage, setSuccessMessage] = useState(null);
   const history = useHistory();
+  const _isMounted = useRef(true);
+
+  useEffect(() => {
+    source = axios.CancelToken.source();
+    return () => {
+      _isMounted.current = false;
+      if (source) {
+        source.cancel("Cancelling in cleanup");
+      }
+    }
+  }, []);
 
   const toBack = () => {
     if (dataUser.role == 'salesman') {
@@ -45,72 +59,88 @@ const ChangePassword = () => {
 
   const handleChangePassword = (e) => {
     e.preventDefault();
+    setIsLoading(true);
+    source = axios.CancelToken.source();
     axios({
       method: "post",
       url: `${window.location.origin}/api/changepassword/${dataUser.id_staff}`,
       headers: {
         Accept: "application/json",
       },
+      cancelToken: source.token,
       data: {
         'new_password': newPassword,
         'confirm_newpassword': confirmNewPassword,
       }
     })
       .then((response) => {
-        console.log(response.data);
-        if (response.data.status == 'success') {
-          setErrorValidasi([]);
-          setErrorMessage(null);
-          setSuccessMessage(response.data.message);
-          setNewPassword('');
-          setConfirmNewPassword('');
-          if (dataUser.role == 'salesman') {
-            history.push('/salesman/profil');
-          } else if (dataUser.role == 'shipper') {
-            history.push('/shipper/profil');
+        if (_isMounted.current) {
+          setIsLoading(false);
+          if (response.data.status == 'success') {
+            setErrorValidasi([]);
+            setErrorMessage(null);
+            setSuccessMessage(response.data.message);
+            setNewPassword('');
+            setConfirmNewPassword('');
+            if (dataUser.role == 'salesman') {
+              history.push('/salesman/profil');
+            } else if (dataUser.role == 'shipper') {
+              history.push('/shipper/profil');
+            }
+          } else {
+            setErrorValidasi(response.data.validate_err);
+            throw Error("Error validasi");
           }
-        } else {
-          setErrorValidasi(response.data.validate_err);
-          throw Error("Error validasi");
         }
       })
       .catch((error) => {
-        if (error.response != undefined) {
-          setErrorMessage(error.response.data.message);
-        } else {
-          setErrorMessage(error.message);
+        if (_isMounted.current) {
+          setIsLoading(false);
+          if (error.response != undefined) {
+            setErrorMessage(error.response.data.message);
+          } else {
+            setErrorMessage(error.message);
+          }
         }
       });
   }
 
   const handleCheckPassword = (e) => {
     e.preventDefault();
+    setIsLoading(true);
+    source = axios.CancelToken.source();
     axios({
       method: "post",
       url: `${window.location.origin}/api/checkpassword/${dataUser.id_staff}`,
       headers: {
         Accept: "application/json",
       },
+      cancelToken: source.token,
       data: {
         'old_password': oldPassword,
       }
     })
       .then((response) => {
-        console.log(response.data);
-        if (response.data.status == 'success') {
-          setIsAllowChangePassword(true);
-          setErrorMessage(null);
-          setErrorValidasi([]);
-        } else {
-          setErrorValidasi(response.data.validate_err);
-          throw Error("Error validasi");
+        if (_isMounted.current) {
+          setIsLoading(false);
+          if (response.data.status == 'success') {
+            setIsAllowChangePassword(true);
+            setErrorMessage(null);
+            setErrorValidasi([]);
+          } else {
+            setErrorValidasi(response.data.validate_err);
+            throw Error("Error validasi");
+          }
         }
       })
       .catch((error) => {
-        if (error.response != undefined) {
-          setErrorMessage(error.response.data.message);
-        } else {
-          setErrorMessage(error.message);
+        if (_isMounted.current) {
+          setIsLoading(false);
+          if (error.response != undefined) {
+            setErrorMessage(error.response.data.message);
+          } else {
+            setErrorMessage(error.message);
+          }
         }
       });
   }
@@ -119,7 +149,7 @@ const ChangePassword = () => {
     <main className="page_main">
       {dataUser.role == 'salesman' && <HeaderSales title="Ubah Password" toBack={toBack} />}
       {dataUser.role == 'shipper' && <HeaderShipper title="Ubah Password" toBack={toBack} />}
-
+      {isLoading && <LoadingIndicator />}
       <div className="page_container pt-4">
         {errorMessage && <AlertComponent errorMsg={errorMessage} />}
         {successMessage && <AlertComponent successMsg={successMessage} />}

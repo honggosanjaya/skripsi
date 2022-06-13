@@ -1,4 +1,5 @@
-import React, { useContext, useState, useEffect, Fragment } from 'react';
+import React, { useContext, useState, useEffect, useRef } from 'react';
+import axios from 'axios';
 import { useHistory, useParams } from 'react-router-dom';
 import HeaderShipper from './HeaderShipper';
 import { convertPrice } from "../reuse/HelperFunction";
@@ -7,18 +8,32 @@ import urlAsset from '../../config';
 import { UserContext } from '../../contexts/UserContext';
 import LoadingIndicator from '../reuse/LoadingIndicator';
 import { ReturContext } from '../../contexts/ReturContext';
+import { AuthContext } from '../../contexts/AuthContext';
 
+let source;
 const ReturShipper = () => {
   const { idCust } = useParams();
+  const { token } = useContext(AuthContext);
   const { idInvoice } = useContext(ReturContext);
   const [historyItems, setHistoryItems] = useState([]);
   const [cartItems, setCartItems] = useState([]);
   const { dataUser } = useContext(UserContext);
   const [newHistoryItems, setNewHistoryItems] = useState(historyItems);
-  const [isShowProduct, setIsShowProduct] = useState(false);
+  const [isShowProduct, setIsShowProduct] = useState(true);
   const [isLoading, setIsLoading] = useState(false);
   const Swal = require('sweetalert2');
   const redirect = useHistory();
+  const _isMounted = useRef(true);
+
+  useEffect(() => {
+    source = axios.CancelToken.source();
+    return () => {
+      _isMounted.current = false;
+      if (source) {
+        source.cancel("Cancelling in cleanup");
+      }
+    }
+  }, []);
 
   const getAllProduks = () => {
     const cartItems = ReturDB.getAllProduks();
@@ -29,21 +44,32 @@ const ReturShipper = () => {
 
   useEffect(() => {
     getAllProduks();
-
+    let unmounted = false;
+    let source = axios.CancelToken.source();
     axios({
       method: "get",
       url: `${window.location.origin}/api/salesman/historyitems/${idCust}`,
+      cancelToken: source.token,
       headers: {
         Accept: "application/json",
       },
     })
       .then((response) => {
-        console.log('history yang dipesan', response.data.data);
-        setHistoryItems(response.data.data);
+        if (!unmounted) {
+          console.log('history yang dipesan', response.data.data);
+          setHistoryItems(response.data.data);
+        }
       })
       .catch((error) => {
-        console.log(error.message);
+        if (!unmounted) {
+          console.log(error.message);
+        }
       });
+
+    return function () {
+      unmounted = true;
+      source.cancel("Cancelling in cleanup");
+    };
   }, []);
 
   useEffect(() => {
@@ -199,57 +225,65 @@ const ReturShipper = () => {
     })
   }
 
-  const handleToggleShowProduct = () => {
-    setIsShowProduct(!isShowProduct);
+  const goBack = () => {
+    hapusSemuaProduk();
+    redirect.push('/shipper/jadwal');
   }
 
   const handlePengajuanRetur = () => {
     setIsLoading(true);
+    source = axios.CancelToken.source();
     axios({
       method: "post",
       url: `${window.location.origin}/api/shipper/retur`,
       headers: {
         Accept: "application/json",
+        Authorization: "Bearer " + token,
       },
       data: {
         cartItems: cartItems,
         id_staff_pengaju: dataUser.id_staff,
         id_customer: idCust,
         id_invoice: idInvoice
-      }
+      },
+      cancelToken: source.token,
     })
       .then(response => {
-        setIsLoading(false);
-        hapusSemuaProduk();
-        Swal.fire({
-          title: 'Success',
-          text: response.data.message,
-          showDenyButton: false,
-          showCancelButton: false,
-          confirmButtonText: 'OK',
-          icon: 'success',
-        }).then((result) => {
-          if (result.isConfirmed) {
-            redirect.push('/shipper/jadwal');
-          }
-        })
+        if (_isMounted.current) {
+          setIsLoading(false);
+          hapusSemuaProduk();
+          Swal.fire({
+            title: 'Success',
+            text: response.data.message,
+            showDenyButton: false,
+            showCancelButton: false,
+            confirmButtonText: 'OK',
+            icon: 'success',
+          }).then((result) => {
+            if (result.isConfirmed) {
+              redirect.push('/shipper/jadwal');
+            }
+          })
+        }
       })
       .catch(error => {
-        setIsLoading(false);
-        Swal.fire({
-          title: 'Ups ada yang salah!',
-          text: error.message,
-          icon: 'error',
-        })
+        if (_isMounted.current) {
+          setIsLoading(false);
+          Swal.fire({
+            title: 'Ups ada yang salah!',
+            text: error.message,
+            icon: 'error',
+          })
+        }
       });
   }
 
   return (
     <main className='page_main'>
-      <HeaderShipper title="Retur" />
+      <HeaderShipper title="Retur" toBack={goBack} />
       <div className="page_container pt-4">
         {isLoading && <LoadingIndicator />}
-        <button className="btn btn-primary" onClick={handleToggleShowProduct}>{isShowProduct ? 'Sembunyikan' : 'Lihat Produk'}</button>
+        <button className="btn btn-primary" onClick={() => setIsShowProduct(!isShowProduct)}>{isShowProduct ? 'Sembunyikan' : 'Lihat Produk'}</button>
         {isShowProduct &&
           <div className="retur-product_wrapper my-3 border">
             {newHistoryItems.map((item) => (

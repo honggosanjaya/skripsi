@@ -15,8 +15,10 @@ mix
 mix
   .js('resources/js/app.js', 'public/js/react.js')
   .js('resources/js/reactView.js', 'public/js/react.js')
+  .js('resources/js/chart.js', 'public/js/chartLaporan.js')
   .react()
 
+mix.copy('node_modules/chart.js/dist/chart.js', 'public/chart.js/chart.js');
 
 //custom-example
 mix
@@ -46,12 +48,12 @@ mix
     , 'public/js/d_customer.js'
   );
 mix
-.js(
-  [
-    'resources/js/administrasi.js',
-  ]
-  , 'public/js/administrasi.js'
-);
+  .js(
+    [
+      'resources/js/administrasi.js',
+    ]
+    , 'public/js/administrasi.js'
+  );
 
 
 mix.js('resources/js/app.js', 'public/js/app.js')
