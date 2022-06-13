@@ -53,7 +53,7 @@ const DetailShipping = ({ detailShipping, isLoading, show, handleClose, handlePe
             <Button variant="danger" onClick={handleClose}>Close</Button>
             {detailShipping.link_order_track.status == 22 &&
               <Button variant="success" onClick={handlePengirimanSampai}>Pengiriman Sampai</Button>}
-            {detailShipping.link_order_track.status == 23 &&
+            {(detailShipping.link_invoice.link_retur.length == 0 && (detailShipping.link_order_track.status == 23||detailShipping.link_order_track.status == 24)) &&
               <Button variant="warning" onClick={() => handlePengajuanRetur(detailShipping.id_customer)}>Ajukan Retur</Button>}
           </Modal.Footer>
         </Modal>}

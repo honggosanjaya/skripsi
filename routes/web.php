@@ -13,6 +13,7 @@ use App\Http\Controllers\EventController;
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\VehicleController;
 use App\Http\Controllers\ReturController;
+use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -29,8 +30,17 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', function () {
     return view('welcome');
 });
+Route::get('/test',[Controller::class, 'test']);
 
 Route::prefix('owner')->middleware('owner')->group(function() {
+
+  Route::post('/datasupervisor', [StaffController::class, 'store']);
+
+  // Route untuk data report
+  Route::get('/report', [ReportController::class, 'index']);
+   Route::get('/report/penjualan', [ReportController::class,'penjualan']);
+   Route::get('/report/kinerja', [ReportController::class,'kinerja']);
+
   Route::get('/', [HomeController::class, 'indexOwner']);
   Route::get('/profil', [HomeController::class, 'lihatProfil']);
   Route::get('/datasupervisor', [StaffController::class, 'datasupervisor']);

@@ -6,7 +6,7 @@ const ListShipping = ({ listShipping, statusShipping, handleShow }) => {
     <Fragment>
       {listShipping.length > 0 && <div className='pengiriman_wrapper'>
         {listShipping.map((data, index) => (
-          <div className={`list_pengiriman px-2 ${data.link_order_track.status != statusShipping ? "d-none" : "d-block"}`} key={`jadwal${index}`}>
+          <div className={`list_pengiriman px-2 ${data.link_order_track.status != statusShipping ? ((statusShipping == 23 && data.link_order_track.status==24 ) ? "d-block": "d-none") : "d-block"}`} key={`jadwal${index}`}>
             <div className='info-shipping'>
               <span><b>No. Invoice</b>{data.link_invoice.nomor_invoice}</span>
               <span><b>Cutomer</b>{data.link_customer.nama}</span>

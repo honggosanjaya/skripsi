@@ -19,13 +19,57 @@ use App\Models\History;
 class ReportController extends Controller
 {
     public function penjualan(){
-        $data['mostSellItem']=Item::get();
+        $data = 
+        Order::whereHas('linkOrderTrack',function($q) {
+            $q->whereIn('status', [23,24]);
+        })->with(['linkOrderTrack.linkStatus','linkInvoice','linkInvoice', 'linkStaff', 'linkCustomer.linkCustomerType']);
+        if(request()->salesman){
+            $data = $data->where('id_staff',request()->salesman);
+        }
+        if(request()->daterange){
+            $data = $data->whereBetween('created_at',[request()->daterange->start,request()->daterange->end]);
+        }
+        $data = $data->paginate(10);
+
+        dd($data);
+
+        return view('supervisor.report.penjualan',compact('data'));
+    }
+
+    public function index(){
+        $item =OrderItem::
+        whereHas('linkOrder',function($q) {
+            $q->whereHas('linkOrderTrack',function($q) {
+                $q->whereIn('status', [23,24]);
+            });
+        })
+        ->select('id_item', \DB::raw('SUM(kuantitas) as total'))
+        ->groupBy('id_item');
+
+        $item['produk_laris'] = $item->orderBy('total', 'DESC')->groupBy('total')->take(5)->pluck('total');
+
+        $item['produk_slow'] = $item->orderBy('total', 'ASC')->groupBy('total')->take(5)->pluck('total');
+
+        $data['produk_laris'] = $item->whereIn('total',  $item['produk_laris'])->get();
+
+        $data['produk_slow'] = $item->whereIn('total',  $item['produk_slow'])->get();
+        
+        $data['omzet'] = Invoice::whereHas('linkOrder',function($q) {
+            $q->whereHas('linkOrderTrack',function($q) {
+                $q->whereIn('status', [23,24]);
+            });
+        })->whereBetween('created_at',[request()->daterange->start,request()->daterange->end])
+        ->select(\DB::raw('SUM(harga_total) as total'))->first();
+
+        $data['pembelian'] = Pengadaan::whereBetween('created_at',[request()->daterange->start,request()->daterange->end])
+        ->select(\DB::raw('SUM(harga_total) as total'))->first();
+
         dd($data);
         return view('supervisor.report.penjualan',compact('data'));
     }
     public function kinerja(){
         // $data['mostSellItem']=Item::get();
-        // return view('supervisor.report.kinerja',compact('data'));
+        // dd($data);
         return view('supervisor.report.kinerja');
     }
 }

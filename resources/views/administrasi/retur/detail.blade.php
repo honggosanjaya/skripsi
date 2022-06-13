@@ -84,10 +84,10 @@
         <tbody>
             @foreach($items as $item)
                 <tr>
-                    <td>{{ $item->kode_barang }}</td>
-                    <td>{{ $item->nama }}</td>
+                    <td>{{ $item->linkItem->kode_barang }}</td>
+                    <td>{{ $item->linkItem->nama }}</td>
                     <td>{{ $item->kuantitas }}</td>
-                    <td>{{ $item->satuan }}</td>
+                    <td>{{ $item->linkItem->satuan }}</td>
                     <td>{{ $item->alasan }}</td>
                 </tr>
             @endforeach
@@ -105,7 +105,7 @@
             <input value="{{$retur->no_retur}}" name="no_retur" type="number" hidden readonly>
             <select class="form-select" name="tipe_retur">
                 @foreach ($tipeReturs as $tipeRetur)
-                    <option value="{{ $tipeRetur->id }}" {{ ( $tipeRetur->id === ($retur->tipe_retur)) ? 'selected' : '' }}>
+                    <option value="{{ $tipeRetur->id }}" {{ ( $retur->status ==12) ? 'disabled' : '' }} {{ ( $tipeRetur->id === ($retur->tipe_retur)) ? 'selected' : '' }}>
                         {{ $tipeRetur->nama }}
                     </option>
                 @endforeach

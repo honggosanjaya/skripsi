@@ -340,8 +340,8 @@ class ItemController extends Controller
 
     public function cariRiwayatDetail(Pengadaan $pengadaan)
     {
-        $pengadaans = Pengadaan::join('items','pengadaans.id_item','=','items.id')
-        ->where('no_pengadaan','=',$pengadaan->no_pengadaan)
+        $pengadaans = Pengadaan::where('no_pengadaan','=',$pengadaan->no_pengadaan)
+        ->with("linkItem")
         ->get();
 
         $total = Pengadaan::selectRaw('SUM(harga_total) as harga')
@@ -356,8 +356,8 @@ class ItemController extends Controller
     }
 
     public function cetakPDF(Pengadaan $pengadaan){
-        $pengadaans = Pengadaan::join('items','pengadaans.id_item','=','items.id')
-        ->where('no_pengadaan','=',$pengadaan->no_pengadaan)
+        $pengadaans = Pengadaan::where('no_pengadaan','=',$pengadaan->no_pengadaan)
+        ->with("linkItem")
         ->get();
 
         $total = Pengadaan::selectRaw('SUM(harga_total) as harga')

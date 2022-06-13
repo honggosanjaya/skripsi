@@ -51,7 +51,7 @@
                 </tr>
                 <tr>
                     <td><h5>Nomor Invoice : </h5></td>
-                    <td>{{ $retur->linkInvoice->nomor_invoice }}</td>
+                    <td>{{ $retur->linkInvoice->nomor_invoice??null }}</td>
                 </tr>
                 
             </tbody>
@@ -73,10 +73,10 @@
             <tbody>
                 @foreach($items as $item)
                     <tr>
-                        <td>{{ $item->kode_barang }}</td>
-                        <td>{{ $item->nama }}</td>
+                        <td>{{ $item->linkItem->kode_barang }}</td>
+                        <td>{{ $item->linkItem->nama }}</td>
                         <td>{{ $item->kuantitas }}</td>
-                        <td>{{ $item->satuan }}</td>
+                        <td>{{ $item->linkItem->satuan }}</td>
                         <td>{{ $item->alasan }}</td>
                     </tr>
                 @endforeach

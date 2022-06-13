@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use PDF;
 use App\Models\Retur;
 use App\Models\Staff;
+use App\Models\Item;
 use App\Models\Customer;
 use App\Models\District;
 use App\Models\ReturType;
@@ -32,7 +33,6 @@ class ReturController extends Controller
       $id_staff_pengaju = $request->id_staff_pengaju;
       $id_customer = $request->id_customer;
       $id_invoice = $request->id_invoice;
-      dd($id_invoice);
       $customer = Customer::find($id_customer);
       $data = [];
       foreach($cartItems as $item){
@@ -41,6 +41,7 @@ class ReturController extends Controller
           'id_staff_pengaju' => $id_staff_pengaju,
           'id_item' => $item['id'],
           'no_retur' => (Retur::orderBy("no_retur", "DESC")->first()->no_retur ?? 0) + 1,
+          'id_invoice' => $id_invoice,
           'kuantitas' => $item['kuantitas'],
           'harga_satuan' => $item['harga_satuan'],
           'tipe_retur' => $customer->tipe_retur,
@@ -95,8 +96,11 @@ class ReturController extends Controller
       $invoice=Invoice::find($request->id_invoice);
       if ($request->tipe_retur==1) {
         $invoice->update(["harga_total"=>($invoice->harga_total - $harga_total)]);
+        foreach($retur->get() as $r){
+          $item=item::find($r->id_item);
+          $item->update(["stok"=>( $item->stok + $r->kuantitas)]);
+        }
       }
-    
       return redirect('/administrasi/retur') -> with('pesanSukses', 'Berhasil mengubah data');
     }
 
@@ -131,8 +135,7 @@ class ReturController extends Controller
         }
       }
 
-      $joins = Retur::join('items','returs.id_item','=','items.id')
-              ->where('returs.no_retur','=',$retur->no_retur)->get();
+      $joins = Retur::with('linkItem')->where('no_retur',$retur->no_retur)->get();
       $administrasi = Staff::select('nama')->where('id','=',auth()->user()->id_users)->first();
       $retur_type = ReturType::get();
       $invoices = Order::whereHas('linkOrderTrack', function($q){
@@ -182,8 +185,7 @@ class ReturController extends Controller
             
         }
 
-        $joins = Retur::join('items','returs.id_item','=','items.id')
-                ->where('returs.no_retur','=',$retur->no_retur)->get();
+        $joins = Retur::with('linkItem')->where('no_retur',$retur->no_retur)->get();
         $administrasi = Staff::select('nama')->where('id','=',auth()->user()->id_users)->first();
 
 
