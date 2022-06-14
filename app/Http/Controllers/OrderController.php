@@ -203,7 +203,22 @@ class OrderController extends Controller
       }
 
       $trip=Trip::where('id_customer',$id_customer)->orderby('id','desc')->first();
-      if ($trip->waktu_keluar!=null) {
+      if($trip == null){
+        $tripOrder = Trip::insertGetId(
+          [
+            'id_customer' => $id_customer,
+            'id_staff' => $id_staff,
+            'alasan_penolakan' => null,
+            'koordinat' => $request->koordinat,
+            'waktu_masuk' => date('Y-m-d H:i:s', $request->jam_masuk),
+            'waktu_keluar' => null,
+            'status' => 2,
+            'created_at'=> now()
+          ]
+        );
+        $id_trip = $tripOrder;
+      }
+      else if ($trip->waktu_keluar!=null) {
         $tripOrder = Trip::insertGetId(
           [
             'id_customer' => $id_customer,
