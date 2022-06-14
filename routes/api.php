@@ -60,16 +60,15 @@ Route::prefix('salesman')->group(function() {
 Route::get('/tripCustomer/{id}', [CustomerController::class, 'dataCustomerApi']);
 Route::post('/tripCustomer', [CustomerController::class, 'simpanCustomerApi']);
 Route::post('/tripCustomer/foto/{id}', [CustomerController::class, 'simpanCustomerFotoApi']);
-
-
+// catat trip untuk order
+Route::post('/tripOrderCustomer', [OrderController::class, 'catatTripOrderApi']);
 
 // sales checkout
 Route::get('/products/search/{name}', [ItemController::class, 'searchProductAPI']); 
 Route::post('/salesman/buatOrder', [OrderController::class, 'simpanDataOrderSalesmanAPI']);
 // sales sudah ada kode customer
 Route::get('/kodeCustomer/{id}', [OrderController::class, 'dataKodeCustomer']);
-// catat trip untuk order
-Route::post('/tripOrderCustomer', [OrderController::class, 'catatTripOrderApi']);
+
 // ubah trip untuk keluar
 Route::post('/keluarToko/{id}', [OrderController::class, 'keluarTripOrderApi']);
 Route::get('/tipeRetur', [ReturController::class, 'getTypeReturAPI']);
