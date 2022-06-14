@@ -163,6 +163,13 @@ class OrderController extends Controller
       'alasan_penolakan' => $request->alasan_penolakan
     ]);
 
+    if (Customer::find($id_customer)->time_to_effective_call==null) {
+      Customer::find($id_customer)->update([
+        'time_to_effective_call' => now(),
+        'id_staff' => $idStaf 
+      ]);
+    }
+
     return response()->json([
       'status' => 'success',
       'success_message' => 'berhasil membuat pesanan'
@@ -189,7 +196,7 @@ class OrderController extends Controller
       $id_staff = $request->idStaff;
       $customer = Customer::find($id_customer);
 
-      if (Trip::where('id_customer',$id_customer)->where('status',2)->count()==0) {
+      if (Customer::find($id_customer)->time_to_effective_call==null) {
         Customer::find($id_customer)->update([
           'counter_to_effective_call' => $customer->counter_to_effective_call+1
         ]);

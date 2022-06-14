@@ -29,6 +29,16 @@ class Staff extends Model
     public function linkTrip(){
         return $this->hasMany(Trip::class,'id_staff','id');
     }
+    public function linkTripEc(){
+        return $this->hasMany(Trip::class,'id_staff','id')->where('status',2)->whereHas('linkCustomer',function($q) {
+            $q->where('status',3);
+        });
+    }
+    public function linkTripEcF(){
+        return $this->hasMany(Trip::class,'id_staff','id')->where('status',2)->whereHas('linkCustomer',function($q) {
+            $q->where('status',3);
+        });
+    }
 
     public function linkPengadaan(){
         return $this->hasMany(Pengadaan::class,'id_staff','id');

@@ -28,29 +28,13 @@ class Controller extends BaseController
     use AuthorizesRequests, DispatchesJobs, ValidatesRequests;
 
     public function test(Request $request){
-            $id_staff=$request->id_staff;
-            
-            $data=Order::
-              whereHas('linkOrderTrack',function($q) use( $id_staff) {
-                $q->where('id_staff_pengirim', $id_staff);
-              })
-              ->with(['linkOrderTrack','linkInvoice','linkCustomer','linkOrderItem'])->pluck('id');
-      
-            $data['a']=Order::
-              whereHas('linkOrderTrack',function($q) use( $id_staff) {
-                $q->where('id_staff_pengirim', $id_staff);
-              })
-              ->with(['linkOrderTrack','linkInvoice','linkCustomer','linkOrderItem'])
-              ->where(function ($query) {
-                $query->whereHas('linkOrderTrack',function($q) {
-                        $q->where('status', 22);
-                      })
-                      ->orWhereHas('linkOrderTrack',function($q) {
-                        $q->where('status','>', 22)->whereDate('waktu_sampai',now());
-                      });
-              })->pluck('id');
-      
-            dd($data);
+      $all=Customer::get();
+      foreach ($all as $one) {
+        $date=Trip::where('id_customer',$one->id)->orderBy('created_at','ASC')->first()->created_at??null;
+        Customer::find($one->id)->update([
+          'time_to_effective_call' => $date??null
+        ]);
+      }
            
     }
 }

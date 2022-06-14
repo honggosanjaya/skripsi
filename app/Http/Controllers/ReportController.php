@@ -41,8 +41,8 @@ class ReportController extends Controller
         if (!$request->dateStart??null) {
             request()->request->add(['dateStart'=>date('Y-m-01', strtotime("-1 months"))]);  
             request()->request->add(['dateEnd'=>date('Y-m-t', strtotime("-1 months"))]);  
-            request()->request->add(['dateStart'=>date('Y-m-01')]);  
-            request()->request->add(['dateEnd'=>date('Y-m-t')]);  
+            // request()->request->add(['dateStart'=>date('Y-m-01')]);  
+            // request()->request->add(['dateEnd'=>date('Y-m-t')]);  
         }
 
         $item =OrderItem::
@@ -96,9 +96,29 @@ class ReportController extends Controller
 
         return view('owner.dashboard',compact('data'));
     }
-    public function kinerja(){
-        // $data['mostSellItem']=Item::get();
-        // dd($data);
+    public function kinerja(Request $request){
+        if (!$request->dateStart??null) {
+            // request()->request->add(['dateStart'=>date('Y-m-01', strtotime("-1 months"))]);  
+            // request()->request->add(['dateEnd'=>date('Y-m-t', strtotime("-1 months"))]);  
+            request()->request->add(['dateStart'=>date('Y-m-01')]);  
+            request()->request->add(['dateEnd'=>date('Y-m-t')]);  
+        }
+
+        $sales =Staff::
+            whereHas('linkOrder',function($q) use($request){
+                $q->whereHas('linkOrderTrack',function($q) use($request) {
+                    $q->whereIn('status', [23,24])->whereBetween('waktu_sampai', [$request->dateStart, $request->dateEnd]);
+                });
+            })
+            ->where('status',8)
+            ->with(['linktrip','linkTripEc','linkTripEcF'=>function($q) use($request){
+                $q->whereHas('linkCustomer',function($q) use($request) {
+                    $q->whereBetween('time_to_effective_call', [$request->dateStart, $request->dateEnd]);
+                });
+            }])->get();
+            
+            dd($sales);
+
     return view('supervisor.report.kinerja');
     }
 }

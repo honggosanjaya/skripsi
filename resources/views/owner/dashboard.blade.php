@@ -74,28 +74,28 @@
             </div>
             <div class="col-6 my-2">
                 <div class="border-report">
-                    <h1>omzet</h1>
-                    <h5>{{$data['omzet']->total}}</h5>
-                    <h1>pembelian</h1>
-                    <h5>{{$data['pembelian']->total}}</h5>
-                    <h1>total</h1>
-                    <h5>{{$data['omzet']->total-$data['pembelian']->total}}</h5>
+                    <h5>omzet</h5>
+                    <p>{{$data['omzet']->total}}</p>
+                    <h5>pembelian</h5>
+                    <p>{{$data['pembelian']->total}}</p>
+                    <h5>total</h5>
+                    <p>{{$data['omzet']->total-$data['pembelian']->total}}</p>
                     <button class="btn btn-primary">detail>></button>
                 </div>
             </div>
             <div class="col-6 my-2">
                 <div class="border-report">
-                    <h1>list produk dengan penjualan terdikit</h1>
+                    <h5>list produk dengan penjualan terdikit</h5>
                     @foreach ($data['produk_slow'] as $item)
-                        <h5>{{$loop->iteration}}. {{$item->linkItem->nama}} terjual sebanyak {{$item->total}}</h5>
+                        <p>{{$loop->iteration}}. {{$item->linkItem->nama}} terjual sebanyak {{$item->total}}</p>
                     @endforeach
                 </div>
             </div>
             <div class="col-6 my-2">
                 <div class="border-report">
-                    <h1>Produk tidak terjual</h1>
+                    <h5>Produk tidak terjual</h5>
                     @foreach ($data['produk_tidak_terjual'] as $item)
-                        <h5>{{$loop->iteration}}. {{$item->nama}}</h5>
+                        <p>{{$loop->iteration}}. {{$item->nama}}</p>
                     @endforeach
                 </div>
             </div>
