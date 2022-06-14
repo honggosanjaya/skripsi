@@ -90,7 +90,7 @@ class CustomerController extends Controller
         ]);
       }
 
-      $data = $request->except(['jam_masuk','alasan_penolakan','status','koordinat'])+[
+      $data = $request->except(['jam_masuk','alasan_penolakan','id_staff','status','koordinat'])+[
         'status' => 3,
         'created_at' => now()
       ];
@@ -123,7 +123,7 @@ class CustomerController extends Controller
         Customer::find($id_customer)->update(['password'=>Hash::make(12345678)]);
       }
 
-      if (Trip::where('id_customer',$id_customer)->where('status',2)->count()==0) {
+      if (Customer::find($id_customer)->time_to_effective_call==null) {
         Customer::find($id_customer)->update(['counter_to_effective_call' => $request->counter_to_effective_call+1]);
       }
 
@@ -253,10 +253,11 @@ class CustomerController extends Controller
       
       $validatedData = $request->validate($rules);
       $validatedData['tipe_retur'] = $request->tipe_retur;
-      $validatedData['id_staff'] = auth()->user()->id;
+      $validatedData['id_staff'] = auth()->user()->id_users;
       $validatedData['limit_pembelian'] = 200000;
       $validatedData['durasi_kunjungan'] = 7;
-      $validatedData['counter_to_effective_call'] = 0;
+      $validatedData['counter_to_effective_call'] = 1;
+      $validatedData['time_to_effective_call'] = now();
 
       if($request->pengajuan_limit_pembelian) {
         $validatedData['status_limit_pembelian'] = 7;

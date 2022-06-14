@@ -15,10 +15,11 @@ mix
 mix
   .js('resources/js/app.js', 'public/js/react.js')
   .js('resources/js/reactView.js', 'public/js/react.js')
-  .js('resources/js/chart.js', 'public/js/chartLaporan.js')
+  .js('resources/js/report.js', 'public/js/report.js')
   .react()
 
-mix.copy('node_modules/chart.js/dist/chart.js', 'public/chart.js/chart.js');
+mix.copy('node_modules/chart.js/dist/chart.js', 'public/js/chart.js');
+
 
 //custom-example
 mix

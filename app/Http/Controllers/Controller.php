@@ -8,6 +8,18 @@ use Illuminate\Foundation\Validation\ValidatesRequests;
 use Illuminate\Routing\Controller as BaseController;
 use App\Models\History;
 
+use Illuminate\Http\Request;
+use App\Models\Order;
+use App\Models\OrderTrack;
+use App\Models\OrderItem;
+use App\Models\Staff;
+use App\Models\Item;
+use App\Models\Trip;
+use App\Models\Event;
+use App\Models\Customer;
+use App\Models\Invoice;
+use App\Models\Vehicle;
+use App\Models\Status;
 
 use App\Helpers\Session;
 
@@ -15,10 +27,14 @@ class Controller extends BaseController
 {
     use AuthorizesRequests, DispatchesJobs, ValidatesRequests;
 
-    public function test($id){
-        $history = History::where('id_customer',$id)->with('linkItem')->first()->linkitem->nama;
-        dd($history );
-        dd(Session::getId($id));
-        return null;
+    public function test(Request $request){
+      $all=Customer::get();
+      foreach ($all as $one) {
+        $date=Trip::where('id_customer',$one->id)->orderBy('created_at','ASC')->first()->created_at??null;
+        Customer::find($one->id)->update([
+          'time_to_effective_call' => $date??null
+        ]);
+      }
+           
     }
 }

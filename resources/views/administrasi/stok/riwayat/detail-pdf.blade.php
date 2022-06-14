@@ -28,10 +28,10 @@
     <tbody>
       @foreach ($pengadaans as $pengadaan)
       <tr>
-        <th scope="row">{{ $pengadaan->kode_barang }}</th>
-        <td>{{ $pengadaan->nama }}</td>
+        <th scope="row">{{ $pengadaan->linkItem->kode_barang }}</th>
+        <td>{{ $pengadaan->linkItem->nama }}</td>
         <td>{{ $pengadaan->kuantitas }}</td>
-        <td>{{ $pengadaan->satuan }}</td>
+        <td>{{ $pengadaan->linkItem->satuan }}</td>
         <td>{{ $pengadaan->harga_total }}</td>
       </tr>
       @endforeach
