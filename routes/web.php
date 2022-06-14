@@ -37,11 +37,11 @@ Route::prefix('owner')->middleware('owner')->group(function() {
   Route::post('/datasupervisor', [StaffController::class, 'store']);
 
   // Route untuk data report
-  Route::get('/report', [ReportController::class, 'index']);
-   Route::get('/report/penjualan', [ReportController::class,'penjualan']);
-   Route::get('/report/kinerja', [ReportController::class,'kinerja']);
+  Route::get('/report/penjualan', [ReportController::class,'penjualan']);
+  Route::get('/report/kinerja', [ReportController::class,'kinerja']);
 
-  Route::get('/', [HomeController::class, 'indexOwner']);
+  Route::get('/', [ReportController::class, 'index']);
+  Route::post('/', [ReportController::class, 'index']);
   Route::get('/profil', [HomeController::class, 'lihatProfil']);
   Route::get('/datasupervisor', [StaffController::class, 'datasupervisor']);
   Route::get('/datasupervisor/create', [StaffController::class, 'createSupervisor']);

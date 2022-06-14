@@ -2,7 +2,7 @@
 
 @section('main_content')
 <div id="report">
-    <form action="" method="post">
+    <form action="/owner/" method="post">
         @csrf
         <div class="row">
             <div class="col-7">
@@ -55,11 +55,48 @@
         </div>
         
     </form>
+    @php
+        $produk_laris['item_name']=[];  
+        $produk_laris['item_total']=[];  
+    @endphp
+    @foreach ($data['produk_laris'] as $item)
+        @php
+            array_push($produk_laris['item_name'], $item->linkItem->nama);
+            array_push($produk_laris['item_total'], $item->total);
+        @endphp
+    @endforeach
     <div class="container">
         <div class="row">
-            <div class="col-6">
+            <div class="col-6 my-2">
                 <div class="border-report">
-                    <canvas id="kinerjaSalesChart" style="height: 200px;" >
+                    <canvas id="kinerjaSalesChart" style="height: 200px;" data-label="{{json_encode($produk_laris['item_name'])}}" data-value="{{json_encode($produk_laris['item_total'])}}" >
+                </div>
+            </div>
+            <div class="col-6 my-2">
+                <div class="border-report">
+                    <h1>omzet</h1>
+                    <h5>{{$data['omzet']->total}}</h5>
+                    <h1>pembelian</h1>
+                    <h5>{{$data['pembelian']->total}}</h5>
+                    <h1>total</h1>
+                    <h5>{{$data['omzet']->total-$data['pembelian']->total}}</h5>
+                    <button class="btn btn-primary">detail>></button>
+                </div>
+            </div>
+            <div class="col-6 my-2">
+                <div class="border-report">
+                    <h1>list produk dengan penjualan terdikit</h1>
+                    @foreach ($data['produk_slow'] as $item)
+                        <h5>{{$loop->iteration}}. {{$item->linkItem->nama}} terjual sebanyak {{$item->total}}</h5>
+                    @endforeach
+                </div>
+            </div>
+            <div class="col-6 my-2">
+                <div class="border-report">
+                    <h1>Produk tidak terjual</h1>
+                    @foreach ($data['produk_tidak_terjual'] as $item)
+                        <h5>{{$loop->iteration}}. {{$item->nama}}</h5>
+                    @endforeach
                 </div>
             </div>
         </div>
