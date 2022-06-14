@@ -120,12 +120,14 @@ class StokController extends Controller
         OrderItem::create([
           'order_id' => $dataOrder->id,
           'item_id' => $id,
+          'created_at' =>  now(),
           'jumlah_item' => $validatedData['stok'],
           'keterangan' => 'dikurangi oleh admin yang bernama '.Auth::user()->nama
         ]);
       }else{
         OrderItem::create([
           'order_id' => $dataOrder->id,
+          'created_at' =>  now(),
           'item_id' => $id,
           'jumlah_item' => $validatedData['stok'],
           'keterangan' => 'ditambah oleh admin yang bernama '.Auth::user()->nama

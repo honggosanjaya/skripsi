@@ -154,6 +154,7 @@ class ItemController extends Controller
         'kuantitas' => $item->attributes->jumlah,
         'harga_satuan' => 0,
         'keterangan' =>  $item->attributes->keterangan,
+        'created_at' =>  now(),
       ]);
       $stok = Item::find($item->id);
       $stok->stok +=  $item->attributes->jumlah;

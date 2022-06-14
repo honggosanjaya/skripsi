@@ -61,6 +61,7 @@ class OrderController extends Controller
             'id_item' => $item['id'],
             'kuantitas' => $item['jumlah'],
             'harga_satuan' => $item['harga']-($item['harga']*$customertype->linkCustomerType->diskon/100),
+            'created_at' =>  now(),
             'keterangan' => $request->keterangan??null,
           ]);
         }
@@ -96,6 +97,7 @@ class OrderController extends Controller
               'id_order' => $id_order,
               'id_item' => $item['id'],
               'kuantitas' => $item['jumlah'],
+              'created_at' =>  now(),
               'harga_satuan' => $item['harga']-($item['harga']*$customertype->linkCustomerType->diskon/100),
               'keterangan' => $keterangan,
             ]);
@@ -105,6 +107,7 @@ class OrderController extends Controller
               'id_order' => $id_order,
               'id_item' => $item['id'],
               'kuantitas' => $item['jumlah'],
+              'created_at' =>  now(),
               'harga_satuan' => $item['harga']-($item['harga']*$customertype->linkCustomerType->diskon/100),
               'keterangan' => $keterangan,
             ]);
@@ -403,6 +406,7 @@ class OrderController extends Controller
           'id_item' => $item->id,
           'id_order' => $order_id,
           'kuantitas' => $item->quantity,
+          'created_at' =>  now(),
           'harga_satuan' => $item->price,
           'keterangan' => $request->keterangan??null,
       ]);
