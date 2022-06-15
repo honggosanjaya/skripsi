@@ -103,12 +103,12 @@
       <h1 class="mb-3 fs-6">Owner</h1>
       <ul class="p-0">
         <li class="mb-3">
-          <a class="" href="">
+          <a class="{{ Request::is('owner/report/penjualan*') ? 'active' : '' }}" href="/owner/report/penjualan">
             <i class="bi bi-cash me-2"></i><span>Penjualan</span>
           </a>
         </li>
         <li class="mb-3">
-          <a class="" href="">
+          <a class="{{ Request::is('owner/report/kinerja*') ? 'active' : '' }}" href="/owner/report/kinerja">
             <i class="bi bi-graph-up me-2"></i><span>Kinerja Salesman</span>
           </a>
         </li>

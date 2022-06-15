@@ -41,7 +41,7 @@ Route::prefix('owner')->middleware('owner')->group(function() {
   Route::get('/report/kinerja', [ReportController::class,'kinerja']);
 
   Route::get('/', [ReportController::class, 'index']);
-  Route::post('/', [ReportController::class, 'index']);
+  // Route::post('/', [ReportController::class, 'index']);
   Route::get('/profil', [HomeController::class, 'lihatProfil']);
   Route::get('/datasupervisor', [StaffController::class, 'datasupervisor']);
   Route::get('/datasupervisor/create', [StaffController::class, 'createSupervisor']);
