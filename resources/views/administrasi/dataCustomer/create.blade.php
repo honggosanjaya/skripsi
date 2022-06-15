@@ -111,8 +111,7 @@
 
     <div class="my-3">
       <label for="limit_pembelian" class="form-label">Limit Pembelian</label>
-      <input type="number" class="form-control" id="limit_pembelian" name="limit_pembelian" step=".01"
-        value="{{ 200000 }}" readonly>
+      <input type="number" class="form-control" id="limit_pembelian" name="limit_pembelian" step=".01" readonly>
     </div>
 
     <div class="my-3">
