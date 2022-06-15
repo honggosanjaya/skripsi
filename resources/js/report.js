@@ -1,6 +1,8 @@
 // const moment = require("moment");
 
 if($('#report').length>0){
+
+  // window.location.hash = window.location.href.split('?')[0]
   var kinerjaSalesChart = document.getElementById("kinerjaSalesChart");
 
   var labels = $('#kinerjaSalesChart').data('label');
