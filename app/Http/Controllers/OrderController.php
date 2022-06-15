@@ -252,7 +252,10 @@ class OrderController extends Controller
     }
 
     public function index(){
-      $orders = Order::where('id_customer','>','0')->paginate(10);
+      $orders = Order::with(['linkOrderTrack'])->where('id_customer','>','0')
+      ->whereHas('linkOrderTrack',function($q) {
+        $q->where('id_staff_pengonfirmasi', auth()->user()->id_users)->orWhere('id_staff_pengonfirmasi', null);
+      })->paginate(10);
       $statuses = Status::where('tabel','=','order_tracks')->get();
 
       return view('administrasi.pesanan.index',[
@@ -271,7 +274,7 @@ class OrderController extends Controller
       
         $statuses = Status::where('tabel','=','order_tracks')->get();
 
-        return view('administrasi/pesanan.index',[
+        return view('administrasi.pesanan.index',[
             'orders' => $orders,
             'statuses' => $statuses
         ]);
