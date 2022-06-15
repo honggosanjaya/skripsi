@@ -19,31 +19,53 @@ use App\Models\History;
 
 class ReportController extends Controller
 {
-    public function penjualan(){
+    public function penjualan(Request $request){
+        if (!$request->dateStart??null) {
+            // request()->request->add(['dateStart'=>date('Y-m-01', strtotime("-1 months"))]);  
+            // request()->request->add(['dateEnd'=>date('Y-m-t', strtotime("-1 months"))]);  
+            request()->request->add(['dateStart'=>date('Y-m-01')]);  
+            request()->request->add(['dateEnd'=>date('Y-m-t')]);  
+        }
+        $input=[
+            'dateStart'=>$request->dateStart??null,
+            'dateEnd'=>$request->dateEnd??null,
+            'year'=>date('Y', strtotime($request->dateEnd??null)),
+            'month'=>date('m', strtotime($request->dateEnd??null)),
+            'salesman'=>$request->salesman??null,
+        ];
         $data = 
         Order::whereHas('linkOrderTrack',function($q) {
             $q->whereIn('status', [23,24]);
-        })->with(['linkOrderTrack.linkStatus','linkInvoice','linkInvoice', 'linkStaff', 'linkCustomer.linkCustomerType']);
-        if(request()->salesman){
-            $data = $data->where('id_staff',request()->salesman);
+        })->with(['linkOrderTrack.linkStatus','linkInvoice', 'linkStaff', 'linkCustomer.linkCustomerType']);
+        if($request->salesman??null){
+            $data = $data->whereHas('linkCustomer',function($q) use($request){
+                $q->where('nama', $request->salesman);
+            });
         }
-        if(request()->daterange){
-            $data = $data->whereBetween('created_at',[request()->daterange->start,request()->daterange->end]);
+        if($request->dateStart??null){
+            $data = $data->whereBetween('created_at',[$request->dateStart,$request->dateEnd]);
         }
+        
         $data = $data->paginate(10);
 
-        dd($data);
+        // dd($data);
 
-        return view('supervisor.report.penjualan',compact('data'));
+        return view('supervisor.report.penjualan',compact('data','input'));
     }
 
     public function index(Request $request){
         if (!$request->dateStart??null) {
-            request()->request->add(['dateStart'=>date('Y-m-01', strtotime("-1 months"))]);  
-            request()->request->add(['dateEnd'=>date('Y-m-t', strtotime("-1 months"))]);  
-            // request()->request->add(['dateStart'=>date('Y-m-01')]);  
-            // request()->request->add(['dateEnd'=>date('Y-m-t')]);  
+            // request()->request->add(['dateStart'=>date('Y-m-01', strtotime("-1 months"))]);  
+            // request()->request->add(['dateEnd'=>date('Y-m-t', strtotime("-1 months"))]);  
+            request()->request->add(['dateStart'=>date('Y-m-01')]);  
+            request()->request->add(['dateEnd'=>date('Y-m-t')]);  
         }
+        $input=[
+            'dateStart'=>$request->dateStart,
+            'dateEnd'=>$request->dateEnd,
+            'year'=>date('Y', strtotime($request->dateEnd)),
+            'month'=>date('m', strtotime($request->dateEnd)),
+        ];
 
         $item =OrderItem::
             whereHas('linkOrder',function($q) use($request){
@@ -55,7 +77,7 @@ class ReportController extends Controller
                 $q->where('status',10);
             })
             ->select('id_item', \DB::raw('SUM(kuantitas) as total'))
-            ->groupBy('id_item')->with('linkItem');
+        ->groupBy('id_item')->with('linkItem');
 
         $data=[];
         $data['produk_laris'] = $item->orderBy('total', 'DESC')->take(10)->get();
@@ -69,7 +91,7 @@ class ReportController extends Controller
                 $q->where('status',10);
             })
             ->select('id_item', \DB::raw('SUM(kuantitas) as total'))
-            ->groupBy('id_item')->with('linkItem');
+        ->groupBy('id_item')->with('linkItem');
 
 
         $data['produk_tidak_terjual'] = $item->pluck('id_item')->toArray();
@@ -94,7 +116,7 @@ class ReportController extends Controller
 
         // dd($data);
 
-        return view('owner.dashboard',compact('data'));
+        return view('owner.dashboard',compact('data','input'));
     }
     public function kinerja(Request $request){
         if (!$request->dateStart??null) {
@@ -103,8 +125,14 @@ class ReportController extends Controller
             request()->request->add(['dateStart'=>date('Y-m-01')]);  
             request()->request->add(['dateEnd'=>date('Y-m-t')]);  
         }
+        $input=[
+            'dateStart'=>$request->dateStart,
+            'dateEnd'=>$request->dateEnd,
+            'year'=>date('Y', strtotime($request->dateEnd)),
+            'month'=>date('m', strtotime($request->dateEnd)),
+        ];
 
-        $sales =Staff::
+        $staffs =Staff::
             whereHas('linkOrder',function($q) use($request){
                 $q->whereHas('linkOrderTrack',function($q) use($request) {
                     $q->whereIn('status', [23,24])->whereBetween('waktu_sampai', [$request->dateStart, $request->dateEnd]);
@@ -114,11 +142,20 @@ class ReportController extends Controller
             ->with(['linktrip','linkTripEc','linkTripEcF'=>function($q) use($request){
                 $q->whereHas('linkCustomer',function($q) use($request) {
                     $q->whereBetween('time_to_effective_call', [$request->dateStart, $request->dateEnd]);
-                });
+                });}
+            ,'linkOrder'=>function($q) use($request){
+                $q->whereHas('linkOrderTrack',function($q) use($request) {
+                    $q->whereIn('status', [23,24])->whereBetween('waktu_sampai', [$request->dateStart, $request->dateEnd]);
+                })->join('invoices','orders.id','=','invoices.id_order')->select('id_staff', \DB::raw('SUM(harga_total) as total'))
+                ->groupBy('id_staff')->pluck('total','id_staff');
             }])->get();
-            
-            dd($sales);
 
-    return view('supervisor.report.kinerja');
+        //cadangan buat rule linkorder punya $sales
+        // $omset= Order::whereHas('linkOrderTrack',function($q) use($request) {
+        //     $q->whereIn('status', [23,24])->whereBetween('waktu_sampai', [$request->dateStart, $request->dateEnd]);
+        // })->join('invoices','orders.id','=','invoices.id_order')->select('id_staff', \DB::raw('SUM(harga_total) as total'))
+        // ->groupBy('id_staff')->pluck('total','id_staff');
+        // dd($staffs);
+    return view('supervisor.report.kinerja',compact('staffs','input'));
     }
 }
