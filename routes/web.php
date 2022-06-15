@@ -32,11 +32,8 @@ Route::get('/', function () {
 });
 Route::get('/test',[Controller::class, 'test']);
 
+// ============ OWNER ==============
 Route::prefix('owner')->middleware('owner')->group(function() {
-
-  Route::post('/datasupervisor', [StaffController::class, 'store']);
-
-  // Route untuk data report
   Route::get('/report/penjualan', [ReportController::class,'penjualan']);
   Route::get('/report/kinerja', [ReportController::class,'kinerja']);
 
@@ -44,6 +41,7 @@ Route::prefix('owner')->middleware('owner')->group(function() {
   Route::post('/', [ReportController::class, 'index']);
   Route::get('/profil', [HomeController::class, 'lihatProfil']);
   Route::get('/datasupervisor', [StaffController::class, 'datasupervisor']);
+  Route::post('/datasupervisor', [StaffController::class, 'store']);
   Route::get('/datasupervisor/create', [StaffController::class, 'createSupervisor']);
   Route::post('/datasupervisor', [StaffController::class, 'store']);
   Route::get('/datasupervisor/edit/{staff:id}', [StaffController::class, 'editSupervisor']);
@@ -51,7 +49,6 @@ Route::prefix('owner')->middleware('owner')->group(function() {
   Route::post('/datasupervisor/ubahstatus/{staf:id}', [StaffController::class, 'editStatusStaf']);
   Route::get('/datasupervisor/cari', [StaffController::class, 'cariSupervisor']);
 
-  //Route untuk profil owner
   Route::get('/profil', [HomeController::class, 'lihatProfil']);
   Route::get('/profil/ubahpassword', [HomeController::class, 'lihatPassword']);
   Route::post('/profil/check/{user:id_users}', [AuthController::class, 'check']);
@@ -59,17 +56,17 @@ Route::prefix('owner')->middleware('owner')->group(function() {
   Route::post('/profil/gantipassword/{user:id}', [AuthController::class, 'gantiPassword']);
 });
 
+
+// ============ SUPERVISOR ==============
 Route::prefix('supervisor')->middleware('supervisor')->group(function() {
   Route::get('/', [HomeController::class, 'indexSupervisor']);
 
-  //Route untuk profil supervisor
   Route::get('/profil', [HomeController::class, 'lihatProfil']);
   Route::get('/profil/ubahpassword', [HomeController::class, 'lihatPassword']);
   Route::post('/profil/check/{user:id_users}', [AuthController::class, 'check']);
   Route::get('/profil/ubahpasswordbaru/{user:id}', [AuthController::class, 'passwordBaru']);
   Route::post('/profil/gantipassword/{user:id}', [AuthController::class, 'gantiPassword']);
 
-  //Route untuk event
   Route::get('/event', [EventController::class, 'index']);
   Route::get('/event/cari', [EventController::class, 'search']);
   Route::get('/event/tambah', [EventController::class, 'create']);
@@ -77,7 +74,6 @@ Route::prefix('supervisor')->middleware('supervisor')->group(function() {
   Route::get('/event/ubah/{event:id}', [EventController::class, 'edit']);
   Route::put('/event/ubahevent/{event:id}', [EventController::class, 'update']);
 
-  //Route untuk wilayah
   Route::get('/wilayah', [DistrictController::class, 'index']);
   Route::get('/wilayah/cari', [DistrictController::class, 'search']);
   Route::get('/wilayah/tambah', [DistrictController::class, 'create']);
@@ -86,7 +82,6 @@ Route::prefix('supervisor')->middleware('supervisor')->group(function() {
   Route::get('/wilayah/ubah/{district:id}', [DistrictController::class, 'edit']);
   Route::put('/wilayah/ubahwilayah/{district:id}', [DistrictController::class, 'update']);
 
-  // Route untuk data customer termasuk limit pembelian
   Route::get('/datacustomer', [CustomerController::class, 'dataCustomer']);
   Route::get('/datacustomer/cari', [CustomerController::class, 'supervisorSearch']);
   Route::get('/datapengajuan', [CustomerController::class, 'dataPengajuanLimit']);
@@ -94,7 +89,6 @@ Route::prefix('supervisor')->middleware('supervisor')->group(function() {
   Route::post('/datapengajuan/setuju/{customer:id}', [CustomerController::class, 'setujuPengajuanLimit']);
   Route::post('/datapengajuan/tolak/{customer:id}', [CustomerController::class, 'tolakPengajuanLimit']);
 
-  //Route untuk jenis customer
   Route::get('/jenis', [CustomerTypeController::class, 'index']);
   Route::get('/jenis/cari', [CustomerTypeController::class, 'search']);
   Route::get('/jenis/tambah', [CustomerTypeController::class, 'create']);
@@ -102,27 +96,17 @@ Route::prefix('supervisor')->middleware('supervisor')->group(function() {
   Route::get('/jenis/ubah/{customertype:id}', [CustomerTypeController::class, 'edit']);
   Route::put('/jenis/ubahjenis/{customertype:id}', [CustomerTypeController::class, 'update']);
 
-  // Route untuk data staf
   Route::resource('/datastaf', StaffController::class)->except(['show', 'destroy']);
   Route::post('/datastaf/ubahstatus/{staf:id}', [StaffController::class, 'editStatusStaf']);
 
-  // Route untuk data report
   Route::get('/report/penjualan', [ReportController::class,'penjualan']);
   Route::get('/report/kinerja', [ReportController::class,'kinerja']);
-
-  //Route untuk profil supervisor
-  Route::get('/profil', [HomeController::class, 'lihatProfil']);
 });
-// Route::prefix('salesman')->middleware('salesman')->group(function() {
-//   Route::get('/', [HomeController::class, 'indexSalesman']);
-// });
-// Route::prefix('shipper')->middleware('shipper')->group(function() {
-//   Route::get('/', [HomeController::class, 'indexShipper']);
-// });
+
+// =============== ADMINISTRASI ====================
 Route::prefix('administrasi')->middleware('administrasi')->group(function() {
   Route::get('/', [HomeController::class, 'indexAdministrasi']);
 
-  //Route untuk pesanan
   Route::get('/pesanan', [OrderController::class, 'index']);
   Route::get('/pesanan/cari', [OrderController::class, 'search']);
   Route::get('/pesanan/filter', [OrderController::class, 'filter']);
@@ -205,6 +189,7 @@ Route::prefix('administrasi')->middleware('administrasi')->group(function() {
 });
 
 
+// =============== CUSTOMER ====================
 Route::prefix('customer')->middleware('customer')->group(function() {
   Route::get('/', [HomeController::class, 'indexCustomer']);
 
@@ -226,6 +211,13 @@ Route::prefix('customer')->middleware('customer')->group(function() {
   Route::get('/profil/ubahpasswordbaru/{user:id}', [AuthController::class, 'passwordBaru']);
   Route::post('/profil/gantipassword/{user:id}', [AuthController::class, 'gantiPassword']);
 });
+
+// Route::prefix('salesman')->middleware('salesman')->group(function() {
+//   Route::get('/', [HomeController::class, 'indexSalesman']);
+// });
+// Route::prefix('shipper')->middleware('shipper')->group(function() {
+//   Route::get('/', [HomeController::class, 'indexShipper']);
+// });
 
 require __DIR__.'/auth.php';
 

@@ -4,7 +4,8 @@ namespace App\Http\Controllers;
 use App\Models\Customer;
 use App\Models\Staff;
 use App\Models\Order;
-
+use App\Models\Item;
+use App\Models\Vehicle;
 use Illuminate\Http\Request;
 
 class HomeController extends Controller
@@ -32,7 +33,21 @@ class HomeController extends Controller
     public function indexAdministrasi()
     {
         $role='indexAdministrasi';
-        return view('administrasi/dashboard',compact('role'));
+        $item = Item::count();
+        $item_aktif = Item::where('status', 10)->count();
+        $vehicle = Vehicle::count();
+        $customer = Customer::count();
+        $customer_aktif = Customer::where('status', 3)->count();
+        return view('administrasi/dashboard',[
+          'role' => $role,
+          'data' => [
+            'jumlah_item' => $item,
+            'jumlah_item_aktif' => $item_aktif,
+            'jumlah_kendaraan' => $vehicle,
+            'jumlah_customer' => $customer,
+            'jumlah_customer_aktif' => $customer_aktif,
+          ]
+        ]);
     }
     public function indexShipper()
     {

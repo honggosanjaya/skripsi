@@ -203,34 +203,22 @@ class OrderController extends Controller
       }
 
       $trip=Trip::where('id_customer',$id_customer)->orderby('id','desc')->first();
+      $trip_data = [
+        'id_customer' => $id_customer,
+        'id_staff' => $id_staff,
+        'alasan_penolakan' => null,
+        'koordinat' => $request->koordinat,
+        'waktu_masuk' => date('Y-m-d H:i:s', $request->jam_masuk),
+        'waktu_keluar' => null,
+        'status' => 2,
+        'created_at'=> now()
+      ];
       if($trip == null){
-        $tripOrder = Trip::insertGetId(
-          [
-            'id_customer' => $id_customer,
-            'id_staff' => $id_staff,
-            'alasan_penolakan' => null,
-            'koordinat' => $request->koordinat,
-            'waktu_masuk' => date('Y-m-d H:i:s', $request->jam_masuk),
-            'waktu_keluar' => null,
-            'status' => 2,
-            'created_at'=> now()
-          ]
-        );
+        $tripOrder = Trip::insertGetId($trip_data);
         $id_trip = $tripOrder;
       }
       else if ($trip->waktu_keluar!=null) {
-        $tripOrder = Trip::insertGetId(
-          [
-            'id_customer' => $id_customer,
-            'id_staff' => $id_staff,
-            'alasan_penolakan' => null,
-            'koordinat' => $request->koordinat,
-            'waktu_masuk' => date('Y-m-d H:i:s', $request->jam_masuk),
-            'waktu_keluar' => null,
-            'status' => 2,
-            'created_at'=> now()
-          ]
-        );
+        $tripOrder = Trip::insertGetId($trip_data);
         $id_trip = $tripOrder;
       }else{
         $id_trip = $trip->id;
@@ -450,22 +438,30 @@ class OrderController extends Controller
 
     public function getListShippingAPI(Request $request){
       $id_staff=$request->id_staff;
-      
-      $data=Order::
-        whereHas('linkOrderTrack',function($q) use( $id_staff) {
-          $q->where('id_staff_pengirim', $id_staff);
-        })
-        ->with(['linkOrderTrack','linkInvoice','linkCustomer','linkOrderItem'])
-        ->where(function ($query) {
-          $query->whereHas('linkOrderTrack',function($q) {
-                  $q->where('status', 22);
-                })
-                ->orWhereHas('linkOrderTrack',function($q) {
-                  $q->where('status','>', 22)->whereDate('waktu_sampai',now());
-                });
-        })->get();
 
-     
+      $data=Order::
+      whereHas('linkOrderTrack',function($q) use($id_staff) {
+        $q->where('id_staff_pengirim', $id_staff);
+      })
+      ->with(['linkOrderTrack','linkInvoice','linkCustomer','linkOrderItem'])
+      ->where(function ($query) {
+        $query->whereHas('linkOrderTrack',function($q) {
+                $q->where('status', 22);
+              })
+              ->orWhereHas('linkOrderTrack',function($q) {
+                $q->where('status','>', 22)->whereDate('waktu_sampai',now());
+              });
+      });
+
+      if($request->nama_customer != null){
+        $data->where(function ($query) use($request){
+          $query->whereHas('linkCustomer', function($q) use($request){
+            $q->where(strtolower('nama'),'like','%'.$request->nama_customer.'%');
+          });
+        });
+      }
+
+      $data = $data->get();
       return response()->json([
         'data' => $data,
         'status' => 'success'
