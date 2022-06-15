@@ -31,6 +31,7 @@ const ShippingShipper = () => {
   const [successMessage, setSuccessMessage] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
   const _isMounted = useRef(true);
+  const [keyword, setKeyword] = useState(null);
   const radios = [
     { name: 'Perlu Dikirim', value: 22 },
     { name: 'Sudah Sampai', value: 23 },
@@ -173,6 +174,24 @@ const ShippingShipper = () => {
     history.push(`/shipper/retur/${idCust}`);
   }
 
+  const cariShipping = (e) => {
+    e.preventDefault();
+    setIsLoading(true);
+    axios({
+      method: "get",
+      url: `${window.location.origin}/api/shipper/jadwalPengiriman?id_staff=${dataUser.id_staff}&nama_customer=${keyword}`,
+      headers: {
+        Accept: "application/json",
+        Authorization: "Bearer " + token,
+      },
+    })
+      .then(response => {
+        setIsLoading(false);
+        console.log('jadwal pengiriman yang dicari', response.data.data);
+        setListShipping(response.data.data);
+      })
+  }
+
   return (
     <main className="page_main shipper-css">
       <HeaderShipper title="Jadwal Pengiriman" toBack={goBack} />
@@ -198,7 +217,10 @@ const ShippingShipper = () => {
           </ButtonGroup>
         </div>
 
-        <ListShipping listShipping={listShipping} statusShipping={statusShipping} handleShow={handleShow} />
+        <ListShipping listShipping={listShipping}
+          statusShipping={statusShipping} handleShow={handleShow}
+          keyword={keyword} setKeyword={setKeyword} cariShipping={cariShipping}
+        />
 
         <DetailShipping detailShipping={detailShipping}
           isLoading={isLoading} show={show} handleClose={handleClose}
