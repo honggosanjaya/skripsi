@@ -7,10 +7,12 @@
 @endsection
 @section('main_content')
   @if (session()->has('pesanSukses'))
+  <div id="hideMeAfter3Seconds">
     <div class="alert alert-success alert-dismissible fade show" role="alert">
       {{ session('pesanSukses') }}
       <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
     </div>
+  </div>
   @endif
 
   <a href="/supervisor/datapengajuan" class="btn btn-primary">Pengajuan Limit Pembelian</a>
