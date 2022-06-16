@@ -35,6 +35,10 @@ class Customer extends Model
         return $this->hasMany(Trip::class,'id_customer','id');
     }
 
+    public function latestLinkTrip(){
+        return $this->hasOne(Trip::class,'id_customer','id')->latest();
+    }
+
     public function linkHistory(){
         return $this->hasMany(History::class,'id_customer','id');
     }

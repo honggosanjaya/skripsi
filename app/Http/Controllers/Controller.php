@@ -30,9 +30,9 @@ class Controller extends BaseController
     public function test(Request $request){
       $all=Customer::get();
       foreach ($all as $one) {
-        $date=Trip::where('id_customer',$one->id)->orderBy('created_at','ASC')->first()->created_at??null;
+        $date=Trip::where('id_customer',$one->id)->orderBy('created_at','DESC')->first()->created_at??null;
         Customer::find($one->id)->update([
-          'time_to_effective_call' => $date??null
+          'updated_at' => $date??null
         ]);
       }
            
