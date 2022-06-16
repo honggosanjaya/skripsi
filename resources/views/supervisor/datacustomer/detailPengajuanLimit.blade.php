@@ -1,5 +1,12 @@
 @extends('layouts/main')
-
+@section('breadcrumbs')
+<ol class="breadcrumb">
+  <li class="breadcrumb-item"><a href="/supervisor">Dashboard</a></li>
+  <li class="breadcrumb-item"><a href="/supervisor/datacustomer">Data Customer</a></li>
+  <li class="breadcrumb-item"><a href="/supervisor/datapengajuan">Pengajuan</a></li>
+  <li class="breadcrumb-item active" aria-current="page">Detail</li>
+</ol>
+@endsection
 @section('main_content')
   <div class="row pt-4">
     <div class="col-5 offset-1">

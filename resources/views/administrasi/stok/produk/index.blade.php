@@ -1,5 +1,11 @@
 @extends('layouts/main')
-
+@section('breadcrumbs')
+<ol class="breadcrumb">
+  <li class="breadcrumb-item"><a href="/administrasi">Dashboard</a></li>
+  <li class="breadcrumb-item"><a href="/administrasi/stok">Stok</a></li>
+  <li class="breadcrumb-item active" aria-current="page">Produk</li>
+</ol>
+@endsection
 @section('main_content')
   @if (session()->has('pesanSukses'))
     <div class="alert alert-success alert-dismissible fade show" role="alert">
