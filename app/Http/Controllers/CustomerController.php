@@ -138,6 +138,7 @@ class CustomerController extends Controller
           'status' => $status,
           'created_at'=> now()
         ]);
+        Customer::update(['updated_at'=> now()]);
       } 
       // else if($status == 2){
       //   Trip::create([
