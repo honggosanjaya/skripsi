@@ -235,7 +235,11 @@ const KeranjangSales = ({ location }) => {
           if (response.data.status === 'success') {
             hapusSemuaProduk();
             setIsLoading(false);
-            setSuccessMessage(response.data.success_message);
+            Swal.fire({
+              icon: 'success',
+              title: 'Tersimpan!',
+              text: response.data.success_message,
+            })
             axios({
               method: "get",
               url: `${window.location.origin}/api/keluarToko/${idTrip}`,
@@ -245,7 +249,6 @@ const KeranjangSales = ({ location }) => {
             })
               .then(response => {
                 history.push('/salesman');
-                // sweetalert berhasil membuat pesanan
               })
           } else {
             throw Error(response.data.error_message);
@@ -254,7 +257,12 @@ const KeranjangSales = ({ location }) => {
         .catch(error => {
           console.log('after checkout', error.message);
           setIsLoading(false);
-          setErrorMessage(error.message);
+          setIsShowRincian(false);
+          Swal.fire({
+            icon: 'error',
+            title: 'Oops...',
+            text: error.message,
+          })
         });
     }
   }
@@ -399,7 +407,7 @@ const KeranjangSales = ({ location }) => {
                 value={estimasiWaktuPengiriman}
                 onChange={(e) => handleChangeEstimasiPengiriman(e.target.value)}
               />
-              <button className="btn btn-warning">Hari</button>
+              <div className="border p-2 d-flex justify-content-center align-items-center rounded-end">Hari</div>
             </div>
             {!estimasiWaktuPengiriman && <small className='text-danger d-block'>Estimasi waktu pengiriman wajib diisi</small>}
 

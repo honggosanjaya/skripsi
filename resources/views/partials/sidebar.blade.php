@@ -12,7 +12,7 @@
     <h1 class="mb-3 fs-6">Dashboard</h1>
     <ul class="p-0">
       <li class="mb-3">
-        <a class="{{ Request::is('dashboard') ? 'active' : '' }}"
+        <a class="{{ Request::is('administrasi') ? 'active' : '' }}"
           href="/{{ auth()->user()->linkStaff->linkStaffRole->nama }}">
           <i class="bi bi-speedometer2 me-2"></i><span>Dashboard</span>
         </a>
@@ -66,7 +66,8 @@
           </a>
         </li>
         <li class="mb-3">
-          <a class="{{ Request::is('supervisor/report/penjualan*') ? 'active' : '' }}" href="/supervisor/report/penjualan">
+          <a class="{{ Request::is('supervisor/report/penjualan*') ? 'active' : '' }}"
+            href="/supervisor/report/penjualan">
             <i class="bi bi-cash me-2"></i><span>Penjualan</span>
           </a>
         </li>
