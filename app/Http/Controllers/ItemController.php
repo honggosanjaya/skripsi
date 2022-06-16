@@ -88,14 +88,14 @@ class ItemController extends Controller
   }
 
   public function riwayatOpname(){
-      $orders = Order::where('id_customer',0)->with(['linkStaff'])->paginate();
+      $orders = Order::where('id_customer',0)->with(['linkStaff'])->paginate(10);
       return view('administrasi.stok.opname.riwayat', [
         "orders" => $orders
       ]);
   }
 
   public function detailRiwayatOpname(Order $order){
-      $order_items = OrderItem::where('id_order',$order->id)->with(['linkItem'])->paginate();
+      $order_items = OrderItem::where('id_order',$order->id)->with(['linkItem'])->paginate(10);
       
       return view('administrasi.stok.opname.riwayatdetail', [
         "order_items" => $order_items

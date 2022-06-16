@@ -375,7 +375,7 @@ class CustomerController extends Controller
     } 
 
     public function dataCustomer(){
-      $customers = Customer::paginate(5);
+      $customers = Customer::paginate(10);
       return view('supervisor.datacustomer.dataCustomer', [
         'customers' => $customers,
         "title" => "Seluruh Data Customer"
