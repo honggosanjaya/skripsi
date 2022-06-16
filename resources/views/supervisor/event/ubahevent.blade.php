@@ -6,7 +6,7 @@
 <ol class="breadcrumb">
   <li class="breadcrumb-item"><a href="/supervisor">Dashboard</a></li>
   <li class="breadcrumb-item"><a href="/supervisor/event">Event</a></li>
-  <li class="breadcrumb-item active" aria-current="page">Tambah</li>
+  <li class="breadcrumb-item active" aria-current="page">Ubah</li>
 </ol>
 @endsection
 

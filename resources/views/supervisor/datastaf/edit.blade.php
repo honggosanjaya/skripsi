@@ -1,5 +1,11 @@
 @extends('layouts.main')
-
+@section('breadcrumbs')
+<ol class="breadcrumb">
+  <li class="breadcrumb-item"><a href="/supervisor">Dashboard</a></li>
+  <li class="breadcrumb-item"><a href="/supervisor/datastaf">Data Staf</a></li>
+  <li class="breadcrumb-item active" aria-current="page">Ubah</li>
+</ol>
+@endsection
 @section('main_content')
   <form method="POST" action="/supervisor/datastaf/{{ $staf->id }}" enctype="multipart/form-data">
     @method('put')
