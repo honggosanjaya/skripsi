@@ -162,6 +162,8 @@ class OrderController extends Controller
       'updated_at' => now(),
       'alasan_penolakan' => $request->alasan_penolakan
     ]);
+    Customer::update(['updated_at'=> now()]);
+
 
     if (Customer::find($id_customer)->time_to_effective_call==null) {
       Customer::find($id_customer)->update([
@@ -183,6 +185,8 @@ class OrderController extends Controller
           'status' => 1,
           'alasan_penolakan' => $request->alasan_penolakan
         ]);
+        Customer::update(['updated_at'=> now()]);
+
 
         return response()->json([
           'status' => 'success',
@@ -201,6 +205,7 @@ class OrderController extends Controller
           'counter_to_effective_call' => $customer->counter_to_effective_call+1
         ]);
       }
+      Customer::update(['updated_at'=> now()]);
 
       $trip=Trip::where('id_customer',$id_customer)->orderby('id','desc')->first();
       $trip_data = [
