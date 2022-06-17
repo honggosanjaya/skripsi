@@ -75,7 +75,7 @@
                 <th scope="col">Satuan Barang</th>
                 <th scope="col">Alasan Retur</th>     
                 @if ( $retur->tipe_retur==1)
-                    {{-- <th scope="col">Potongan Retur</th>      --}}
+                    <th scope="col">Potongan Retur</th>     
                 @endif
               </tr>
             </thead>
@@ -88,7 +88,7 @@
                         <td>{{ $item->linkItem->satuan }}</td>
                         <td>{{ $item->alasan }}</td>
                         @if ( $retur->tipe_retur==1)
-                            {{-- <th scope="col">Potongan Retur</th>      --}}
+                            <td>{{ $item->alasan }}</td>
                         @endif
                     </tr>
                 @endforeach

@@ -16,7 +16,7 @@
     <h1>Riwayat Stok Opname</h1>
   
   
-    <table class="table table-hover table-sm mt-3">
+    <table class="table table-hover table-sm mt-3" id="table">
       <thead>
         <tr>
           <th scope="col" class="text-center">No</th>
@@ -28,7 +28,7 @@
       <tbody>
         @foreach($orders as $order)
             <tr>
-                <td>{{ ($orders->currentPage() - 1) * $orders->perPage() + $loop->iteration }}</td>
+                <td>{{ $loop->iteration }}</td>
                 <td>{{ date('d-m-Y', strtotime($order->created_at)) }}</td>
                 <td>{{ $order->linkStaff->nama }}</td>
                 <td>
@@ -43,7 +43,10 @@
   
 </div>
 
-<div class="d-flex flex-row mt-4">
+{{-- <div class="d-flex flex-row mt-4">
     {{ $orders->links() }}
-   </div>
+</div> --}}
+@push('JS')
+  <script src="{{ mix('js/administrasi.js') }}"></script>
+@endpush
 @endsection
