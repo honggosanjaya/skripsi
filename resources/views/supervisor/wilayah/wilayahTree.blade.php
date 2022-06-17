@@ -14,8 +14,6 @@
 
 <div class="container">
 
-    <a class="btn btn-primary mt-2 mb-3" href="/supervisor/wilayah"><i class="bi bi-arrow-left-short fs-5"></i>Kembali</a>
-
     <p class="text-center fw-bold text-primary fs-2">Pembagian Wilayah</p>
 <div>
 @foreach($parentCategories as $category)

@@ -12,7 +12,7 @@
 @endpush
 
 <div id="opname">
-    <a href="/administrasi/stok" class="btn btn-primary my-3"><i class="bi-arrow-left"></i> Kembali</a>
+    
     <h1>Riwayat Stok Opname</h1>
   
   

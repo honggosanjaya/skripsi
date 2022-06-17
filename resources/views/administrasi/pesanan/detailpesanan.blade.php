@@ -37,9 +37,7 @@
     <div class="container">
       <div class="row mt-3">
         <div class="d-flex flex-row justify-content-between">
-          <a href="/administrasi/pesanan" class="btn btn-primary mx-1"><i
-              class="bi bi-arrow-left-short fs-5"></i>Kembali</a>
-
+          
           <div>
             @if ($order->linkOrderTrack->status > 20 && $order->linkOrderTrack->status < 25)
               <a href="/administrasi/pesanan/detail/{{ $order->id }}/cetak-memo" class="btn btn-primary mx-1"><i
@@ -67,10 +65,10 @@
 
       <div class="row mt-5">
         <div class="col">
-          <div class="informasi-list">
-            <span><b>Customer Pemesan</b>{{ $order->linkCustomer->nama }}</span>
-            <span><b>Nomor Invoice</b>{{ $order->linkInvoice->nomor_invoice ?? null }}</span>
-            <span><b>Status Pesanan</b>
+          <div class="informasi-list d-flex flex-column">
+            <span><b>Customer Pemesan</b>  {{ $order->linkCustomer->nama }}</span>
+            <span><b>Nomor Invoice</b>  {{ $order->linkInvoice->nomor_invoice ?? null }}</span>
+            <span><b>Status Pesanan</b> 
               @if ($order->linkOrderTrack->status == 25)
                 <p class="text-danger fw-bold d-inline">{{ $order->linkOrderTrack->linkStatus->nama }}</p>
               @else
@@ -80,18 +78,18 @@
           </div>
         </div>
         <div class="col">
-          <div class="informasi-list">
-            <span><b>Sales Bersangkutan</b>{{ $order->linkStaff->nama ?? null }}</span>
-            <span><b>Tanggal Pesan</b>{{ date('d-m-Y', strtotime($order->linkInvoice->created_at ?? '-')) }}</span>
+          <div class="informasi-list d-flex flex-column">
+            <span><b>Sales Bersangkutan</b>  {{ $order->linkStaff->nama ?? null }}</span>
+            <span><b>Tanggal Pesan</b>  {{ date('d-m-Y', strtotime($order->linkInvoice->created_at ?? '-')) }}</span>
           </div>
           <div class="col-6">
             @if ($order->linkOrderTrack->status > 20 && $order->linkOrderTrack->status < 25)
-              <a class="btn btn-warning" href="/administrasi/pesanan/detail/{{ $order->id }}/kapasitas"><i
+              <a class="btn btn-warning mt-1" href="/administrasi/pesanan/detail/{{ $order->id }}/kapasitas"><i
                   class="bi bi-eye-fill p-1"></i>Kapasitas Kendaraan</a>
             @endif
 
             @if ($order->linkOrderTrack->status >= 22 || $order->linkOrderTrack->status < 25)
-              <a class="btn btn-primary" href="/administrasi/pesanan/detail/{{ $order->id }}/pengiriman">
+              <a class="btn btn-primary mt-3" href="/administrasi/pesanan/detail/{{ $order->id }}/pengiriman">
                 <i class="bi bi-truck me-2"></i>Detail Pengiriman
               </a>
             @endif
