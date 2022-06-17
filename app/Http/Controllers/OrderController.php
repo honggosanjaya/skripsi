@@ -244,7 +244,11 @@ class OrderController extends Controller
   }
 
   public function dataKodeCustomer($id){
-    $order = Order::find($id);
+    $order = Order::whereHas('linkOrderTrack',function($q) {
+      $q->where('waktu_diteruskan', null);
+    })->with(['linkOrderTrack'])
+    ->where('id', $id)->first();
+
     $order_item = OrderItem::where('id_order', $id)->with(['linkItem'])->get();
 
     if($order!==null){

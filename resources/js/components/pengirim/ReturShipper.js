@@ -21,6 +21,7 @@ const ReturShipper = () => {
   const [newHistoryItems, setNewHistoryItems] = useState(historyItems);
   const [isShowProduct, setIsShowProduct] = useState(true);
   const [isLoading, setIsLoading] = useState(false);
+  const [customerDiskon, setCustomerDiskon] = useState(null);
   const Swal = require('sweetalert2');
   const redirect = useHistory();
   const _isMounted = useRef(true);
@@ -56,8 +57,9 @@ const ReturShipper = () => {
     })
       .then((response) => {
         if (!unmounted) {
-          console.log('history yang dipesan', response.data.data);
-          setHistoryItems(response.data.data);
+          console.log('history yang dipesan', response);
+          setHistoryItems(response.data.data.history);
+          setCustomerDiskon(response.data.data.customer.link_customer_type.diskon);
         }
       })
       .catch((error) => {
@@ -290,11 +292,11 @@ const ReturShipper = () => {
               <div className="list_history-item p-3" key={item.id}>
                 <div className="d-flex align-items-center">
                   {item.link_item.gambar ?
-                    <img src={`${urlAsset}/images/${item.link_item.gambar}`} className="item_image me-3" />
+                    <img src={`${urlAsset}/storage/item/${item.link_item.gambar}`} className="item_image me-3" />
                     : <img src={`${urlAsset}/images/default_produk.png`} className="item_image me-3" />}
                   <div>
                     <h2 className='fs-6 text-capitalize fw-bold'>{item.link_item.nama}</h2>
-                    <p className='mb-0'>{convertPrice(item.link_item.harga_satuan)}</p>
+                    <p className='mb-0'>{convertPrice(item.link_item.harga_satuan - item.link_item.harga_satuan * customerDiskon / 100)}</p>
                   </div>
                 </div>
 
