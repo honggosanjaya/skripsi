@@ -40,13 +40,10 @@
         <div class="mt-3 search-box">
           <form method="GET" action="/administrasi/pesanan/filter">
             <select class="form-select" name="status">
-              <option value="">-- Pilih Status -- </option>
-              @foreach ($statuses as $status)
-                <option value="{{ $status->id }}">
-                  {{ $status->nama }}
-                </option>
+              @foreach ($statuses as $status)               
+                <option {{  $status->id == request()->get('status') ? 'selected' : '' }} value="{{ $status->id }}">{{ $status->nama }}</option>
               @endforeach
-            </select>
+            </select>            
           </div>
         </div>
         <div class="col-3 mt-3">

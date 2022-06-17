@@ -162,6 +162,8 @@ class OrderController extends Controller
       'updated_at' => now(),
       'alasan_penolakan' => $request->alasan_penolakan
     ]);
+    Customer::update(['updated_at'=> now()]);
+
 
     if (Customer::find($id_customer)->time_to_effective_call==null) {
       Customer::find($id_customer)->update([
@@ -176,13 +178,15 @@ class OrderController extends Controller
     ]);
   }
 
-  public function keluarTripOrderApi(Request $request, $id){ 
-      Trip::find($id)->update([
-        'waktu_keluar' => now(),
-        'updated_at' => now(),
-        'status' => 1,
-        'alasan_penolakan' => $request->alasan_penolakan
-      ]);
+    public function keluarTripOrderApi(Request $request, $id){ 
+        Trip::find($id)->update([
+          'waktu_keluar' => now(),
+          'updated_at' => now(),
+          'status' => 1,
+          'alasan_penolakan' => $request->alasan_penolakan
+        ]);
+        Customer::update(['updated_at'=> now()]);
+
 
       return response()->json([
         'status' => 'success',
@@ -224,6 +228,12 @@ class OrderController extends Controller
       $id_trip = $trip->id;
     }
 
+      if (Customer::find($id_customer)->time_to_effective_call==null) {
+        Customer::find($id_customer)->update([
+          'counter_to_effective_call' => $customer->counter_to_effective_call+1
+        ]);
+      }
+      Customer::update(['updated_at'=> now()]);
 
     return response()->json([
       'status' => 'success',
@@ -261,21 +271,34 @@ class OrderController extends Controller
     ]);
   }
 
-  public function search(){
-    //ini take out sementara
-    $orders = Order::join('order_tracks','orders.id','=','order_tracks.id_order')
-      ->join('statuses','order_tracks.status','=','statuses.id')
-      ->join('invoices','orders.id','=','invoices.id_order')
-      ->where(strtolower('nomor_invoice'),'like','%'.request('cari').'%')
-      ->paginate(10);  
-    
+    public function index(){
+      $orders = Order::with(['linkOrderTrack'])->where('id_customer','>','0')
+      ->whereHas('linkOrderTrack',function($q) {
+        $q->where('id_staff_pengonfirmasi', auth()->user()->id_users)->orWhere('id_staff_pengonfirmasi', null);
+      })->paginate(10);
       $statuses = Status::where('tabel','=','order_tracks')->get();
 
       return view('administrasi/pesanan.index',[
           'orders' => $orders,
           'statuses' => $statuses
       ]);
-  }
+    }
+
+    public function search(){
+      //ini take out sementara
+      $orders = Order::join('order_tracks','orders.id','=','order_tracks.id_order')
+        ->join('statuses','order_tracks.status','=','statuses.id')
+        ->join('invoices','orders.id','=','invoices.id_order')
+        ->where(strtolower('nomor_invoice'),'like','%'.request('cari').'%')
+        ->paginate(10);  
+      
+        $statuses = Status::where('tabel','=','order_tracks')->get();
+
+        return view('administrasi.pesanan.index',[
+            'orders' => $orders,
+            'statuses' => $statuses
+        ]);
+    }
 
   public function filter(){
     if(request('status') != ""){

@@ -2,6 +2,13 @@
 @push('CSS')
   <link href=" {{ mix('css/supervisor.css') }}" rel="stylesheet">
 @endpush
+@section('breadcrumbs')
+<ol class="breadcrumb">
+  <li class="breadcrumb-item"><a href="/supervisor">Dashboard</a></li>
+  <li class="breadcrumb-item"><a href="/supervisor/profil">Profil</a></li>
+  <li class="breadcrumb-item active" aria-current="page">Ubah Password</li>
+</ol>
+@endsection
 @section('main_content')
   {{-- ide: masukkan password lama, sistem cek kesesuaian password --}}
   {{-- sebelum password lama sesuai, form input password baru dan konfirmasi password baru disabled --}}

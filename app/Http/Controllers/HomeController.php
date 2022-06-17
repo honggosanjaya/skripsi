@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 use App\Models\Customer;
 use App\Models\Staff;
 use App\Models\Order;
+use App\Models\Retur;
 use App\Models\Item;
 use App\Models\Vehicle;
 use App\Models\Event;
@@ -40,6 +41,27 @@ class HomeController extends Controller
         $vehicle = Vehicle::count();
         $customer = Customer::count();
         $customer_aktif = Customer::where('status', 3)->count();
+
+        $notifikasi = [];
+        $notifikasi['trip'] = 
+        Customer::with(['latestLinkTrip'])
+            ->whereRaw('NOW() >= DATE_ADD(updated_at, INTERVAL + durasi_kunjungan DAY)')
+            ->get();
+        $notifikasi['retur'] = 
+        Retur::where('status','13')
+            ->with(['linkInvoice'])->get();
+
+        $notifikasi['order_diajukan'] = 
+        Order::whereHas('linkOrderTrack', function($q){
+            $q->where('status',20);
+        })->with(['linkOrderTrack'])->get();
+
+        $notifikasi['order_selesai'] = 
+        Order::whereHas('linkOrderTrack', function($q){
+            $q->where('status',23)->where('id_staff_pengonfirmasi',auth()->user()->id_users);
+        })->with(['linkOrderTrack'])->get();
+        dd($notifikasi);
+       
         return view('administrasi/dashboard',[
           'role' => $role,
           'data' => [

@@ -62,15 +62,17 @@
             </div>
             -->
             
-            <div class="flex items-center justify-between mt-4">
-                <a class="underline text-sm text-gray-600 hover:text-gray-900" href="{{ route('register') }}">
-                    {{ __('Belum Registrasi?') }}
-                </a>
-                @if (Route::has('password.request'))
-                    <a class="underline text-sm text-gray-600 hover:text-gray-900" href="{{ route('password.request') }}">
-                        {{ __('Lupa Password?') }}
+            <div class="flex items-center justify-content-between mt-4">
+                <div class="d-flex flex-column">
+                    <a class="underline text-sm text-gray-600 hover:text-gray-900" href="/spa/login">
+                        {{ __('Login sebagai Tenaga Lapangan') }}
                     </a>
-                @endif
+                    @if (Route::has('password.request'))
+                        <a class="underline text-sm text-gray-600 hover:text-gray-900 mt-3" href="{{ route('password.request') }}">
+                            {{ __('Lupa Password?') }}
+                        </a>
+                    @endif
+                </div>
 
                 <x-button class="ml-3">
                     {{ __('Log in') }}

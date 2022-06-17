@@ -1,5 +1,10 @@
 @extends('layouts/main')
-
+@section('breadcrumbs')
+<ol class="breadcrumb">
+  <li class="breadcrumb-item"><a href="/{{ auth()->user()->linkStaff->linkStaffRole->nama }}">Dashboard</a></li>
+  <li class="breadcrumb-item active" aria-current="page">Kinerja Salesman</li>
+</ol>
+@endsection
 @section('main_content')
 
 <div id="report">

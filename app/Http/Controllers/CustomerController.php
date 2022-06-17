@@ -138,6 +138,7 @@ class CustomerController extends Controller
           'status' => $status,
           'created_at'=> now()
         ]);
+        Customer::update(['updated_at'=> now()]);
       } 
       // else if($status == 2){
       //   Trip::create([
@@ -374,7 +375,7 @@ class CustomerController extends Controller
     } 
 
     public function dataCustomer(){
-      $customers = Customer::paginate(5);
+      $customers = Customer::paginate(10);
       return view('supervisor.datacustomer.dataCustomer', [
         'customers' => $customers,
         "title" => "Seluruh Data Customer"

@@ -131,6 +131,7 @@ const LoginReact = () => {
                 </button>
               </div>
             </div>
+            <a href="/login" className="custom-form-input">Login sebagai Tenaga Kantor</a>
             <button type="submit" className="btn btn-primary w-100 my-4">MASUK</button>
           </form>
         </div>

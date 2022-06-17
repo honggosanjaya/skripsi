@@ -39,11 +39,6 @@
           </a>
         </li>
         <li class="mb-3">
-          <a class="" href="">
-            <i class="bi bi-cash me-2"></i><span>Penjualan</span>
-          </a>
-        </li>
-        <li class="mb-3">
           <a class="{{ Request::is('administrasi/stok*') ? 'active' : '' }}" href="/administrasi/stok">
             <i class="bi bi-box me-2"></i><span>Stok</span>
           </a>

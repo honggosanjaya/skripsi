@@ -1,5 +1,12 @@
 @extends('layouts.main')
-
+@section('breadcrumbs')
+<ol class="breadcrumb">
+  <li class="breadcrumb-item"><a href="/administrasi">Dashboard</a></li>
+  <li class="breadcrumb-item"><a href="/administrasi/stok">Stok</a></li>
+  <li class="breadcrumb-item"><a href="/administrasi/stok/pengadaan">Pengadaan</a></li>
+  <li class="breadcrumb-item active" aria-current="page">Cart</li>
+</ol>
+@endsection
 @section('main_content')
   @if ($message = Session::get('success'))
     <p class="text-success">{{ $message }}</p>
