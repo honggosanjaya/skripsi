@@ -16,19 +16,29 @@
     <table class="table table-borderless">
         <tbody>
             <tr>
-                <td style="width: 55%"><h4 class="mb-4">No Invoice : </h4>
+                <td style="width: 55%">
+                    <h4 class="mb-4">No Invoice : </h4>
+                </td>
+                <td style="width: 55%">
                     <h5 class="text-success p-0">{{ $order->linkInvoice->nomor_invoice }}</h5>
-                    <h5 class="font-weight-normal">Diterbitkan atas nama</h5>
                 </td>
-                <td style="width: 60%"><h4>Alamat: </h4>
-                    <h5 class="font-weight-normal">{{ $order->linkCustomer->nama }}</h5>
-                    <h5 class="font-weight-normal">{{ $order->linkCustomer->alamat_utama.' '.$order->linkCustomer->alamat_nomor }}</h5>
-                    @if($order->linkCustomer->keterangan_alamat)
-                        <h5 class="font-weight-normal">Keterangan Alamat : {{ $order->linkCustomer->keterangan_alamat }}</h5>
-                    @endif
-                    <h5 class="font-weight-normal">{{ $order->linkCustomer->telepon }}</h5>
+            </tr>  
+            <tr>
+                <td style="width: 55%">
+                    <h4 class="mb-4">Diterbitkan Kepada</h4>
                 </td>
-            </tr>        
+                <td style="width: 55%">
+                    <h5 class="text-success p-0">{{ $order->linkCustomer->nama }}</h5>
+                </td>
+            </tr>     
+            <tr>
+                <td style="width: 55%">
+                    <h4 class="mb-4">Alamat: </h4>
+                </td>
+                <td style="width: 55%">
+                    <h5 class="text-success p-0">{{ $order->linkCustomer->alamat_utama }}</h5>
+                </td>
+            </tr>  
             <tr>
                 <td><h5>Penjual : <span class="font-weight-normal">{{ $order->linkStaff->nama }}</span></h5></td>                
             </tr>

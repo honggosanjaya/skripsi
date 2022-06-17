@@ -50,9 +50,15 @@
                     <td>{{ $administrasi->nama }}</td>
                 </tr>
                 <tr>
+                    <td><h5>jenis Retur : </h5></td>
+                    <td>{{ $retur->linkReturType->nama }}</td>
+                </tr>
+                @if ( $retur->tipe_retur==1)
+                <tr>
                     <td><h5>Nomor Invoice : </h5></td>
                     <td>{{ $retur->linkInvoice->nomor_invoice??null }}</td>
                 </tr>
+                @endif
                 
             </tbody>
           </table>
@@ -67,7 +73,10 @@
                 <th scope="col">Nama Barang</th>
                 <th scope="col">Jumlah</th>
                 <th scope="col">Satuan Barang</th>
-                <th scope="col">Alasan Retur</th>                
+                <th scope="col">Alasan Retur</th>     
+                @if ( $retur->tipe_retur==1)
+                    {{-- <th scope="col">Potongan Retur</th>      --}}
+                @endif
               </tr>
             </thead>
             <tbody>
@@ -78,6 +87,9 @@
                         <td>{{ $item->kuantitas }}</td>
                         <td>{{ $item->linkItem->satuan }}</td>
                         <td>{{ $item->alasan }}</td>
+                        @if ( $retur->tipe_retur==1)
+                            {{-- <th scope="col">Potongan Retur</th>      --}}
+                        @endif
                     </tr>
                 @endforeach
                 

@@ -1,0 +1,124 @@
+- rute ke auth bukan agregasi
+- pas foto
+- survei
+- buku tahun terbit
+- sertifikat koding
+
+- ganti judul
+- ganti package class hilangkan <<>>
+- mapping data erd
+- penjelasan atribute erd 
+- entity per erd fk dan pk
+- beri contoh data pada wireframe
+- cek lagi sequence semua method pada class hrs masuk
+
+laporan : 
+@ menu penjualan -> berisi order yang telah selesai ini sama dengan seperti pesanan pada admin
+	~ tanpa filter status dan 
+	~ ditambah filter tanggal, dan 
+	~ bisa juga filter salesman
+	~ isi kolom 
+	>> tgl - inv - total harga - sales - cust - tipe cust 
+
+pada dashboard -> 
+@ menampilkan produk terlaris 
+@ list produk slow moving dalam bentuk list
+~ penjualan bulan terkait 2 tipe ini date range
+  ~ omset -> dilanjut dengan detail invoice yang akan mengarah ke menu penjualan dengan date range yang sama
+  ~ laba rugi isinya ada pembelian
+
+kinerja salesman -> range tanggal
+~ menampilkan jumlah kunjungan tiap sales 
+~ menampilkan ec baru yang berasal dari kunjungan pertama dan pada range yang sama
+~ menampilkan jumlah invoice dan total omsetnya -> dan ada tombol detail mengarah ke menu penjualan dengan salesman yang sama
+~ memungkin kan untuk ranking salesman naik turunya berdasarkan performa harian (bisa skip)
+
+kolom:
+sales - jmlhkunj - ec baru - jumlh inv - ttl omset 
+
+
+
+
+
+cek kode tahap 2
+- {lupa mungkin dari invoice} cek input database
+2-{skip} alasan retur mengkondisikan pengajuan kuantitas retur
+@- {skip}event dicheckout saleman di ganti dropdown saja dengan penamaan nama, potongan dan minimal belanja(abu-abu) (tahap3)
+@- {skip} kasih tanda tanggal pada order
+@- {skip} halaman salesman pada bagian order belum ada informasi di atas (tahap 3)
+@ administrasi hanya mengerjakan order yang dikonfirmasinya saja
+@ harga order adalah harga yang sudah dikurangi jenis customer dan event, order item sudah di kurangi jenis customer dan bukan event
+@ cek status event
+@ ketika membuat laporan pilih order yang id customer nya diatas 0
+@ stok maximal berubah ketika menerima order (konfirmasi by admin)
+@ pastikan ketika order konfirmasi by admin status di order ikut brubah
+@ nomer invoice dari sistem
+@ data keranjang sales tidak hilang saat ganti customer
+@ tinggi layar salesman saat checkout aneh
+@ memo pastikan tanggal benar dan tambahkan tanggal pemesanan oleh salesman
+@ tanggal tangal nya belum keluar data nya pada tanggal order track
+@ pembuatan laporan hati-hati dengan order yang berstatus 25 ambil dari 23 atau 24
+@ pengambilan invoice dari retur tidak boleh ordertrack berstatus 25
+@ cek harga satuan yang di input ke order item
+@ tambahkan jenis customer pada serching customer
+@ cek semua yang berhubungan dengan has many pada model
+@ cek join -> cek kembali di filter detail pesanan
+@ tabel detail order tambahkan potongan dari invoice
+@ penambahan gambar beserta pentaan jam berangkat pada aplikasi shipper
+@ bikin progress bar
+@ kasi nama shipper pada detail pengiriman
+@ cek semua belongs to model
+@ pesanan paginate yang di tampilkan 10 jangan 5
+@ tanya honggo limit pembelian
+@ pertimbangan retur -> retur dapat dilakukan ketika hari telah sampai sama dengan hari ini -> retur yang sudah di ajukan tidak dapat diajukan kembali
+@ id_staff pada tabel customer cek kembali itu mendaftarkan, setiap ec update atau pertamakali ec (jwban mendaftarkan tapi pertimbangakan untuk ganti ke pertama kali ec)
+@ cek kembali persetujuan retur terutama yang tambah stok
+!@ ketika require bootstrap untuk modal dropdown bootstrap jadi error
+3-B@ pastikan input setiap id adalah benar id staff maupun customernya
+2-B@ jadwal kunjungan di buat notifikasi
+2-B@ cek orderby karena orderby perulangan tidak dapat dijalankan di laravel
+3-B@ buat cron untuk event
+1-B@ {lupa masalahnya apa}cek tanggal pada retur admin
+1-B@ cek [0]
+1-B@ memo persiapan barang tidak bisa di unduh lagi setelah berangkat
+1-B@ cek staf pada semua pdf
+1-B@ cetak retur kurang jenis retur
+1-B@ ketika menolak order id pengonfirmasi diisi
+4-B cek pencarian data pada tabel solusi datatable
+	~ administrasi list produk
+	~ supervisor data staf
+3-B orderby semua data yang ditampilkan berdasarkan tanggal (pesanan, invoice, retur, pengadaan, stok opname)
+1-B cek harga total pada pengurangan retur karena harga nya perlu dikurangi harga event
+	ini perlu pertimbangan 
+		~tanyakan harga yang retur itu gimana sistemnya harga item/setelah diskon
+		~mungkin potongan harga tetap mengikuti event dari invoice yang dipilih akan lebih baik, dan klo iya makan harga yang tampil perlu dikurangi dengan event dan ada keterangan potongan event. 
+		~tapi untuk yang lebih gampangnya memang ambil dari langsung dari harga setelah diskon saja
+3-RB {lupa masalahnya apa}cek sum
+1-R tanyakan ke richie paginate() ini apa
+1-R cek semua apa ada bread crumbsnya
+1-R judul pada modal retur pemilihan invoice
+1-R tambahkan penghilang alert di input data staff dan spv pd role (owner spv)
+1-R status pesanan setelah di search tetap ada value nya di status pengajuan
+1-R hilangkan homelaravel danlogo laravel pada login
+3-R penambahan ??null di semua frontend atau ->count di setiap foreach
+1-R takeout kembali
+1-H gambar error untuk history
+1-H resize gambar saat upload 
+2-H notifikasi retur,order,limit
+5-H upload image harusnya upload camera
+3-H cek owner responsive
+1-H pada shipper upload bukti sampai foto tidak reload
+
+tanggal min date
+cek store as
+event min date tidak boleh kurang dari hari ini
+tny honggo kerja npm alert sweet alert gimana
+ada pertimbangan untuk disable ubah event karena bisa merusak alur harga yang berlaku
+tanya richie public function viewRetur(Retur $retur){
+breadcrumb masi ada yang error bisa di cek di http://127.0.0.1:8000/administrasi/pesanan/detail/8/pengiriman
+
+
+
+
+
+
