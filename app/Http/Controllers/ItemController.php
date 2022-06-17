@@ -99,7 +99,7 @@ class ItemController extends Controller
   }
 
   public function riwayatOpname(){
-      $orders = Order::where('id_customer',0)->with(['linkStaff'])->paginate(10);
+      $orders = Order::orderBy('created_at','DESC')->where('id_customer',0)->with(['linkStaff'])->get();
       return view('administrasi.stok.opname.riwayat', [
         "orders" => $orders
       ]);
@@ -333,8 +333,9 @@ class ItemController extends Controller
     }
 
     public function riwayatAdministrasi(){
-        $pengadaans = Pengadaan::select('no_pengadaan','no_nota','keterangan','created_at', DB::raw('SUM(harga_total) as harga'))
-        ->groupBy('no_pengadaan','no_nota','keterangan','created_at')->paginate(10);
+        $pengadaans = Pengadaan::orderBy('created_at','DESC')
+        ->select('no_pengadaan','no_nota','keterangan','created_at', DB::raw('SUM(harga_total) as harga'))
+        ->groupBy('no_pengadaan','no_nota','keterangan','created_at')->get();
         
         return view('administrasi/stok/riwayat.index',[
             'pengadaans' => $pengadaans

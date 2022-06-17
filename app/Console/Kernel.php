@@ -18,7 +18,8 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule)
     {
-       $schedule->command('event:update')->daily();
+       $schedule->command('event:update')->everyMinute();
+    //    ->daily();
     }
 
     /**

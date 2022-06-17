@@ -27,7 +27,7 @@
       
     </div>
 
-    <table class="table">
+    <table class="table" id="table">
       <thead>
         <tr>
           <th scope="col">No</th>
@@ -53,12 +53,11 @@
         @endforeach
       </tbody>
     </table>
-    <div class="d-flex flex-row mt-4">
+    {{-- <div class="d-flex flex-row mt-4">
       {{ $pengadaans->links() }}
-    </div>
+    </div> --}}
   </div>
-  
-  
-
-  
+@push('JS')
+  <script src="{{ mix('js/administrasi.js') }}"></script>
+@endpush  
 @endsection
