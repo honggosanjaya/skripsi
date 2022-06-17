@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\CustomerType;
 use App\Models\Item;
 use App\Models\Order;
 use App\Models\OrderItem;
@@ -9,6 +10,7 @@ use App\Models\Pengadaan;
 use App\Models\Status;
 use App\Models\History;
 use App\Models\Staff;
+use App\Models\Customer;
 use Barryvdh\DomPDF\Facade\Pdf as FacadePdf;
 use Barryvdh\DomPDF\PDF as DomPDFPDF;
 use Illuminate\Http\Request;
@@ -162,7 +164,6 @@ class ItemController extends Controller
     }
 
     OrderItem::insert($data);
-
     
     \Cart::session(auth()->user()->id.$request->route)->clear();
 
@@ -289,16 +290,18 @@ class ItemController extends Controller
     }
 
     public function customerIndex(){
+      $customer = Customer::where('id', auth()->user()->id_users)->first();
         return view('customer/produk',[
-            'items' => Item::all()
+            'items' => Item::all(),
+            'customer' => $customer
         ]);
     }
 
     public function itemSearch(){
-        $items = DB::table('items')->where(strtolower('nama'),'like','%'.request('cari').'%')->get();
-       
-        return view('customer/produk',[
-            'items' => $items
+        $items = Item::where(strtolower('nama'),'like','%'.request('cari').'%')->get();
+
+        return view('customer.produk',[
+            'items' => $items,
         ]);
     }
 

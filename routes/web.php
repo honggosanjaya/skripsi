@@ -197,8 +197,8 @@ Route::prefix('customer')->middleware('customer')->group(function() {
   Route::get('/produk', [ItemController::class, 'customerIndex']);
   Route::get('/produk/cari', [ItemController::class, 'itemSearch']);
   //Route untuk cart
-  Route::get('/cart', [CartController::class, 'cartList']);
-  Route::get('/cart/tambahorder', [OrderController::class, 'simpanDataOrderCustomer']);
+  Route::get('/produk/cart', [CartController::class, 'cartList']);
+  Route::get('/produk/cart/tambahorder', [OrderController::class, 'simpanDataOrderCustomer']);
   //Route untuk event
   Route::get('/event', [EventController::class, 'customerIndex']);
   Route::get('/event/cari', [EventController::class, 'customerSearch']);
@@ -206,10 +206,13 @@ Route::prefix('customer')->middleware('customer')->group(function() {
   Route::get('/profil', [HomeController::class, 'lihatProfil']);
   Route::get('/profil/detailprofil', [HomeController::class, 'lihatDetailProfil']);
   Route::get('/profil/pesanan/{customer:id}', [HomeController::class, 'lihatPesanan']);
+
   Route::get('/profil/ubahpassword', [HomeController::class, 'lihatPassword']);
   Route::post('/profil/check/{user:id}', [AuthController::class, 'check']);
   Route::get('/profil/ubahpasswordbaru/{user:id}', [AuthController::class, 'passwordBaru']);
   Route::post('/profil/gantipassword/{user:id}', [AuthController::class, 'gantiPassword']);
+
+  Route::post('/historyorder/hapus/{order:id}', [OrderController::class, 'hapusKodeCustomer']);
 });
 
 // Route::prefix('salesman')->middleware('salesman')->group(function() {

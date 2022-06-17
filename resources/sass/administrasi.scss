@@ -2,6 +2,15 @@
     animation: hideAnimation 0s ease-in 3s;
     animation-fill-mode: forwards;
 }
+@keyframes hideAnimation {
+    to {
+        visibility: hidden;
+        display: none;
+        width: 0;
+        height: 0;
+    }
+}
+
 #detail-pesanan-admin {
     .stepper-wrapper {
         margin-top: auto;
@@ -92,15 +101,6 @@
     }
     .stepper-item:last-child::after {
         content: none;
-    }
-}
-
-@keyframes hideAnimation {
-    to {
-        visibility: hidden;
-        display: none;
-        width: 0;
-        height: 0;
     }
 }
 
