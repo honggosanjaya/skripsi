@@ -4,6 +4,8 @@
 - buku tahun terbit
 - sertifikat koding
 
+-id="table" orderBy('created_at','DESC')
+
 - ganti judul
 - ganti package class hilangkan <<>>
 - mapping data erd
