@@ -8,6 +8,7 @@ const ListShipping = ({ listShipping, statusShipping, handleShow, keyword, setKe
         <div className="input-group mb-3">
           <input type="text" className="form-control"
             value={keyword || ''} onChange={(e) => setKeyword(e.target.value)}
+            placeholder="Cari nama customer"
           />
           <button type="submit" className="btn btn-primary"><span className="iconify me-2" data-icon="fe:search"></span>Cari</button>
         </div>
