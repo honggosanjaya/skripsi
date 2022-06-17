@@ -10,6 +10,9 @@
 @push('JS')
   <script src="{{ mix('js/administrasi.js') }}"></script>
 @endpush
+@push('CSS')
+  <link href=" {{ mix('css/administrasi.css') }}" rel="stylesheet">
+@endpush
 <div id="pengadaan">
     @if (session()->has('pesanSukses'))
     <div id="hideMeAfter3Seconds">

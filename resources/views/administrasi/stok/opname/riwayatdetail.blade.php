@@ -11,7 +11,7 @@
 @push('CSS')
   <script src="{{ mix('css/administrasi.css') }}"></script>
 @endpush
-<a href="/administrasi/stok/opname/riwayat" class="btn btn-primary my-3"><i class="bi-arrow-left"></i> Kembali</a>
+
 <div id="opname">
     
   <h1>Riwayat Opname</h1>  

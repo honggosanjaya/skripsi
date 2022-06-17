@@ -15,13 +15,7 @@
 
 
 <div class="container">
-  <div class="row mt-3">
-      <div class="d-flex flex-row justify-content-between">
-        <a href="/administrasi/pesanan/detail/{{ $order->id }}" class="btn btn-primary mx-1"><i class="bi bi-arrow-left-short fs-5"></i>Kembali</a>
-        
-        
-      </div>    
-  </div>
+  
   <div class="row mt-3">
     <ul class="nav nav-tabs" id="myTab" role="tablist">
         <li class="nav-item" role="presentation">

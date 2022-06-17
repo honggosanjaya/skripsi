@@ -10,8 +10,6 @@
   
   <div class="container">
 
-    <a class="btn btn-primary mt-4" href="/administrasi/stok"><i class="bi bi-arrow-left-short fs-5"></i>Kembali</a>
-
     <div class="row my-3">
       <div class="col-5">
         <div class="mt-3 search-box">
