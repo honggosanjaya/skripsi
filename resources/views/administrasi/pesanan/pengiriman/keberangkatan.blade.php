@@ -1,30 +1,35 @@
 @extends('layouts/main')
+@push('CSS')
+  <link href=" {{ mix('css/administrasi.css') }}" rel="stylesheet">
+@endpush
 @section('breadcrumbs')
-<ol class="breadcrumb">
-  <li class="breadcrumb-item"><a href="/administrasi">Dashboard</a></li>
-  <li class="breadcrumb-item" aria-current="page"><a href="/administrasi/pesanan">Pesanan</a></li>
-  <li class="breadcrumb-item" aria-current="page"><a href="/administrasi/pesanan/detail">Detail Pesanan</a></li>
-  <li class="breadcrumb-item active" aria-current="page">Detail Pengiriman</li>
-</ol>
+  <ol class="breadcrumb">
+    <li class="breadcrumb-item"><a href="/administrasi">Dashboard</a></li>
+    <li class="breadcrumb-item" aria-current="page"><a href="/administrasi/pesanan">Pesanan</a></li>
+    <li class="breadcrumb-item" aria-current="page"><a href="/administrasi/pesanan/detail">Detail Pesanan</a></li>
+    <li class="breadcrumb-item active" aria-current="page">Detail Pengiriman</li>
+  </ol>
 @endsection
 @section('main_content')
   <div class="container mt-4">
     <h1 class="fs-3">Detail Pengiriman</h1>
-    <p>Nomor Invoice : {{ $order->linkInvoice->nomor_invoice }}</p>
-    <p>Nama Customer : {{ $order->linkCustomer->nama }}</p>
-    <p>Nama Pengirim : {{ $order->linkOrderTrack->linkStaffPengirim->nama ??null}}</p>
-    <p>Alamat Pengiriman : {{ $order->linkCustomer->full_alamat }}</p>
-    <p>Telepon : {{ $order->linkCustomer->telepon ?? '-' }}</p>
-    <p>Status pesanan : {{ $order->linkOrderTrack->linkStatus->nama }}</p>
-    <p>Foto Pengiriman : </p>
-    @if ($order->linkOrderTrack->foto_pengiriman != null)
-      <img src="{{ asset('storage/pengiriman/' . $order->linkOrderTrack->foto_pengiriman) }}"
-        class="img-preview img-fluid d-block">
-    @else
-      <p>Tidak ada foto</p>
-    @endif
+    <div class="informasi-list">
+      <span><b>Nomor Invoice</b>{{ $order->linkInvoice->nomor_invoice ?? '-' }}</span>
+      <span><b>Nama Customer</b>{{ $order->linkCustomer->nama }}</span>
+      <span><b>Nama Pengirim</b>{{ $order->linkOrderTrack->linkStaffPengirim->nama ?? '-' }}</span>
+      <span><b>Alamat Pengiriman</b>{{ $order->linkCustomer->full_alamat }}</span>
+      <span><b>Telepon</b>{{ $order->linkCustomer->telepon ?? '-' }}</span>
+      <span><b>Status pesanan</b>{{ $order->linkOrderTrack->linkStatus->nama }}</span>
+      <p class="mb-0 fw-500">Foto Pengiriman </p>
+      @if ($order->linkOrderTrack->foto_pengiriman != null)
+        <img src="{{ asset('storage/pengiriman/' . $order->linkOrderTrack->foto_pengiriman) }}"
+          class="img-preview img-fluid d-block">
+      @else
+        <p>Tidak ada foto</p>
+      @endif
+    </div>
 
-    @if($order->linkOrderTrack->status == 21)
+    @if ($order->linkOrderTrack->status == 21)
       <form class="form-submit" method="POST" action="/administrasi/pesanan/detail/{{ $order->id }}/dikirimkan">
         @csrf
         <div class="my-3">

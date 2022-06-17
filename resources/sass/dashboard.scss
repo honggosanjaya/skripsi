@@ -234,3 +234,32 @@ main {
         right: 1rem;
     }
 }
+
+.form-label {
+    font-weight: 500;
+}
+
+.img-preview {
+    max-width: 100%;
+    max-height: 300px;
+    object-fit: cover;
+    object-position: center;
+    margin-bottom: 1rem;
+}
+
+.informasi-list {
+    span b {
+        position: relative;
+        display: inline-block;
+        min-width: 50%;
+        margin-right: 1rem;
+        line-height: normal;
+        font-weight: 500;
+        font-size: 1.1rem;
+        &:after {
+            content: ":";
+            position: absolute;
+            right: 0;
+        }
+    }
+}

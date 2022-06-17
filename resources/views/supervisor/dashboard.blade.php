@@ -4,7 +4,7 @@
   @foreach ($customersPengajuanLimit as $customerPengajuanLimit)
     <div class="alert alert-danger alert-dismissible fade show" role="alert">
       Pengajuan limit pembelian dari
-      <a href="/supervisor/datapengajuan/{{ $customerPengajuanLimit->id }}"
+      <a href="/supervisor/datacustomer/pengajuan/{{ $customerPengajuanLimit->id }}"
         class="alert-link">{{ $customerPengajuanLimit->nama }}
       </a>
       <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
