@@ -197,7 +197,7 @@ class CustomerController extends Controller
 
     public function administrasiIndex(){
       return view('administrasi.dataCustomer.index', [
-        'customers' => Customer::paginate(10),
+        'customers' => Customer::orderBy('id','DESC')->get(),
         "title" => "Data Customer"
       ]);
     }

@@ -35,7 +35,7 @@
         </div>
       </div>
     </div>
-    <div class="row">
+    {{-- <div class="row">
       <div class="col-3">
         <div class="mt-3 search-box">
           <form method="GET" action="/administrasi/pesanan/filter">
@@ -50,11 +50,11 @@
           <button type="submit" class="btn btn-primary"><i class="bi bi-eye p-1"></i>Lihat</button>
         </div>
       </form>
-    </div>
+    </div> --}}
   </div>
 
 
-  <table class="table table-bordered mt-4">
+  <table class="table table-bordered mt-4" id="table">
     <thead>
       <tr>
         <th scope="col">No</th>
@@ -87,7 +87,10 @@
     </tbody>
   </table>
 
-  <div class="d-flex flex-row mt-4">
+  {{-- <div class="d-flex flex-row mt-4">
     {{ $orders->links() }}
-  </div>
+  </div> --}}
+@push('JS')
+  <script src="{{ mix('js/administrasi.js') }}"></script>
+@endpush
 @endsection

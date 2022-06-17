@@ -21,7 +21,7 @@ class ReturController extends Controller
         $returs = Retur::select('no_retur','id_customer','id_staff_pengaju', 'created_at','status')        
         ->groupBy('no_retur','id_customer','id_staff_pengaju','created_at','status')
         ->with(['linkCustomer','linkStaffPengaju','linkStatus'])
-        ->paginate(10);       
+        ->orderBy('no_retur','DESC')->get();       
         
         return view('administrasi/retur.index',[
             'returs' => $returs
@@ -139,7 +139,7 @@ class ReturController extends Controller
       $joins = Retur::with('linkItem')->where('no_retur',$retur->no_retur)->get();
       $administrasi = Staff::select('nama')->where('id','=',auth()->user()->id_users)->first();
       $retur_type = ReturType::get();
-      $invoices = Order::whereHas('linkOrderTrack', function($q){
+      $invoices = Order::orderBy('id','DESC')->whereHas('linkOrderTrack', function($q){
         $q->whereIn('status', [21,22,23,24]);
       })->where('id_customer','=',$retur->linkCustomer->id)->with(['linkOrderTrack','linkInvoice'])
       ->get();

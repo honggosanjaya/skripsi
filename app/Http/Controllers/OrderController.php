@@ -263,10 +263,10 @@ class OrderController extends Controller
   }
 
   public function index(){
-    $orders = Order::with(['linkOrderTrack'])->where('id_customer','>','0')
+    $orders = Order::orderBy('created_at','DESC')->with(['linkOrderTrack'])->where('id_customer','>','0')
     ->whereHas('linkOrderTrack',function($q) {
       $q->where('id_staff_pengonfirmasi', auth()->user()->id_users)->orWhere('id_staff_pengonfirmasi', null);
-    })->paginate(10);
+    })->get();
     $statuses = Status::where('tabel','=','order_tracks')->get();
 
     return view('administrasi.pesanan.index',[

@@ -17,7 +17,7 @@
 
   <div class="container">
     <div class="row">
-      <div class="col-5">
+      {{-- <div class="col-5">
         <div class="mt-3 search-box">
           <form method="GET" action="/administrasi/datacustomer/cari">
             <div class="input-group">
@@ -29,7 +29,7 @@
           </form>
 
         </div>
-      </div>
+      </div> --}}
       <div class="col-4 mt-3">
         <a href="/administrasi/datacustomer/create" class="btn btn-primary">
           Tambah Customer
@@ -58,7 +58,7 @@
       <tbody>
         @foreach ($customers as $customer)
           <tr onclick="window.location='/administrasi/datacustomer/{{ $customer->id }}';">
-            <th scope="row">{{ ($customers->currentPage() - 1) * $customers->perPage() + $loop->iteration }}</th>
+            <th scope="row">{{ $loop->iteration }}</th>
             <td>{{ $customer->nama }}</td>
             <td>{{ $customer->full_alamat }}</td>
             <td>{{ $customer->email }}</td>
@@ -86,7 +86,7 @@
       </tbody>
     </table>
 
-    {{ $customers->links() }}
+    {{-- {{ $customers->links() }} --}}
   </div>
 @push('JS')
   <script src="{{ mix('js/administrasi.js') }}"></script>

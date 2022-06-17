@@ -8,6 +8,7 @@ $(document).ready( function () {
             'searchPanes'
         ],
         dom: 'Bfrtip',
+        "order": [],
     });
 } );
 
