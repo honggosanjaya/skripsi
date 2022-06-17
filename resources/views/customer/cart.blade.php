@@ -3,7 +3,7 @@
 @section('header')
   <header class='header_mobile d-flex justify-content-between align-items-center'>
     <div class="d-flex">
-      <a href="/customer">
+      <a href="/customer/produk">
         <span class="iconify fs-3 text-white me-2" data-icon="eva:arrow-back-fill"></span>
       </a>
       <h1 class="page_title">Produk</h1>

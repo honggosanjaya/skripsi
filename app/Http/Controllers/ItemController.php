@@ -299,9 +299,10 @@ class ItemController extends Controller
 
     public function itemSearch(){
         $items = Item::where(strtolower('nama'),'like','%'.request('cari').'%')->get();
-
+        $customer = Customer::where('id', auth()->user()->id_users)->first();
         return view('customer.produk',[
             'items' => $items,
+            'customer' => $customer
         ]);
     }
 
@@ -396,10 +397,14 @@ class ItemController extends Controller
       }
       
       $items=$items->get();
+      $customer = Customer::where('id', auth()->user()->id_users)->first();
 
       if(!empty($items)){
         return response()->json([
-          'html'=> view('customer.c_listproduk', compact('items'))->render(),
+          'html'=> view('customer.c_listproduk', [
+            'items' => $items,
+            'customer' => $customer
+          ])->render(),
           'status' => 'success'
         ]);
       }
