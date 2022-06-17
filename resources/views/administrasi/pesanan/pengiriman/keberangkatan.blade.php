@@ -20,13 +20,14 @@
       <span><b>Alamat Pengiriman</b>{{ $order->linkCustomer->full_alamat }}</span>
       <span><b>Telepon</b>{{ $order->linkCustomer->telepon ?? '-' }}</span>
       <span><b>Status pesanan</b>{{ $order->linkOrderTrack->linkStatus->nama }}</span>
-      <p class="mb-0 fw-500">Foto Pengiriman </p>
-      @if ($order->linkOrderTrack->foto_pengiriman != null)
-        <img src="{{ asset('storage/pengiriman/' . $order->linkOrderTrack->foto_pengiriman) }}"
-          class="img-preview img-fluid d-block">
-      @else
-        <p>Tidak ada foto</p>
-      @endif
+      <span><b>Foto Pengiriman</b>
+        @if ($order->linkOrderTrack->foto_pengiriman != null)
+          <img src="{{ asset('storage/pengiriman/' . $order->linkOrderTrack->foto_pengiriman) }}"
+            class="img-preview img-fluid d-block">
+        @else
+          <small class="text-danger">Tidak ada foto</small>
+        @endif
+      </span>
     </div>
 
     @if ($order->linkOrderTrack->status == 21)

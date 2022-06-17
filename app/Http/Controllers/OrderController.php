@@ -162,7 +162,7 @@ class OrderController extends Controller
       'updated_at' => now(),
       'alasan_penolakan' => $request->alasan_penolakan
     ]);
-    Customer::update(['updated_at'=> now()]);
+    Customer::find($id_customer)->update(['updated_at'=> now()]);
 
 
     if (Customer::find($id_customer)->time_to_effective_call==null) {
@@ -178,15 +178,15 @@ class OrderController extends Controller
     ]);
   }
 
-  public function keluarTripOrderApi(Request $request, $id){ 
+  public function keluarTripOrderApi(Request $request, $id){
+    $idCust = Trip::find($id)->id_customer; 
       Trip::find($id)->update([
         'waktu_keluar' => now(),
         'updated_at' => now(),
         'status' => 1,
         'alasan_penolakan' => $request->alasan_penolakan
       ]);
-      Customer::update(['updated_at'=> now()]);
-
+      Customer::where('id', $idCust)->update(['updated_at'=> now()]);
 
       return response()->json([
         'status' => 'success',
@@ -234,7 +234,7 @@ class OrderController extends Controller
           'counter_to_effective_call' => $customer->counter_to_effective_call+1
         ]);
       }
-      Customer::update(['updated_at'=> now()]);
+      Customer::find($id_customer)->update(['updated_at'=> now()]);
 
     return response()->json([
       'status' => 'success',

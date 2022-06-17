@@ -85,6 +85,8 @@ const ShippingShipper = () => {
   const handleCloseBuktiPengirimanModal = () => {
     setShowBuktiPengiriman(false);
     setShow(false);
+    setFile(null);
+    setImagePreviewUrl('');
   }
 
   const handleSubmitBuktiPengiriman = (e) => {
@@ -109,6 +111,8 @@ const ShippingShipper = () => {
           setShowBuktiPengiriman(false);
           setShow(false);
           setSuccessMessage(response.data.message);
+          setFile(null);
+          setImagePreviewUrl('');
           setTimeout(() => {
             setSuccessMessage(null);
           }, 3000);
@@ -117,6 +121,8 @@ const ShippingShipper = () => {
       .catch(error => {
         if (_isMounted.current) {
           setIsLoading(false);
+          setFile(null);
+          setImagePreviewUrl('');
           console.log(error.message);
         }
       });
@@ -167,7 +173,7 @@ const ShippingShipper = () => {
   };
 
   if (imagePreviewUrl) {
-    $imagePreview = <img src={imagePreviewUrl} className="preview_tempatUsaha" />
+    $imagePreview = <img src={imagePreviewUrl} className="img-fluid img_prev" />
   }
 
   const handlePengajuanRetur = (idCust) => {
@@ -242,10 +248,7 @@ const ShippingShipper = () => {
               onChange={handleImageChange} />
           </Modal.Body>
           <Modal.Footer>
-            <Button variant="secondary" onClick={handleCloseBuktiPengirimanModal}>
-              Close
-            </Button>
-            <Button variant="primary" onClick={handleSubmitBuktiPengiriman}>
+            <Button variant="primary" onClick={handleSubmitBuktiPengiriman} disabled={imagePreviewUrl == '' ? true : false}>
               Kirim
             </Button>
           </Modal.Footer>
