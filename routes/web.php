@@ -84,10 +84,10 @@ Route::prefix('supervisor')->middleware('supervisor')->group(function() {
 
   Route::get('/datacustomer', [CustomerController::class, 'dataCustomer']);
   Route::get('/datacustomer/cari', [CustomerController::class, 'supervisorSearch']);
-  Route::get('/datapengajuan', [CustomerController::class, 'dataPengajuanLimit']);
-  Route::get('/datapengajuan/{customer:id}', [CustomerController::class, 'detailDataPengajuanLimit']);
-  Route::post('/datapengajuan/setuju/{customer:id}', [CustomerController::class, 'setujuPengajuanLimit']);
-  Route::post('/datapengajuan/tolak/{customer:id}', [CustomerController::class, 'tolakPengajuanLimit']);
+  Route::get('/datacustomer/pengajuan', [CustomerController::class, 'dataPengajuanLimit']);
+  Route::get('/datacustomer/pengajuan/{customer:id}', [CustomerController::class, 'detailDataPengajuanLimit']);
+  Route::post('/datacustomer/pengajuan/setuju/{customer:id}', [CustomerController::class, 'setujuPengajuanLimit']);
+  Route::post('/datacustomer/pengajuan/tolak/{customer:id}', [CustomerController::class, 'tolakPengajuanLimit']);
 
   Route::get('/jenis', [CustomerTypeController::class, 'index']);
   Route::get('/jenis/cari', [CustomerTypeController::class, 'search']);

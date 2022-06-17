@@ -1,17 +1,17 @@
 @extends('layouts/main')
 @section('breadcrumbs')
-<ol class="breadcrumb">
-  <li class="breadcrumb-item"><a href="/supervisor">Dashboard</a></li>
-  <li class="breadcrumb-item active" aria-current="page">Data Staf</li>
-</ol>
+  <ol class="breadcrumb">
+    <li class="breadcrumb-item"><a href="/supervisor">Dashboard</a></li>
+    <li class="breadcrumb-item active" aria-current="page">Data Staf</li>
+  </ol>
 @endsection
 @section('main_content')
   @if (session()->has('pesanSukses'))
     <div id="hideMeAfter3Seconds">
-    <div class="alert alert-success alert-dismissible fade show" role="alert">
-      {{ session('pesanSukses') }}
-      <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-    </div>
+      <div class="alert alert-success alert-dismissible fade show" role="alert">
+        {{ session('pesanSukses') }}
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+      </div>
     </div>
   @endif
 
@@ -49,7 +49,7 @@
               @if ($staf->foto_profil)
                 <img src="{{ asset('storage/staff/' . $staf->foto_profil) }}" class="img-fluid" width="40">
               @else
-                <img src="{{ asset('images/default_produk.png') }}" class="img-fluid" width="40">
+                <img src="{{ asset('images/default_fotoprofil.png') }}" class="img-fluid" width="40">
               @endif
             </td>
             <td>{{ $staf->nama ?? null }}</td>

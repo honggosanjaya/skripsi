@@ -54,7 +54,7 @@ const HitungStok = ({ historyItem, checkifexist, handleValueChange, handleTambah
           <div className="row">
             <div className="col-2">
               {item.link_item.gambar ?
-                <img src={`${urlAsset}/images/${item.link_item.gambar}`} className="item_image" />
+                <img src={`${urlAsset}/storage/item/${item.link_item.gambar}`} className="item_image" />
                 : <img src={`${urlAsset}/images/default_produk.png`} className="item_image border" />}
             </div>
             <div className="col-10">
