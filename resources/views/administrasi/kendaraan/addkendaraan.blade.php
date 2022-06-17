@@ -19,7 +19,6 @@
             
 @endif
   <div class="p-4">
-    <a class="btn btn-primary mt-2 mb-3" href="/administrasi/kendaraan"><i class="bi bi-arrow-left-short fs-5"></i>Kembali</a>
     
     <form id="form_submit" class="form-submit" method="POST" action="/administrasi/kendaraan/tambahkendaraan">
       @csrf

@@ -10,8 +10,6 @@
   
   <div class="container">
 
-    <a class="btn btn-primary mt-4" href="/administrasi/stok"><i class="bi bi-arrow-left-short fs-5"></i>Kembali</a>
-
     <div class="row my-3">
       <div class="col-5">
         <div class="mt-3 search-box">
@@ -29,7 +27,7 @@
       
     </div>
 
-    <table class="table">
+    <table class="table" id="table">
       <thead>
         <tr>
           <th scope="col">No</th>
@@ -55,12 +53,11 @@
         @endforeach
       </tbody>
     </table>
-    <div class="d-flex flex-row mt-4">
+    {{-- <div class="d-flex flex-row mt-4">
       {{ $pengadaans->links() }}
-    </div>
+    </div> --}}
   </div>
-  
-  
-
-  
+@push('JS')
+  <script src="{{ mix('js/administrasi.js') }}"></script>
+@endpush  
 @endsection

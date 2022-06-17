@@ -80,22 +80,22 @@ cek kode tahap 2
 2-B@ jadwal kunjungan di buat notifikasi
 2-B@ cek orderby karena orderby perulangan tidak dapat dijalankan di laravel
 3-B@ buat cron untuk event
-1-B@ {lupa masalahnya apa}cek tanggal pada retur admin
+1-B@ {lupa masalahnya apa}cek tanggal pada retur admin=
 1-B@ cek [0]
 1-B@ memo persiapan barang tidak bisa di unduh lagi setelah berangkat
 1-B@ cek staf pada semua pdf
 1-B@ cetak retur kurang jenis retur
-1-B@ ketika menolak order id pengonfirmasi diisi
+1-B@ ketika menolak order id pengonfirmasi diisi=
+3-B@ orderby semua data yang ditampilkan berdasarkan tanggal (pesanan, invoice, retur, pengadaan, stok opname)
+3-RB@ {lupa masalahnya apa} cek sum
 4-B cek pencarian data pada tabel solusi datatable
 	~ administrasi list produk
 	~ supervisor data staf
-3-B orderby semua data yang ditampilkan berdasarkan tanggal (pesanan, invoice, retur, pengadaan, stok opname)
 1-B cek harga total pada pengurangan retur karena harga nya perlu dikurangi harga event
 	ini perlu pertimbangan 
 		~tanyakan harga yang retur itu gimana sistemnya harga item/setelah diskon
 		~mungkin potongan harga tetap mengikuti event dari invoice yang dipilih akan lebih baik, dan klo iya makan harga yang tampil perlu dikurangi dengan event dan ada keterangan potongan event. 
 		~tapi untuk yang lebih gampangnya memang ambil dari langsung dari harga setelah diskon saja
-3-RB {lupa masalahnya apa}cek sum
 1-R tanyakan ke richie paginate() ini apa
 1-R cek semua apa ada bread crumbsnya
 1-R judul pada modal retur pemilihan invoice

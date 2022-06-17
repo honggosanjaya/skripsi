@@ -10,7 +10,7 @@
 
 @section('main_content')
   <div class="p-4">
-    <a class="btn btn-primary mt-2 mb-3" href="/supervisor/jenis"><i class="bi bi-arrow-left-short fs-5"></i>Kembali</a>
+    
     <form id="form_submit" class="form-submit" method="POST" action="/supervisor/jenis/ubahjenis/{{ $customertype->id }}"
         enctype="multipart/form-data">
         @method('put')
