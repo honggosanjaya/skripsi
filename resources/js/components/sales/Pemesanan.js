@@ -83,7 +83,7 @@ const Pemesanan = ({ location }) => {
     })
       .then((response) => {
         console.log('history produk', response.data);
-        setHistoryItem(response.data.data);
+        setHistoryItem(response.data.data.history);
         setJumlahOrderRealTime(response.data.orderRealTime);
       })
       .catch((error) => {
@@ -261,7 +261,6 @@ const Pemesanan = ({ location }) => {
         }
       })
       .catch((error) => {
-        console.log(error.message);
         setErrorKodeCustomer(error.message);
         setIsHandleKodeCust(false);
       });
