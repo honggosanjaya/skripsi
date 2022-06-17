@@ -17,7 +17,7 @@
         <tbody>
             <tr>
                 <td style="width: 55%">
-                    <h4 class="mb-4">No Invoice : </h4>
+                    <h4 class="mb-0">No Invoice : </h4>
                 </td>
                 <td style="width: 55%">
                     <h5 class="text-success p-0">{{ $order->linkInvoice->nomor_invoice }}</h5>
@@ -25,10 +25,10 @@
             </tr>  
             <tr>
                 <td style="width: 55%">
-                    <h4 class="mb-4">Diterbitkan Kepada</h4>
+                    <h4 class="mb-0">Diterbitkan Kepada : </h4>
                 </td>
                 <td style="width: 55%">
-                    <h5 class="text-success p-0">{{ $order->linkCustomer->nama }}</h5>
+                    <h5 class="font-weight-normal p-0">{{ $order->linkCustomer->nama }}</h5>
                 </td>
             </tr>     
             <tr>
@@ -36,14 +36,24 @@
                     <h4 class="mb-4">Alamat: </h4>
                 </td>
                 <td style="width: 55%">
-                    <h5 class="text-success p-0">{{ $order->linkCustomer->alamat_utama }}</h5>
+                    <h5 class="font-weight-normal p-0">{{ $order->linkCustomer->alamat_utama }}</h5>
                 </td>
             </tr>  
             <tr>
-                <td><h5>Penjual : <span class="font-weight-normal">{{ $order->linkStaff->nama }}</span></h5></td>                
+                <td style="width: 55%">
+                    <h4 class="mb-0">Penjual : </h4>
+                </td>
+                <td style="width: 55%">
+                    <h5 class="font-weight-normal p-0">{{ $order->linkStaff->nama }}</h5>
+                </td>                             
             </tr>
             <tr>
-                <td><h5>Tanggal Pesan : <span class="font-weight-normal">{{ date('d-m-Y', strtotime($order->linkInvoice->created_at)) }}</span></h5></td>                
+                <td style="width: 55%">
+                    <h4 class="mb-0">Tanggal Pesan : </h4>
+                </td>
+                <td style="width: 55%">
+                    <h5 class="font-weight-normal p-0">{{ date('d-m-Y', strtotime($order->linkInvoice->created_at)) }}</h5>
+                </td>                
             </tr>
             
         </tbody>

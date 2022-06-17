@@ -198,11 +198,11 @@ const TripSales = () => {
 
   let $imagePreview = null;
   if (imagePreviewUrl) {
-    $imagePreview = <img src={imagePreviewUrl} className="preview_tempatUsaha" />
+    $imagePreview = <img src={imagePreviewUrl} className="img-fluid img_prev" />
   } else {
     if (prevImage) {
       let image = prevImage.replace('public', '');
-      $imagePreview = <img src={`${urlAsset}/storage/customer/${image}`} className="preview_tempatUsaha" />
+      $imagePreview = <img src={`${urlAsset}/storage/customer/${image}`} className="img-fluid img_prev" />
     }
   }
 

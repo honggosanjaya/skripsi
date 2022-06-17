@@ -12,10 +12,6 @@
 @section('main_content')
 
 <div class="container">
-    <a class="btn btn-primary mt-4" href="/supervisor">
-        <i class="bi bi-arrow-left"></i> Kembali
-    </a>
-
     <div class="row my-4">
         <div class="col-3">
             <h3>Profil {{ $data->linkStaffRole->nama }}</h3>

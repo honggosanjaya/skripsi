@@ -267,8 +267,10 @@ label {
     transform: translateY(-50%);
 }
 
-.preview_tempatUsaha {
-    max-width: 100%;
+.img_prev {
+    max-height: 30vh;
+    object-fit: cover;
+    object-position: center;
 }
 
 .item_image {
