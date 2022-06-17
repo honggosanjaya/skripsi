@@ -106,7 +106,7 @@ const ReturShipper = () => {
           nama: item.nama,
           id_customer: parseInt(idCust),
           kuantitas: exist.kuantitas - 1,
-          harga_satuan: item.harga_satuan,
+          harga_satuan: harga,
           gambar: item.gambar,
           alasan: alasan
         };
@@ -124,7 +124,7 @@ const ReturShipper = () => {
     }
   }
 
-  const handleTambahJumlah = (item, alasan) => {
+  const handleTambahJumlah = (item, alasan, harga) => {
     if (alasan == undefined || alasan == '') {
       const exist = newHistoryItems.find((x) => x.id_item === item.id);
       if (exist) {
@@ -142,7 +142,7 @@ const ReturShipper = () => {
           nama: item.nama,
           id_customer: parseInt(idCust),
           kuantitas: exist.kuantitas + 1,
-          harga_satuan: item.harga_satuan,
+          harga_satuan: harga,
           gambar: item.gambar,
           alasan: alasan
         };
@@ -155,7 +155,7 @@ const ReturShipper = () => {
           nama: item.nama,
           id_customer: parseInt(idCust),
           kuantitas: 1,
-          harga_satuan: item.harga_satuan,
+          harga_satuan: harga,
           gambar: item.gambar,
           alasan: alasan
         };
@@ -165,7 +165,7 @@ const ReturShipper = () => {
     }
   }
 
-  const handleValueChange = (item, newVal, alasan) => {
+  const handleValueChange = (item, newVal, alasan, harga) => {
     if (alasan == undefined || alasan == '') {
       const exist = newHistoryItems.find((x) => x.id_item === item.id);
       if (exist) {
@@ -184,7 +184,7 @@ const ReturShipper = () => {
             nama: item.nama,
             id_customer: parseInt(idCust),
             kuantitas: isNaN(parseInt(newVal)) ? 0 : parseInt(newVal),
-            harga_satuan: item.harga_satuan,
+            harga_satuan: harga,
             gambar: item.gambar,
             alasan: alasan
           };
@@ -198,7 +198,7 @@ const ReturShipper = () => {
             nama: item.nama,
             id_customer: parseInt(idCust),
             kuantitas: isNaN(parseInt(newVal)) ? 0 : parseInt(newVal),
-            harga_satuan: item.harga_satuan,
+            harga_satuan: harga,
             gambar: item.gambar,
             alasan: alasan
           };
@@ -209,7 +209,7 @@ const ReturShipper = () => {
     }
   }
 
-  const handleAlasanChange = (item, alasan) => {
+  const handleAlasanChange = (item, alasan, harga) => {
     const exist = newHistoryItems.find((x) => x.id_item === item.id_item);
     if (exist) {
       setNewHistoryItems(
@@ -305,11 +305,11 @@ const ReturShipper = () => {
                     <label className="form-label">Jumlah Retur</label>
                   </div>
                   <div className="col-7 d-flex justify-content-around">
-                    <button className="btn btn-primary btn_qty" onClick={() => handleKurangJumlah(item.link_item, item.alasan)}> - </button>
+                    <button className="btn btn-primary btn_qty" onClick={() => handleKurangJumlah(item.link_item, item.alasan, item.link_item.harga_satuan - item.link_item.harga_satuan * customerDiskon / 100)}> - </button>
                     <input type="number" className="form-control mx-2"
                       value={checkifexist(item.link_item)}
-                      onChange={(e) => handleValueChange(item.link_item, e.target.value, item.alasan)} />
-                    <button className="btn btn-primary btn_qty" onClick={() => handleTambahJumlah(item.link_item, item.alasan)}> + </button>
+                      onChange={(e) => handleValueChange(item.link_item, e.target.value, item.alasan, item.link_item.harga_satuan - item.link_item.harga_satuan * customerDiskon / 100)} />
+                    <button className="btn btn-primary btn_qty" onClick={() => handleTambahJumlah(item.link_item, item.alasan, item.link_item.harga_satuan - item.link_item.harga_satuan * customerDiskon / 100)}> + </button>
                   </div>
                 </div>
 
