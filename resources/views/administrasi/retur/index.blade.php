@@ -13,7 +13,7 @@
 <div class="container">
     <div class="row">
       <div class="col-5">
-        <div class="mt-3 search-box">
+        {{-- <div class="mt-3 search-box">
           <form method="GET" action="/administrasi/retur/cari">
             <div class="input-group">
               <input type="text" class="form-control" name="cari" placeholder="Cari Nomor Retur..."
@@ -23,12 +23,12 @@
             
           </form>    
           
-        </div>
+        </div> --}}
       </div>
       
     </div>
 
-    <table class="table table-bordered mt-4">
+    <table class="table table-bordered mt-4" id="table">
         <thead>
           <tr>
             <th scope="col">Nomor Retur</th>
@@ -57,9 +57,12 @@
         </tbody>
       </table>
       
-      <div class="d-flex flex-row mt-4">
+      {{-- <div class="d-flex flex-row mt-4">
        {{ $returs->links() }}
-      </div>
+      </div> --}}
+@push('JS')
+  <script src="{{ mix('js/administrasi.js') }}"></script>
+@endpush
 </div>
 
 @endsection
