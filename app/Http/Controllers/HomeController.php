@@ -60,7 +60,7 @@ class HomeController extends Controller
         Order::whereHas('linkOrderTrack', function($q){
             $q->where('status',23)->where('id_staff_pengonfirmasi',auth()->user()->id_users);
         })->with(['linkOrderTrack'])->get();
-        dd($notifikasi);
+        // dd($notifikasi);
        
         return view('administrasi/dashboard',[
           'role' => $role,

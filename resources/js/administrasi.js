@@ -1,6 +1,15 @@
 import { getJSON } from 'jquery';
-window.bootstrap = require('bootstrap');
 const Swal = require('sweetalert2')
+
+$(document).ready( function () {
+    $('#table').DataTable({
+        fixedHeader: true,
+        buttons: [
+            'searchPanes'
+        ],
+        dom: 'Bfrtip',
+    });
+} );
 
 $(document).on('change', '#pengadaan input[name=total_harga]', function () {
     let iditem=$(this).data('iditem')
@@ -32,8 +41,7 @@ $(document).on('change', '#opname input[name=keterangan]', function () {
 
 $(document).on('click', '#retur-admin .button-submit', function () {
     if ($('#retur-admin select[name=tipe_retur]').val()==1) {
-        var myModal = new bootstrap.Modal(document.getElementById('staticBackdrop'));
-        myModal.show()
+        $('#retur-admin .open-modal-retur').click()
     }else{
         Swal.fire({
             title: 'Apakah anda yakin untuk menyimpan data ?',

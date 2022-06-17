@@ -179,13 +179,13 @@ class OrderController extends Controller
   }
 
   public function keluarTripOrderApi(Request $request, $id){ 
-        Trip::find($id)->update([
-          'waktu_keluar' => now(),
-          'updated_at' => now(),
-          'status' => 1,
-          'alasan_penolakan' => $request->alasan_penolakan
-        ]);
-        Customer::update(['updated_at'=> now()]);
+      Trip::find($id)->update([
+        'waktu_keluar' => now(),
+        'updated_at' => now(),
+        'status' => 1,
+        'alasan_penolakan' => $request->alasan_penolakan
+      ]);
+      Customer::update(['updated_at'=> now()]);
 
 
       return response()->json([
@@ -200,11 +200,12 @@ class OrderController extends Controller
     $id_staff = $request->idStaff;
     $customer = Customer::find($id_customer);
 
-    if (Customer::find($id_customer)->time_to_effective_call==null) {
-      Customer::find($id_customer)->update([
-        'counter_to_effective_call' => $customer->counter_to_effective_call+1
-      ]);
-    }
+    // if (Customer::find($id_customer)->time_to_effective_call==null) {
+    //   Customer::find($id_customer)->update([
+    //     'counter_to_effective_call' => $customer->counter_to_effective_call+1
+    //   ]);
+    // }
+    // Customer::update(['updated_at'=> now()]);
 
     $trip=Trip::where('id_customer',$id_customer)->orderby('id','desc')->first();
     $trip_data = [
@@ -268,9 +269,9 @@ class OrderController extends Controller
     })->paginate(10);
     $statuses = Status::where('tabel','=','order_tracks')->get();
 
-    return view('administrasi/pesanan.index',[
-        'orders' => $orders,
-        'statuses' => $statuses
+    return view('administrasi.pesanan.index',[
+      'orders' => $orders,                      
+      'statuses' => $statuses
     ]);
   }
 
@@ -362,7 +363,7 @@ class OrderController extends Controller
         'administrasi' => $administrasi           
       ]);
 
-    return $pdf->download('invoice-'.$order->linkInvoice->nomor_invoice.'.pdf');  
+    return $pdf->stream('invoice-'.$order->linkInvoice->nomor_invoice.'.pdf');  
   }
 
   public function cetakSJ(Order $order){
@@ -381,7 +382,7 @@ class OrderController extends Controller
         'mengetahui' => $mengetahui            
       ]);
 
-    return $pdf->download('Surat Jalan-'.date("d F Y").'.pdf'); 
+    return $pdf->stream('Surat Jalan-'.date("d F Y").'.pdf'); 
 
     // return view('administrasi/pesanan/detail.cetakSJ', [
     //     'order' => $order,
@@ -404,7 +405,7 @@ class OrderController extends Controller
         'administrasi' => $administrasi          
       ]);
 
-    return $pdf->download('memo-'.$order->linkInvoice->nomor_invoice.'.pdf'); 
+    return $pdf->stream('memo-'.$order->linkInvoice->nomor_invoice.'.pdf'); 
     
     // return view('administrasi/pesanan/detail.cetakMemo',[
     //     'order' => $order,
@@ -571,7 +572,8 @@ class OrderController extends Controller
       'status' => 25,
       'waktu_dikonfirmasi'=> now()
     ]);
-      
+
+
     return redirect('/administrasi/pesanan/detail/'.$order->id) -> with('addPesananSuccess', 'Berhasil menolak pesanan');
   }
 

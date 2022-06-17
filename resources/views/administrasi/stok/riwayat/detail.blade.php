@@ -31,7 +31,7 @@
             <td></td>
             <td></td>
             <td class="fw-bold">Total</td>
-            <td class="fw-bold">{{ $total_harga[0]->harga }}</td>
+            <td class="fw-bold">{{ $total_harga->harga }}</td>
         </tr>
       </tbody>
     </table>

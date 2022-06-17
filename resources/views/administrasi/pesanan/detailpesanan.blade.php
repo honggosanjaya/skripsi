@@ -49,6 +49,18 @@
           <a href="/administrasi/pesanan/detail/{{ $order->id }}/cetak-sj" class="btn btn-success mx-1"><i
               class="bi bi-download px-1"></i>Unduh Surat Jalan</a>
           @endif
+          {{-- @if ($order->linkOrderTrack->status == 21)
+            <a href="/administrasi/pesanan/detail/{{ $order->id }}/cetak-memo" class="btn btn-primary mx-1"><i
+                class="bi bi-download px-1"></i>Unduh Memo Persiapan Barang</a>
+            @endif
+            @if ($order->linkOrderTrack->status > 22)
+            <a href="/administrasi/pesanan/detail/{{ $order->id }}/cetak-sj" class="btn btn-success mx-1"><i
+              class="bi bi-download px-1"></i>Unduh Surat Jalan</a>
+            @endif
+            @if ($order->linkOrderTrack->status > 20 && $order->linkOrderTrack->status < 25)
+            <a href="/administrasi/pesanan/detail/{{ $order->id }}/cetak-invoice" class="btn btn-secondary mx-1"><i
+                class="bi bi-download px-1"></i>Unduh Invoice</a>
+            @endif --}}
         </div>
       </div>
     </div>
