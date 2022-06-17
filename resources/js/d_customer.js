@@ -6,29 +6,27 @@ $(document).on('click', '.submit-filter-produk', function () {
   filter();
 });
 
-$(document).ready(function () {
-  $('.plus-button').click(function () {
-    let oldval = $(this).siblings('#quantity').val();
-    let newval;
-    if (oldval == '') {
-      newval = 1;
-    } else {
-      newval = parseInt(oldval) + 1;
-    }
-    $(this).siblings('#quantity').val(newval).trigger('change');
-  })
+$(document).on('click', '.plus-button', function () {
+  let oldval = $(this).siblings('#quantity').val();
+  let newval;
+  if (oldval == '') {
+    newval = 1;
+  } else {
+    newval = parseInt(oldval) + 1;
+  }
+  $(this).siblings('#quantity').val(newval).trigger('change');
+})
 
-  $('.minus-button').click(function () {
-    let oldval = parseInt($(this).siblings('#quantity').val());
-    let newval;
-    if (oldval == 0) {
-      newval = oldval;
-    } else {
-      newval = parseInt(oldval) - 1;
-      $(this).siblings('#quantity').val(newval).trigger('change');
-    }
-  })
-});
+$(document).on('click', '.minus-button', function () {
+  let oldval = parseInt($(this).siblings('#quantity').val());
+  let newval;
+  if (oldval == 0) {
+    newval = oldval;
+  } else {
+    newval = parseInt(oldval) - 1;
+    $(this).siblings('#quantity').val(newval).trigger('change');
+  }
+})
 
 $(document).on('change', 'input[name=quantity]', function () {
   var form = $(this).closest("form").serialize()
