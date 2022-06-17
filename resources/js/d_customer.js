@@ -3,30 +3,52 @@ import { getJSON } from 'jquery';
 var filtered = false;
 
 $(document).on('click', '.submit-filter-produk', function () {
-  filter()
+  filter();
+});
+
+$(document).ready(function () {
+  $('.plus-button').click(function () {
+    let oldval = $(this).siblings('#quantity').val();
+    let newval;
+    if (oldval == '') {
+      newval = 1;
+    } else {
+      newval = parseInt(oldval) + 1;
+    }
+    $(this).siblings('#quantity').val(newval).trigger('change');
+  })
+
+  $('.minus-button').click(function () {
+    let oldval = parseInt($(this).siblings('#quantity').val());
+    let newval;
+    if (oldval == 0) {
+      newval = oldval;
+    } else {
+      newval = parseInt(oldval) - 1;
+      $(this).siblings('#quantity').val(newval).trigger('change');
+    }
+  })
 });
 
 $(document).on('change', 'input[name=quantity]', function () {
-  var form = $(this).parent("form").serialize()
-  setTimeout(function () {
-    $.ajax({
-      url: window.location.origin + "/api/customer/order/cart?route=customerOrder",
-      method: "POST",
-      data: form,
-      success: function (data) {
-        if (data.status = 'success') {
-          if(data.quantityCart!=null&&data.quantityCart!=0){
-            $('.cart-quantity').text(data.quantityCart).removeClass( "d-none" )
-          }else{
-            $('.cart-quantity').text(0).addClass( "d-none" )
-          }
-          if (filtered == true) {
-            filter()
-          }
+  var form = $(this).closest("form").serialize()
+  $.ajax({
+    url: window.location.origin + "/api/customer/order/cart?route=customerOrder",
+    method: "POST",
+    data: form,
+    success: function (data) {
+      if (data.status == 'success') {
+        if (data.quantityCart != null && data.quantityCart != 0) {
+          $('.cart-quantity').text(data.quantityCart).removeClass("d-none")
+        } else {
+          $('.cart-quantity').text(0).addClass("d-none")
         }
-      },
-    });
-  }, 1500);
+        if (filtered == true) {
+          filter();
+        }
+      }
+    },
+  });
 });
 
 function filter() {
@@ -45,3 +67,27 @@ function filter() {
     }
   });
 }
+
+const Swal = require('sweetalert2')
+$(document).ready(function () {
+  $(document).on('click', '.hapus_btn', function (e) {
+    e.preventDefault();
+    Swal.fire({
+      title: 'Apakah anda yakin untuk membatalkan pesanan ?',
+      showDenyButton: true,
+      confirmButtonText: 'Ya',
+      denyButtonText: `Tidak`,
+    }).then((result) => {
+      if (result.isConfirmed) {
+        $('.handleHapusKode').submit();
+        Swal.fire('Pesanan Dibatalkan !', '', 'success')
+      }
+    })
+  })
+});
+
+$(document).ready(function () {
+  $('.logout_link').click(function () {
+    $('#logout_form').submit();
+  })
+});

@@ -1,12 +1,23 @@
 @extends('customer.layouts.customerLayouts')
 
+@section('header')
+  <header class='header_mobile d-flex justify-content-between align-items-center'>
+    <div class="d-flex">
+      <a href="/customer">
+        <span class="iconify fs-3 text-white me-2" data-icon="eva:arrow-back-fill"></span>
+      </a>
+      <h1 class="page_title">Produk</h1>
+    </div>
+  </header>
+@endsection
+
 @section('content')
-    <table class="table">
+  <div class="container">
+    <table class="table mt-4">
       <thead>
-        <th scope="col">#</th>
-        <th scope="col">Nama</th>
-        <th scope="col">Jumlah</th>
-        <th scope="col">Price</th>
+        <th scope="col" class="text-center">Nama</th>
+        <th scope="col" class="text-center">Kuantitas</th>
+        <th scope="col" class="text-center">Harga</th>
       </thead>
       <tbody>
         @php
@@ -19,18 +30,22 @@
               $t_items = $item->quantity * $item->price;
               $total += $t_items;
             @endphp
-            <th scope="row">{{ $loop->index + 1 }}</th>
             <td>{{ $item->name }}</td>
-            <td>{{ $item->quantity . ' X ' . $item->price }}</td>
-            <td>{{ $t_items }}</td>
-
+            <td class="text-center">{{ $item->quantity . ' X ' . $item->price }}</td>
+            <td class="text-center"> {{ $t_items }}</td>
           </tr>
         @endforeach
       </tbody>
       <tfoot>
-        <td colspan="3" class="table-active">Sub-Total</td>
-        <td>{{ $total }}</td>
+        <td colspan="2" class="table-active">Sub-Total</td>
+        <td>Rp. {{ number_format($total, 0, '', '.') }}</td>
       </tfoot>
     </table>
-    <a href="/customer/cart/tambahorder?route=customerOrder" type="button" class="btn btn-success">submit</a>
+
+    <div class="d-flex justify-content-end">
+      <a href="/customer/produk/cart/tambahorder?route=customerOrder" type="button"
+        class="btn btn-success checkout_btn"><span class="iconify fs-3 me-2"
+          data-icon="ic:baseline-shopping-cart-checkout"></span>Checkout</a>
+    </div>
+  </div>
 @endsection

@@ -1,72 +1,76 @@
 @extends('customer.layouts.customerLayouts')
 
-@section('content')
-    <div class="row">
-      <div class="col-8">
-        <div class="mt-3 search-box">
-          <form method="GET" action="/customer/event/cari">
-            <div class="input-group">
-              <input type="text" class="form-control" name="cari" placeholder="Cari Event..."
-                value="{{ request('cari') }}">
-              <button type="submit" class="btn btn-primary">Cari</button>
-
-            </div>
-
-          </form>
-        </div>
-      </div>
-      
+@section('header')
+  <header class='header_mobile d-flex justify-content-between align-items-center'>
+    <div class="d-flex">
+      <a href="/customer">
+        <span class="iconify fs-3 text-white me-2" data-icon="eva:arrow-back-fill"></span>
+      </a>
+      <h1 class="page_title">Event</h1>
     </div>
-    
-    <div class="container">
-        @foreach($events as $event)
-        <div class="row border border-2 my-3">
-            <h5>{{ $event->nama }}</h5>
-            @if($event->diskon != null)
-            <h6>Promo Diskon {{ $event->diskon }} %</h6>
-            @else
-            <h6>Promo Potongan Rp {{ $event->potongan }}</h6>
-            @endif
-            <h6>{{ date('d F Y', strtotime($event->date_end)) }}</h6>
-            {{-- <p class="text-primary fw-bold"><a data-bs-toggle="modal" data-bs-target="#testing">Lihat Detail >>></a></p>             --}}
-            <!-- Button trigger modal -->
-          <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#event{{ $event->id }}">
-            Lihat Detail >>>
-          </button>
+  </header>
+@endsection
 
-          <!-- Modal -->
-          <div class="modal fade" id="event{{ $event->id }}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-            <div class="modal-dialog">
-              <div class="modal-content">
-                <div class="modal-header">
-                  <h5 class="modal-title" id="exampleModalLabel">{{ $event->nama }}</h5>
-                  <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                  <div class="text-center mb-4">
-                    <img src="{{ asset('storage/event/'.$event->gambar) }}" class="img-preview img-fluid"
-                    width="350px" height="350px" alt="Gambar tidak tersedia">
-                  </div>                  
-                  
-                  @if($event->diskon != null)
-                  <h6>Promo Diskon {{ $event->diskon }} %</h6>
-                  @else
-                  <h6>Promo Potongan Rp {{ $event->potongan }}</h6>
-                  @endif
-                  <p>{{ $event->keterangan }}</p>
-                  <h6> Berlaku sampai {{ date('d F Y', strtotime($event->date_end)) }}</h6>
-                  <p> NB: Tanyakan pada sales, saat sales datang untuk info lebih lanjut</p>
-                </div>
-                <div class="modal-footer">
-                  <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                </div>
+@section('content')
+  <div class="container pt-4">
+    <form method="GET" action="/customer/event/cari">
+      <div class="input-group">
+        <input type="text" class="form-control" name="cari" placeholder="Cari Event..."
+          value="{{ request('cari') }}">
+        <button type="submit" class="btn btn-primary">
+          <span class="iconify fs-3" data-icon="ant-design:search-outlined"></span>
+        </button>
+      </div>
+    </form>
+    @foreach ($events as $event)
+      <div class="event_card">
+        <h1 class="fs-5 fw-bold">{{ $event->nama }}</h1>
+        @if ($event->diskon != null)
+          <p class="mb-0 fs-7">Promo Diskon {{ $event->diskon }} %</p>
+        @else
+          <p class="mb-0 fs-7">Promo Potongan Rp. {{ number_format($event->potongan, 0, '', '.') }}</p>
+        @endif
+        <p class="mb-0 fs-7">Minimum Pembelian: {{ number_format($event->min_pembelian, 0, '', '.') }}</p>
+        <p class="mb-0 fs-7">Berlaku Hingga: {{ date('d F Y', strtotime($event->date_end)) }}</p>
+        <p class="mb-0 fs-7 text-primary text-end cursor_pointer" data-bs-toggle="modal"
+          data-bs-target="#event{{ $event->id }}">
+          Lihat Detail
+        </p>
+
+        <!-- Modal -->
+        <div class="modal fade" id="event{{ $event->id }}" tabindex="-1" aria-labelledby="exampleModalLabel"
+          aria-hidden="true">
+          <div class="modal-dialog">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">{{ $event->nama }}</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+              </div>
+
+              <div class="modal-body">
+                @if ($event->gambar)
+                  <img src="{{ asset('storage/event/' . $event->gambar) }}" class="img-fluid mb-4">
+                @endif
+                @if ($event->diskon != null)
+                  <h3 class="fs-6 fw-bold">Promo Diskon {{ $event->diskon }} %</h3>
+                @else
+                  <h3 class="fs-6 fw-bold">Promo Potongan Rp {{ $event->potongan }}</h3>
+                @endif
+                <h3 class="fs-6 fw-bold mb-0">Keterangan</h3>
+                <p>{{ $event->keterangan }}</p>
+                <h3 class="fs-6 fw-bold"> Minimum Pembelian Rp. {{ number_format($event->min_pembelian, 0, '', '.') }}
+                </h3>
+                <h3 class="fs-6 fw-bold"> Mulai {{ date('d F Y', strtotime($event->date_start)) }} Hingga
+                  {{ date('d F Y', strtotime($event->date_end)) }}</h3>
+                <small class="text-danger d-block text-center"> NB: Tanyakan pada sales untuk informasi lebih
+                  lanjut</small>
               </div>
             </div>
           </div>
         </div>
-        @endforeach
+      </div>
+    @endforeach
+  </div>
 
-    </div>
-
-    {{ $events->links() }}
+  {{ $events->links() }}
 @endsection

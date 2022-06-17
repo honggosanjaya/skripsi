@@ -24,7 +24,7 @@ class Order extends Model
     }
 
     public function linkOrderItem(){
-        return $this->hasMany(OrderItem::class,'id_order','id');
+        return $this->hasMany(OrderItem::class,'id_order','id')->with(['linkItem']);
     }
 
     public function linkCustomer(){
