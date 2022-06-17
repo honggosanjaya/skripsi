@@ -39,7 +39,7 @@
   </div>
 
   <div class="table-responsive mt-3">
-    <table class="table table-hover table-sm">
+    <table class="table table-hover table-sm" id="table">
       <thead>
         <tr>
           <th scope="col" class="text-center">No</th>
@@ -88,4 +88,7 @@
 
     {{ $customers->links() }}
   </div>
+@push('JS')
+  <script src="{{ mix('js/administrasi.js') }}"></script>
+@endpush
 @endsection

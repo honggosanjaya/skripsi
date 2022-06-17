@@ -351,7 +351,7 @@ class ItemController extends Controller
 
         $total = Pengadaan::selectRaw('SUM(harga_total) as harga')
         ->where('no_pengadaan','=',$pengadaan->no_pengadaan)
-        ->get();
+        ->first();
 
         return view('administrasi/stok/riwayat.detail',[
             'pengadaans' => $pengadaans,
@@ -378,7 +378,7 @@ class ItemController extends Controller
             'administrasi' => $administrasi            
         ]);
 
-        return $pdf->download('laporan-NPB-pdf-'.$pengadaan->no_pengadaan.'.pdf');
+        return $pdf->stream('laporan-NPB-pdf-'.$pengadaan->no_pengadaan.'.pdf');
     }
 
     public function filterProdukApi(Request $request){

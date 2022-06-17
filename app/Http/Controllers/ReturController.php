@@ -47,6 +47,7 @@ class ReturController extends Controller
           'tipe_retur' => $customer->tipe_retur,
           'alasan' => $item['alasan'],
           'status' => 13,
+          'created_at'=>now()
         ]);
       }
       Retur::insert($data);
@@ -71,7 +72,7 @@ class ReturController extends Controller
         ->with(['linkCustomer','linkStaffPengaju','linkStatus'])        
         ->paginate(10); 
                 
-        return view('administrasi/retur.index',[
+        return view('administrasi.retur.index',[
             'returs' => $returs
         ]);
         
@@ -196,7 +197,7 @@ class ReturController extends Controller
             'administrasi' => $administrasi      
           ]);
   
-        return $pdf->download('retur-'.$retur->no_retur.'.pdf');
+        return $pdf->stream('retur-'.$retur->no_retur.'.pdf');
         // return view('administrasi/retur.detail',[
         //     'retur' => $retur,
         //     'wilayah' => $temp[($retur->linkCustomer->id_wilayah)-1],

@@ -75,9 +75,9 @@
                 <td style="padding:5%"></td>
             </tr>
             <tr>
-                <td>{{ $order->linkCustomer->nama ?? "" }}</td>
+                <td>........................</td>
                 <td>{{ $pengirim->nama ?? "" }}</td>
-                <td>{{ $mengetahui->nama }}</td>
+                <td>{{ $mengetahui->nama ?? "" }}</td>
             </tr>
         </tbody>
       </table>

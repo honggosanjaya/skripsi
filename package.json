@@ -30,6 +30,9 @@
     },
     "dependencies": {
         "chart.js": "^3.8.0",
+        "datatables.net-datetime": "^1.1.2",
+        "datatables.net-dt": "^1.12.1",
+        "datatables.net-searchpanes-bs5": "^2.0.1",
         "idb": "^7.0.1",
         "jquery": "^3.6.0",
         "react-bootstrap": "^2.4.0",
