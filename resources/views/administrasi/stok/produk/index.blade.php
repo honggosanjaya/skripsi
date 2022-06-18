@@ -3,75 +3,66 @@
   <link href=" {{ mix('css/administrasi.css') }}" rel="stylesheet">
 @endpush
 @section('breadcrumbs')
-<ol class="breadcrumb">
-  <li class="breadcrumb-item"><a href="/administrasi">Dashboard</a></li>
-  <li class="breadcrumb-item"><a href="/administrasi/stok">Stok</a></li>
-  <li class="breadcrumb-item active" aria-current="page">Produk</li>
-</ol>
+  <ol class="breadcrumb">
+    <li class="breadcrumb-item"><a href="/administrasi">Dashboard</a></li>
+    <li class="breadcrumb-item"><a href="/administrasi/stok">Stok</a></li>
+    <li class="breadcrumb-item active" aria-current="page">Produk</li>
+  </ol>
 @endsection
+
 @section('main_content')
   @if (session()->has('pesanSukses'))
-  <div id="hideMeAfter3Seconds">
-    <div class="alert alert-success alert-dismissible fade show" role="alert">
-      {{ session('pesanSukses') }}
-      <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    <div id="hideMeAfter3Seconds">
+      <div class="alert alert-success alert-dismissible fade show" role="alert">
+        {{ session('pesanSukses') }}
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+      </div>
     </div>
-  </div>
   @endif
 
-  <div class="container">
-    <div class="row">
-      <div class="col-5">
-        <div class="mt-3 search-box">
-          <form method="GET" action="/administrasi/stok/produk/cari">
-            <div class="input-group">
-              <input type="text" class="form-control" name="cari" placeholder="Cari Produk..."
-                value="{{ request('cari') }}">
-              <button type="submit" class="btn btn-primary">Cari</button>
-            </div>
-          </form>
+  <div class="px-5 pt-4">
+    <div class="d-flex justify-content-between">
+      <form method="GET" action="/administrasi/stok/produk/cari">
+        <div class="input-group">
+          <input type="text" class="form-control" name="cari" placeholder="Cari Produk..."
+            value="{{ request('cari') }}">
+          <button type="submit" class="btn btn-primary">Cari</button>
         </div>
-      </div>
-      <div class="col-4 mt-3">
-        <a href="/administrasi/stok/produk/create" class="text-decoration-none">
-          <i class="bi bi-plus-circle-fill me-2"></i> Tambah Produk
-        </a>
-      </div>
+      </form>
+      <a href="/administrasi/stok/produk/create" class="btn btn-primary">
+        <span class="iconify fs-4" data-icon="dashicons:database-add"></span> Tambah Produk
+      </a>
     </div>
-  </div>
 
-
-
-  <div class="table-responsive mt-3">
-    <table class="table table-hover table-sm">
-      <thead>
-        <tr>
-          <th scope="col" class="text-center">No</th>
-          <th scope="col">Kode Barang</th>
-          <th scope="col">Gambar</th>
-          <th scope="col">Satuan</th>
-          <th scope="col">Stok</th>
-          <th scope="col">Min Stok</th>
-          <th scope="col">Max Stok</th>
-          {{-- <th scope="col">Max Pengadaan</th> --}}
-          <th scope="col">Harga Satuan</th>
-          <th scope="col">Volume</th>
-          <th scope="col">Status</th>
-          <th scope="col">Aksi</th>
-        </tr>
-      </thead>
-      <tbody>
-        @foreach ($items as $item)
-        @php
-          $stock25=(($item->max_stok-$item->min_stok)*25/100)+$item->min_stok;
-        @endphp
-        @if ($item->stok<$item->min_stok)
-          <tr class="bg-danger">
-        @elseif($item->stok<$stock25)
-          <tr class="bg-warning">
-        @else
+    <div class="table-responsive mt-4">
+      <table class="table table-hover table-sm">
+        <thead>
           <tr>
-        @endif
+            <th scope="col" class="text-center">No</th>
+            <th scope="col" class="text-center">Kode Barang</th>
+            <th scope="col" class="text-center">Gambar</th>
+            <th scope="col" class="text-center">Satuan</th>
+            <th scope="col" class="text-center">Stok</th>
+            <th scope="col" class="text-center">Min Stok</th>
+            <th scope="col" class="text-center">Max Stok</th>
+            <th scope="col" class="text-center">Harga Satuan (Rp)</th>
+            <th scope="col" class="text-center">Volume</th>
+            <th scope="col" class="text-center">Status</th>
+            <th scope="col" class="text-center">Aksi</th>
+          </tr>
+        </thead>
+        <tbody>
+          @foreach ($items as $item)
+            @php
+              $stock25 = (($item->max_stok - $item->min_stok) * 25) / 100 + $item->min_stok;
+            @endphp
+            @if ($item->stok < $item->min_stok)
+              <tr class="bg-dangerr">
+              @elseif($item->stok < $stock25)
+              <tr class="bg-warningg">
+              @else
+              <tr>
+            @endif
             <td class="text-center">{{ ($items->currentPage() - 1) * $items->perPage() + $loop->iteration }}</td>
             <td>{{ $item->kode_barang }}</td>
             <td class="text-center">
@@ -85,28 +76,33 @@
             <td>{{ $item->stok }}</td>
             <td>{{ $item->min_stok }}</td>
             <td>{{ $item->max_stok }}</td>
-            {{-- <td>{{ $item->max_pengadaan }}</td> --}}
-            <td>{{ $item->harga_satuan }}</td>
-            <td>{{ $item->volume }}</td>
+            <td>{{ number_format($item->harga_satuan, 0, '', '.') }}</td>
+            <td class="text-capitalize">{{ $item->volume }}</td>
             <td>{{ $item->linkStatus->nama }}</td>
-            <td class="text-center">
-              {{-- <a href="/administrasi/stok/produk/{{ $item->id }}"
-                class="badge bg-primary text-decoration-none text-white">
-                detail
-              </a> --}}
-              <a href="/administrasi/stok/produk/{{ $item->id }}/edit"
-                class="badge bg-primary text-decoration-none text-white">
-                edit
-              </a>
-              <a href="/administrasi/stok/produk/{{ $item->id }}"
-                class="badge bg-primary text-decoration-none text-white">
-                nonaktifkan
-              </a>
+            <td>
+              <div class="d-flex flex-column">
+                <a href="/administrasi/stok/produk/{{ $item->id }}/edit" class="btn btn-sm btn-warning border w-75">
+                  <span class="iconify me-2" data-icon="ant-design:edit-filled"></span> edit
+                </a>
+
+                <form action="#" method="POST">
+                  @csrf
+                  <button type="submit"
+                    class="btn btn-sm mt-2 {{ $item->linkStatus->nama === 'active' ? 'btn-danger' : 'btn-success' }}">
+                    @if ($item->linkStatus->nama === 'active')
+                      <span class="iconify" data-icon="material-symbols:cancel-outline"></span>
+                    @else
+                      <span class="iconify" data-icon="akar-icons:double-check"></span>
+                    @endif
+                    {{ $item->linkStatus->nama === 'active' ? 'Nonaktifkan' : 'Aktifkan' }}
+                  </button>
+                </form>
+              </div>
             </td>
-          </tr>
-        @endforeach
-      </tbody>
-    </table>
-    {{ $items->links() }}
-  </div>
-@endsection
+            </tr>
+          @endforeach
+        </tbody>
+      </table>
+      {{ $items->links() }}
+    </div>
+  @endsection

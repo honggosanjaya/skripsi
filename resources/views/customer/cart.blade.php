@@ -17,7 +17,7 @@
       <thead>
         <th scope="col" class="text-center">Nama</th>
         <th scope="col" class="text-center">Kuantitas</th>
-        <th scope="col" class="text-center">Harga</th>
+        <th scope="col" class="text-center">Harga (Rp)</th>
       </thead>
       <tbody>
         @php
@@ -38,7 +38,7 @@
       </tbody>
       <tfoot>
         <td colspan="2" class="table-active">Sub-Total</td>
-        <td>Rp. {{ number_format($total, 0, '', '.') }}</td>
+        <td>{{ number_format($total, 0, '', '.') }}</td>
       </tfoot>
     </table>
 

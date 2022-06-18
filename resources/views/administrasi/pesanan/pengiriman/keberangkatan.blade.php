@@ -10,10 +10,11 @@
     <li class="breadcrumb-item active" aria-current="page">Detail Pengiriman</li>
   </ol>
 @endsection
+
 @section('main_content')
-  <div class="container mt-4">
-    <h1 class="fs-3">Detail Pengiriman</h1>
-    <div class="informasi-list">
+  <div class="px-5 pt-4">
+    <h1 class="fs-4 mb-4">Detail Pengiriman</h1>
+    <div class="informasi-list mb_big">
       <span><b>Nomor Invoice</b>{{ $order->linkInvoice->nomor_invoice ?? '-' }}</span>
       <span><b>Nama Customer</b>{{ $order->linkCustomer->nama }}</span>
       <span><b>Nama Pengirim</b>{{ $order->linkOrderTrack->linkStaffPengirim->nama ?? '-' }}</span>
@@ -31,27 +32,37 @@
     </div>
 
     @if ($order->linkOrderTrack->status == 21)
+      <hr>
+      <h1 class="fs-4 my-4">Atur Pengiriman</h1>
       <form class="form-submit" method="POST" action="/administrasi/pesanan/detail/{{ $order->id }}/dikirimkan">
         @csrf
-        <div class="my-3">
-          <label for="id_staff_pengirim" class="form-label">Nama Pengirim</label>
-          <select class="form-select" name="id_staff_pengirim">
-            @foreach ($stafs as $staf)
-              <option value="{{ $staf->id }}">{{ $staf->nama }}</option>
-            @endforeach
-          </select>
+        <div class="row">
+          <div class="col">
+            <div class="mb-3">
+              <label for="id_staff_pengirim" class="form-label">Nama Pengirim</label>
+              <select class="form-select" name="id_staff_pengirim">
+                @foreach ($stafs as $staf)
+                  <option value="{{ $staf->id }}">{{ $staf->nama }}</option>
+                @endforeach
+              </select>
+            </div>
+          </div>
+          <div class="col">
+            <div class="mb-3">
+              <label for="id_vehicle" class="form-label">Nama Kendaraan</label>
+              <select class="form-select" name="id_vehicle">
+                @foreach ($vehicles as $vehicle)
+                  <option value="{{ $vehicle->id }}">{{ $vehicle->nama }}</option>
+                @endforeach
+              </select>
+            </div>
+          </div>
         </div>
-
-        <div class="my-3">
-          <label for="id_vehicle" class="form-label">Nama Kendaraan</label>
-          <select class="form-select" name="id_vehicle">
-            @foreach ($vehicles as $vehicle)
-              <option value="{{ $vehicle->id }}">{{ $vehicle->nama }}</option>
-            @endforeach
-          </select>
+        <div class="row justify-content-end mt-4">
+          <div class="col-3 d-flex justify-content-end">
+            <button type="submit" class="btn btn-primary">Pesanan Dikirim</button>
+          </div>
         </div>
-
-        <button type="submit" class="btn btn-primary">Pesanan Dikirim</button>
       </form>
     @endif
 

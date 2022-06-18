@@ -1,27 +1,39 @@
 <header class="d-flex justify-content-end">
-  <a class="dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-    <div class="admin-wrapper">
-      {{-- user profile picture --}}
-      <img src="" class="profile_picture me-2">
-      {{-- active sign --}}
-      <div class="active_indicator"></div>
-      <div class="admin-name ms-2">
-        {{-- <h4 class="mb-0 fs-6">{{ auth()->user()->nama }}</h4>
-        @if (auth()->user()->role === '1')
-        <small>Admin</small>
-        @else
-        <small>Supervisor</small>
-        @endif --}}
+  @if (!empty($datadua['lihat_notif']))
+    <div class="alert_trip d-flex justify-content-center align-items-center flex-column me-3">
+      <i class="bi bi-bell-fill fs-3"></i>
+      <p class="mb-0 fw-bold">Trip</p>
+    </div>
 
+    <div class="alert_order d-flex justify-content-center align-items-center flex-column me-3">
+      <i class="bi bi-bell-fill fs-3"></i>
+      <p class="mb-0 fw-bold">Pesanan</p>
+    </div>
+
+    <div class="alert_retur d-flex justify-content-center align-items-center flex-column me-3">
+      <i class="bi bi-bell-fill fs-3"></i>
+      <p class="mb-0 fw-bold">Retur</p>
+    </div>
+  @endif
+
+  <a class="dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown"
+    aria-expanded="false">
+    <div class="admin-wrapper">
+      <img src="" class="profile_picture me-2">
+      <div class="active_indicator"></div>
+      <div class="ms-2">
+        <div class="admin-name fw-bold">
+          Nama Coba
+        </div>
+        <small>Administrasi</small>
       </div>
     </div>
   </a>
   <ul class="dropdown-menu p-3" aria-labelledby="navbarDropdown">
-    <a class="btn btn-warning w-100 mb-3 p-1" 
-    href="/{{ auth()->user()->linkStaff->linkStaffRole->nama }}/profil">
+    <a class="btn btn-warning w-100 mb-3 p-1" href="/{{ auth()->user()->linkStaff->linkStaffRole->nama }}/profil">
       <i class="bi bi-person fs-5"></i> Profil
     </a>
-    
+
     <form method="POST" action="{{ route('logout') }}">
       @csrf
       <button class="btn btn-danger d-block w-100">Log Out</button>

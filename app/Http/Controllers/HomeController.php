@@ -16,7 +16,7 @@ class HomeController extends Controller
     public function indexOwner()
     {
         $role='indexOwner';
-        return view('owner/dashboard',compact('role'));
+        return view('owner.dashboard',compact('role'));
     }
     public function indexSupervisor()
     {
@@ -47,9 +47,12 @@ class HomeController extends Controller
         Customer::with(['latestLinkTrip'])
             ->whereRaw('NOW() >= DATE_ADD(updated_at, INTERVAL + durasi_kunjungan DAY)')
             ->get();
+
         $notifikasi['retur'] = 
-        Retur::where('status','13')
-            ->with(['linkInvoice'])->get();
+         Retur::where('status','13')->select('no_retur','id_customer','id_staff_pengaju', 'created_at','status')        
+            ->groupBy('no_retur','id_customer','id_staff_pengaju','created_at','status')
+            ->with(['linkCustomer','linkStaffPengaju','linkStatus','linkInvoice'])
+            ->orderBy('no_retur','DESC')->get();
 
         $notifikasi['order_diajukan'] = 
         Order::whereHas('linkOrderTrack', function($q){
@@ -70,7 +73,10 @@ class HomeController extends Controller
             'jumlah_kendaraan' => $vehicle,
             'jumlah_customer' => $customer,
             'jumlah_customer_aktif' => $customer_aktif,
-          ]
+          ],
+          'notifikasi' => $notifikasi
+        ])->with('datadua', [
+          'lihat_notif' => true
         ]);
     }
     public function indexShipper()
