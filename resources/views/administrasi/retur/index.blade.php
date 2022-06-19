@@ -1,68 +1,49 @@
-<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet"/>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" />
 @extends('layouts/main')
 @push('CSS')
-<link href=" {{ mix('css/administrasi.css') }}" rel="stylesheet">
+  <link href=" {{ mix('css/administrasi.css') }}" rel="stylesheet">
 @endpush
 @section('breadcrumbs')
-<ol class="breadcrumb">
-  <li class="breadcrumb-item"><a href="/administrasi">Dashboard</a></li>
-  <li class="breadcrumb-item active" aria-current="page">Retur</li>
-</ol>
+  <ol class="breadcrumb">
+    <li class="breadcrumb-item"><a href="/administrasi">Dashboard</a></li>
+    <li class="breadcrumb-item active" aria-current="page">Retur</li>
+  </ol>
 @endsection
+
 @section('main_content')
-<div class="container">
-    <div class="row">
-      <div class="col-5">
-        {{-- <div class="mt-3 search-box">
-          <form method="GET" action="/administrasi/retur/cari">
-            <div class="input-group">
-              <input type="text" class="form-control" name="cari" placeholder="Cari Nomor Retur..."
-              value="{{ request('cari') }}">
-              <button type="submit" class="btn btn-primary">Cari</button>   
-            </div>
-            
-          </form>    
-          
-        </div> --}}
-      </div>
-      
-    </div>
-
-    <table class="table table-bordered mt-4" id="table">
-        <thead>
+  <div class="px-5 pt-4">
+    <table class="table table-hover table-sm mt-4" id="table">
+      <thead>
+        <tr>
+          <th scope="col" class="text-center">Nomor <br> Retur</th>
+          <th scope="col" class="text-center">Tanggal Retur</th>
+          <th scope="col" class="text-center">Nama Customer</th>
+          <th scope="col" class="text-center">Alamat</th>
+          <th scope="col" class="text-center">Pengirim</th>
+          <th scope="col" class="text-center">Status Retur</th>
+          <th scope="col" class="text-center">Action</th>
+        </tr>
+      </thead>
+      <tbody>
+        @foreach ($returs as $retur)
           <tr>
-            <th scope="col">Nomor Retur</th>
-            <th scope="col">Tanggal Retur</th>
-            <th scope="col">Nama Customer</th>
-            <th scope="col">Alamat</th>
-            <th scope="col">Pengirim</th>
-            <th scope="col">Status Retur</th>
-            <th scope="col">Action</th>      
+            <th scope="row" class="text-center">{{ $retur->no_retur }}</th>
+            <td>{{ date('d-m-Y', strtotime($retur->created_at)) }}</td>
+            <td>{{ $retur->linkCustomer->nama }}</td>
+            <td>{{ $retur->linkCustomer->alamat_utama . ' ' . $retur->linkCustomer->alamat_nomor }}</td>
+            <td>{{ $retur->linkStaffPengaju->nama }}</td>
+            <td class="text-capitalize">{{ $retur->linkStatus->nama }}</td>
+            <td>
+              <a href="/administrasi/retur/{{ $retur->no_retur }}" class="btn btn-primary"><span
+                  class="iconify fs-4 me-1" data-icon="fluent:apps-list-detail-24-filled"></span>Detail</a>
+            </td>
           </tr>
-        </thead>
-        <tbody>
-            @foreach($returs as $retur)
-                <tr>
-                    <td>{{ $retur->no_retur }}</td>
-                    <td>{{ date('d-m-Y', strtotime($retur->created_at)) }}</td>
-                    <td>{{ $retur->linkCustomer->nama }}</td>
-                    <td>{{ $retur->linkCustomer->alamat_utama . ' ' . $retur->linkCustomer->alamat_nomor }}</td>
-                    <td>{{ $retur->linkStaffPengaju->nama }}</td>
-                    <td>{{ $retur->linkStatus->nama }}</td>
-                    <td>
-                      <a href="/administrasi/retur/{{ $retur->no_retur }}" class="btn btn-primary">Detail</a>
-                  </td>
-                </tr>
-            @endforeach
-        </tbody>
-      </table>
-      
-      {{-- <div class="d-flex flex-row mt-4">
-       {{ $returs->links() }}
-      </div> --}}
-@push('JS')
-  <script src="{{ mix('js/administrasi.js') }}"></script>
-@endpush
-</div>
+        @endforeach
+      </tbody>
+    </table>
 
+    @push('JS')
+      <script src="{{ mix('js/administrasi.js') }}"></script>
+    @endpush
+  </div>
 @endsection

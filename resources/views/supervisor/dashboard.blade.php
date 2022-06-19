@@ -1,39 +1,27 @@
 @extends('layouts/main')
 
 @section('main_content')
-  @foreach ($customersPengajuanLimit as $customerPengajuanLimit)
-    <div class="alert alert-danger alert-dismissible fade show" role="alert">
-      Pengajuan limit pembelian dari
-      <a href="/supervisor/datacustomer/pengajuan/{{ $customerPengajuanLimit->id }}"
-        class="alert-link">{{ $customerPengajuanLimit->nama }}
-      </a>
-      <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-    </div>
-  @endforeach
+  <div class="limit_notif m-fadeOut p-3">
+    @foreach ($customersPengajuanLimit as $customerPengajuanLimit)
+      <div class="card_notif">
+        <a href="/supervisor/datacustomer/pengajuan/{{ $customerPengajuanLimit->id }}"
+          class="text-black text-decoration-none">
+          <p class="mb-0 fw-bold">Pengajuan Limit Pembelian</p>
+          <p class="mb-0">Pengajuan limit pembeian dari {{ $customerPengajuanLimit->nama }} </p>
+        </a>
+      </div>
+    @endforeach
+  </div>
 
-  <h1 class="fs-3">Ini dashboard supervisor</h1>
 
-  <p class="fw-bold">Produk Favorit Bulan Mei</p>
+  <script>
+    const dropdownLimit = document.querySelector(".alert_limit");
+    const notifLimit = document.querySelector(".limit_notif");
 
-  <table border="1" class="table table-bordered">
-    <thead>
-      <tr>
-        <th scope="col">Kode Barang</th>
-        <th scope="col">Nama Barang</th>
-        <th scope="col">Penjualan</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td>K001</td>
-        <td>Sapu</td>
-        <td>5000000</td>
-      </tr>
-      <tr>
-        <td>K002</td>
-        <td>Lidi</td>
-        <td>6000000</td>
-      </tr>
-    </tbody>
-  </table>
+    dropdownLimit.addEventListener("click", function() {
+      dropdownLimit.classList.toggle('active');
+      notifLimit.classList.toggle("m-fadeIn");
+      notifLimit.classList.toggle("m-fadeOut");
+    });
+  </script>
 @endsection

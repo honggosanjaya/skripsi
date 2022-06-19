@@ -19,78 +19,41 @@
     </div>
   @endif
 
-
-  <div class="container">
-    <div class="row">
-      <div class="col-5">
-        <div class="mt-3 search-box">
-          {{-- <form method="GET" action="/administrasi/pesanan/cari">
-            <div class="input-group">
-              <input type="text" class="form-control" name="cari" placeholder="Cari Pesanan..."
-                value="{{ request('cari') }}">
-              <button type="submit" class="btn btn-primary">Cari</button>
-            </div>
-          </form> --}}
-
-        </div>
-      </div>
-    </div>
-    {{-- <div class="row">
-      <div class="col-3">
-        <div class="mt-3 search-box">
-          <form method="GET" action="/administrasi/pesanan/filter">
-            <select class="form-select" name="status">
-              @foreach ($statuses as $status)               
-                <option {{  $status->id == request()->get('status') ? 'selected' : '' }} value="{{ $status->id }}">{{ $status->nama }}</option>
-              @endforeach
-            </select>            
-          </div>
-        </div>
-        <div class="col-3 mt-3">
-          <button type="submit" class="btn btn-primary"><i class="bi bi-eye p-1"></i>Lihat</button>
-        </div>
-      </form>
-    </div> --}}
-  </div>
-
-
-  <table class="table table-bordered mt-4" id="table">
-    <thead>
-      <tr>
-        <th scope="col">No</th>
-        <th scope="col">Nama Customer</th>
-        <th scope="col">Nama Sales</th>
-        <th scope="col">Nomor Invoice</th>
-        <th scope="col">Harga Total</th>
-        <th scope="col">Status Pesanan</th>
-        <th scope="col">Tanggal Dibuat</th>
-        <th scope="col">Action</th>
-      </tr>
-    </thead>
-    <tbody>
-
-      @foreach ($orders as $order)
+  <div class="px-5 pt-4">
+    <table class="table table-hover table-sm mt-4" id="table">
+      <thead>
         <tr>
-          <td>{{ $loop->iteration  }}</td>
-          <td>{{ $order->linkCustomer->nama  ?? null  }}</td>
-          <td>{{ $order->linkStaff->nama  ?? null  }}</td>
-          <td>{{ $order->linkInvoice->nomor_invoice ?? null }}</td>
-          <td>{{ $order->linkInvoice->harga_total ?? null }}</td>
-          <td>{{ $order->linkOrderTrack->linkStatus->nama ?? null }}</td>
-          <td>{{ date('d-m-Y', strtotime($order->created_at)) }}</td>
-          <td>
-            <a href="/administrasi/pesanan/detail/{{ $order->id }}" class="btn btn-primary">Detail</a>
-          </td>
+          <th scope="col" class="text-center">No</th>
+          <th scope="col" class="text-center">Nama Customer</th>
+          <th scope="col" class="text-center">Nama Sales</th>
+          <th scope="col" class="text-center">Nomor Invoice</th>
+          <th scope="col" class="text-center">Harga Total (Rp)</th>
+          <th scope="col" class="text-center">Status Pesanan</th>
+          <th scope="col" class="text-center">Tanggal Dibuat</th>
+          <th scope="col" class="text-center">Action</th>
         </tr>
-      @endforeach
+      </thead>
+      <tbody>
+        @foreach ($orders as $order)
+          <tr>
+            <th scope="row">{{ $loop->iteration }}</th>
+            <td>{{ $order->linkCustomer->nama ?? null }}</td>
+            <td>{{ $order->linkStaff->nama ?? null }}</td>
+            <td>{{ $order->linkInvoice->nomor_invoice ?? null }}</td>
+            <td>{{ $order->linkInvoice->harga_total ?? '-' }}</td>
+            <td class="text-capitalize">{{ $order->linkOrderTrack->linkStatus->nama ?? 'null' }}</td>
+            <td>{{ date('d-m-Y', strtotime($order->created_at)) }}</td>
+            <td>
+              <a href="/administrasi/pesanan/detail/{{ $order->id }}" class="btn btn-primary">
+                <span class="iconify fs-4 me-1" data-icon="fluent:apps-list-detail-24-filled"></span> Detail</a>
+            </td>
+          </tr>
+        @endforeach
 
-    </tbody>
-  </table>
-
-  {{-- <div class="d-flex flex-row mt-4">
-    {{ $orders->links() }}
-  </div> --}}
-@push('JS')
-  <script src="{{ mix('js/administrasi.js') }}"></script>
-@endpush
+      </tbody>
+    </table>
+  </div>
+  @push('JS')
+    <script src="{{ mix('js/administrasi.js') }}"></script>
+  @endpush
 @endsection

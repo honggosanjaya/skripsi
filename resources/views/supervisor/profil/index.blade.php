@@ -1,67 +1,40 @@
-<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet"/>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" />
 @extends('layouts/main')
 @push('CSS')
-<link href=" {{ mix('css/supervisor.css') }}" rel="stylesheet">
+  <link href=" {{ mix('css/supervisor.css') }}" rel="stylesheet">
 @endpush
 @section('breadcrumbs')
-<ol class="breadcrumb">
-  <li class="breadcrumb-item"><a href="/supervisor">Dashboard</a></li>
-  <li class="breadcrumb-item active" aria-current="page">Profil</li>
-</ol>
+  <ol class="breadcrumb">
+    <li class="breadcrumb-item"><a href="/supervisor">Dashboard</a></li>
+    <li class="breadcrumb-item active" aria-current="page">Profil</li>
+  </ol>
 @endsection
+
 @section('main_content')
+  <div class="px-5 pt-4">
+    <div class="row justify-content-center">
+      <div class="col-8">
+        @if ($data->foto_profil)
+          <img src="{{ asset('storage/staff/' . $data->foto_profil) }}" class="profil_picture">
+        @else
+          <img class="profil_picture" src="{{ asset('images/default_fotoprofil.png') }}">
+        @endif
 
-<div class="container">
-    <div class="row my-4">
-        <div class="col-3">
-            <h3>Profil {{ $data->linkStaffRole->nama }}</h3>
-        </div>        
-    </div>
-    <div class="row my-4">
-        <div class="col-3">
-            <h5>Nama :</h5>
+        <div class="informasi-list mb_big">
+          <span><b>Nama</b>{{ $data->nama }}</span>
+          <span><b>Email</b>{{ $data->email }}</span>
+          <span><b>Role</b>{{ $data->linkStaffRole->nama }}</span>
+          <span><b>No. Telepon</b>{{ $data->telepon }}</span>
         </div>
-        <div class="col-5">
-            {{ $data->nama }}
-        </div>
-    </div>
-    <div class="row my-4">
-        <div class="col-3">
-            <h5>Email :</h5>
-        </div>
-        <div class="col-5">
-            {{ $data->email }}
-        </div>
-    </div>
-    <div class="row my-4">
-        <div class="col-3">
-            <h5>Posisi :</h5>
-        </div>
-        <div class="col-5">
-            {{ $data->linkStaffRole->nama }}
-        </div>
-    </div>
-    <div class="row my-4">
-        <div class="col-3">
-           <h5>Nomor Telepon :</h5>
-        </div>
-        <div class="col-5">
-            {{ $data->telepon }}
-        </div>
-    </div>
-    <div class="row my-4">
-        <div class="col-3">
-            <h5>Foto Profil :</h5>
-        </div>
-        <div class="col-5">
-            <img src="{{ asset('storage/staff/'.$data->foto_profil) }}"
-            class="rounded" width="250px" height="250px">
-        </div>
-    </div>
-    
-    <a class="btn btn-warning mt-4" href="/supervisor/profil/ubahpassword">
-        Ubah Password
-    </a>
-</div>
 
+        <div class="row justify-content-center mt-5">
+          <div class="col-6">
+            <a class="btn btn-outline-primary mt-4 w-100" href="/supervisor/profil/ubahpassword">
+              Ubah Password
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
 @endsection

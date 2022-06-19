@@ -1,31 +1,24 @@
-<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet"/>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" />
 @extends('layouts/main')
 @push('CSS')
-<link href=" {{ mix('css/supervisor.css') }}" rel="stylesheet">
+  <link href=" {{ mix('css/supervisor.css') }}" rel="stylesheet">
 @endpush
 @section('breadcrumbs')
-<ol class="breadcrumb">
-  <li class="breadcrumb-item"><a href="/supervisor">Dashboard</a></li>
-  <li class="breadcrumb-item"><a href="/supervisor/wilayah">Wilayah</a></li>
-  <li class="breadcrumb-item active" aria-current="page">Lihat Wilayah</li>
-</ol>
+  <ol class="breadcrumb">
+    <li class="breadcrumb-item"><a href="/supervisor">Dashboard</a></li>
+    <li class="breadcrumb-item"><a href="/supervisor/wilayah">Wilayah</a></li>
+    <li class="breadcrumb-item active" aria-current="page">Lihat Wilayah</li>
+  </ol>
 @endsection
+
 @section('main_content')
-
-<div class="container">
-
-    <p class="text-center fw-bold text-primary fs-2">Pembagian Wilayah</p>
-<div>
-@foreach($parentCategories as $category)
- 
-  <h3># {{$category->nama}}</h3>
-
-  @if(count($category->subcategory))
-    @include('supervisor/wilayah.subWilayahTree',['subcategories' => $category->subcategory])
-  @endif
- 
-@endforeach
-</div>
-</div>
-
+  <div class="pt-4 px-5">
+    <h1 class="fw-bold fs-3">Pembagian Wilayah</h1>
+    @foreach ($parentCategories as $category)
+      <h2 class="fs-5 fw-bold"># {{ $category->nama }}</h2>
+      @if (count($category->subcategory))
+        @include('supervisor.wilayah.subWilayahTree', ['subcategories' => $category->subcategory])
+      @endif
+    @endforeach
+  </div>
 @endsection

@@ -38,7 +38,7 @@ class ReportController extends Controller
             $q->whereIn('status', [23,24]);
         })->with(['linkOrderTrack.linkStatus','linkInvoice', 'linkStaff', 'linkCustomer.linkCustomerType']);
         if($request->salesman??null){
-            $data = $data->whereHas('linkCustomer',function($q) use($request){
+            $data = $data->whereHas('linkStaff',function($q) use($request){
                 $q->where('nama', $request->salesman);
             });
         }
