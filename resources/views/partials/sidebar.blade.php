@@ -25,7 +25,7 @@
       <ul class="p-0">
         <li class="mb-3">
           <a class="{{ Request::is('administrasi/datacustomer*') ? 'active' : '' }}" href="/administrasi/datacustomer">
-            <i class="bi bi-people-fill me-2"></i><span>Data Customer</span>
+            <i class="bi bi-people-fill me-2"></i><span>Limit Pembelian</span>
           </a>
         </li>
         <li class="mb-3">
