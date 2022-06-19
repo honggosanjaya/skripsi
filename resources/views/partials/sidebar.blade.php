@@ -12,7 +12,7 @@
     <h1 class="mb-3 fs-6">Dashboard</h1>
     <ul class="p-0">
       <li class="mb-3">
-        <a class="{{ Request::is('administrasi') ? 'active' : '' }}"
+        <a class="{{ Request::is('administrasi') || Request::is('supervisor') || Request::is('owner') ? 'active' : '' }}"
           href="/{{ auth()->user()->linkStaff->linkStaffRole->nama }}">
           <i class="bi bi-speedometer2 me-2"></i><span>Dashboard</span>
         </a>

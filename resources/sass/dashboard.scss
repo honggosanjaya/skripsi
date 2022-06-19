@@ -311,3 +311,71 @@ table tbody th {
 .swal2-title {
     font-size: 1.3rem !important;
 }
+
+.retur_notif,
+.order_notif,
+.trip_notif,
+.limit_notif {
+    width: 350px;
+    border-radius: 10px;
+    position: absolute;
+    top: -1.5rem;
+    right: 0px;
+    background-color: #fff;
+    box-shadow: rgba(0, 0, 0, 0.15) 0px 5px 15px 0px;
+}
+
+.limit_notif {
+    top: 10px !important;
+}
+
+.alert_retur,
+.alert_order,
+.alert_trip,
+.alert_limit {
+    &.active {
+        i,
+        p {
+            color: red;
+        }
+    }
+}
+
+.m-fadeOut {
+    visibility: hidden;
+    opacity: 0;
+    transition: visibility 0s 500ms, opacity 500ms linear;
+}
+
+.m-fadeIn {
+    visibility: visible;
+    opacity: 1;
+    transition: opacity 500ms linear;
+}
+
+.card_notif {
+    border: 1px solid lightgray;
+    padding: 0.7rem;
+    margin-top: 1rem;
+    &:first-child {
+        margin-top: 0;
+    }
+}
+
+.sidebar {
+    -ms-overflow-style: none; /* Internet Explorer 10+ */
+    scrollbar-width: none; /* Firefox */
+    &::-webkit-scrollbar {
+        display: none; /* Safari and Chrome */
+    }
+}
+
+.profil_picture {
+    width: 200px;
+    height: 200px;
+    border-radius: 50%;
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    margin-bottom: 1.5rem;
+}

@@ -16,6 +16,13 @@
     </div>
   @endif
 
+  @if (!empty($datadua['lihat_notif_spv']))
+    <div class="alert_limit d-flex justify-content-center align-items-center flex-column me-3">
+      <i class="bi bi-bell-fill fs-3"></i>
+      <p class="mb-0 fw-bold">Limit Pembelian</p>
+    </div>
+  @endif
+
   <a class="dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown"
     aria-expanded="false">
     <div class="admin-wrapper">
@@ -30,13 +37,14 @@
     </div>
   </a>
   <ul class="dropdown-menu p-3" aria-labelledby="navbarDropdown">
-    <a class="btn btn-warning w-100 mb-3 p-1" href="/{{ auth()->user()->linkStaff->linkStaffRole->nama }}/profil">
-      <i class="bi bi-person fs-5"></i> Profil
+    <a class="btn btn-success w-100 mb-3 p-1" href="/{{ auth()->user()->linkStaff->linkStaffRole->nama }}/profil">
+      <i class="bi bi-person fs-5 me-1"></i> Profil
     </a>
 
     <form method="POST" action="{{ route('logout') }}">
       @csrf
-      <button class="btn btn-danger d-block w-100">Log Out</button>
+      <button class="btn btn-danger d-block w-100"><span class="iconify fs-4 me-1"
+          data-icon="ic:round-logout"></span>Log Out</button>
     </form>
 
     {{-- <a href="/dashboard/profil/ubahpasswordlama/{{ auth()->user()->id }}" class="btn btn-primary d-block w-100 mt-3">Ubah Password</a>

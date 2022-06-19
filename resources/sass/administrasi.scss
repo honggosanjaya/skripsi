@@ -150,50 +150,6 @@
     }
 }
 
-.retur_notif,
-.order_notif,
-.trip_notif {
-    width: 350px;
-    border-radius: 10px;
-    position: absolute;
-    top: -1.5rem;
-    right: 0px;
-    background-color: #fff;
-    box-shadow: rgba(0, 0, 0, 0.15) 0px 5px 15px 0px;
-}
-
-.alert_retur,
-.alert_order,
-.alert_trip {
-    &.active {
-        i,
-        p {
-            color: red;
-        }
-    }
-}
-
-.m-fadeOut {
-    visibility: hidden;
-    opacity: 0;
-    transition: visibility 0s 500ms, opacity 500ms linear;
-}
-
-.m-fadeIn {
-    visibility: visible;
-    opacity: 1;
-    transition: opacity 500ms linear;
-}
-
-.card_notif {
-    border: 1px solid lightgray;
-    padding: 0.7rem;
-    margin-top: 1rem;
-    &:first-child {
-        margin-top: 0;
-    }
-}
-
 .btn_add-relative {
     position: relative;
     top: 4.5rem;

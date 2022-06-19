@@ -1,4 +1,4 @@
-a@extends('layouts/main')
+@extends('layouts/main')
 @section('breadcrumbs')
   <ol class="breadcrumb">
     <li class="breadcrumb-item"><a href="/administrasi">Dashboard</a></li>
@@ -6,6 +6,7 @@ a@extends('layouts/main')
     <li class="breadcrumb-item active" aria-current="page">Riwayat Pengadaan</li>
   </ol>
 @endsection
+
 @section('main_content')
   <div class="container">
 

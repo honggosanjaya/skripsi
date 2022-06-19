@@ -26,7 +26,9 @@ class HomeController extends Controller
         return view('supervisor.dashboard',[
           'customersPengajuanLimit' => $customersPengajuanLimit,
           'role' => $role
-      ]);
+        ])->with('datadua', [
+          'lihat_notif_spv' => true
+        ]);
     }
     public function indexSalesman()
     {
