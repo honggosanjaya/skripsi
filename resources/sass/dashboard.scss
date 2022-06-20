@@ -26,11 +26,10 @@ textarea {
 }
 
 .logo {
-  font-family: "Caveat", cursive;
-  font-size: 2rem;
-  margin-bottom: 0;
+    font-family: "Caveat", cursive;
+    font-size: 2rem;
+    margin-bottom: 0;
 }
-
 
 .dropdown-toggle {
     color: #000;
@@ -53,7 +52,7 @@ textarea {
     transition: width 300ms;
     overflow-y: auto;
     overflow-x: hidden;
-    z-index: 9999;
+    z-index: 999;
 
     .sidebar-brand {
         display: flex;
@@ -144,7 +143,7 @@ header {
     align-items: center;
     padding: 1rem 1.6rem;
     left: 250px;
-    z-index: 999;
+    z-index: 998;
     transition: left 300ms;
     position: sticky;
     width: 100%;
@@ -185,9 +184,11 @@ main {
     min-height: calc(100vh - 90px);
     position: relative;
 }
+
 .breadcrumbs-container {
     position: absolute;
     top: -53px;
+    z-index: 999;
 }
 
 @media only screen and (max-width: 768px) {
@@ -480,8 +481,8 @@ table tbody th {
     }
 }
 
-// @media screen and (max-width: 768px) {
-//     .top_reponsive {
-
-//     }
-// }
+@media screen and (max-width: 568px) {
+    .breadcrumbs-container {
+        top: -40px;
+    }
+}
