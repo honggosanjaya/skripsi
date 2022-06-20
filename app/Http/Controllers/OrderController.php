@@ -130,6 +130,7 @@ class OrderController extends Controller
 
         OrderTrack::where('id_order', $id_order)->update([
           'waktu_diteruskan' => now(),
+          'status' => 20,
           'estimasi_waktu_pengiriman' => $estimasiWaktuPengiriman,
         ]);
         Customer::find($id_customer) -> update([
@@ -244,7 +245,11 @@ class OrderController extends Controller
   }
 
   public function dataKodeCustomer($id){
-    $order = Order::find($id);
+    $order = Order::whereHas('linkOrderTrack',function($q) {
+      $q->where('waktu_diteruskan', null);
+    })->with(['linkOrderTrack'])
+    ->where('id', $id)->first();
+
     $order_item = OrderItem::where('id_order', $id)->with(['linkItem'])->get();
 
     if($order!==null){
@@ -464,7 +469,7 @@ class OrderController extends Controller
             ->orWhereHas('linkOrderTrack',function($q) {
               $q->where('status','>', 22)->whereDate('waktu_sampai',now());
             });
-    });
+    })->orderBy('id','DESC');
 
     if($request->nama_customer != null){
       $data->where(function ($query) use($request){

@@ -149,3 +149,17 @@
             0 0 80px rgba(255, 255, 255, 0.2), 0 0 85px rgba(255, 255, 255, 0.1);
     }
 }
+
+.btn_add-relative {
+    position: relative;
+    top: 4.5rem;
+    z-index: 99;
+}
+
+.bg-dangerr {
+    background-color: rgb(240, 161, 161);
+}
+
+.bg-warningg {
+    background-color: rgb(253, 222, 153);
+}

@@ -43,9 +43,9 @@ const HitungStok = ({ historyItem, checkifexist, handleValueChange, handleTambah
       <h1 className='fs-5 fw-bold'>History Item</h1>
       {newHistoryItem.length == 0 && <small className="text-danger text-center d-block">Tidak Ada Riwayat Pembelian</small>}
       {newHistoryItem.map((item, index) => (
-        <div className={`card_historyItem position-relative p-3 ${(item.link_item.status == 11 || item.link_item.stok == 0) ? 'inactive_product' : ''}`} key={index}>
+        <div className={`card_historyItem position-relative p-3 ${(item.link_item.status == 11 || item.link_item.stok == 0 || item.link_item.stok <= item.link_item.min_stok) ? 'inactive_product' : ''}`} key={index}>
           {item.link_item.stok < 10 && item.link_item.stok > 0 && item.link_item.status != 11 && <span className="badge badge_stok">Stok Menipis</span>}
-          {(item.link_item.status == 11 || item.link_item.stok == 0) &&
+          {(item.link_item.status == 11 || item.link_item.stok == 0 || item.link_item.stok <= item.link_item.min_stok) &&
             <div className='inactive_sign'>
               <p className='mb-0'>Tidak Tersedia</p>
             </div>

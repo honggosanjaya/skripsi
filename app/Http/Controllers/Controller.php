@@ -28,13 +28,14 @@ class Controller extends BaseController
     use AuthorizesRequests, DispatchesJobs, ValidatesRequests;
 
     public function test(Request $request){
-      $all=Customer::get();
-      foreach ($all as $one) {
-        $date=Trip::where('id_customer',$one->id)->orderBy('created_at','DESC')->first()->created_at??null;
-        Customer::find($one->id)->update([
-          'updated_at' => $date??null
-        ]);
-      }
+      dd(app('url'));
+      // $all=Customer::get();
+      // foreach ($all as $one) {
+      //   $date=Trip::where('id_customer',$one->id)->orderBy('created_at','DESC')->first()->created_at??null;
+      //   Customer::find($one->id)->update([
+      //     'updated_at' => $date??null
+      //   ]);
+      // }
            
     }
 }

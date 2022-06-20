@@ -32,9 +32,9 @@ const ProductSales = ({ listItems, handleTambahJumlah, checkifexist, handleValue
   return (
     <div className="productCard_wrapper">
       {(isHandleKodeCust || shouldKeepOrder) && orderItems.map((item) => (
-        <div className={`card product_card ${(item.status == 11 || item.stok == 0) ? 'inactive_product' : ''}`} key={item.id}>
+        <div className={`card product_card ${(item.status == 11 || item.stok == 0 || item.stok <= item.min_stok) ? 'inactive_product' : ''}`} key={item.id}>
           {item.stok < 10 && item.stok > 0 && item.status != 11 && <span className="badge badge_stok">Stok Menipis</span>}
-          {(item.status == 11 || item.stok == 0) &&
+          {(item.status == 11 || item.stok == 0 || item.stok <= item.min_stok) &&
             <div className='inactive_sign'>
               <p className='mb-0'>Tidak Tersedia</p>
             </div>}
@@ -80,9 +80,9 @@ const ProductSales = ({ listItems, handleTambahJumlah, checkifexist, handleValue
       ))}
 
       {(!isHandleKodeCust && !shouldKeepOrder) && listItems.map((item) => (
-        <div className={`card product_card ${(item.status == 11 || item.stok == 0) ? 'inactive_product' : ''}`} key={item.id}>
+        <div className={`card product_card ${(item.status == 11 || item.stok == 0 || item.stok <= item.min_stok) ? 'inactive_product' : ''}`} key={item.id}>
           {item.stok < 10 && item.stok > 0 && item.status != 11 && <span className="badge badge_stok">Stok Menipis</span>}
-          {(item.status == 11 || item.stok == 0) &&
+          {(item.status == 11 || item.stok == 0 || item.stok <= item.min_stok) &&
             <div className='inactive_sign'>
               <p className='mb-0'>Tidak Tersedia</p>
             </div>}

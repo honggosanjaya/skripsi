@@ -1,41 +1,42 @@
 @extends('layouts.main')
 @section('breadcrumbs')
-<ol class="breadcrumb">
-  <li class="breadcrumb-item"><a href="/administrasi">Dashboard</a></li>
-  <li class="breadcrumb-item"><a href="/administrasi/stok">Stok</a></li>
-  <li class="breadcrumb-item"><a href="/administrasi/stok/opname">Stok Opname</a></li>
-  <li class="breadcrumb-item active" aria-current="page">Cart</li>
-</ol>
+  <ol class="breadcrumb">
+    <li class="breadcrumb-item"><a href="/administrasi">Dashboard</a></li>
+    <li class="breadcrumb-item"><a href="/administrasi/stok">Stok</a></li>
+    <li class="breadcrumb-item"><a href="/administrasi/stok/opname">Stok Opname</a></li>
+    <li class="breadcrumb-item active" aria-current="page">Cart</li>
+  </ol>
 @endsection
+
 @section('main_content')
   @if ($message = Session::get('success'))
     <p class="text-success">{{ $message }}</p>
   @endif
 
-  <table class="table table-hover table-sm">
-    <thead>
-      <tr>
-        <th scope="col">Kode Barang</th>
-        <th scope="col">Nama</th>
-        <th scope="col">Jumlah</th>
-        <th scope="col">Jumlah setelah berubah</th>
-        <th scope="col">perubahan</th>
-        <th scope="col">keterangan</th>
-        {{-- <th scope="col">action</th> --}}
-      </tr>
-    </thead>
-    <tbody>
-
-      @foreach ($cartItems as $item)
+  <div class="px-5 pt-4">
+    <table class="table table-hover table-sm">
+      <thead>
         <tr>
-          {{-- <form action="{{ '/administrasi/stok/opname/update-final?route=opname' }}" method="POST" enctype="multipart/form-data"> --}}
+          <th scope="col">Kode Barang</th>
+          <th scope="col">Nama</th>
+          <th scope="col">Jumlah</th>
+          <th scope="col">Perubahan</th>
+          <th scope="col">Jumlah Setelah<br>Perubahan</th>
+          <th scope="col">Keterangan</th>
+        </tr>
+      </thead>
+      <tbody>
+
+        @foreach ($cartItems as $item)
+          <tr>
+            {{-- <form action="{{ '/administrasi/stok/opname/update-final?route=opname' }}" method="POST" enctype="multipart/form-data"> --}}
             {{-- @csrf --}}
             <td>{{ $item->attributes->kode_barang }}</td>
             <td>{{ $item->name }}</td>
             <td>{{ $item->quantity }}</td>
-            <td>{{ $item->quantity + $item->attributes->jumlah}}</td>
-            <td>{{ $item->attributes->jumlah}}</td>
-            <td>{{ $item->attributes->keterangan}}</td>
+            <td>{{ $item->quantity + $item->attributes->jumlah }}</td>
+            <td>{{ $item->attributes->jumlah }}</td>
+            <td>{{ $item->attributes->keterangan }}</td>
 
             {{-- <td>
               <input type="hidden" value="{{ $item->id }}" name="id">
@@ -46,30 +47,32 @@
                 value="{{ $item->attributes->keterangan??null }}"></td>
 
             <td><button type="submit">Submit</button></td> --}}
-          </form>
+            {{-- </form> --}}
 
-          {{-- <td>
+            {{-- <td>
             <form action="{{ route('cart.remove') }}" method="POST">
               @csrf
               <input type="hidden" value="{{ $item->id }}" name="id">
               <button class="btn btn-sm text-danger">x</button>
             </form>
           </td> --}}
-        </tr>
-      @endforeach
-    </tbody>
-  </table>
+          </tr>
+        @endforeach
+      </tbody>
+    </table>
+    @php
+      $totalAkhir = null;
+      foreach ($cartItems as $item) {
+          $totalAkhir += $item->attributes->total_harga;
+      }
+    @endphp
 
-
-  @php
-  $totalAkhir = null;
-  foreach ($cartItems as $item) {
-      $totalAkhir += $item->attributes->total_harga;
-  }
-  @endphp
-
-  <a type="button" class="btn btn-primary" href="/administrasi/stok/opname/tambahopname?route=opname">Submit</button>
-  <a type="button" class="btn btn-primary" href="/administrasi/stok/opname/clear?route=opname">Remove All Cart</button>
-
-    
+    <div class="row justify-content-end mt-4">
+      <div class="col d-flex justify-content-end">
+        <a type="button" class="btn btn-danger me-3" href="/administrasi/stok/opname/clear?route=opname">Remove All
+          Cart</a>
+        <a type="button" class="btn btn-primary" href="/administrasi/stok/opname/tambahopname?route=opname">Submit</a>
+      </div>
+    </div>
+  </div>
 @endsection

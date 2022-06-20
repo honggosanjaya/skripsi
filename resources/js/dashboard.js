@@ -20,3 +20,16 @@ $(document).ready(function () {
   })
 });
 
+
+function myFunction(x) {
+  if (x.matches) { // If media query matches
+    document.getElementById("nav-toggle").checked = true;
+  }
+}
+
+var x = window.matchMedia("(max-width: 1000px)")
+myFunction(x)
+x.addListener(myFunction)
+
+
+

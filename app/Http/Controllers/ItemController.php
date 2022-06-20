@@ -50,7 +50,7 @@ class ItemController extends Controller
 
   public function getListHistoryProductAPI($id){
     $history = History::where('id_customer',$id)->with('linkItem')->get();
-    $customer = Customer::where('id',$id)->get();
+    $customer = Customer::where('id',$id)->with('linkCustomerType')->first();
 
     $orderItemUnconfirmed=OrderItem::
     whereHas('linkOrder',function($q) {
@@ -67,9 +67,11 @@ class ItemController extends Controller
 
     return response()->json([
       "status" => "success",
-      "data" => $history,
-      "orderRealTime" => $orderItemUnconfirmed,
-      'customer' => $customer
+      "data" => [
+        "history" => $history,
+        "customer" => $customer
+      ],
+      "orderRealTime" => $orderItemUnconfirmed
     ], 200);
   }
 

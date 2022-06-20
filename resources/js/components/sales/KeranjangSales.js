@@ -329,7 +329,7 @@ const KeranjangSales = ({ location }) => {
   return (
     <main className="page_main">
       <HeaderSales title='Keranjang' toBack={goback} />
-      {limitPembelian != 0 && <div className="alert alert-secondary mb-0" role="alert">
+      {limitPembelian != 0 && <div className="alert alert-info mb-0" role="alert">
         <p className="mb-0 text-center"><b>Limit Pembelian :</b> {limitPembelian ? limitPembelian : "Tanpa Limit"}</p>
       </div>}
       <div className="page_container pt-4">
@@ -417,7 +417,7 @@ const KeranjangSales = ({ location }) => {
                 value={kodeEvent}
                 onChange={(e) => setKodeEvent(e.target.value)}
               />
-              <button className="btn btn-warning" onClick={handleKodeEvent}>Gunakan</button>
+              <button className="btn btn-success" onClick={handleKodeEvent}>Gunakan</button>
             </div>
             {errorKodeEvent && <small className='text-danger d-block'>{errorKodeEvent}</small>}
             {hargaPromo > 0 && <small className='text-success d-block'>Eksta potongan {hargaPromo}</small>}

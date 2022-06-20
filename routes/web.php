@@ -59,7 +59,7 @@ Route::prefix('owner')->middleware('owner')->group(function() {
 
 // ============ SUPERVISOR ==============
 Route::prefix('supervisor')->middleware('supervisor')->group(function() {
-  Route::get('/', [HomeController::class, 'indexSupervisor']);
+  Route::get('/', [ReportController::class, 'index']);
 
   Route::get('/profil', [HomeController::class, 'lihatProfil']);
   Route::get('/profil/ubahpassword', [HomeController::class, 'lihatPassword']);

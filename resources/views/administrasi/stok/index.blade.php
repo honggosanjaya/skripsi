@@ -1,103 +1,85 @@
 @extends('layouts/main')
 @section('breadcrumbs')
-<ol class="breadcrumb">
-  <li class="breadcrumb-item"><a href="/administrasi">Dashboard</a></li>
-  <li class="breadcrumb-item active" aria-current="page">Stok</li>
-</ol>
+  <ol class="breadcrumb">
+    <li class="breadcrumb-item"><a href="/administrasi">Dashboard</a></li>
+    <li class="breadcrumb-item active" aria-current="page">Stok</li>
+  </ol>
 @endsection
+
 @section('main_content')
-  
-  <div class="container">
+  <div class="px-5 pt-4">
+    <h1 class="fs-4 fw-bold mb-4">Stok Marketing</h1>
 
-    
+    <a href="/administrasi/stok/produk" class="btn btn-primary me-2"><span class="iconify me-2 fs-4"
+        data-icon="icon-park-outline:ad-product"></span>List Produk</a>
+    <a href="/administrasi/stok/pengadaan?route=pengadaan" class="btn btn-success me-2"><span class="iconify me-2 fs-4"
+        data-icon="material-symbols:add-shopping-cart"></span>Pengadaan</a>
+    <a href="/administrasi/stok/opname?route=opname" class="btn btn-success me-2"><span class="iconify fs-4 me-2"
+        data-icon="healthicons:rdt-result-out-stock-outline"></span>Stok Opname</a>
+    <a href="/administrasi/stok/riwayat" class="btn btn-info me-2"><span class="iconify me-2 fs-4"
+        data-icon="ant-design:history-outlined"></span>Riwayat Pengadaan</a>
+    <a href="/administrasi/stok/opname/riwayat" class="btn btn-info me-2"><span class="iconify me-2 fs-4"
+        data-icon="ant-design:history-outlined"></span>Riwayat Stok Opname</a>
 
-    <div class="row mt-3">
-      <div class="col-6 d-flex flex-row justify-content-start">
-        <div class="row">
-          <div class="col-6">
-            <h5>Stok Marketing</h5>
-          </div>
-          <div class="col-6">
-            <a href="/administrasi/stok/produk" class="btn btn-primary">List Produk</a>
-          </div>
-        </div>
-        
-        
-      </div>
-      <div class="col-6 ml-auto">
-        <a href="/administrasi/stok/riwayat" class="btn btn-primary">Riwayat Pengadaan</a>
-        <a href="/administrasi/stok/pengadaan?route=pengadaan" class="btn btn-primary">Pengadaan</a>
-        <a href="/administrasi/stok/opname?route=opname" class="btn btn-primary">Stok Opname</a>
-        <a href="/administrasi/stok/opname/riwayat" class="btn btn-primary mt-1">Riwayat Stok Opname</a>
-      </div>
-    </div>
-
-    <div class="row my-3">
-      <div class="col-5">
-        <div class="mt-3 search-box">
-          <form method="GET" action="/administrasi/stok/cari">
-            <div class="input-group">
-              <input type="text" class="form-control" name="cari" placeholder="Cari Stok..."
+    <div class="row justify-content-end mt-4">
+      <div class="col-4 d-flex justify-content-end">
+        <form method="GET" action="/administrasi/stok/cari">
+          <div class="input-group">
+            <input type="text" class="form-control" name="cari" placeholder="Cari Stok..."
               value="{{ request('cari') }}">
-              <button type="submit" class="btn btn-primary">Cari</button>   
-            </div>
-            
-          </form>    
-          
-        </div>
+            <button type="submit" class="btn btn-primary">Cari</button>
+          </div>
+        </form>
       </div>
-      
     </div>
 
-    <table class="table">
-      <thead>
-        <tr>
-          <th scope="col">No</th>
-          <th scope="col">Kode Stok</th>
-          <th scope="col">Nama</th>
-          <th scope="col">Jumlah</th>
-          <th scope="col">Satuan</th> 
-          <th scope="col">Stok Minimal</th>
-          <th scope="col">Stok Maksimal</th>
-          <th scope="col">Pengadaan Maksimal</th>
-          <th scope="col">Harga</th>
-          <th scope="col">Status</th>     
-        </tr>
-      </thead>
-      <tbody>
-        @foreach ($items as $item)
-        @php
-          $stock25=(($item->max_stok-$item->min_stok)*25/100)+$item->min_stok;
-        @endphp
-        @if ($item->stok<$item->min_stok)
-          <tr class="bg-danger">
-        @elseif($item->stok<$stock25)
-          <tr class="bg-warning">
-        @else
+    <div class="table-responsive">
+      <table class="table teble-hover table-sm mt-4">
+        <thead>
           <tr>
-        @endif
-          <th scope="row">{{ ($items->currentPage() - 1) * $items->perPage() + $loop->iteration }}</th>
-          <td>{{ $item->kode_barang }}</td>
-          <td>{{ $item->nama }}</td>
-          <td>{{ $item->stok }}</td>
-          <td>{{ $item->satuan }}</td>
-          <td>{{ $item->min_stok }}</td>
-          <td>{{ $item->max_stok }}</td>
-          <td>{{ $item->max_pengadaan }}</td>
-          <td>{{ $item->harga_satuan }}</td>
-          <td>{{ $item->linkStatus->nama }}</td>
-          
-        </tr>
-        @endforeach
-      </tbody>
-    </table>
+            <th scope="col" class="text-center">No</th>
+            <th scope="col" class="text-center">Kode<br>Barang</th>
+            <th scope="col" class="text-center">Nama Barang</th>
+            <th scope="col" class="text-center">Jumlah</th>
+            <th scope="col" class="text-center">Satuan</th>
+            <th scope="col" class="text-center">Stok<br>Min</th>
+            <th scope="col" class="text-center">Stok<br>Maks</th>
+            <th scope="col" class="text-center">Pengadaan<br>Maks</th>
+            <th scope="col" class="text-center">Harga (Rp)</th>
+            <th scope="col" class="text-center">Status</th>
+          </tr>
+        </thead>
+        <tbody>
+          @foreach ($items as $item)
+            @php
+              $stock25 = (($item->max_stok - $item->min_stok) * 25) / 100 + $item->min_stok;
+            @endphp
+            @if ($item->stok < $item->min_stok)
+              <tr class="bg-danger">
+              @elseif($item->stok < $stock25)
+              <tr class="bg-warning">
+              @else
+              <tr>
+            @endif
+            <th scope="row" class="text-center">
+              {{ ($items->currentPage() - 1) * $items->perPage() + $loop->iteration }}</th>
+            <td class="text-center">{{ $item->kode_barang }}</td>
+            <td>{{ $item->nama }}</td>
+            <td class="text-center">{{ $item->stok }}</td>
+            <td class="text-center">{{ $item->satuan }}</td>
+            <td class="text-center">{{ $item->min_stok }}</td>
+            <td class="text-center">{{ $item->max_stok }}</td>
+            <td class="text-center">{{ $item->max_pengadaan }}</td>
+            <td>{{ number_format($item->harga_satuan, 0, '', '.') }}</td>
+            <td class="text-capitalize text-center">{{ $item->linkStatus->nama }}</td>
+            </tr>
+          @endforeach
+        </tbody>
+      </table>
+    </div>
 
     <div class="d-flex flex-row mt-4">
       {{ $items->links() }}
     </div>
   </div>
-  
-  
-
-  
 @endsection
