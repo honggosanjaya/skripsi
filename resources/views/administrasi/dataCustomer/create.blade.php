@@ -13,7 +13,7 @@
     <form method="POST" action="/administrasi/datacustomer/tambahcustomer" enctype="multipart/form-data">
       @csrf
       <div class="mb-3">
-        <label for="nama" class="form-label">Nama</label>
+        <label for="nama" class="form-label">Nama <span class="text-danger">*</span></label>
         <input type="text" class="form-control @error('nama') is-invalid @enderror" id="nama" name="nama"
           value="{{ old('nama') }}">
         @error('nama')
@@ -26,7 +26,7 @@
       <div class="row">
         <div class="col">
           <div class="mb-3">
-            <label for="id_jenis" class="form-label">Jenis Customer</label>
+            <label for="id_jenis" class="form-label">Jenis Customer <span class="text-danger">*</span></label>
             <select class="form-select" name="id_jenis">
               @foreach ($customer_types as $customer_type)
                 @if (old('id_jenis') == $customer_type->id)
@@ -40,7 +40,7 @@
         </div>
         <div class="col">
           <div class="mb-3">
-            <label for="id_wilayah" class="form-label">Wilayah</label>
+            <label for="id_wilayah" class="form-label">Wilayah <span class="text-danger">*</span></label>
             <select class="form-select" name="id_wilayah">
               @foreach ($districts as $district)
                 @if (old('id_wilayah') == $district->id)
@@ -82,7 +82,7 @@
       </div>
 
       <div class="mb-3">
-        <label for="alamat_utama" class="form-label">Alamat Utama</label>
+        <label for="alamat_utama" class="form-label">Alamat Utama <span class="text-danger">*</span></label>
         <input type="text" class="form-control @error('alamat_utama') is-invalid @enderror" id="alamat_utama"
           name="alamat_utama" value="{{ old('alamat_utama') }}">
         @error('alamat_utama')
@@ -132,7 +132,7 @@
         </div>
         <div class="col">
           <div class="mb-3">
-            <label for="status" class="form-label">Status</label>
+            <label for="status" class="form-label">Status <span class="text-danger">*</span></label>
             <select class="form-select" name="status">
               @foreach ($statuses as $status)
                 @if (old('status') == $status->id)

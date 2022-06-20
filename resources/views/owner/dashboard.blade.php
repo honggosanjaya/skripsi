@@ -81,7 +81,7 @@
           <span>Rp. {{ number_format($data['pembelian']->total, 0, '', '.') }}</span>
           <h1 class="fs-5 fw-bold mb-2 mt-4">Total Untung/Rugi</h1>
           <span>Rp. {{ number_format($data['omzet']->total - $data['pembelian']->total, 0, '', '.') }}</span>
-          <button class="btn btn-primary d-block mx-auto mt-4">View Detail</button>
+          {{-- <button class="btn btn-primary d-block mx-auto mt-4">View Detail</button> --}}
         </div>
       </div>
 
