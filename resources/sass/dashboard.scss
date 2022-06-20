@@ -1,4 +1,5 @@
 @import url("https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Caveat:wght@400;500;600;700&display=swap");
 @import "./variables";
 @import "./modifBoostrap";
 
@@ -23,6 +24,13 @@ textarea {
 [data-href] {
     cursor: pointer;
 }
+
+.logo {
+  font-family: "Caveat", cursive;
+  font-size: 2rem;
+  margin-bottom: 0;
+}
+
 
 .dropdown-toggle {
     color: #000;
@@ -68,11 +76,19 @@ textarea {
             color: #fff;
         }
 
+        i {
+            font-size: 1.5rem;
+        }
+
         a {
             display: block;
             color: #c3c1bf;
             padding: 5px 15px;
             text-decoration: none;
+
+            display: flex;
+            align-items: center;
+
             &.active {
                 color: #66615b;
                 background-color: $whitesmoke;
@@ -379,3 +395,93 @@ table tbody th {
     margin-right: auto;
     margin-bottom: 1.5rem;
 }
+
+.graph {
+    width: 99%;
+    background-color: #008cff;
+    margin-top: 50px;
+    padding: 30px;
+    border-radius: 10px;
+    transition: ease-in-out 0.4s;
+    box-shadow: rgba(50, 50, 93, 0.25) 0px 50px 100px -20px,
+        rgba(0, 0, 0, 0.3) 0px 30px 60px -30px,
+        rgba(10, 37, 64, 0.35) 0px -2px 6px 0px inset;
+    height: auto;
+
+    canvas {
+        background-color: #fff;
+        padding: 15px;
+        border-radius: 10px;
+        width: 100%;
+        margin-top: 10px;
+    }
+
+    &:hover {
+        background-color: #003a7b;
+    }
+}
+
+.data-list {
+    background-color: #fff;
+    margin-top: 50px;
+    border-radius: 10px;
+    padding: 1.5rem;
+    box-shadow: rgba(149, 157, 165, 0.2) 0px 8px 24px;
+
+    h1 {
+        background: linear-gradient(
+            to right,
+            #051937,
+            #004d7a,
+            #008793,
+            #00bf72,
+            #a8eb12
+        );
+        background-clip: text;
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+    }
+    .sales {
+        border-bottom: 1px solid rgb(196, 195, 195);
+        padding: 0.5rem;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        position: relative;
+    }
+}
+
+@media screen and (max-width: 992px) {
+    .graph {
+        margin-top: 22px;
+        padding: 1rem;
+
+        canvas {
+            padding: 0.5rem;
+            border-radius: 0.5rem;
+        }
+    }
+
+    .data-list {
+        margin-top: 1.5rem;
+        padding: 1rem;
+
+        h1 {
+            font-size: 1rem !important;
+        }
+
+        .sales {
+            padding: 0.5rem;
+        }
+    }
+
+    .mt-4 {
+        margin-top: 1rem;
+    }
+}
+
+// @media screen and (max-width: 768px) {
+//     .top_reponsive {
+
+//     }
+// }

@@ -2,7 +2,7 @@
 
 <div class="sidebar">
   <div class="sidebar-brand">
-    <h3 class="mb-0 fw-bold text-white">LOGO</h3>
+    <h1 class="mb-0 fw-bold text-white logo">salesMan</h1>
     <label for="nav-toggle">
       <i class="bi bi-list hamburger_icon"></i>
     </label>
@@ -25,7 +25,7 @@
       <ul class="p-0">
         <li class="mb-3">
           <a class="{{ Request::is('administrasi/datacustomer*') ? 'active' : '' }}" href="/administrasi/datacustomer">
-            <i class="bi bi-people-fill me-2"></i><span>Data Customer</span>
+            <i class="bi bi-people-fill me-2"></i><span>Limit Pembelian</span>
           </a>
         </li>
         <li class="mb-3">

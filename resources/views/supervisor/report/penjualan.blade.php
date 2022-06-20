@@ -7,18 +7,18 @@
 @endsection
 
 @section('main_content')
-  <div id="report" class="pt-4 px-5">
+  <div id="report" class="pt-4 px-3 px-sm-5">
     <form action="/owner/report/penjualan" method="get">
       @csrf
       <div class="row">
-        <div class="col-2">
+        <div class="col-sm-2 col-6">
           <div class="input-group mb-3">
             <span class="input-group-text" id="basic-addon1">Tahun</span>
             <input type="text" class="form-control" placeholder="2023" name="year"
               value="{{ $input['year'] ?? null }}">
           </div>
         </div>
-        <div class="col-4">
+        <div class="col-sm-4 col-6">
           <select class="form-select" aria-label="Default select example" name="month">
             <option {{ 1 == $input['month'] ? 'selected' : '' }} value="1">Januari</option>
             <option {{ 2 == $input['month'] ? 'selected' : '' }} value="2">Febuari</option>
@@ -34,7 +34,7 @@
             <option {{ 12 == $input['month'] ? 'selected' : '' }} value="12">Desember</option>
           </select>
         </div>
-        <div class="col-6">
+        <div class="col-sm-6">
           <div class="input-group mb-3">
             <span class="input-group-text" id="basic-addon1">Nama Salesman</span>
             <input type="text" class="form-control" placeholder="julian" name="salesman"
@@ -60,7 +60,7 @@
         </div>
       </div>
       <div class="row justify-content-end">
-        <div class="col-3 d-flex justify-content-end">
+        <div class="col d-flex justify-content-end">
           <button type="submit" class="btn btn-primary"><span class="iconify fs-3 me-1"
               data-icon="clarity:filter-grid-solid"></span>Filter Data</button>
         </div>

@@ -6,18 +6,19 @@
   </ol>
 @endsection
 @section('main_content')
-  <div id="report" class="px-5 pt-4">
+  <div id="report" class="px-3 px-sm-5 pt-4">
     <form action="/owner/report/kinerja" method="get">
       @csrf
+
       <div class="row">
-        <div class="col-2">
+        <div class="col-6 col-md-2">
           <div class="input-group mb-3">
             <span class="input-group-text" id="basic-addon1">Tahun</span>
             <input type="text" class="form-control" placeholder="2023" name="year"
               value="{{ $input['year'] ?? null }}">
           </div>
         </div>
-        <div class="col-4 mb-3">
+        <div class="col-6 col-md-4 mb-3">
           <select class="form-select" aria-label="Default select example" name="month">
             <option {{ 1 == $input['month'] ? 'selected' : '' }} value="1">Januari</option>
             <option {{ 2 == $input['month'] ? 'selected' : '' }} value="2">Febuari</option>
@@ -36,14 +37,14 @@
       </div>
 
       <div class="row">
-        <div class="col">
+        <div class="col-sm-6">
           <div class="mb-3">
             <label class="form-label">Date Start</label>
             <input type="date" name="dateStart" class="form-control" value="{{ $input['dateStart'] ?? null }}"
               id="dateStart">
           </div>
         </div>
-        <div class="col">
+        <div class="col-sm-6">
           <div class="mb-3">
             <label class="form-label">Date End</label>
             <input type="date" name="dateEnd" class="form-control" value="{{ $input['dateEnd'] ?? null }}"
@@ -53,7 +54,7 @@
       </div>
 
       <div class="row justify-content-end">
-        <div class="col-3 d-flex justify-content-end">
+        <div class="col d-flex justify-content-end">
           <button type="submit" class="btn btn-primary"><span class="iconify fs-3 me-1"
               data-icon="clarity:filter-grid-solid"></span>Filter Data</button>
         </div>
@@ -89,15 +90,6 @@
       </table>
     </div>
 
-    @push('CSS')
-      <style>
-        #report .border-report {
-          border: 2px solid rgba(255, 0, 0, 0.2);
-          border-radius: 12px;
-          padding: 15px 15px 30px;
-        }
-      </style>
-    @endpush
     @push('JS')
       <script src="{{ asset('js/chart.js') }}"></script>
       <script src="{{ mix('js/report.js') }}"></script>
