@@ -130,7 +130,7 @@ tombol invoice jangan abu abu
 harga pada pengadaan dirubah menjadi harga total
 menghilangkan tombol penvcarian untuk datatable
 update stok toko ketika data tidak tersedia tidak dapat di rubah
-
+trip -> order -> keluar  counter_to_effective_call +2
 
 
 

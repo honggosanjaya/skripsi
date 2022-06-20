@@ -19,7 +19,7 @@ const DetailShipping = ({ detailShipping, isLoading, show, handleClose, handlePe
               <span><b>Customer</b>{detailShipping.link_customer.nama}</span>
               <span><b>Telepon</b>{detailShipping.link_customer.telepon}</span>
               <span><b>Alamat</b>
-                <a target="_blank" href={`https://www.google.com/maps/search/?api=1&query=${detailShipping.link_customer.koordinat.replace("@", ",")}`}>{detailShipping.link_customer.full_alamat}</a>
+                {detailShipping.link_customer.koordinat && <a target="_blank" href={`https://www.google.com/maps/search/?api=1&query=${detailShipping.link_customer.koordinat.replace("@", ",")}`}>{detailShipping.link_customer.full_alamat}</a>}
               </span>
               <span><b>Keterangan Alamat</b>{detailShipping.link_customer.keterangan_alamat}</span>
               <span className='d-flex'><b>Jam Berangkat </b> <div>{convertDate(detailShipping.link_order_track.waktu_berangkat)}</div></span>
