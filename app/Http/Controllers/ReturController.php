@@ -144,13 +144,19 @@ class ReturController extends Controller
       })->where('id_customer','=',$retur->linkCustomer->id)->with(['linkOrderTrack','linkInvoice'])
       ->get();
 
+      $total_harga = 0;
+      for($k=0; $k<$joins->count();$k++){
+        $total_harga = $total_harga + ($joins[$k]->kuantitas * $joins[$k]->harga_satuan);
+      }
+      
       return view('administrasi/retur.detail',[
         'retur' => $retur,
         'wilayah' => $temp[($retur->linkCustomer->id_wilayah)-1],
         'items' => $joins,
         'administrasi' => $administrasi,
         'tipeReturs' => $retur_type,
-        'invoices' => $invoices
+        'invoices' => $invoices,
+        'total_harga' => $total_harga
       ]);
     }
 
@@ -188,13 +194,17 @@ class ReturController extends Controller
 
         $joins = Retur::with('linkItem')->where('no_retur',$retur->no_retur)->get();
         $administrasi = Staff::select('nama')->where('id','=',auth()->user()->id_users)->first();
-
+        $total_harga = 0;
+        for($k=0; $k<$joins->count();$k++){
+          $total_harga = $total_harga + ($joins[$k]->kuantitas * $joins[$k]->harga_satuan);
+        }
 
         $pdf = PDF::loadview('administrasi/retur.cetakretur',[
             'retur' => $retur,
             'wilayah' => $temp[($retur->linkCustomer->id_wilayah)-1],
             'items' => $joins,
-            'administrasi' => $administrasi      
+            'administrasi' => $administrasi,
+            'total_harga' => $total_harga      
           ]);
   
         return $pdf->stream('retur-'.$retur->no_retur.'.pdf');

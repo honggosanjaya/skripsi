@@ -37,19 +37,25 @@
             <th scope="col" class="text-center">Nama Barang</th>
             <th scope="col" class="text-center">Jumlah</th>
             <th scope="col" class="text-center">Satuan Barang</th>
+            <th scope="col" class="text-center">Harga Barang</th>
             <th scope="col" class="text-center">Alasan Retur</th>
           </tr>
         </thead>
         <tbody>
           @foreach ($items as $item)
-            <tr>
+            <tr class="text-center">
               <td>{{ $item->linkItem->kode_barang }}</td>
               <td class="text-capitalize">{{ $item->linkItem->nama }}</td>
               <td>{{ $item->kuantitas }}</td>
               <td>{{ $item->linkItem->satuan }}</td>
+              <td>{{ number_format($item->kuantitas * $item->harga_satuan, 0, '', '.') }}</td>
               <td>{{ $item->alasan }}</td>
             </tr>
           @endforeach
+          <tr>
+            <td colspan="4" class="text-center fw-bold">Total Harga</td>
+            <td class="text-center">{{ number_format($total_harga, 0, '', '.') }}</td>
+          </tr>
         </tbody>
       </table>
 

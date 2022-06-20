@@ -73,6 +73,7 @@
                 <th scope="col">Nama Barang</th>
                 <th scope="col">Jumlah</th>
                 <th scope="col">Satuan Barang</th>
+                <th scope="col">Harga Barang</th>
                 <th scope="col">Alasan Retur</th>     
                 @if ( $retur->tipe_retur==1)
                     <th scope="col">Potongan Retur</th>     
@@ -85,14 +86,18 @@
                         <td>{{ $item->linkItem->kode_barang }}</td>
                         <td>{{ $item->linkItem->nama }}</td>
                         <td>{{ $item->kuantitas }}</td>
-                        <td>{{ $item->linkItem->satuan }}</td>
+                        <td>{{ $item->linkItem->satuan }}</td>                        
                         <td>{{ $item->alasan }}</td>
                         @if ( $retur->tipe_retur==1)
                             <td>{{ $item->alasan }}</td>
                         @endif
+                        <td>{{ number_format($item->kuantitas * $item->harga_satuan, 0, '', '.') }}</td>
                     </tr>
                 @endforeach
-                
+                <tr>
+                    <td colspan="6" class="text-center fw-bold">Total Harga</td>
+                    <td>{{ number_format($total_harga, 0, '', '.') }}</td>
+                  </tr>
             </tbody>
           </table>
     
