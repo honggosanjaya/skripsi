@@ -111,6 +111,8 @@ cek kode tahap 2
 3-H cek owner responsive
 1-H pada shipper upload bukti sampai foto tidak reload
 
+tanggal min date
+cek store as (atur format nama file untuk semua role kecuali owner)
 tanggal min date date range
 cek store as
 foto profil blum ada
@@ -128,7 +130,7 @@ tombol invoice jangan abu abu
 harga pada pengadaan dirubah menjadi harga total
 menghilangkan tombol penvcarian untuk datatable
 update stok toko ketika data tidak tersedia tidak dapat di rubah
-
+trip -> order -> keluar  counter_to_effective_call +2
 
 
 

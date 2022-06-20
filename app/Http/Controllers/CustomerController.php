@@ -406,7 +406,7 @@ class CustomerController extends Controller
         'pengajuan_limit_pembelian' => null,
         'status_limit_pembelian' => 5
       ]);
-      return redirect('/supervisor/datapengajuan') -> with('pesanSukses', 'Berhasil menyetujui pengajuan' );
+      return redirect('/supervisor/datacustomer') -> with('pesanSukses', 'Berhasil menyetujui pengajuan' );
     }
 
     public function tolakPengajuanLimit(Customer $customer){
@@ -414,6 +414,6 @@ class CustomerController extends Controller
         'pengajuan_limit_pembelian' => null,
         'status_limit_pembelian' => 6
       ]);
-      return redirect('/supervisor/datapengajuan') -> with('pesanSukses', 'Berhasil menolak pengajuan' );
+      return redirect('/supervisor/datacustomer') -> with('pesanSukses', 'Berhasil menolak pengajuan' );
     }
 }
