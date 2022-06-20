@@ -6,7 +6,7 @@
   <ol class="breadcrumb">
     <li class="breadcrumb-item"><a href="/administrasi">Dashboard</a></li>
     <li class="breadcrumb-item" aria-current="page"><a href="/administrasi/pesanan">Pesanan</a></li>
-    <li class="breadcrumb-item" aria-current="page"><a href="/administrasi/pesanan/detail">Detail Pesanan</a></li>
+    <li class="breadcrumb-item" aria-current="page"><a href="/administrasi/pesanan/detail/{{ $order->id }}">Detail Pesanan</a></li>
     <li class="breadcrumb-item active" aria-current="page">Detail Pengiriman</li>
   </ol>
 @endsection

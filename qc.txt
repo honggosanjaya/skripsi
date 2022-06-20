@@ -112,7 +112,7 @@ cek kode tahap 2
 1-H pada shipper upload bukti sampai foto tidak reload
 
 tanggal min date
-cek store as
+cek store as (atur format nama file untuk semua role kecuali owner)
 event min date tidak boleh kurang dari hari ini
 tny honggo kerja npm alert sweet alert gimana
 ada pertimbangan untuk disable ubah event karena bisa merusak alur harga yang berlaku

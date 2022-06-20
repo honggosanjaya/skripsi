@@ -2,7 +2,7 @@
   <a class="dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
     <div class="admin-wrapper">
       {{-- user profile picture --}}
-      <img src="" class="profile_picture me-2">
+      <img src="{{ asset('storage/staff/'.auth()->user()->linkStaff->foto_profil) }}" class="profile_picture me-2">
       {{-- active sign --}}
       <div class="active_indicator"></div>
       <div class="admin-name ms-2">
