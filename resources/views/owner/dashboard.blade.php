@@ -80,7 +80,7 @@
                     <p>{{$data['pembelian']->total}}</p>
                     <h5>total</h5>
                     <p>{{$data['omzet']->total-$data['pembelian']->total}}</p>
-                    <button class="btn btn-primary">detail>></button>
+                    {{-- <button class="btn btn-primary">detail>></button> --}}
                 </div>
             </div>
             <div class="col-6 my-2">

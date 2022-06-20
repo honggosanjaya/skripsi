@@ -88,10 +88,10 @@ cek kode tahap 2
 1-B@ ketika menolak order id pengonfirmasi diisi=
 3-B@ orderby semua data yang ditampilkan berdasarkan tanggal (pesanan, invoice, retur, pengadaan, stok opname)
 3-RB@ {lupa masalahnya apa} cek sum
-4-B cek pencarian data pada tabel solusi datatable
+4-B@ cek pencarian data pada tabel solusi datatable
 	~ administrasi list produk
 	~ supervisor data staf
-1-B cek harga total pada pengurangan retur karena harga nya perlu dikurangi harga event
+1-B@ cek harga total pada pengurangan retur karena harga nya perlu dikurangi harga event
 	ini perlu pertimbangan 
 		~tanyakan harga yang retur itu gimana sistemnya harga item/setelah diskon
 		~mungkin potongan harga tetap mengikuti event dari invoice yang dipilih akan lebih baik, dan klo iya makan harga yang tampil perlu dikurangi dengan event dan ada keterangan potongan event. 
@@ -101,7 +101,7 @@ cek kode tahap 2
 1-R judul pada modal retur pemilihan invoice
 1-R tambahkan penghilang alert di input data staff dan spv pd role (owner spv)
 1-R status pesanan setelah di search tetap ada value nya di status pengajuan
-1-R hilangkan homelaravel danlogo laravel pada login
+1-R hilangkan homelaravel danlogo laravel pada login dan lupa password
 3-R penambahan ??null di semua frontend atau ->count di setiap foreach
 1-R takeout kembali
 1-H gambar error untuk history
@@ -111,13 +111,24 @@ cek kode tahap 2
 3-H cek owner responsive
 1-H pada shipper upload bukti sampai foto tidak reload
 
-tanggal min date
+tanggal min date date range
 cek store as
+foto profil blum ada
 event min date tidak boleh kurang dari hari ini
 tny honggo kerja npm alert sweet alert gimana
 ada pertimbangan untuk disable ubah event karena bisa merusak alur harga yang berlaku
 tanya richie public function viewRetur(Retur $retur){
-breadcrumb masi ada yang error bisa di cek di http://127.0.0.1:8000/administrasi/pesanan/detail/8/pengiriman
+breadcrumb masi ada yang error bisa di cek di http://127.0.0.1:8000/administrasi/pesanan/detail/8/pengiriman dan belum lengkap bisa di cek di pengadaan
+detail omset owner masih belum bisa dipencet cek juga semua yang berkaitan dengan laporan hilangkan detail pada trip sales
+data customer urutkan dari active ke inactive sama juga dengan barang
+order customer blum ada notifikas
+limit pembelian juga belum ada
+hilangkan active inactive di data customer
+tombol invoice jangan abu abu
+harga pada pengadaan dirubah menjadi harga total
+menghilangkan tombol penvcarian untuk datatable
+update stok toko ketika data tidak tersedia tidak dapat di rubah
+
 
 
 
