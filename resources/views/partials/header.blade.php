@@ -26,13 +26,19 @@
   <a class="dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown"
     aria-expanded="false">
     <div class="admin-wrapper">
-      <img src="" class="profile_picture me-2">
+      @if (auth()->user()->linkStaff->foto_profil)
+        <img src="{{ asset('storage/staff/' . auth()->user()->linkStaff->foto_profil) }}"
+          class="profile_picture me-2">
+      @else
+        <img src="{{ asset('images/default_fotoprofil.png') }}" class="profile_picture me-2">
+      @endif
+
       <div class="active_indicator"></div>
       <div class="ms-2">
         <div class="admin-name fw-bold">
-          Nama Coba
+          {{ auth()->user()->linkStaff->nama }}
         </div>
-        <small>Administrasi</small>
+        <small>{{ auth()->user()->linkStaff->linkStaffRole->nama }}</small>
       </div>
     </div>
   </a>

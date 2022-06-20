@@ -52,13 +52,13 @@
               <div class="d-flex">
                 <button type="button" class="btn btn-primary" data-bs-toggle="modal"
                   data-bs-target="#kode{{ $kode->id }}">
-                  <span class="iconify fs-3" data-icon="openmoji:details"></span>
+                  <span class="iconify fs-4" data-icon="fluent:apps-list-detail-24-filled"></span>
                 </button>
                 @if ($kode->linkOrderTrack->status == 19)
                   <form action="/customer/historyorder/hapus/{{ $kode->id }}" method="POST" class="handleHapusKode">
                     @csrf
                     <button class="btn btn-danger ms-2 hapus_btn">
-                      <span class="iconify fs-3" data-icon="fluent:delete-dismiss-24-filled"></span>
+                      <span class="iconify fs-4" data-icon="fluent:delete-dismiss-24-filled"></span>
                     </button>
                   </form>
                 @endif
