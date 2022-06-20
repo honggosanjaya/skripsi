@@ -112,6 +112,7 @@ class AuthController extends Controller
         'message' => 'validation fails',
         'validate_err' => $validator->errors()
       ]);
+      
     }
 
     $user = User::where('tabel', 'staffs')->where('id_users', $staff->id);
