@@ -9,14 +9,15 @@
   </ol>
 @endsection
 @section('main_content')
-  @if (session()->has('pesanSukses'))
-    <div id="hideMeAfter3Seconds">
-      <div class="alert alert-success alert-dismissible fade show" role="alert">
-        {{ session('pesanSukses') }}
-        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-      </div>
-    </div>
-  @endif
+  {{-- @if (session()->has('pesanSukses')) --}}
+  {{-- <div id="hideMeAfter3Seconds"> --}}
+  <div class="alert alert-success alert-dismissible fade show" role="alert">
+    {{-- {{ session('pesanSukses') }} --}}
+    Berhasil Menambahkan Data Customer
+    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+  </div>
+  {{-- </div> --}}
+  {{-- @endif --}}
 
 
   <div class="px-5">
