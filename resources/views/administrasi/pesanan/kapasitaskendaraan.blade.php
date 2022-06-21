@@ -27,10 +27,10 @@
 
       <div class="tab-content clearfix">
         <div class="tab-pane fade show active" id="volume" role="tabpanel" aria-labelledby="volume-tab">
-          <h3 class="mt-3">Persentase Volume setiap Kendaraan</h3>
+          <h3 class="mt-3 fs-5 fw-bold">Persentase Volume setiap Kendaraan</h3>
           @foreach ($persentaseVolumes as $persentaseVolume)
-            <h4 class="mt-4">Kendaraan : <span class="fw-normal">{{ $persentaseVolume[0] }}</span></h4>
-            <h5>Plat Nomor : <span class="fw-normal">{{ $persentaseVolume[1] }}</span></h5>
+            <h4 class="mt-4 fs-6 fw-bold">Kendaraan : <span class="fw-normal">{{ $persentaseVolume[0] }}</span></h4>
+            <h4 class="fs-6 fw-bold">Plat Nomor : <span class="fw-normal">{{ $persentaseVolume[1] }}</span></h4>
             <h6>Persentase : <span class="fw-normal">{{ number_format($persentaseVolume[2], 2, ',', '.') }} %</span>
             </h6>
             <div class="progress">
@@ -49,10 +49,10 @@
         </div>
 
         <div class="tab-pane" id="harga" role="tabpanel" aria-labelledby="harga-tab">
-          <h3 class="mt-3">Persentase Harga setiap Kendaraan</h3>
+          <h3 class="mt-3 fs-5 fw-bold">Persentase Harga setiap Kendaraan</h3>
           @foreach ($persentaseHargas as $persentaseHarga)
-            <h4 class="mt-4">Kendaraan : <span class="fw-normal">{{ $persentaseHarga[0] }}</span></h4>
-            <h5>Plat Nomor : <span class="fw-normal">{{ $persentaseHarga[1] }}</span></h5>
+            <h4 class="mt-4 fs-6 fw-bold">Kendaraan : <span class="fw-normal">{{ $persentaseHarga[0] }}</span></h4>
+            <h4 class="fs-6 fw-bold">Plat Nomor : <span class="fw-normal">{{ $persentaseHarga[1] }}</span></h4>
             <h6>Persentase : <span class="fw-normal">{{ number_format($persentaseHarga[2], 2, ',', '.') }} %</span>
             </h6>
             <div class="progress">

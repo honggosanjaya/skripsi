@@ -1,4 +1,6 @@
-import React, { useState, useEffect, useContext, useRef } from 'react';
+import React, { useState, useEffect, useContext, useRef, Fragment } from 'react';
+import Camera from 'react-html5-camera-photo';
+import 'react-html5-camera-photo/build/css/index.css';
 import axios from 'axios';
 import HeaderShipper from './HeaderShipper';
 import { UserContext } from "../../contexts/UserContext";
@@ -13,6 +15,8 @@ import ListShipping from './ListShipping';
 import DetailShipping from './DetailShipping';
 import { ReturContext } from '../../contexts/ReturContext';
 import { AuthContext } from '../../contexts/AuthContext';
+import ImagePreview from '../reuse/ImagePreview';
+import { dataURLtoFile } from "../reuse/HelperFunction";
 
 let source;
 const ShippingShipper = () => {
@@ -31,7 +35,11 @@ const ShippingShipper = () => {
   const [successMessage, setSuccessMessage] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
   const _isMounted = useRef(true);
+  const [dataUri, setDataUri] = useState('');
   const [keyword, setKeyword] = useState(null);
+  const [isTakePhoto, setIsTakePhoto] = useState(false);
+  const [isFromGalery, setISFromGalery] = useState(false);
+
   const radios = [
     { name: 'Perlu Dikirim', value: 22 },
     { name: 'Sudah Sampai', value: 23 },
@@ -80,6 +88,10 @@ const ShippingShipper = () => {
     };
   }, [dataUser, successMessage])
 
+  const handleTakePhotoAnimationDone = (dataUri) => {
+    setDataUri(dataUri);
+  }
+
   const handleClose = () => setShow(false);
 
   const handleCloseBuktiPengirimanModal = () => {
@@ -87,6 +99,8 @@ const ShippingShipper = () => {
     setShow(false);
     setFile(null);
     setImagePreviewUrl('');
+    setISFromGalery(false);
+    setIsTakePhoto(false);
   }
 
   const handleSubmitBuktiPengiriman = (e) => {
@@ -94,7 +108,14 @@ const ShippingShipper = () => {
     setIsLoading(true);
     source = axios.CancelToken.source();
     let formData = new FormData();
-    formData.append("foto", file);
+
+    if (isFromGalery) {
+      formData.append("foto", file);
+    } else if (isTakePhoto) {
+      let convertedFile = dataURLtoFile(dataUri, `${Math.random(10)}.png`);
+      formData.append("foto", convertedFile);
+    }
+
     axios({
       method: "post",
       url: `${window.location.origin}/api/pesanan/detail/${detailShipping.id}/dikirimkan`,
@@ -198,59 +219,105 @@ const ShippingShipper = () => {
       })
   }
 
+  const openGalerry = () => {
+    setIsTakePhoto(false);
+    setISFromGalery(true);
+  }
+
+  const openCamera = () => {
+    setISFromGalery(false);
+    setIsTakePhoto(true);
+  }
+
+  const takeAgain = () => {
+    setISFromGalery(false);
+    setIsTakePhoto(true);
+    setDataUri('');
+  }
+
   return (
     <main className="page_main shipper-css">
       <HeaderShipper title="Jadwal Pengiriman" toBack={goBack} />
       {isLoading && <LoadingIndicator />}
       <div className="page_container pt-4">
         {successMessage && <AlertComponent successMsg={successMessage} />}
-        <div className="d-flex flex-column justify-content-center">
-          <h1 className="fs-6 fw-bold mb-0">Data Pengiriman</h1>
-          <ButtonGroup className='mt-2 mb-4'>
-            {radios.map((radio, idx) => (
-              <ToggleButton
-                key={idx}
-                id={`radio-${idx}`}
-                type="radio"
-                variant={idx % 2 ? 'outline-success' : 'outline-warning'}
-                name="radio"
-                value={radio.value}
-                checked={statusShipping == radio.value}
-                onChange={(e) => setStatusShipping(e.currentTarget.value)}>
-                {radio.name}
-              </ToggleButton>
-            ))}
-          </ButtonGroup>
-        </div>
 
-        <ListShipping listShipping={listShipping}
-          statusShipping={statusShipping} handleShow={handleShow}
-          keyword={keyword} setKeyword={setKeyword} cariShipping={cariShipping}
-        />
+        <Fragment>
+          <div className="d-flex flex-column justify-content-center">
+            <h1 className="fs-6 fw-bold mb-0">Data Pengiriman</h1>
+            <ButtonGroup className='mt-2 mb-4'>
+              {radios.map((radio, idx) => (
+                <ToggleButton
+                  key={idx}
+                  id={`radio-${idx}`}
+                  type="radio"
+                  variant={idx % 2 ? 'outline-success' : 'outline-warning'}
+                  name="radio"
+                  value={radio.value}
+                  checked={statusShipping == radio.value}
+                  onChange={(e) => setStatusShipping(e.currentTarget.value)}>
+                  {radio.name}
+                </ToggleButton>
+              ))}
+            </ButtonGroup>
+          </div>
 
-        <DetailShipping detailShipping={detailShipping}
-          isLoading={isLoading} show={show} handleClose={handleClose}
-          handlePengirimanSampai={handlePengirimanSampai} handlePengajuanRetur={handlePengajuanRetur}
-          listDetailItem={listDetailItem} />
+          <ListShipping listShipping={listShipping}
+            statusShipping={statusShipping} handleShow={handleShow}
+            keyword={keyword} setKeyword={setKeyword} cariShipping={cariShipping}
+          />
+
+          <DetailShipping detailShipping={detailShipping}
+            isLoading={isLoading} show={show} handleClose={handleClose}
+            handlePengirimanSampai={handlePengirimanSampai} handlePengajuanRetur={handlePengajuanRetur}
+            listDetailItem={listDetailItem} />
+        </Fragment>
 
         <Modal show={showBuktiPengiriman} onHide={handleCloseBuktiPengirimanModal}>
           <Modal.Header closeButton>
             <Modal.Title>Bukti Pengiriman</Modal.Title>
           </Modal.Header>
           <Modal.Body>
-            <label className="form-label d-block">Foto Bukti Pengiriman</label>
-            {$imagePreview && $imagePreview}
-            <input
-              type="file"
-              name="foto"
-              id="file"
-              accept="image/png, image/jpeg"
-              onChange={handleImageChange} />
+            <Button variant="primary" onClick={openGalerry}>
+              <span className="iconify fs-3 me-1" data-icon="clarity:image-gallery-solid"></span> Galeri
+            </Button>
+
+            <Button variant="secondary" onClick={openCamera} className="ms-3">
+              <span className="iconify fs-3 me-1" data-icon="charm:camera"></span>Camera
+            </Button>
+
+            {isFromGalery && <Fragment>
+              <label className="form-label d-block mt-4">Foto Bukti Pengiriman</label>
+              {$imagePreview && $imagePreview}
+              <input
+                type="file"
+                name="foto"
+                id="file"
+                accept="image/png, image/jpeg"
+                onChange={handleImageChange} />
+            </Fragment>}
+
+
+            {isTakePhoto && dataUri
+              ? <Fragment>
+                <ImagePreview dataUri={dataUri} />
+                <Button variant="warning" onClick={takeAgain} className="d-block mx-auto mt-3">
+                  <span className="iconify fs-3 me-1" data-icon="ic:sharp-flip-camera-android"></span>Ulang
+                </Button>
+              </Fragment>
+              : isTakePhoto
+                ? <Camera onTakePhotoAnimationDone={handleTakePhotoAnimationDone} />
+                : null
+            }
+
           </Modal.Body>
           <Modal.Footer>
-            <Button variant="primary" onClick={handleSubmitBuktiPengiriman} disabled={imagePreviewUrl == '' ? true : false}>
-              Kirim
-            </Button>
+            {isFromGalery && <Button variant="success" onClick={handleSubmitBuktiPengiriman} disabled={imagePreviewUrl == '' ? true : false}>
+              <span className="iconify fs-3 me-1" data-icon="material-symbols:download-done"></span> Kirim
+            </Button>}
+            {isTakePhoto && <Button variant="success" onClick={handleSubmitBuktiPengiriman} disabled={dataUri == '' ? true : false}>
+              <span className="iconify fs-3 me-1" data-icon="material-symbols:download-done"></span>Kirim
+            </Button>}
           </Modal.Footer>
         </Modal>
       </div>

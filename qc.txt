@@ -1,4 +1,3 @@
-- rute ke auth bukan agregasi
 - pas foto
 - survei
 - buku tahun terbit
@@ -104,12 +103,17 @@ cek kode tahap 2
 1-R hilangkan homelaravel danlogo laravel pada login dan lupa password
 3-R penambahan ??null di semua frontend atau ->count di setiap foreach
 1-R takeout kembali
-1-H gambar error untuk history
-1-H resize gambar saat upload 
-2-H notifikasi retur,order,limit
-5-H upload image harusnya upload camera
-3-H cek owner responsive
-1-H pada shipper upload bukti sampai foto tidak reload
+1-H@ gambar error untuk history
+1-H@ resize gambar saat upload 
+2-H@ notifikasi retur,order,limit
+5-H@ upload image harusnya upload camera
+3-H@ cek owner responsive
+1-H@ pada shipper upload bukti sampai foto tidak reload
+1-H@ retur di shipper dikurangi diskon customer
+1-H@ gambar error untuk retur
+1-H@ stok produk == stok minimum, hide di customer
+1-@H kode yang sudah pernah diajukan tidak bisa diajukan lagi
+1-@H cek status order dan order track waktu sales mengajukan orderan customer
 
 tanggal min date
 cek store as (atur format nama file untuk semua role kecuali owner)

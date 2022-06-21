@@ -40,9 +40,9 @@ const DetailShipping = ({ detailShipping, isLoading, show, handleClose, handlePe
                   {listDetailItem.map((data, index) => (
                     <tr key={`item${index}`}>
                       <th scope="row">{index + 1}</th>
-                      <td>{data.link_item.nama}</td>
+                      {data.link_item && <td>{data.link_item.nama}</td>}
                       <td>{data.kuantitas}</td>
-                      <td>{data.link_item.satuan}</td>
+                      {data.link_item && <td>{data.link_item.satuan}</td>}
                     </tr>
                   ))}
                 </tbody>
@@ -50,9 +50,9 @@ const DetailShipping = ({ detailShipping, isLoading, show, handleClose, handlePe
             </div>
           </Modal.Body>
           <Modal.Footer>
-            <Button variant="danger" onClick={handleClose}>Close</Button>
+            <Button variant="danger" onClick={handleClose}><span className="iconify fs-3 me-1" data-icon="carbon:close-outline"></span>Tutup</Button>
             {detailShipping.link_order_track.status == 22 &&
-              <Button variant="success" onClick={handlePengirimanSampai}>Pengiriman Sampai</Button>}
+              <Button variant="success" onClick={handlePengirimanSampai}><span className="iconify fs-3 me-1" data-icon="material-symbols:download-done"></span>Pengiriman Sampai</Button>}
             {(detailShipping.link_invoice.link_retur.length == 0 && (detailShipping.link_order_track.status == 23 || detailShipping.link_order_track.status == 24)) &&
               <Button variant="warning" onClick={() => handlePengajuanRetur(detailShipping.id_customer)}>Ajukan Retur</Button>}
           </Modal.Footer>

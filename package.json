@@ -36,6 +36,7 @@
         "idb": "^7.0.1",
         "jquery": "^3.6.0",
         "react-bootstrap": "^2.4.0",
+        "react-html5-camera-photo": "^1.5.9",
         "react-infinite-scroll-component": "^6.1.0",
         "react-router": "^5.2.1",
         "react-router-dom": "^5.3.0",

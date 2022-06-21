@@ -725,3 +725,24 @@ ul.info-list {
     padding: 1rem;
     border-radius: 0.5rem;
 }
+
+.react-html5-camera-photo {
+    width: 100%;
+    max-width: 375px;
+    margin-top: 1.5rem;
+}
+
+.react-html5-camera-photo > img,
+.react-html5-camera-photo > video {
+    max-width: 343px !important;
+}
+
+.demo-image-preview {
+    position: relative;
+    text-align: center;
+    margin-top: 1.5rem;
+}
+
+.demo-image-preview > img {
+    width: 343px;
+}
