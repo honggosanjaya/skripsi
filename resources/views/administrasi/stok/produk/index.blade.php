@@ -26,7 +26,9 @@
         <div class="input-group">
           <input type="text" class="form-control" name="cari" placeholder="Cari Produk..."
             value="{{ request('cari') }}">
-          <button type="submit" class="btn btn-primary">Cari</button>
+          <button type="submit" class="btn btn-primary">
+            <span class="iconify me-2" data-icon="fe:search"></span>Cari
+          </button>
         </div>
       </form>
       <a href="/administrasi/stok/produk/create" class="btn btn-primary">
@@ -34,7 +36,7 @@
       </a>
     </div>
 
-    <div class="table-responsive mt-4">
+    <div class="table-responsive mt-5">
       <table class="table table-hover table-sm">
         <thead>
           <tr>
@@ -85,7 +87,7 @@
                   <span class="iconify me-2" data-icon="ant-design:edit-filled"></span> edit
                 </a>
 
-                <form action="#" method="POST">
+                <form action="/administrasi/stok/produk/ubahstatus/{{ $item->id }}" method="POST">
                   @csrf
                   <button type="submit"
                     class="btn btn-sm mt-2 {{ $item->linkStatus->nama === 'active' ? 'btn-danger' : 'btn-success' }}">

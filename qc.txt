@@ -116,10 +116,11 @@ cek kode tahap 2
 1-@H cek status order dan order track waktu sales mengajukan orderan customer
 1-@H hilangkan active inactive di data customer
 1-@Hfoto profl di salesman dan shipper belum
-1-active inactive di data produk belum bisa
+1-@Hactive inactive di data produk belum bisa
+1-@Htombol invoice jangan abu abu
 
 breadcrumb di kapasitas kendaraan kurang
-
+tambahkan * warna merah di label form yang required -> ini hubungan sama testing 8 golden rules
 tanggal min date
 cek store as (atur format nama file untuk semua role kecuali owner)
 tanggal min date date range
@@ -135,7 +136,7 @@ data customer urutkan dari active ke inactive sama juga dengan barang
 order customer blum ada notifikas
 limit pembelian juga belum ada
 
-tombol invoice jangan abu abu
+
 harga pada pengadaan dirubah menjadi harga total
 menghilangkan tombol penvcarian untuk datatable
 update stok toko ketika data tidak tersedia tidak dapat di rubah

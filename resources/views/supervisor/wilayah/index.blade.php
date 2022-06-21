@@ -35,7 +35,9 @@
         <div class="input-group">
           <input type="text" class="form-control" name="cari" placeholder="Cari Wilayah..."
             value="{{ request('cari') }}">
-          <button type="submit" class="btn btn-primary">Cari</button>
+          <button type="submit" class="btn btn-primary">
+            <span class="iconify me-2" data-icon="fe:search"></span>Cari
+          </button>
         </div>
       </form>
       <div>

@@ -42,7 +42,7 @@
             @if ($order->linkOrderTrack->status > 20 && $order->linkOrderTrack->status < 25)
               <a href="/administrasi/pesanan/detail/{{ $order->id }}/cetak-memo" class="btn btn-primary mx-1"><i
                   class="bi bi-download px-1"></i>Unduh Memo Persiapan Barang</a>
-              <a href="/administrasi/pesanan/detail/{{ $order->id }}/cetak-invoice" class="btn btn-secondary mx-1"><i
+              <a href="/administrasi/pesanan/detail/{{ $order->id }}/cetak-invoice" class="btn btn_purple mx-1"><i
                   class="bi bi-download px-1"></i>Unduh Invoice</a>
               <a href="/administrasi/pesanan/detail/{{ $order->id }}/cetak-sj" class="btn btn-success mx-1"><i
                   class="bi bi-download px-1"></i>Unduh Surat Jalan</a>

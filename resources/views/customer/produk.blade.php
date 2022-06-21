@@ -32,7 +32,7 @@
         <input type="text" class="form-control" name="cari" placeholder="Cari Produk..."
           value="{{ request('cari') }}">
         <button type="submit" class="btn btn-primary">
-          <span class="iconify fs-3" data-icon="ant-design:search-outlined"></span>
+          <span class="iconify me-2" data-icon="fe:search"></span>Cari
         </button>
       </div>
     </form>

@@ -468,16 +468,16 @@ class ItemController extends Controller
       $items = Item::orderBy("status", "ASC")->whereNotIn('id',$items->toArray());
 
       $orderItemUnconfirmed=OrderItem::
-    whereHas('linkOrder',function($q) {
-      $q->where('status', 15);
-    })
-    ->whereHas('linkOrder',function($q) {
-      $q->whereHas('linkOrderTrack',function($q) {
-        $q->where('status','!=', 25);
-      });
-    })
-    ->select('id_item', DB::raw('SUM(kuantitas) as jumlah_blmkonfirmasi'))      
-    ->groupBy('id_item')->pluck('jumlah_blmkonfirmasi','id_item')->all();
+      whereHas('linkOrder',function($q) {
+        $q->where('status', 15);
+      })
+      ->whereHas('linkOrder',function($q) {
+        $q->whereHas('linkOrderTrack',function($q) {
+          $q->where('status','!=', 25);
+        });
+      })
+      ->select('id_item', DB::raw('SUM(kuantitas) as jumlah_blmkonfirmasi'))      
+      ->groupBy('id_item')->pluck('jumlah_blmkonfirmasi','id_item')->all();
 
       if($filterby == 'hargaterendah'){
         $items=$items->orderBy('harga_satuan','ASC')->paginate(4);
@@ -494,5 +494,18 @@ class ItemController extends Controller
         "data" => $items,
         "orderRealTime" => $orderItemUnconfirmed
       ], 200);
+    }
+
+    public function administrasiEditStatusItem(Item $item){
+      $status = $item->status;
+      $nama_status = Status::where('id', $status)->first()->nama; 
+
+      if($nama_status === 'active'){
+        Item::where('id', $item->id)->update(['status' => 11]);
+      }else if($nama_status === 'inactive'){
+        Item::where('id', $item->id)->update(['status' => 10]);
+      }
+
+      return redirect('/administrasi/stok/produk') -> with('pesanSukses', 'Berhasil ubah status' );
     }
 }

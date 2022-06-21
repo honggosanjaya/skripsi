@@ -16,9 +16,9 @@
         data-icon="material-symbols:add-shopping-cart"></span>Pengadaan</a>
     <a href="/administrasi/stok/opname?route=opname" class="btn btn-success me-2"><span class="iconify fs-4 me-2"
         data-icon="healthicons:rdt-result-out-stock-outline"></span>Stok Opname</a>
-    <a href="/administrasi/stok/riwayat" class="btn btn-info me-2"><span class="iconify me-2 fs-4"
+    <a href="/administrasi/stok/riwayat" class="btn btn_purple me-2"><span class="iconify me-2 fs-4"
         data-icon="ant-design:history-outlined"></span>Riwayat Pengadaan</a>
-    <a href="/administrasi/stok/opname/riwayat" class="btn btn-info me-2"><span class="iconify me-2 fs-4"
+    <a href="/administrasi/stok/opname/riwayat" class="btn btn_purple me-2"><span class="iconify me-2 fs-4"
         data-icon="ant-design:history-outlined"></span>Riwayat Stok Opname</a>
 
     <div class="row justify-content-end mt-4">
@@ -27,7 +27,9 @@
           <div class="input-group">
             <input type="text" class="form-control" name="cari" placeholder="Cari Stok..."
               value="{{ request('cari') }}">
-            <button type="submit" class="btn btn-primary">Cari</button>
+            <button type="submit" class="btn btn-primary">
+              <span class="iconify me-2" data-icon="fe:search"></span>Cari
+            </button>
           </div>
         </form>
       </div>
