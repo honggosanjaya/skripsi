@@ -361,18 +361,18 @@ class CustomerController extends Controller
       return redirect('/administrasi/datacustomer') -> with('pesanSukses', 'Data berhasil diubah' );
     }
 
-    public function administrasiEditStatusCustomer(Customer $customer){
-      $status = $customer->status;
-      $nama_status = Status::where('id', $status)->first()->nama; 
+    // public function administrasiEditStatusCustomer(Customer $customer){
+    //   $status = $customer->status;
+    //   $nama_status = Status::where('id', $status)->first()->nama; 
 
-      if($nama_status === 'active'){
-        Customer::where('id', $customer->id)->update(['status' => 4]);
-      }else if($nama_status === 'inactive'){
-        Customer::where('id', $customer->id)->update(['status' => 3]);
-      }
+    //   if($nama_status === 'active'){
+    //     Customer::where('id', $customer->id)->update(['status' => 4]);
+    //   }else if($nama_status === 'inactive'){
+    //     Customer::where('id', $customer->id)->update(['status' => 3]);
+    //   }
 
-      return redirect('/administrasi/datacustomer') -> with('pesanSukses', 'Berhasil ubah status' );
-    } 
+    //   return redirect('/administrasi/datacustomer') -> with('pesanSukses', 'Berhasil ubah status' );
+    // } 
 
     public function dataCustomer(){
       $customers = Customer::paginate(10);

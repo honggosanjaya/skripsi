@@ -114,6 +114,11 @@ cek kode tahap 2
 1-H@ stok produk == stok minimum, hide di customer
 1-@H kode yang sudah pernah diajukan tidak bisa diajukan lagi
 1-@H cek status order dan order track waktu sales mengajukan orderan customer
+1-@H hilangkan active inactive di data customer
+1-@Hfoto profl di salesman dan shipper belum
+1-active inactive di data produk belum bisa
+
+breadcrumb di kapasitas kendaraan kurang
 
 tanggal min date
 cek store as (atur format nama file untuk semua role kecuali owner)
@@ -129,7 +134,7 @@ detail omset owner masih belum bisa dipencet cek juga semua yang berkaitan denga
 data customer urutkan dari active ke inactive sama juga dengan barang
 order customer blum ada notifikas
 limit pembelian juga belum ada
-hilangkan active inactive di data customer
+
 tombol invoice jangan abu abu
 harga pada pengadaan dirubah menjadi harga total
 menghilangkan tombol penvcarian untuk datatable

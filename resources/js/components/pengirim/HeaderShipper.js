@@ -2,11 +2,13 @@ import React, { Fragment, useContext, useState } from 'react';
 import { Link, useHistory } from "react-router-dom";
 import urlAsset from '../../config';
 import { AuthContext } from '../../contexts/AuthContext';
+import { UserContext } from '../../contexts/UserContext';
 import { Dropdown } from 'react-bootstrap';
 import LoadingIndicator from '../reuse/LoadingIndicator';
 
 const HeaderShipper = ({ title, isDashboard, toBack }) => {
   const { isLoadingAuth, handleLogout } = useContext(AuthContext);
+  const { dataUser } = useContext(UserContext);
   const history = useHistory();
   const goback = () => {
     history.go(-1);
@@ -39,7 +41,11 @@ const HeaderShipper = ({ title, isDashboard, toBack }) => {
           <h1 className='logo'>salesMan</h1>
           <Dropdown align="end">
             <Dropdown.Toggle id="dropdown-basic">
-              <img src={`${urlAsset}/images/default_fotoprofil.png`} className="avatar_pp" />
+              {dataUser.foto_profil ?
+                <img src={`${urlAsset}/storage/staff/${dataUser.foto_profil}`} className="avatar_pp" />
+                :
+                <img src={`${urlAsset}/images/default_fotoprofil.png`} className="avatar_pp" />
+              }
             </Dropdown.Toggle>
             <Dropdown.Menu>
               <Dropdown.Item>

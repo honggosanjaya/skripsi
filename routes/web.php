@@ -178,7 +178,7 @@ Route::prefix('administrasi')->middleware('administrasi')->group(function() {
   Route::get('/datacustomer/ubah/{customer:id}', [CustomerController::class, 'administrasiEdit']);
   Route::put('/datacustomer/ubahcustomer/{customer:id}', [CustomerController::class, 'administrasiUpdate']);
   Route::get('/datacustomer/{customer:id}', [CustomerController::class, 'administrasiShow']);
-  Route::post('/datacustomer/ubahstatus/{customer:id}', [CustomerController::class, 'administrasiEditStatusCustomer']);
+  // Route::post('/datacustomer/ubahstatus/{customer:id}', [CustomerController::class, 'administrasiEditStatusCustomer']);
 
   //Route untuk profil administrasi
   Route::get('/profil', [HomeController::class, 'lihatProfil']);

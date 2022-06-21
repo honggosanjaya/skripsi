@@ -3,11 +3,13 @@ import { useHistory } from "react-router-dom";
 import urlAsset from '../../config';
 import { Dropdown } from 'react-bootstrap';
 import { AuthContext } from '../../contexts/AuthContext';
+import { UserContext } from '../../contexts/UserContext';
 import LoadingIndicator from '../reuse/LoadingIndicator';
 
 const HeaderSales = ({ title, isDashboard, isOrder, lihatKeranjang, toBack, jumlahProdukKeranjang }) => {
   const { isLoadingAuth, handleLogout } = useContext(AuthContext);
   const history = useHistory();
+  const { dataUser } = useContext(UserContext);
 
   const goback = () => {
     history.go(-1);
@@ -46,7 +48,11 @@ const HeaderSales = ({ title, isDashboard, isOrder, lihatKeranjang, toBack, juml
           <h1 className='logo text-white'>salesMan</h1>
           <Dropdown align="end">
             <Dropdown.Toggle id="dropdown-basic">
-              <img src={`${urlAsset}/images/default_fotoprofil.png`} className="avatar_pp" />
+              {dataUser.foto_profil ?
+                <img src={`${urlAsset}/storage/staff/${dataUser.foto_profil}`} className="avatar_pp" />
+                :
+                <img src={`${urlAsset}/images/default_fotoprofil.png`} className="avatar_pp" />
+              }
             </Dropdown.Toggle>
 
             <Dropdown.Menu>
