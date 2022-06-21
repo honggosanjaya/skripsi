@@ -116,8 +116,8 @@
             @endphp
             @foreach ($items as $item)
               <tr>
-                <td>{{ $item->linkItem->kode_barang }}</td>
-                <td>{{ $item->linkItem->nama }}</td>
+                <td>{{ $item->linkItem->kode_barang ?? null }}</td>
+                <td>{{ $item->linkItem->nama ?? null }}</td>
                 <td>{{ number_format($item->harga_satuan, 0, '', '.') }}</td>
                 <td>{{ $item->kuantitas }}</td>
                 <td>{{ number_format($item->harga_satuan * $item->kuantitas, 0, '', '.') }}</td>

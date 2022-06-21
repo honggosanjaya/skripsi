@@ -50,7 +50,7 @@
                     <span class="iconify fs-5 me-1" data-icon="eva:edit-2-fill"></span> Edit
                   </a>
 
-                  <form action="/administrasi/datacustomer/ubahstatus/{{ $customer->id }}" method="POST">
+                  {{-- <form action="/administrasi/datacustomer/ubahstatus/{{ $customer->id }}" method="POST">
                     @csrf
                     <button type="submit"
                       class="btn btn-sm {{ $customer->linkStatus->nama === 'active' ? 'btn-danger' : 'btn-success' }}">
@@ -61,7 +61,7 @@
                       @endif
                       {{ $customer->linkStatus->nama === 'active' ? 'Nonaktifkan' : 'Aktifkan' }}
                     </button>
-                  </form>
+                  </form> --}}
                 </div>
               </td>
             </tr>
