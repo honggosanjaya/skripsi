@@ -34,7 +34,9 @@
         <div class="input-group">
           <input type="text" class="form-control" name="cari" placeholder="Cari Kendaraan..."
             value="{{ request('cari') }}">
-          <button type="submit" class="btn btn-primary">Cari</button>
+          <button type="submit" class="btn btn-primary">
+            <span class="iconify me-2" data-icon="fe:search"></span>Cari
+          </button>
         </div>
       </form>
       <a href="/administrasi/kendaraan/tambah" class="btn btn-primary my-3 py-2"><span class="iconify fs-4 me-1"

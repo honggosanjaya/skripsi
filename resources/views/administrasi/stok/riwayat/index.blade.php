@@ -8,25 +8,7 @@
 @endsection
 
 @section('main_content')
-  <div class="container">
-
-    <div class="row my-3">
-      <div class="col-5">
-        <div class="mt-3 search-box">
-          <form method="GET" action="/administrasi/stok/riwayat/cari">
-            <div class="input-group">
-              <input type="text" class="form-control" name="cari" placeholder="Cari Nomor Nota..."
-                value="{{ request('cari') }}">
-              <button type="submit" class="btn btn-primary">Cari</button>
-            </div>
-
-          </form>
-
-        </div>
-      </div>
-
-    </div>
-
+  <div class="px-5 pt-4">
     <table class="table" id="table">
       <thead>
         <tr>

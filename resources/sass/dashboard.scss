@@ -351,10 +351,22 @@ table tbody th {
 .alert_trip,
 .alert_limit {
     &.active {
-        i,
-        p {
-            color: red;
+        i {
+            color: rgb(243, 208, 8);
         }
+    }
+}
+
+.dataTables_filter {
+    margin-bottom: 1.5rem !important;
+}
+
+.btn_purple {
+    background-color: #6366f1;
+    color: #fff;
+    &:hover {
+        color: #fff;
+        background-color: #575af5;
     }
 }
 
