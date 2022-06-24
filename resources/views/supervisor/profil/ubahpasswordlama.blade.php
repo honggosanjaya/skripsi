@@ -43,7 +43,7 @@
 
           <div class="row justify-content-end mt-4">
             <div class="col d-flex justify-content-end">
-              <a href="/supervisor" class="batalkanAksi_btn btn btn-danger me-3"><span class="iconify fs-4 me-1"
+              <a href="/supervisor/profil" class="batalkanAksi_btn btn btn-danger me-3"><span class="iconify fs-4 me-1"
                   data-icon="emojione-monotone:heavy-multiplication-x"></span>Batal</a>
               <button type="submit" class="btn btn-success"><span class="iconify fs-4 me-1"
                   data-icon="bi:check-lg"></span>
