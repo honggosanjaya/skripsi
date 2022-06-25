@@ -373,12 +373,12 @@ class OrderController extends Controller
 
   public function cetakSJ(Order $order){
     $items = OrderItem::where('id_order','=',$order->id)->get();
-    $todayDate = date("d-m-Y");
-    $orderTrack = OrderTrack::first();
-            
+    $todayDate = date("d M Y");
+    $orderTrack = OrderTrack::where('id_order','=',$order->id)->first();
+                
     $mengetahui = Staff::select('nama')->where('id','=',$orderTrack->id_staff_pengonfirmasi)->first();
     $pengirim = Staff::select('nama')->where('id','=',$orderTrack->id_staff_pengirim)->first();
-
+   
     $pdf = PDF::loadview('administrasi/pesanan/detail.cetakSJ',[
         'order' => $order,
         'items' => $items,

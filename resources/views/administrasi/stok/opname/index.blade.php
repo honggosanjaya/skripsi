@@ -50,10 +50,10 @@
               <td>{{ $product->kode_barang }}</td>
               <td>{{ $product->nama }}</td>
               <td>{{ $product->satuan }}</td>
-              <td class="text-center">{{ $product->min_stok }}</td>
-              <td class="text-center">{{ $product->max_stok }}</td>
-              <td class="text-center">{{ $product->stok }}</td>
-              <td class="text-center">{{ $product->stok + ($cartItem->attributes->jumlah ?? 0) }}</td>
+              <td class="text-center">{{ number_format($product->min_stok, 0, '', '.') }}</td>
+              <td class="text-center">{{ number_format($product->max_stok, 0, '', '.') }}</td>
+              <td class="text-center">{{ number_format($product->stok, 0, '', '.') }}</td>
+              <td class="text-center">{{ number_format($product->stok + ($cartItem->attributes->jumlah ?? 0), 0, '', '.') }}</td>
               <td>
                 <form action="{{ '/administrasi/stok/opname/final?route=opname' }}" method="POST"
                   enctype="multipart/form-data">

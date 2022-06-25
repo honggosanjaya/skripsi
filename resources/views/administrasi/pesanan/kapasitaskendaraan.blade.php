@@ -4,11 +4,12 @@
   <link href=" {{ mix('css/administrasi.css') }}" rel="stylesheet">
 @endpush
 @section('breadcrumbs')
-  <ol class="breadcrumb">
-    <li class="breadcrumb-item"><a href="/administrasi">Dashboard</a></li>
-    <li class="breadcrumb-item" aria-current="page"><a href="/administrasi/pesanan">Pesanan</a></li>
-    <li class="breadcrumb-item active" aria-current="page">Detail Pesanan</li>
-  </ol>
+<ol class="breadcrumb">
+  <li class="breadcrumb-item"><a href="/administrasi">Dashboard</a></li>
+  <li class="breadcrumb-item" aria-current="page"><a href="/administrasi/pesanan">Pesanan</a></li>
+  <li class="breadcrumb-item" aria-current="page"><a href="/administrasi/pesanan/detail/{{ $order->id }}">Detail Pesanan</a></li>
+  <li class="breadcrumb-item active" aria-current="page">Kapasitas Kendaraan</li>
+</ol>
 @endsection
 
 @section('main_content')

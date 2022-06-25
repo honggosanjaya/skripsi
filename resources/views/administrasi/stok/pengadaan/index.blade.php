@@ -50,7 +50,7 @@
                 <td>{{ $product->kode_barang }}</td>
                 <td>{{ $product->nama }}</td>
                 <td>{{ $product->satuan }}</td>
-                <td>{{ $product->max_pengadaan }}</td>
+                <td>{{ number_format($product->max_pengadaan, 0, '', '.') }}</td>
                 <td>
                   <form action="{{ route('cart.store') . '?route=pengadaan' }}" method="POST"
                     enctype="multipart/form-data">

@@ -1,5 +1,12 @@
 @extends('layouts/main')
-
+@section('breadcrumbs')
+  <ol class="breadcrumb">
+    <li class="breadcrumb-item"><a href="/administrasi">Dashboard</a></li>
+    <li class="breadcrumb-item"><a href="/administrasi/stok">Stok</a></li>
+    <li class="breadcrumb-item"><a href="/administrasi/stok/riwayat">Riwayat Pengadaan</a></li>
+    <li class="breadcrumb-item active" aria-current="page">Detail</li>
+  </ol>
+@endsection
 @section('main_content')
   
   <div class="container">
@@ -19,9 +26,9 @@
         <tr>
           <th scope="row">{{ $pengadaan->linkItem->kode_barang }}</th>
           <td>{{ $pengadaan->linkItem->nama }}</td>
-          <td>{{ $pengadaan->kuantitas }}</td>
+          <td>{{ number_format($pengadaan->kuantitas, 0, '', '.') }}</td>
           <td>{{ $pengadaan->linkItem->satuan }}</td>
-          <td>{{ $pengadaan->harga_total }}</td>
+          <td>{{ number_format($pengadaan->harga_total, 0, '', '.') }}</td>
         </tr>
         @endforeach
         <tr>
@@ -29,7 +36,7 @@
             <td></td>
             <td></td>
             <td class="fw-bold">Total</td>
-            <td class="fw-bold">{{ $total_harga->harga }}</td>
+            <td class="fw-bold">{{ number_format($total_harga->harga, 0, '', '.') }}</td>
         </tr>
       </tbody>
     </table>
