@@ -24,10 +24,10 @@
         @foreach ($pengadaans as $pengadaan)
           <tr>
             <th scope="row">{{ $loop->iteration }}</th>
-            <td>{{ $pengadaan->created_at }}</td>
+            <td>{{ date('d M Y G:i', strtotime($pengadaan->created_at)) }}</td>
             <td>{{ $pengadaan->no_nota }}</td>
             <td>{{ $pengadaan->keterangan }}</td>
-            <td>{{ $pengadaan->harga }}</td>
+            <td>{{ number_format($pengadaan->harga, 0, '', '.') }}</td>
             <td>
               <a href="/administrasi/stok/riwayat/detail/{{ $pengadaan->no_pengadaan }}"
                 class="btn btn-primary">Detail</a>

@@ -161,8 +161,8 @@
               </div>
             </div>
 
-            @if ($diajukan->linkOrderItem->count() - 1 > 0)
-              <p class="fs-7 mb-0">+ {{ $diajukan->linkOrderItem->count() - 1 }} item lainnya</p>
+            @if ($dikonfirmasiAdministrasi->linkOrderItem->count() - 1 > 0)
+              <p class="fs-7 mb-0">+ {{ $dikonfirmasiAdministrasi->linkOrderItem->count() - 1 }} item lainnya</p>
             @endif
           </div>
 

@@ -21,14 +21,14 @@
           <th scope="col" class="text-center">Alamat</th>
           <th scope="col" class="text-center">Pengirim</th>
           <th scope="col" class="text-center">Status Retur</th>
-          <th scope="col" class="text-center">Action</th>
+          <th scope="col" class="text-center">Aksi</th>
         </tr>
       </thead>
       <tbody>
         @foreach ($returs as $retur)
           <tr>
             <th scope="row" class="text-center">{{ $retur->no_retur }}</th>
-            <td>{{ date('d-m-Y', strtotime($retur->created_at)) }}</td>
+            <td>{{ date('d M Y', strtotime($retur->created_at)) }}</td>
             <td>{{ $retur->linkCustomer->nama }}</td>
             <td>{{ $retur->linkCustomer->alamat_utama . ' ' . $retur->linkCustomer->alamat_nomor }}</td>
             <td>{{ $retur->linkStaffPengaju->nama }}</td>

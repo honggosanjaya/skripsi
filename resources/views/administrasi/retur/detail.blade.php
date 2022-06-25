@@ -20,7 +20,7 @@
       <h1 class="fs-4 fw-bold mb-4">Retur - {{ $retur->no_retur }}</h1>
 
       <div class="informasi-list mb_big">
-        <span><b>Tanggal Pengajuan</b> {{ date('d-m-Y', strtotime($retur->created_at)) }}</span>
+        <span><b>Tanggal Pengajuan</b> {{ date('d M Y', strtotime($retur->created_at)) }}</span>
         <span><b>Nama Customer</b> {{ $retur->linkCustomer->nama }}</span>
         <span><b>Alamat Customer</b> {{ $retur->linkCustomer->full_alamat }}</span>
         <span><b>Wilayah</b> {{ $wilayah[0] }}</span>

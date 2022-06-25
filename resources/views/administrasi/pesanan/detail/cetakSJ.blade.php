@@ -44,7 +44,7 @@
                 <tr>
                     <td>{{ $item->linkItem->kode_barang }}</td>
                     <td>{{ $item->linkItem->nama }}</td>
-                    <td>{{ $item->kuantitas }}</td>
+                    <td>{{ number_format($item->kuantitas,0,"",".") }}</td>
                     <td style="border:none"></td>
                 </tr>
             @endforeach
@@ -54,7 +54,7 @@
 
         <br>
        
-        <h5 class="text-right">Malang, {{ $date }}</h5>                          
+        <h5 class="text-right">Malang, {{ date('d M Y', strtotime($date)) }}</h5>                          
          
        
                 
@@ -75,7 +75,7 @@
                 <td style="padding:5%"></td>
             </tr>
             <tr>
-                <td>........................</td>
+                <td>{{ $order->linkCustomer->nama }}</td>
                 <td>{{ $pengirim->nama ?? "" }}</td>
                 <td>{{ $mengetahui->nama ?? "" }}</td>
             </tr>
