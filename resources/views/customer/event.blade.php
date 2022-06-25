@@ -70,7 +70,8 @@
         </div>
       </div>
     @endforeach
+    <div class="d-flex justify-content-center mt-4">
+      {{ $events->links() }}
+    </div>
   </div>
-
-  {{ $events->links() }}
 @endsection

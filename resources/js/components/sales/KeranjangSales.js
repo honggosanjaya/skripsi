@@ -437,9 +437,9 @@ const KeranjangSales = ({ location }) => {
                 <Table>
                   <thead>
                     <tr>
-                      <th>Nama Item</th>
-                      <th>Kuantitas</th>
-                      <th>Harga</th>
+                      <th className='text-center'>Nama</th>
+                      <th className='text-center'>Kuantitas</th>
+                      <th className='text-center'>Harga</th>
                     </tr>
                   </thead>
                   <tbody>

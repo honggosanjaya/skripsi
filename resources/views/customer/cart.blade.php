@@ -38,7 +38,7 @@
       </tbody>
       <tfoot>
         <td colspan="2" class="table-active">Sub-Total</td>
-        <td>{{ number_format($total, 0, '', '.') }}</td>
+        <td>Rp {{ number_format($total, 0, '', '.') }}</td>
       </tfoot>
     </table>
 
