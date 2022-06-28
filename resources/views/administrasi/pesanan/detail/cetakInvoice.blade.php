@@ -52,7 +52,7 @@
                     <h4 class="mb-0">Tanggal Pesan : </h4>
                 </td>
                 <td style="width: 55%">
-                    <h5 class="font-weight-normal p-0">{{ date('d-m-Y', strtotime($order->linkInvoice->created_at)) }}</h5>
+                    <h5 class="font-weight-normal p-0">{{ date('d M Y', strtotime($order->linkInvoice->created_at)) }}</h5>
                 </td>                
             </tr>
             
@@ -75,7 +75,7 @@
                     <td>{{ $item->linkItem->kode_barang }}</td>
                     <td>{{ $item->linkItem->nama }}</td>
                     <td>{{ number_format($item->harga_satuan,0,"",".") }}</td>
-                    <td>{{ $item->kuantitas }}</td>
+                    <td>{{ number_format($item->kuantitas,0,"",".") }}</td>
                     <td>{{ number_format($item->harga_satuan * $item->kuantitas,0,"",".") }}</td>
                 </tr>
             @endforeach

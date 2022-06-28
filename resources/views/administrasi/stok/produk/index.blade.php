@@ -75,11 +75,11 @@
               @endif
             </td>
             <td>{{ $item->satuan }}</td>
-            <td>{{ $item->stok }}</td>
-            <td>{{ $item->min_stok }}</td>
-            <td>{{ $item->max_stok }}</td>
+            <td>{{ number_format($item->stok, 0, '', '.') }}</td>
+            <td>{{ number_format($item->min_stok, 0, '', '.') }}</td>
+            <td>{{ number_format($item->max_stok, 0, '', '.') }}</td>
             <td>{{ number_format($item->harga_satuan, 0, '', '.') }}</td>
-            <td class="text-capitalize">{{ $item->volume }}</td>
+            <td class="text-capitalize">{{ number_format($item->volume, 0, '', '.') }}</td>
             <td>{{ $item->linkStatus->nama }}</td>
             <td>
               <div class="d-flex flex-column">

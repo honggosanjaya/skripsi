@@ -30,7 +30,7 @@
           <th scope="col" class="text-center">Harga Total (Rp)</th>
           <th scope="col" class="text-center">Status Pesanan</th>
           <th scope="col" class="text-center">Tanggal Dibuat</th>
-          <th scope="col" class="text-center">Action</th>
+          <th scope="col" class="text-center">Aksi</th>
         </tr>
       </thead>
       <tbody>
@@ -40,9 +40,9 @@
             <td>{{ $order->linkCustomer->nama ?? null }}</td>
             <td>{{ $order->linkStaff->nama ?? null }}</td>
             <td>{{ $order->linkInvoice->nomor_invoice ?? null }}</td>
-            <td>{{ $order->linkInvoice->harga_total ?? '-' }}</td>
+            <td>{{ number_format($order->linkInvoice->harga_total, 0, '', '.') ?? '-' }}</td>
             <td class="text-capitalize">{{ $order->linkOrderTrack->linkStatus->nama ?? 'null' }}</td>
-            <td>{{ date('d-m-Y', strtotime($order->created_at)) }}</td>
+            <td>{{ date('d M Y', strtotime($order->created_at)) }}</td>
             <td>
               <a href="/administrasi/pesanan/detail/{{ $order->id }}" class="btn btn-primary">
                 <span class="iconify fs-4 me-1" data-icon="fluent:apps-list-detail-24-filled"></span> Detail</a>

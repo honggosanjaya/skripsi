@@ -30,9 +30,9 @@
       <tr>
         <th scope="row">{{ $pengadaan->linkItem->kode_barang }}</th>
         <td>{{ $pengadaan->linkItem->nama }}</td>
-        <td>{{ $pengadaan->kuantitas }}</td>
+        <td>{{ number_format($pengadaan->kuantitas, 0, '', '.') }}</td>
         <td>{{ $pengadaan->linkItem->satuan }}</td>
-        <td>{{ $pengadaan->harga_total }}</td>
+        <td>{{ number_format($pengadaan->harga_total, 0, '', '.') }}</td>
       </tr>
       @endforeach
       <tr>
@@ -40,7 +40,7 @@
           <td></td>
           <td></td>
           <td class="fw-bold">Total</td>
-          <td class="fw-bold">{{ $total_harga->harga }}</td>
+          <td class="fw-bold">{{ number_format($total_harga->harga, 0, '', '.') }}</td>
       </tr>
     </tbody>
   </table>
@@ -51,7 +51,7 @@
               <td scope="col" style="width: 15%">No Nota</td>
               <td style="width: 20%">{{ $detail->no_nota }}</td>
               <td style="width: 10%">Tanggal</td>
-              <td>{{ $detail->created_at }}</td>
+              <td>{{ date('d M Y G:i', strtotime($detail->created_at)) }}</td>
           </tr>
           <tr>
               <td>Keterangan</td>
