@@ -10,7 +10,7 @@ const ListShipping = ({ listShipping, statusShipping, handleShow, keyword, setKe
             value={keyword || ''} onChange={(e) => setKeyword(e.target.value)}
             placeholder="Cari nama customer"
           />
-          <button type="submit" className="btn btn-primary"><span className="iconify me-2" data-icon="fe:search"></span>Cari</button>
+          <button type="submit" className="btn btn-primary"><span className="iconify" data-icon="fe:search"></span></button>
         </div>
       </form>
 
@@ -27,14 +27,14 @@ const ListShipping = ({ listShipping, statusShipping, handleShow, keyword, setKe
                 </Fragment>}
               <span><b>Alamat</b>{data.link_customer.full_alamat}</span>
               <span className='d-flex'>
-                <b>Jam Berangkat</b>
+                <b>Waktu Berangkat</b>
                 <div>{convertDate(data.link_order_track.waktu_berangkat)}
                 </div>
               </span>
               {(data.link_order_track.waktu_sampai)
                 ?
                 <span className='d-flex'>
-                  <b>Jam Sampai</b>
+                  <b>Waktu Sampai</b>
                   <div>{convertDate(data.link_order_track.waktu_sampai)}
                   </div>
                 </span> : ""}

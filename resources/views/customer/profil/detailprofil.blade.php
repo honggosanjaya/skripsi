@@ -42,4 +42,8 @@
   <a class="btn btn-outline-primary w-100 mt-5" href="/customer/profil/ubahpassword">
     Ubah Password
   </a>
+
+  <small class="text-danger text-center d-block mt-5"><span class="fw-bold">NB:</span> Apabila Terdapat Perubahan Data
+    Sampaikan Pada
+    Sales</small>
 @endsection

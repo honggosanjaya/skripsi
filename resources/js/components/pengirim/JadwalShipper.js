@@ -255,7 +255,8 @@ const ShippingShipper = () => {
                   name="radio"
                   value={radio.value}
                   checked={statusShipping == radio.value}
-                  onChange={(e) => setStatusShipping(e.currentTarget.value)}>
+                  onChange={(e) => setStatusShipping(e.currentTarget.value)}
+                  className="ms-1 me-1">
                   {radio.name}
                 </ToggleButton>
               ))}
@@ -283,7 +284,7 @@ const ShippingShipper = () => {
             </Button>
 
             <Button variant="secondary" onClick={openCamera} className="ms-3">
-              <span className="iconify fs-3 me-1" data-icon="charm:camera"></span>Camera
+              <span className="iconify fs-3 me-1" data-icon="charm:camera"></span>Kamera
             </Button>
 
             {isFromGalery && <Fragment>
