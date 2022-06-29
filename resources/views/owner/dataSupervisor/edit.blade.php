@@ -17,7 +17,7 @@
       <div class="row">
         <div class="col">
           <div class="mb-3">
-            <label for="nama" class="form-label">Nama</label>
+            <label for="nama" class="form-label">Nama <span class='text-danger'>*</span></label>
             <input type="text" class="form-control @error('nama') is-invalid @enderror" id="nama" name="nama"
               value="{{ old('nama', $supervisor->nama) }}">
             @error('nama')
@@ -32,7 +32,7 @@
       <div class="row">
         <div class="col-12 col-sm-6">
           <div class="mb-3">
-            <label for="email" class="form-label">Email</label>
+            <label for="email" class="form-label">Email <span class='text-danger'>*</span></label>
             <input type="email" class="form-control @error('email') is-invalid @enderror" id="email" name="email"
               value="{{ old('email', $supervisor->email) }}">
             @error('email')
@@ -44,7 +44,7 @@
         </div>
         <div class="col-12 col-sm-6">
           <div class="mb-3">
-            <label for="telepon" class="form-label">Telepon</label>
+            <label for="telepon" class="form-label">Telepon <span class='text-danger'>*</span></label>
             <input type="text" class="form-control @error('telepon') is-invalid @enderror" id="telepon"
               name="telepon" value="{{ old('telepon', $supervisor->telepon) }}">
             @error('telepon')

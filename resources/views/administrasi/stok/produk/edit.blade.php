@@ -16,7 +16,7 @@
       <div class="row">
         <div class="col">
           <div class="mb-3">
-            <label for="nama" class="form-label">Nama</label>
+            <label for="nama" class="form-label">Nama <span class='text-danger'>*</span></label>
             <input type="text" class="form-control @error('nama') is-invalid @enderror" id="nama" name="nama"
               value="{{ old('nama', $item->nama) }}">
             @error('nama')
@@ -28,7 +28,7 @@
         </div>
         <div class="col">
           <div class="mb-3">
-            <label for="kode_barang" class="form-label">Kode Barang</label>
+            <label for="kode_barang" class="form-label">Kode Barang <span class='text-danger'>*</span></label>
             <input type="text" class="form-control @error('kode_barang') is-invalid @enderror" id="kode_barang"
               name="kode_barang" value="{{ old('kode_barang', $item->kode_barang) }}">
             @error('kode_barang')
@@ -94,7 +94,7 @@
       <div class="row">
         <div class="col">
           <div class="mb-3">
-            <label for="satuan" class="form-label">Satuan</label>
+            <label for="satuan" class="form-label">Satuan <span class='text-danger'>*</span></label>
             <input type="text" class="form-control @error('satuan') is-invalid @enderror" id="satuan" name="satuan"
               value="{{ old('satuan', $item->satuan) }}">
             @error('satuan')
@@ -106,7 +106,7 @@
         </div>
         <div class="col">
           <div class="mb-3">
-            <label for="harga_satuan" class="form-label">Harga Satuan</label>
+            <label for="harga_satuan" class="form-label">Harga Satuan <span class='text-danger'>*</span></label>
             <div class="input-group">
               <span class="input-group-text" id="basic-addon1">Rp.</span>
               <input type="text" class="form-control @error('harga_satuan') is-invalid @enderror" id="harga_satuan"
@@ -124,7 +124,7 @@
       <div class="row">
         <div class="col">
           <div class="mb-3">
-            <label for="volume" class="form-label">Volume Barang</label>
+            <label for="volume" class="form-label">Volume Barang <span class='text-danger'>*</span></label>
             <input type="number" class="form-control @error('volume') is-invalid @enderror" id="volume" name="volume"
               value="{{ old('volume', $item->volume) }}" step=".01">
             @error('volume')

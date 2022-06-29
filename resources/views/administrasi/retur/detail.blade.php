@@ -110,10 +110,11 @@
 
       <div class="row">
         <div class="d-flex flex-row justify-content-end">
-          <a href="/administrasi/retur/cetak-retur/{{ $retur->no_retur }}" class="btn btn-warning mx-1"><i
+          <a href="/administrasi/retur/cetak-retur/{{ $retur->no_retur }}" class="btn btn_purple mx-1"><i
               class="bi bi-download px-1"></i>Unduh Retur Penjualan</a>
           @if ($retur->status == 13)
-            <button data-id="{{ $retur->linkCustomer->id }}" class="btn btn-success button-submit mx-1">Konfirmasi</a>
+            <button data-id="{{ $retur->linkCustomer->id }}" class="btn btn-success button-submit mx-1"><span
+                class="iconify fs-3 me-1" data-icon="healthicons:i-documents-accepted-outline"></span>Konfirmasi</a>
           @endif
         </div>
 

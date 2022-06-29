@@ -15,7 +15,7 @@
       <div class="row">
         <div class="col">
           <div class="mb-3">
-            <label for="nama_jenis" class="form-label">Nama Jenis Customer</label>
+            <label for="nama_jenis" class="form-label">Nama Jenis Customer <span class='text-danger'>*</span></label>
             <input type="text" class="form-control @error('nama_jenis') is-invalid @enderror" id="nama_jenis"
               name="nama_jenis" value="{{ old('nama_jenis') }}">
             @error('nama_jenis')
@@ -27,7 +27,7 @@
         </div>
         <div class="col">
           <div class="mb-3">
-            <label for="diskon" class="form-label">Diskon (0-100) %</label>
+            <label for="diskon" class="form-label">Diskon (0-100) % <span class='text-danger'>*</span></label>
             <input type="number" class="form-control @error('diskon') is-invalid @enderror" id="diskon" name="diskon"
               value="{{ old('diskon') }}" min="0" max="100" step=".01">
             @error('diskon')
@@ -40,7 +40,7 @@
       </div>
 
       <div class="mb-3">
-        <label for="keterangan" class="form-label">Keterangan</label>
+        <label for="keterangan" class="form-label">Keterangan <span class='text-danger'>*</span></label>
         <textarea class="form-control @error('keterangan') is-invalid @enderror" id="keterangan" name="keterangan">{{ old('keterangan') }}</textarea>
         @error('keterangan')
           <div class="invalid-feedback">

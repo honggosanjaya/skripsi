@@ -16,7 +16,7 @@
       <div class="row">
         <div class="col">
           <div class="mb-3">
-            <label for="kode_event" class="form-label">Kode Event</label>
+            <label for="kode_event" class="form-label">Kode Event <span class='text-danger'>*</span></label>
             <input type="text" class="form-control @error('kode_event') is-invalid @enderror" id="kode_event"
               name="kode_event" value="{{ old('kode_event') }}">
             @error('kode_event')
@@ -28,7 +28,7 @@
         </div>
         <div class="col">
           <div class="mb-3">
-            <label for="nama_event" class="form-label">Nama Event</label>
+            <label for="nama_event" class="form-label">Nama Event <span class='text-danger'>*</span></label>
             <input type="text" class="form-control @error('nama_event') is-invalid @enderror" id="nama_event"
               name="nama_event" value="{{ old('nama_event') }}">
             @error('nama_event')
@@ -77,7 +77,7 @@
       <div class="mb-3">
         <div class="row">
           <div class="col-6">
-            <label for="tanggal_mulai" class="form-label">Tanggal Mulai</label>
+            <label for="tanggal_mulai" class="form-label">Tanggal Mulai <span class='text-danger'>*</span></label>
             <input type="date" class="form-control @error('tanggal_mulai') is-invalid @enderror" id="tanggal_mulai"
               name="tanggal_mulai">
             @error('tanggal_mulai')
@@ -88,7 +88,7 @@
           </div>
 
           <div class="col-6">
-            <label for="tanggal_selesai" class="form-label">Tanggal Selesai</label>
+            <label for="tanggal_selesai" class="form-label">Tanggal Selesai <span class='text-danger'>*</span></label>
             <input type="date" class="form-control @error('tanggal_selesai') is-invalid @enderror" id="tanggal_selesai"
               name="tanggal_selesai" value="{{ old('tanggal_selesai') }}">
             @error('tanggal_selesai')
@@ -127,7 +127,7 @@
       </div>
 
       <div class="mb-3">
-        <label for="keterangan" class="form-label">Keterangan</label>
+        <label for="keterangan" class="form-label">Keterangan <span class='text-danger'>*</span></label>
         <textarea class="form-control @error('keterangan') is-invalid @enderror" id="keterangan" name="keterangan"
           value="{{ old('keterangan') }}"></textarea>
         @error('keterangan')

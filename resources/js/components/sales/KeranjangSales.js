@@ -396,12 +396,14 @@ const KeranjangSales = ({ location }) => {
         {!isLoading && !loadingDataUser && produks.length > 0 &&
           <div className="mb-btnBottom">
             <label className="form-label mt-3">Keterangan Pesanan</label>
-            <input type="text" className="form-control"
+            <textarea className="form-control" value={keteranganOrderItem || ''} onChange={(e) => setKeteranganOrderItem(e.target.value)} />
+
+            {/* <input type="text" className="form-control"
               value={keteranganOrderItem || ''}
               onChange={(e) => setKeteranganOrderItem(e.target.value)}
-            />
+            /> */}
 
-            <label className="form-label mt-3">Estimasi Waktu Pengiriman</label>
+            <label className="form-label mt-3">Estimasi Waktu Pengiriman <span className='text-danger'>*</span></label>
             <div className="input-group">
               <input type="number" className="form-control"
                 value={estimasiWaktuPengiriman}
@@ -409,7 +411,7 @@ const KeranjangSales = ({ location }) => {
               />
               <div className="border p-2 d-flex justify-content-center align-items-center rounded-end">Hari</div>
             </div>
-            {!estimasiWaktuPengiriman && <small className='text-danger d-block'>Estimasi waktu pengiriman wajib diisi</small>}
+            {/* {!estimasiWaktuPengiriman && <small className='text-danger d-block'>Estimasi waktu pengiriman wajib diisi</small>} */}
 
             <label className="form-label mt-3">Kode Event</label>
             <div className="input-group">
@@ -422,7 +424,7 @@ const KeranjangSales = ({ location }) => {
             {errorKodeEvent && <small className='text-danger d-block'>{errorKodeEvent}</small>}
             {hargaPromo > 0 && <small className='text-success d-block'>Eksta potongan {hargaPromo}</small>}
 
-            <label className="form-label mt-3">Tipe Retur</label>
+            <label className="form-label mt-3">Tipe Retur <span className='text-danger'>*</span></label>
             <select className="form-select mb-3" value={tipeRetur} onChange={(e) => setTipeRetur(e.target.value)}>
               {pilihanRetur.length && pilihanRetur.map((pilihan, index) => (
                 <option value={pilihan.id} key={index}>{pilihan.nama}</option>
