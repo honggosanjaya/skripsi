@@ -39,15 +39,15 @@
         <div class="d-flex flex-row justify-content-between">
 
           <div>
-            @if ($order->linkOrderTrack->status > 20 && $order->linkOrderTrack->status < 25)
+            {{-- @if ($order->linkOrderTrack->status > 20 && $order->linkOrderTrack->status < 25)
               <a href="/administrasi/pesanan/detail/{{ $order->id }}/cetak-memo" class="btn btn-primary mx-1"><i
                   class="bi bi-download px-1"></i>Unduh Memo Persiapan Barang</a>
               <a href="/administrasi/pesanan/detail/{{ $order->id }}/cetak-invoice" class="btn btn_purple mx-1"><i
                   class="bi bi-download px-1"></i>Unduh Invoice</a>
               <a href="/administrasi/pesanan/detail/{{ $order->id }}/cetak-sj" class="btn btn-success mx-1"><i
                   class="bi bi-download px-1"></i>Unduh Surat Jalan</a>
-            @endif
-            {{-- @if ($order->linkOrderTrack->status == 21)
+            @endif --}}
+            @if ($order->linkOrderTrack->status == 21)
             <a href="/administrasi/pesanan/detail/{{ $order->id }}/cetak-memo" class="btn btn-primary mx-1"><i
                 class="bi bi-download px-1"></i>Unduh Memo Persiapan Barang</a>
             @endif
@@ -58,7 +58,7 @@
             @if ($order->linkOrderTrack->status > 20 && $order->linkOrderTrack->status < 25)
             <a href="/administrasi/pesanan/detail/{{ $order->id }}/cetak-invoice" class="btn btn-secondary mx-1"><i
                 class="bi bi-download px-1"></i>Unduh Invoice</a>
-            @endif --}}
+            @endif
           </div>
         </div>
       </div>
@@ -89,7 +89,7 @@
                   class="bi bi-eye-fill p-1"></i>Kapasitas Kendaraan</a>
             @endif
 
-            @if ($order->linkOrderTrack->status >= 22 || $order->linkOrderTrack->status < 25)
+            @if ($order->linkOrderTrack->status >= 22 && $order->linkOrderTrack->status < 25)
               <a class="btn btn-primary mt-3 d-inline"
                 href="/administrasi/pesanan/detail/{{ $order->id }}/pengiriman">
                 <span class="iconify fs-4 me-1" data-icon="fluent:apps-list-detail-24-filled"></span>Detail Pengiriman
