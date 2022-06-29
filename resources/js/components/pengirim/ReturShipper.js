@@ -1,4 +1,4 @@
-import React, { useContext, useState, useEffect, useRef } from 'react';
+import React, { useContext, useState, useEffect, useRef, Fragment } from 'react';
 import axios from 'axios';
 import { useHistory, useParams } from 'react-router-dom';
 import HeaderShipper from './HeaderShipper';
@@ -324,7 +324,7 @@ const ReturShipper = () => {
           </div>}
 
         {cartItems.length > 0 && <div className="mt-3">
-          <h1 className='fs-5 fw-bold'>Rincian Retur</h1>
+          <h1 className='fs-5 fw-bold mt-4'>Rincian Retur</h1>
           {cartItems.map((item) => (
             <div className="info-product_retur mt-2" key={item.id}>
               <div className="d-flex align-items-center border-bottom">
@@ -339,7 +339,15 @@ const ReturShipper = () => {
               <span className='title'>Alasan</span><span className='desc'>{item.alasan}</span>
             </div>
           ))}
-          {cartItems.length > 0 && <button className="btn btn-warning mt-3 float-end" onClick={handlePengajuanRetur}>Ajukan Retur</button>}
+          {cartItems.length > 0 &&
+            <Fragment>
+              <div className="row justify-content-end mt-4">
+                <div className="col d-flex justify-content-end">
+                  <button className="btn btn-success mt-3" onClick={handlePengajuanRetur}><span className="iconify fs-3 me-1" data-icon="ic:baseline-assignment-return"></span>Ajukan Retur</button>
+                </div>
+              </div>
+            </Fragment>
+          }
         </div>}
       </div>
     </main>

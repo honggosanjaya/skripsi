@@ -178,7 +178,7 @@ const TripSales = () => {
         }
         else {
           setErrorValidasi(response.data.validate_err);
-          throw Error("Error validasi");
+          // throw Error("Error validasi");
         }
       })
       .then(dataCustomer => axios.post(`${window.location.origin}/api/tripCustomer/foto/${dataCustomer.id}`,
@@ -213,7 +213,7 @@ const TripSales = () => {
         {error && <AlertComponent errorMsg={error} />}
         <form>
           <div className={`${errorValidasi.nama ? '' : 'mb-3'}`}>
-            <label className="form-label">Nama Customer</label>
+            <label className="form-label">Nama Customer <span className='text-danger'>*</span></label>
             <input type="text" className="form-control"
               value={namaCust || ''}
               onChange={(e) => setNamaCust(e.target.value)} />
@@ -230,7 +230,7 @@ const TripSales = () => {
           {errorValidasi.email && <small className="text-danger mb-3">{errorValidasi.email}</small>}
 
           <div className={`${errorValidasi.alamat_utama ? '' : 'mb-3'}`}>
-            <label className="form-label">Alamat Utama</label>
+            <label className="form-label">Alamat Utama <span className='text-danger'>*</span></label>
             <input type="text" className="form-control"
               value={alamatUtama}
               onChange={(e) => setAlamatUtama(e.target.value)} />
@@ -245,7 +245,7 @@ const TripSales = () => {
           </div>
 
           <div className="mb-3">
-            <label className="form-label">Jenis Customer</label>
+            <label className="form-label">Jenis Customer <span className='text-danger'>*</span></label>
             <select
               value={jenis}
               onChange={(e) => setJenis(e.target.value)}
@@ -255,7 +255,7 @@ const TripSales = () => {
           </div>
 
           <div className="mb-3">
-            <label className="form-label">Wilayah</label>
+            <label className="form-label">Wilayah <span className='text-danger'>*</span></label>
             <select className="form-select"
               value={wilayah}
               onChange={(e) => setWilayah(e.target.value)}>
@@ -278,7 +278,7 @@ const TripSales = () => {
           </div>
 
           <div className="mb-3">
-            <label className="form-label">Durasi Trip</label>
+            <label className="form-label">Durasi Trip <span className='text-danger'>*</span></label>
             <div className="position-relative">
               <input type="number" className="form-control"
                 value={durasiTrip}

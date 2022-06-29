@@ -69,9 +69,13 @@
 
     <div class="row justify-content-end mt-4">
       <div class="col d-flex justify-content-end">
-        <a type="button" class="btn btn-danger me-3" href="/administrasi/stok/opname/clear?route=opname">Remove All
-          Cart</a>
-        <a type="button" class="btn btn-primary" href="/administrasi/stok/opname/tambahopname?route=opname">Submit</a>
+        <a type="button" class="btn btn-danger me-3" href="/administrasi/stok/opname/clear?route=opname">
+          <span class="iconify fs-3 me-1" data-icon="bxs:trash"></span>Remove All Cart
+        </a>
+        <a type="button" class="btn btn-success" href="/administrasi/stok/opname/tambahopname?route=opname">
+          <span class="iconify fs-3 me-1" data-icon="akar-icons:double-check"></span>
+          Submit
+        </a>
       </div>
     </div>
   </div>

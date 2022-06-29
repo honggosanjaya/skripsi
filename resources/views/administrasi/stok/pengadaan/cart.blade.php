@@ -65,7 +65,7 @@
         </div>
         <div class="col">
           <div class="mb-3">
-            <label for="no_nota" class="form-label">No Nota</label>
+            <label for="no_nota" class="form-label">No Nota <span class='text-danger'>*</span></label>
             <input type="text" class="form-control @error('no_nota') is-invalid @enderror" id="no_nota"
               name="no_nota" value="{{ old('no_nota') }}">
             @error('no_nota')
@@ -78,7 +78,7 @@
       </div>
 
       <div class="mb-3">
-        <label for="keterangan" class="form-label">Keterangan</label>
+        <label for="keterangan" class="form-label">Keterangan <span class='text-danger'>*</span></label>
         <textarea class="form-control @error('keterangan') is-invalid @enderror" id="keterangan" name="keterangan">{{ old('keterangan') }}</textarea>
         @error('keterangan')
           <div class="invalid-feedback">
@@ -91,10 +91,13 @@
         <div class="col d-flex justify-content-end">
           <form action="{{ route('cart.clear') . '?route=pengadaan' }}" method="POST">
             @csrf
-            <button class="btn btn-danger me-2">Remove All Cart</button>
+            <button class="btn btn-danger me-2">
+              <span class="iconify fs-3 me-1" data-icon="bxs:trash"></span>Remove All Car
+            </button>
           </form>
 
-          <button type="submit" class="btn btn-primary me-4">Submit</button>
+          <button type="submit" class="btn btn-success"><span class="iconify fs-3 me-1"
+              data-icon="akar-icons:double-check"></span>Submit</button>
         </div>
       </div>
     </form>

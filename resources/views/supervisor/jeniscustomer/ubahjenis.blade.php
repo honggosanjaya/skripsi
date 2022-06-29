@@ -17,7 +17,7 @@
       <div class="row">
         <div class="col">
           <div class="mb-3">
-            <label for="nama" class="form-label">Nama Jenis Customer</label>
+            <label for="nama" class="form-label">Nama Jenis Customer <span class='text-danger'>*</span></label>
             <input type="text" class="form-control @error('nama') is-invalid @enderror" id="nama" name="nama"
               value="{{ old('nama', $customertype->nama) }}">
             @error('nama')
@@ -29,7 +29,7 @@
         </div>
         <div class="col">
           <div class="mb-3">
-            <label for="diskon" class="form-label">Diskon (0-100) %</label>
+            <label for="diskon" class="form-label">Diskon (0-100) % <span class='text-danger'>*</span></label>
             <input type="number" class="form-control @error('diskon') is-invalid @enderror" id="diskon" name="diskon"
               value="{{ old('diskon', $customertype->diskon) }}" min="0" max="100" step=".01">
             @error('diskon')
@@ -43,7 +43,7 @@
       <div class="row">
         <div class="col">
           <div class="mb-3">
-            <label for="keterangan" class="form-label">Keterangan</label>
+            <label for="keterangan" class="form-label">Keterangan <span class='text-danger'>*</span></label>
             <textarea class="form-control @error('keterangan') is-invalid @enderror" id="keterangan" name="keterangan">
             {{ $customertype->keterangan }}
             </textarea>

@@ -24,7 +24,7 @@
       <div class="row">
         <div class="col">
           <div class="mb-3">
-            <label for="nama_kendaraan" class="form-label">Nama Kendaraan</label>
+            <label for="nama_kendaraan" class="form-label">Nama Kendaraan <span class='text-danger'>*</span></label>
             <input type="text" class="form-control @error('nama_kendaraan') is-invalid @enderror" id="nama_kendaraan"
               name="nama_kendaraan" value="{{ old('nama_kendaraan') }}">
             @error('nama_kendaraan')
@@ -36,7 +36,7 @@
         </div>
         <div class="col">
           <div class="mb-3">
-            <label for="plat_kendaraan" class="form-label">Plat Nomor Kendaraan</label>
+            <label for="plat_kendaraan" class="form-label">Plat Nomor Kendaraan <span class='text-danger'>*</span></label>
             <input type="text" class="form-control @error('plat_kendaraan') is-invalid @enderror" id="plat_kendaraan"
               name="plat_kendaraan" value="{{ old('plat_kendaraan') }}">
             @error('plat_kendaraan')
@@ -51,7 +51,8 @@
       <div class="row">
         <div class="col">
           <div class="mb-3">
-            <label for="kapasitas_harga" class="form-label">Kapasitas Harga (Rp)</label>
+            <label for="kapasitas_harga" class="form-label">Kapasitas Harga (Rp) <span
+                class='text-danger'>*</span></label>
             <input type="number" class="form-control @error('kapasitas_harga') is-invalid @enderror" id="kapasitas_harga"
               name="kapasitas_harga" value="{{ old('kapasitas_harga') }}" step=".01">
             @error('kapasitas_harga')
@@ -63,7 +64,8 @@
         </div>
         <div class="col">
           <div class="mb-3">
-            <label for="kapasitas_volume" class="form-label">Kapasitas Volume (Cm3)</label>
+            <label for="kapasitas_volume" class="form-label">Kapasitas Volume (Cm3) <span
+                class='text-danger'>*</span></label>
             <input type="number" class="form-control @error('kapasitas_volume') is-invalid @enderror"
               id="kapasitas_volume" name="kapasitas_volume" value="{{ old('kapasitas_volume') }}">
             @error('kapasitas_volume')

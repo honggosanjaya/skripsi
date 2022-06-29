@@ -288,7 +288,7 @@ const ShippingShipper = () => {
             </Button>
 
             {isFromGalery && <Fragment>
-              <label className="form-label d-block mt-4">Foto Bukti Pengiriman</label>
+              <label className="form-label d-block mt-4">Foto Bukti Pengiriman <span className='text-danger'>*</span></label>
               {$imagePreview && $imagePreview}
               <input
                 type="file"

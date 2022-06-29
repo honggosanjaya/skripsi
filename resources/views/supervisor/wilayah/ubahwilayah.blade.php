@@ -18,7 +18,7 @@
       <div class="row">
         <div class="col">
           <div class="mb-3">
-            <label for="nama_wilayah" class="form-label">Nama Wilayah Customer</label>
+            <label for="nama_wilayah" class="form-label">Nama Wilayah Customer <span class='text-danger'>*</span></label>
             <input type="text" class="form-control @error('nama_wilayah') is-invalid @enderror" id="nama_wilayah"
               name="nama_wilayah" value="{{ old('nama_wilayah', $district->nama) }}">
             @error('nama_wilayah')
@@ -30,7 +30,8 @@
         </div>
         <div class="col">
           <div class="mb-3">
-            <label for="wilayah_parent" class="form-label">Wilayah Parent</label>
+            <label for="wilayah_parent" class="form-label">Wilayah yang Dituju (Parent) <span
+                class='text-danger'>*</span></label>
             <select class="form-select" name="id_parent">
               <option value="">-- Pilih Wilayah --</option>
               @foreach ($selections as $selection)
