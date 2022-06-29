@@ -56,9 +56,14 @@ class HomeController extends Controller
             ->with(['linkCustomer','linkStaffPengaju','linkStatus','linkInvoice'])
             ->orderBy('no_retur','DESC')->get();
 
-        $notifikasi['order_diajukan'] = 
+        $notifikasi['order_diajukan_salesman'] = 
         Order::whereHas('linkOrderTrack', function($q){
             $q->where('status',20);
+        })->with(['linkOrderTrack'])->get();
+
+        $notifikasi['order_diajukan_customer'] = 
+        Order::whereHas('linkOrderTrack', function($q){
+          $q->where('status',19);
         })->with(['linkOrderTrack'])->get();
 
         $notifikasi['order_selesai'] = 

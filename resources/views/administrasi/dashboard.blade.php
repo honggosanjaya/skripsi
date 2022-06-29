@@ -31,18 +31,47 @@
   <div class="order_notif m-fadeOut p-3">
     <ul class="nav nav-tabs" id="myTab" role="tablist">
       <li class="nav-item" role="presentation">
-        <a class="nav-link active" id="diajukan-tab" href="#diajukan" data-bs-toggle="tab" data-bs-target="#diajukan"
-          role="tab" aria-controls="diajukan" aria-selected="true">Diajukan</a>
+        <a class="nav-link active" id="customer-tab" href="#customer" data-bs-toggle="tab" data-bs-target="#customer"
+          role="tab" aria-controls="customer" aria-selected="true">Customer</a>
       </li>
+
+      <li class="nav-item" role="presentation">
+        <a class="nav-link" id="salesman-tab" href="#salesman" data-bs-toggle="tab" data-bs-target="#salesman"
+          role="tab" aria-controls="salesman" aria-selected="true">Salesman</a>
+      </li>
+
       <li class="nav-item" role="presentation">
         <a class="nav-link" id="selesai-tab" href="#selesai" data-bs-toggle="tab" data-bs-target="#selesai" role="tab"
-          aria-controls="selesai" aria-selected="true">selesai</a>
+          aria-controls="selesai" aria-selected="true">Selesai</a>
       </li>
     </ul>
 
     <div class="tab-content clearfix">
-      <div class="tab-pane fade show active" id="diajukan" role="tabpanel" aria-labelledby="diajukan-tab">
-        @foreach ($notifikasi['order_diajukan'] as $notif)
+      <div class="tab-pane fade show active" id="customer" role="tabpanel" aria-labelledby="customer-tab">
+        @foreach ($notifikasi['order_diajukan_customer'] as $notif)
+          <div class="card_notif">
+            <a href="/administrasi/pesanan/detail/{{ $notif->id }}" class="text-black text-decoration-none">
+              <div class="d-flex justify-content-between">
+                <p class="mb-0"><b>Tanggal Order:
+                  </b>{{ date('d F Y', strtotime($notif->linkOrderTrack->waktu_order)) }}</p>
+              </div>
+              @php
+                $total_pesanan = 0;
+                foreach ($notif->linkOrderItem as $orderitem) {
+                    $total_pesanan = $total_pesanan + $orderitem->harga_satuan * $orderitem->kuantitas;
+                }
+              @endphp
+              <p class="mb-0">Pesanan dari {{ $notif->linkCustomer->nama }} sebesar
+                Rp.
+                {{ number_format($total_pesanan, 0, '', '.') }}
+              </p>
+            </a>
+          </div>
+        @endforeach
+      </div>
+
+      <div class="tab-pane" id="salesman" role="tabpanel" aria-labelledby="salesman-tab">
+        @foreach ($notifikasi['order_diajukan_salesman'] as $notif)
           <div class="card_notif">
             <a href="/administrasi/pesanan/detail/{{ $notif->id }}" class="text-black text-decoration-none">
               <div class="d-flex justify-content-between">
@@ -63,6 +92,7 @@
           </div>
         @endforeach
       </div>
+
       <div class="tab-pane" id="selesai" role="tabpanel" aria-labelledby="selesai-tab">
         @foreach ($notifikasi['order_selesai'] as $notif)
           <div class="card_notif">
