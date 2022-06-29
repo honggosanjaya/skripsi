@@ -24,9 +24,6 @@
     @include('partials/header')
     <div class="container-fluid">
       <main class="mb-5 pb-5 position-relative">
-        <div class="breadcrumbs-container">
-          @yield('breadcrumbs')
-        </div>
         @yield('main_content')
       </main>
     </div>

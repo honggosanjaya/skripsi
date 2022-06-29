@@ -1,4 +1,8 @@
-<header class="d-flex justify-content-end">
+<header>
+  <div class="breadcrumbs-container">
+    @yield('breadcrumbs')
+  </div>
+
   @if (!empty($datadua['lihat_notif']))
     <div class="alert_trip d-flex justify-content-center align-items-center flex-column me-3">
       <i class="bi bi-bell-fill fs-3"></i>
