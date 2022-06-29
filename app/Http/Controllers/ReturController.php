@@ -139,15 +139,19 @@ class ReturController extends Controller
       $joins = Retur::with('linkItem')->where('no_retur',$retur->no_retur)->get();
       $administrasi = Staff::select('nama')->where('id','=',auth()->user()->id_users)->first();
       $retur_type = ReturType::get();
-      $invoices = Order::orderBy('id','DESC')->whereHas('linkOrderTrack', function($q){
-        $q->whereIn('status', [21,22,23,24]);
-      })->where('id_customer','=',$retur->linkCustomer->id)->with(['linkOrderTrack','linkInvoice'])
-      ->get();
-
       $total_harga = 0;
       for($k=0; $k<$joins->count();$k++){
         $total_harga = $total_harga + ($joins[$k]->kuantitas * $joins[$k]->harga_satuan);
       }
+      $invoices = Order::orderBy('id','DESC')->whereHas('linkOrderTrack', function($q){
+        $q->whereIn('status', [21,22,23,24]);
+      })
+      ->whereHas('linkInvoice', function($q) use($total_harga){
+        $q->where('harga_total', '>=',$total_harga);
+      })
+      ->where('id_customer','=',$retur->linkCustomer->id)->with(['linkOrderTrack','linkInvoice'])
+      ->get();
+
       
       return view('administrasi/retur.detail',[
         'retur' => $retur,
