@@ -7,7 +7,7 @@
 @endsection
 @section('main_content')
   <div id="report" class="px-3 px-sm-5 pt-4">
-    <form action="/owner/report/kinerja" method="get">
+    <form action="/{{ auth()->user()->linkStaff->linkStaffRole->nama  }}/report/kinerja" method="get">
       @csrf
 
       <div class="row">

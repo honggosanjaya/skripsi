@@ -1,4 +1,7 @@
 @extends('layouts/main')
+@push('CSS')
+  <link href=" {{ mix('css/supervisor.css') }}" rel="stylesheet">
+@endpush
 @section('breadcrumbs')
   <ol class="breadcrumb">
     <li class="breadcrumb-item"><a href="/supervisor">Dashboard</a></li>

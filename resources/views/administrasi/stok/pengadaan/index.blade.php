@@ -79,14 +79,14 @@
 
                     @if ($cartItem2 = \Cart::session(auth()->user()->id . 'pengadaan')->get($product->id) ?? null)
                       <div class="d-flex justify-content-between">
-                        <div>harga</div>
+                        <div>harga total</div>
                         <input data-iditem="{{ $product->id }}" type="number" class="form-control"
                           style="width: 300px" id="total_harga" name="total_harga"
                           value="{{ $cartItem2->attributes->total_harga }}">
                       </div>
                     @else
                       <div class="d-flex justify-content-between">
-                        <div>harga</div>
+                        <div>harga total</div>
                         <input data-iditem="{{ $product->id }}" type="number" class="form-control"
                           style="width: 300px" id="total_harga" name="total_harga">
                       </div>

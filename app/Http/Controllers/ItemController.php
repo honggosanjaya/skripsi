@@ -228,7 +228,7 @@ class ItemController extends Controller
       $validatedData['max_pengadaan'] = $request->max_stok??0 - $request->min_stok??0;
 
       if ($request->gambar) {
-        $file_name = time() . '.' . $request->gambar->extension();
+        $file_name = $validatedData['nama'] .'.' . $request->gambar->extension();
         $request->gambar->move(public_path('storage/item'), $file_name);
         $validatedData['gambar'] = $file_name;
       }    
@@ -290,7 +290,7 @@ class ItemController extends Controller
       $validatedData['status'] = $request->status;
 
       if ($request->gambar) {
-        $file_name = time() . '.' . $request->gambar->extension();
+        $file_name = $validatedData['nama'] .'.' . $request->gambar->extension();
         $request->gambar->move(public_path('storage/item'), $file_name);
         $validatedData['gambar'] = $file_name;
       }    

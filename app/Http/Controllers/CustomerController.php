@@ -266,7 +266,7 @@ class CustomerController extends Controller
       }
 
       if ($request->foto) {
-        $file_name = time() . '.' . $request->foto->extension();
+        $file_name = date('dFY') .'-'. $validatedData['nama'].'.' . $request->foto->extension();
         $request->foto->move(public_path('storage/customer'), $file_name);
         $validatedData['foto'] = $file_name;
       }    
@@ -337,7 +337,7 @@ class CustomerController extends Controller
       $validatedData['pengajuan_limit_pembelian'] = $request->pengajuan_limit_pembelian;
 
       if ($request->foto) {
-        $file_name = time() . '.' . $request->foto->extension();
+        $file_name = date('dFY') .'-'. $validatedData['nama'].'.' . $request->foto->extension();
         $request->foto->move(public_path('storage/customer'), $file_name);
         $validatedData['foto'] = $file_name;
       }
