@@ -119,28 +119,30 @@ cek kode tahap 2
 1-@Hactive inactive di data produk belum bisa
 1-@Htombol invoice jangan abu abu
 
-breadcrumb di kapasitas kendaraan kurang
-tambahkan * warna merah di label form yang required -> ini hubungan sama testing 8 golden rules
-tanggal min date
-cek store as (atur format nama file untuk semua role kecuali owner)
-tanggal min date date range
-cek store as
-foto profil blum ada
-event min date tidak boleh kurang dari hari ini
-tny honggo kerja npm alert sweet alert gimana
-ada pertimbangan untuk disable ubah event karena bisa merusak alur harga yang berlaku
-tanya richie public function viewRetur(Retur $retur){
-breadcrumb masi ada yang error bisa di cek di http://127.0.0.1:8000/administrasi/pesanan/detail/8/pengiriman dan belum lengkap bisa di cek di pengadaan
-detail omset owner masih belum bisa dipencet cek juga semua yang berkaitan dengan laporan hilangkan detail pada trip sales
-data customer urutkan dari active ke inactive sama juga dengan barang
-order customer blum ada notifikas
-limit pembelian juga belum ada
+1-R breadcrumb di kapasitas kendaraan kurang
+3-R cek store as (atur format nama file untuk semua role kecuali owner)
+1-R foto profil blum ada
+1-R breadcrumb masi ada yang error bisa di cek di http://127.0.0.1:8000/administrasi/pesanan/detail/8/pengiriman dan belum lengkap bisa di cek di pengadaan
+1-R harga pada pengadaan dirubah menjadi harga total
+1-R menghilangkan tombol penvcarian untuk datatable
+
+2-B tanggal min date
+2-B event min date tidak boleh kurang dari hari ini
+1-B tny honggo kerja npm alert sweet alert gimana
+2-B ada pertimbangan untuk disable ubah event karena bisa merusak alur harga yang berlaku
+1-B tanya richie public function viewRetur(Retur $retur){
+2-B pilih invoice pada retur perlu dikondisikan
+2-B detail omset owner masih belum bisa dipencet cek juga semua yang berkaitan dengan laporan hilangkan detail pada trip sales
+2-B data customer urutkan dari active ke inactive sama juga dengan barang
+
+2-H,B trip -> order -> keluar  counter_to_effective_call +2
+2-H tambahkan * warna merah di label form yang required -> ini hubungan sama testing 8 golden rules
+2-H order customer blum ada notifikas
+2-H limit pembelian juga belum ada
+3-H update stok toko ketika data tidak tersedia tidak dapat di rubah
 
 
-harga pada pengadaan dirubah menjadi harga total
-menghilangkan tombol penvcarian untuk datatable
-update stok toko ketika data tidak tersedia tidak dapat di rubah
-trip -> order -> keluar  counter_to_effective_call +2
+{skip} slow moving beda konteks
 
 
 
