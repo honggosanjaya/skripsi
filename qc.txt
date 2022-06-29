@@ -126,14 +126,14 @@ cek kode tahap 2
 1-R harga pada pengadaan dirubah menjadi harga total
 1-R menghilangkan tombol penvcarian untuk datatable
 
-2-B tanggal min date
-2-B event min date tidak boleh kurang dari hari ini
-1-B tny honggo kerja npm alert sweet alert gimana
-2-B ada pertimbangan untuk disable ubah event karena bisa merusak alur harga yang berlaku
-1-B tanya richie public function viewRetur(Retur $retur){
-2-B pilih invoice pada retur perlu dikondisikan
-2-B detail omset owner masih belum bisa dipencet cek juga semua yang berkaitan dengan laporan hilangkan detail pada trip sales
-2-B data customer urutkan dari active ke inactive sama juga dengan barang
+2-B@ tanggal min date
+2-B@ event min date tidak boleh kurang dari hari ini
+1-B@ tny honggo kerja npm alert sweet alert gimana
+2-B@ ada pertimbangan untuk disable ubah event karena bisa merusak alur harga yang berlaku
+1-B@ tanya richie public function viewRetur(Retur $retur){
+2-B@ pilih invoice pada retur perlu dikondisikan
+2-B@ detail omset owner masih belum bisa dipencet cek juga semua yang berkaitan dengan laporan hilangkan detail pada trip sales
+2-B@ data customer urutkan dari active ke inactive sama juga dengan barang
 
 2-H,B trip -> order -> keluar  counter_to_effective_call +2
 2-H tambahkan * warna merah di label form yang required -> ini hubungan sama testing 8 golden rules
@@ -141,11 +141,14 @@ cek kode tahap 2
 2-H limit pembelian juga belum ada
 3-H update stok toko ketika data tidak tersedia tidak dapat di rubah
 
+kode invoice retur dkk penulisan
 
 {skip} slow moving beda konteks
 
 
-
+!!kedepan!!
+bikin database baru bersama pembagian tugas dkk
+query sql
 
 
 

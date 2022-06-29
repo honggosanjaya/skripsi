@@ -197,15 +197,15 @@ class CustomerController extends Controller
 
     public function administrasiIndex(){
       return view('administrasi.dataCustomer.index', [
-        'customers' => Customer::orderBy('id','DESC')->get(),
+        'customers' => Customer::orderBy('status','ASC')->orderBy('id','DESC')->get(),
         "title" => "Data Customer"
       ]);
     }
 
     public function administrasiSearch(){
-      $customers =  Customer::where(strtolower('nama'),'like','%'.request('cari').'%')
+      $customers =  Customer::orderBy('status','ASC')->where(strtolower('nama'),'like','%'.request('cari').'%')
         ->orWhere(strtolower('email'),'like','%'.request('cari').'%')
-        ->paginate(10);
+        ->orderBy('status','ASC')->paginate(10);
 
       return view('administrasi.dataCustomer.index', [
         'customers' => $customers,
@@ -375,7 +375,7 @@ class CustomerController extends Controller
     // } 
 
     public function dataCustomer(){
-      $customers = Customer::paginate(10);
+      $customers = Customer::orderBy("status", "ASC")->paginate(10);
       return view('supervisor.datacustomer.dataCustomer', [
         'customers' => $customers,
         "title" => "Seluruh Data Customer"

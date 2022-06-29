@@ -9,6 +9,7 @@
 @endsection
 
 @section('main_content')
+<div id="event-form">
   <div class="pt-4 px-5">
     <form id="form_submit" class="form-submit" method="POST" action="/supervisor/event/tambahevent"
       enctype="multipart/form-data">
@@ -145,4 +146,8 @@
       </div>
     </form>
   </div>
+</div>
+@push('JS')
+<script src="{{ mix('js/supervisor.js') }}"></script>
+@endpush
 @endsection

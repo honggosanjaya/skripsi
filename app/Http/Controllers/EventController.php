@@ -13,7 +13,7 @@ use Illuminate\Validation\Rules;
 class EventController extends Controller
 {
   public function dataKodeEventAPI($kode){
-      $event = Event::where('kode', $kode)->first();
+      $event = Event::where('kode', $kode)->where('status','!=', 26)->first();
     
       if($event!==null){
         return response()->json([
@@ -29,16 +29,16 @@ class EventController extends Controller
   }
 
     public function index(){
-        $events = Event::paginate(10);
+        $events = Event::where('status','!=', 26)->paginate(10);
         return view('supervisor/event.index',[
             'events' => $events
         ]);
     }
 
     public function search(){
-        $events = Event::where(strtolower('nama'),'like','%'.request('cari').'%')
+        $events = Event::where('status','!=', 26)->where(strtolower('nama'),'like','%'.request('cari').'%')
         ->orWhere(strtolower('kode'),'like','%'.request('cari').'%')
-        ->paginate(10);
+        ->where('status','!=', 26)->paginate(10);
                
         return view('supervisor/event.index',[
             'events' => $events
@@ -185,9 +185,15 @@ class EventController extends Controller
         return redirect('/supervisor/event')->with('updateEventSuccess','Ubah Event berhasil');
     }
 
+    public function delete(Request $request, Event $event){
+        $event->update(['status'=>26]);        
+        
+        return redirect('/supervisor/event')->with('updateEventSuccess','data Event berhasil dihapus');
+    }
+
     //Controller untuk Customer
     public function customerIndex(){
-        $events = Event::paginate(10);
+        $events = Event::where('status','!=', 26)->paginate(10);
 
         return view('customer.event',[
             'events' => $events
@@ -195,7 +201,7 @@ class EventController extends Controller
     }
 
     public function customerSearch(){
-        $events = Event::where(strtolower('nama'),'like','%'.request('cari').'%')
+        $events = Event::where('status','!=', 26)->where(strtolower('nama'),'like','%'.request('cari').'%')
         ->orWhere(strtolower('kode'),'like','%'.request('cari').'%')
         ->paginate(10);
                

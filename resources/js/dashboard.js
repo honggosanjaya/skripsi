@@ -20,6 +20,25 @@ $(document).ready(function () {
   })
 });
 
+$(document).ready(function () {
+  $(document).on('click', '#event-form .delete_event', function (e) {
+    e.preventDefault();
+    Swal.fire({
+      title: 'Apakah anda yakin untuk menghapus data ?',
+      showDenyButton: true,
+      confirmButtonText: 'Ya',
+      denyButtonText: `Tidak`,
+    }).then((result) => {
+      if (result.isConfirmed) {
+        console.log('testing');
+        window.location.href = $('#event-form .delete_event').attr('href');
+      } else if (result.isDenied) {
+        Swal.fire('Changes are not saved', '', 'info');
+      }
+    })
+  })
+});
+
 
 function myFunction(x) {
   if (x.matches) { // If media query matches

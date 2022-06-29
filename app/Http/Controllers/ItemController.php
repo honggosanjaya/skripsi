@@ -85,7 +85,7 @@ class ItemController extends Controller
 
   //pengadaan
   public function productList(){
-      $products = Item::all();
+      $products = Item::orderBy("status", "ASC")->get();
       return view('administrasi.stok.pengadaan.index', [
         "products" => $products,
         "title" => "Stok Marketing - Pengadaan",
@@ -93,7 +93,7 @@ class ItemController extends Controller
   }
   //opname
   public function productListOpname(){
-      $products = Item::all();
+      $products = Item::orderBy("status", "ASC")->get();
       return view('administrasi.stok.opname.index', [
         "products" => $products,
         "title" => "Stok Marketing - opname",
@@ -183,14 +183,14 @@ class ItemController extends Controller
 
     public function index(){      
         return view('administrasi.stok.produk.index', [
-          'items' => Item::paginate(10),
+          'items' => Item::orderBy("status", "ASC")->paginate(10),
           "title" => "List Produk"
         ]);
     }
 
     public function create(){
       return view('administrasi.stok.produk.create', [
-        'items' => Item::all(),
+        'items' => Item::orderBy("status", "ASC")->get(),
         'statuses' => Status::where('tabel', 'items')->get(),
         "title" => "Stok Marketing - List Produk - Add"
       ]);
@@ -303,7 +303,7 @@ class ItemController extends Controller
     public function customerIndex(){
       $customer = Customer::where('id', auth()->user()->id_users)->first();
         return view('customer/produk',[
-            'items' => Item::all(),
+            'items' => Item::where('status',10)->orderBy("status", "ASC")->get(),
             'customer' => $customer
         ]);
     }
@@ -318,7 +318,7 @@ class ItemController extends Controller
     }
 
     public function indexAdministrasi(){
-        $items = Item::paginate(10);
+        $items = Item::orderBy("status", "ASC")->paginate(10);
         return view('administrasi/stok.index',[
             'items' => $items
         ]);
