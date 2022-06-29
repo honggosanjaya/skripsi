@@ -19,6 +19,7 @@
       </div>
     </div>
   @endif
+<div id="event-form">
   <div class="pt-4 px-5">
     <form id="form_submit" class="form-submit" method="POST"
       action="/supervisor/event/ubahevent/{{ $eventStatus->id }}" enctype="multipart/form-data">
@@ -58,7 +59,7 @@
             <label for="potongan_diskon" class="form-label">Potongan/Diskon</label>
             <input type="number" class="form-control @error('potongan_diskon') is-invalid @enderror" id="potongan_diskon"
               name="potongan_diskon" value="{{ old('potongan_diskon', $diskon_potongan) }}" max="100"
-              min="0">
+              min="0" readonly>
             @error('potongan_diskon')
               <div class="invalid-feedback">
                 {{ $message }}
@@ -71,10 +72,10 @@
             <select class="form-select mt-2" id="event_pilih_isian" name="event_pilih_isian">
               @if ($tipe === 'potongan')
                 <option value="potongan" selected>Potongan</option>
-                <option value="diskon">Diskon</option>
+                <option value="diskon" disabled>Diskon</option>
               @else
                 <option value="diskon" selected>Diskon</option>
-                <option value="potongan">Potongan</option>
+                <option value="potongan" disabled>Potongan</option>
               @endif
             </select>
           </div>
@@ -166,9 +167,14 @@
 
       <div class="row justify-content-end mt-4">
         <div class="col-3 d-flex justify-content-end">
-          <button type="submit" class="simpan_btn btn btn-warning">Edit</button>
+          <button type="submit" class="simpan_btn btn btn-warning me-3">Edit</button>
+          <a href="/supervisor/event/hapusevent/{{ $eventStatus->id }}" type="button" class="delete_event btn btn-danger">delete</a>
         </div>
       </div>
     </form>
   </div>
+</div>
+@push('JS')
+  <script src="{{ mix('js/supervisor.js') }}"></script>
+@endpush
 @endsection

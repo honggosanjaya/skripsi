@@ -76,7 +76,7 @@ class StaffController extends Controller
       $validatedData['created_at'] = now();
 
       if ($request->foto_profil) {
-        $file_name = time() . '.' . $request->foto_profil->extension();
+        $file_name = date('dFY') .'-'. $validatedData['nama'].'.' . $request->foto_profil->extension();
         $request->foto_profil->move(public_path('storage/staff'), $file_name);
         $validatedData['foto_profil'] = $file_name;
       }    
@@ -142,7 +142,7 @@ class StaffController extends Controller
       $validatedData['status'] = $request->status;
 
       if ($request->foto_profil) {
-        $file_name = time() . '.' . $request->foto_profil->extension();
+        $file_name = date('dFY') .'-'. $validatedData['nama'].'.' . $request->foto_profil->extension();
         $request->foto_profil->move(public_path('storage/staff'), $file_name);
         $validatedData['foto_profil'] = $file_name;
       }    

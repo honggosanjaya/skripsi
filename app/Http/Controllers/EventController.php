@@ -6,11 +6,14 @@ use App\Models\Event;
 use App\Models\Status;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Auth\Events\Registered;
+use Illuminate\Validation\Rules;
 
 class EventController extends Controller
 {
   public function dataKodeEventAPI($kode){
-      $event = Event::where('kode', $kode)->first();
+      $event = Event::where('kode', $kode)->where('status','!=', 26)->first();
     
       if($event!==null){
         return response()->json([
@@ -26,16 +29,16 @@ class EventController extends Controller
   }
 
     public function index(){
-        $events = Event::paginate(10);
+        $events = Event::where('status','!=', 26)->paginate(10);
         return view('supervisor/event.index',[
             'events' => $events
         ]);
     }
 
     public function search(){
-        $events = Event::where(strtolower('nama'),'like','%'.request('cari').'%')
+        $events = Event::where('status','!=', 26)->where(strtolower('nama'),'like','%'.request('cari').'%')
         ->orWhere(strtolower('kode'),'like','%'.request('cari').'%')
-        ->paginate(10);
+        ->where('status','!=', 26)->paginate(10);
                
         return view('supervisor/event.index',[
             'events' => $events
@@ -65,11 +68,11 @@ class EventController extends Controller
             'keterangan' => 'required'
         ]);
       
-        if($request->file('gambar')){
+        if($request->gambar){
             $file= $request->file('gambar');
             $filename=  $request->kode_event.'.'.$file->getClientOriginalExtension();
             $request->gambar= $filename;
-            $file=$request->file('gambar')->storeAs('event', $filename);
+            $file->move(public_path('storage/event'), $filename);
         }
 
         if($request->event_pilih_isian == "potongan"){
@@ -150,7 +153,8 @@ class EventController extends Controller
             $filename=  $request->kode_event.'.'.$file->getClientOriginalExtension();
             $request->gambar= $filename;
             $foto = $request->gambar;
-            $file=$request->file('gambar')->storeAs('event', $filename);
+            $file->move(public_path('storage/event'), $filename);
+            
         }
         else{
             $foto = $request->oldGambar;
@@ -181,9 +185,15 @@ class EventController extends Controller
         return redirect('/supervisor/event')->with('updateEventSuccess','Ubah Event berhasil');
     }
 
+    public function delete(Request $request, Event $event){
+        $event->update(['status'=>26]);        
+        
+        return redirect('/supervisor/event')->with('updateEventSuccess','data Event berhasil dihapus');
+    }
+
     //Controller untuk Customer
     public function customerIndex(){
-        $events = Event::paginate(10);
+        $events = Event::where('status','!=', 26)->paginate(10);
 
         return view('customer.event',[
             'events' => $events
@@ -191,7 +201,7 @@ class EventController extends Controller
     }
 
     public function customerSearch(){
-        $events = Event::where(strtolower('nama'),'like','%'.request('cari').'%')
+        $events = Event::where('status','!=', 26)->where(strtolower('nama'),'like','%'.request('cari').'%')
         ->orWhere(strtolower('kode'),'like','%'.request('cari').'%')
         ->paginate(10);
                

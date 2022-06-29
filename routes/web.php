@@ -73,6 +73,7 @@ Route::prefix('supervisor')->middleware('supervisor')->group(function() {
   Route::post('/event/tambahevent', [EventController::class, 'store']);
   Route::get('/event/ubah/{event:id}', [EventController::class, 'edit']);
   Route::put('/event/ubahevent/{event:id}', [EventController::class, 'update']);
+  Route::get('/event/hapusevent/{event:id}', [EventController::class, 'delete']);
 
   Route::get('/wilayah', [DistrictController::class, 'index']);
   Route::get('/wilayah/cari', [DistrictController::class, 'search']);
