@@ -43,12 +43,11 @@ const HitungStok = ({ historyItem, checkifexist, handleValueChange, handleTambah
       <h1 className='fs-5 fw-bold'>History Item</h1>
       {newHistoryItem.length == 0 && <small className="text-danger text-center d-block">Tidak Ada Riwayat Pembelian</small>}
       {newHistoryItem.map((item, index) => (
-        <div className={`card_historyItem position-relative p-3 ${(item.link_item.status == 11 || item.link_item.stok == 0 || item.link_item.stok <= item.link_item.min_stok) ? 'inactive_product' : ''}`} key={index}>
-          {item.link_item.stok < 10 && item.link_item.stok > 0 && item.link_item.status != 11 && <span className="badge badge_stok">Stok Menipis</span>}
+        <div className={`card_historyItem position-relative p-3`} key={index}>
+          {item.link_item.stok < 10 && item.link_item.stok > 0 && item.link_item.status != 11 && item.link_item.stok > item.link_item.min_stok && <span className="badge badge_stok">Stok Menipis</span>}
+
           {(item.link_item.status == 11 || item.link_item.stok == 0 || item.link_item.stok <= item.link_item.min_stok) &&
-            <div className='inactive_sign'>
-              <p className='mb-0'>Tidak Tersedia</p>
-            </div>
+            <span className="badge badge_stok">Tidak Tersedia</span>
           }
 
           <div className="row">
@@ -117,18 +116,20 @@ const HitungStok = ({ historyItem, checkifexist, handleValueChange, handleTambah
             </div>
           </div>
 
-          <div className="d-flex justify-content-between mt-2 w-75 mx-auto">
-            <button className="btn btn-sm btn-primary" onClick={() => handleKurangJumlah(item.link_item)}>
-              -
-            </button>
-            <input type="number" className="form-control w-50"
-              value={checkifexist(item.link_item)}
-              onChange={(e) => handleValueChange(item.link_item, e.target.value)}
-            />
-            <button className="btn btn-sm btn-primary" onClick={() => handleTambahJumlah(item.link_item)}>
-              +
-            </button>
-          </div>
+          {(item.link_item.status != 11 && item.link_item.stok != 0 && item.link_item.stok > item.link_item.min_stok) &&
+            <div className="d-flex justify-content-between mt-2 w-75 mx-auto">
+              <button className="btn btn-sm btn-primary" onClick={() => handleKurangJumlah(item.link_item)}>
+                -
+              </button>
+              <input type="number" className="form-control w-50"
+                value={checkifexist(item.link_item)}
+                onChange={(e) => handleValueChange(item.link_item, e.target.value)}
+              />
+              <button className="btn btn-sm btn-primary" onClick={() => handleTambahJumlah(item.link_item)}>
+                +
+              </button>
+            </div>
+          }
         </div>
       ))}
     </div>
