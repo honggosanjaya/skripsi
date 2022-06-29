@@ -55,6 +55,14 @@ mix
     ]
     , 'public/js/administrasi.js'
   );
+mix
+  .js(
+    [
+      'resources/js/supervisor.js',
+    ]
+    , 'public/js/supervisor.js'
+  );
+mix
 
 
 mix.js('resources/js/app.js', 'public/js/app.js')

@@ -101,6 +101,13 @@ if($('#report').length>0){
     console.log( $(this).val() );
   });
 
+  $(document).on('change', '[name="dateStart"]', function () {
+    if ($(this).val() > $('[name="dateEnd"]').val()) {
+      $('[name="dateEnd"]').val($(this).val())
+    }
+    $('[name="dateEnd"]').attr("min", $(this).val());
+  });
+
 }
 
 
