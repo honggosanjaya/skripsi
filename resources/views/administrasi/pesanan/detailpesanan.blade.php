@@ -48,16 +48,16 @@
                   class="bi bi-download px-1"></i>Unduh Surat Jalan</a>
             @endif --}}
             @if ($order->linkOrderTrack->status == 21)
-            <a href="/administrasi/pesanan/detail/{{ $order->id }}/cetak-memo" class="btn btn-primary mx-1"><i
-                class="bi bi-download px-1"></i>Unduh Memo Persiapan Barang</a>
+              <a href="/administrasi/pesanan/detail/{{ $order->id }}/cetak-memo" class="btn btn-primary mx-1"><i
+                  class="bi bi-download px-1"></i>Unduh Memo Persiapan Barang</a>
             @endif
             @if ($order->linkOrderTrack->status > 22)
-            <a href="/administrasi/pesanan/detail/{{ $order->id }}/cetak-sj" class="btn btn-success mx-1"><i
-              class="bi bi-download px-1"></i>Unduh Surat Jalan</a>
+              <a href="/administrasi/pesanan/detail/{{ $order->id }}/cetak-sj" class="btn btn-success mx-1"><i
+                  class="bi bi-download px-1"></i>Unduh Surat Jalan</a>
             @endif
             @if ($order->linkOrderTrack->status > 20 && $order->linkOrderTrack->status < 25)
-            <a href="/administrasi/pesanan/detail/{{ $order->id }}/cetak-invoice" class="btn btn-secondary mx-1"><i
-                class="bi bi-download px-1"></i>Unduh Invoice</a>
+              <a href="/administrasi/pesanan/detail/{{ $order->id }}/cetak-invoice" class="btn btn_purple mx-1"><i
+                  class="bi bi-download px-1"></i>Unduh Invoice</a>
             @endif
           </div>
         </div>
@@ -208,17 +208,19 @@
 
         @if ($order->linkOrderTrack->status == 20)
           <div class="float-end">
-            <form action="/administrasi/pesanan/setuju/{{ $order->id }}" method="POST" class="d-inline">
+            <form action="/administrasi/pesanan/setuju/{{ $order->id }}" method="POST" class="d-inline"
+              id="terimapesanan">
               @csrf
-              <button type="submit" class="btn btn-sm btn-success me-4">
-                Setuju
+              <button type="submit" class="btn btn-sm btn-success btn_terimaPesanan me-4">
+                <span class="iconify fs-3 me-1" data-icon="akar-icons:double-check"></span>Setuju
               </button>
             </form>
 
-            <form action="/administrasi/pesanan/tolak/{{ $order->id }}" method="POST" class="d-inline">
+            <form action="/administrasi/pesanan/tolak/{{ $order->id }}" method="POST" id="tolakpesanan"
+              class="d-inline">
               @csrf
-              <button type="submit" class="btn btn-sm btn-danger">
-                Tolak
+              <button type="submit" class="btn btn-sm btn-danger btn_tolakPesanan">
+                <span class="iconify fs-3 me-1" data-icon="akar-icons:circle-x"></span>Tolak
               </button>
             </form>
           </div>
@@ -230,10 +232,12 @@
           </div>
         @elseif($order->linkOrderTrack->status == 23)
           <div class="float-end">
-            <form class="form-submit" method="POST"
+            <form class="form-submit" method="POST" id="pesananselesai"
               action="/administrasi/pesanan/detail/{{ $order->id }}/dikirimkan">
               @csrf
-              <button type="submit" class="btn btn-success mt-4">Pesanan Selesai</button>
+              <button type="submit" class="btn btn-success pesanan_selesai mt-4"><span class="iconify fs-3 me-1"
+                  data-icon="akar-icons:double-check"></span><span class="iconify fs-3 me-1"
+                  data-icon="akar-icons:double-check"></span>Pesanan Selesai</button>
             </form>
           </div>
         @endif

@@ -19,13 +19,34 @@ const ListShipping = ({ listShipping, statusShipping, handleShow, keyword, setKe
         {listShipping.map((data, index) => (
           <div className={`list_pengiriman px-2 ${data.link_order_track.status != statusShipping ? ((statusShipping == 23 && data.link_order_track.status == 24) ? "d-block" : "d-none") : "d-block"}`} key={`jadwal${index}`}>
             <div className='info-shipping'>
-              <span><b>No. Invoice</b>{data.link_invoice.nomor_invoice}</span>
-              <span><b>Cutomer</b>{data.link_customer.nama}</span>
+
+              <span className='d-flex'>
+                <b>No. Invoice</b>
+                <div>{data.link_invoice.nomor_invoice}
+                </div>
+              </span>
+
+              <span className='d-flex'>
+                <b>Cutomer</b>
+                <div>{data.link_customer.nama}
+                </div>
+              </span>
+
               {data.link_customer.telepon &&
                 <Fragment>
-                  <span><b>Telepon</b>{data.link_customer.telepon}</span>
+                  <span className='d-flex'>
+                    <b>Telepon</b>
+                    <div>{data.link_customer.telepon}
+                    </div>
+                  </span>
                 </Fragment>}
-              <span><b>Alamat</b>{data.link_customer.full_alamat}</span>
+
+              <span className='d-flex'>
+                <b>Alamat</b>
+                <div>{data.link_customer.full_alamat}
+                </div>
+              </span>
+
               <span className='d-flex'>
                 <b>Waktu Berangkat</b>
                 <div>{convertDate(data.link_order_track.waktu_berangkat)}
