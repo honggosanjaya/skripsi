@@ -467,7 +467,7 @@ class OrderController extends Controller
               $q->where('status', 22);
             })
             ->orWhereHas('linkOrderTrack',function($q) {
-              $q->where('status','>', 22)->whereDate('waktu_sampai',now());
+              $q->where('status','>', 22)->where('status','<', 25)->whereBetween('waktu_sampai',[now()->subDays(2),now()]);
             });
     })->orderBy('id','DESC');
 
@@ -489,10 +489,10 @@ class OrderController extends Controller
 
     $sudahsampai=$first_data->where(function ($query) {
       $query->whereHas('linkOrderTrack',function($q) {
-        $q->where('status','>', 22)->whereDate('waktu_sampai',now());
+        $q->where('status','>', 22)->where('status','<', 25)->whereBetween('waktu_sampai',[now()->subDays(2),now()]);
       });
     })->count();
-    
+
     return response()->json([
       'data' => [
         'data' => $data,
