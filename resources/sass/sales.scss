@@ -746,3 +746,9 @@ ul.info-list {
 .demo-image-preview > img {
     width: 343px;
 }
+
+.word_wrap {
+    width: 100%;
+    max-width: 160px;
+    word-wrap: break-word;
+}
