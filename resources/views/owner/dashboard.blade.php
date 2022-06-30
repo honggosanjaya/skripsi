@@ -1,17 +1,19 @@
 @extends('layouts/main')
 
 @section('main_content')
-  <div class="limit_notif m-fadeOut p-3">
-    @foreach ($customersPengajuanLimit as $customerPengajuanLimit)
-      <div class="card_notif">
-        <a href="/supervisor/datacustomer/pengajuan/{{ $customerPengajuanLimit->id }}"
-          class="text-black text-decoration-none">
-          <p class="mb-0 fw-bold">Pengajuan Limit Pembelian</p>
-          <p class="mb-0">Pengajuan limit pembeian dari {{ $customerPengajuanLimit->nama }} </p>
-        </a>
-      </div>
-    @endforeach
-  </div>
+  @if (auth()->user()->linkStaff->linkStaffRole->nama == 'supervisor')
+    <div class="limit_notif m-fadeOut p-3">
+      @foreach ($customersPengajuanLimit as $customerPengajuanLimit)
+        <div class="card_notif">
+          <a href="/supervisor/datacustomer/pengajuan/{{ $customerPengajuanLimit->id }}"
+            class="text-black text-decoration-none">
+            <p class="mb-0 fw-bold">Pengajuan Limit Pembelian</p>
+            <p class="mb-0">Pengajuan limit pembeian dari {{ $customerPengajuanLimit->nama }} </p>
+          </a>
+        </div>
+      @endforeach
+    </div>
+  @endif
 
   <div id="report" class="px-2 px-md-5 pt-4">
     <form action="/{{ auth()->user()->linkStaff->linkStaffRole->nama }}/" method="get">
