@@ -20,36 +20,32 @@ const ListShipping = ({ listShipping, statusShipping, handleShow, keyword, setKe
             <div className='info-shipping'>
               <span className='d-flex'>
                 <b>No. Invoice</b>
-                <div>{data.link_invoice.nomor_invoice}
-                </div>
+                <div className='word_wrap'>{data.link_invoice.nomor_invoice}</div>
               </span>
               <span className='d-flex'>
                 <b>Cutomer</b>
-                <div>{data.link_customer.nama}
-                </div>
+                <div className='word_wrap'>{data.link_customer.nama}</div>
               </span>
               {data.link_customer.telepon &&
                 <Fragment>
                   <span className='d-flex'>
                     <b>Telepon</b>
-                    <div>{data.link_customer.telepon}
-                    </div>
+                    <div className='word_wrap'>{data.link_customer.telepon}</div>
                   </span>
                 </Fragment>}
               <span className='d-flex'>
                 <b>Alamat</b>
-                <div>{data.link_customer.full_alamat}
-                </div>
+                <div className='text-wrap word_wrap'>{data.link_customer.full_alamat}</div>
               </span>
               <span className='d-flex'>
                 <b>Waktu Berangkat</b>
-                <p>{convertDate(data.link_order_track.waktu_berangkat)}</p>
+                <p className='mb-0 word_wrap'>{convertDate(data.link_order_track.waktu_berangkat)}</p>
               </span>
               {(data.link_order_track.waktu_sampai)
                 ?
                 <span className='d-flex'>
                   <b>Waktu Sampai</b>
-                  <p>{convertDate(data.link_order_track.waktu_sampai)}</p>
+                  <p className='mb-0 word_wrap'>{convertDate(data.link_order_track.waktu_sampai)}</p>
                 </span> : ""}
             </div>
             <p className='mb-0 detail-pengiriman_link' onClick={() => handleShow(data.id)}>Lihat detail</p>

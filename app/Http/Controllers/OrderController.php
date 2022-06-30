@@ -487,11 +487,7 @@ class OrderController extends Controller
       });
     })->count();
 
-    $sudahsampai=$first_data->where(function ($query) {
-      $query->whereHas('linkOrderTrack',function($q) {
-        $q->where('status','>', 22)->where('status','<', 25)->whereBetween('waktu_sampai',[now()->subDays(2),now()]);
-      });
-    })->count();
+    $sudahsampai=$data->count() - $perludikirim;
 
     return response()->json([
       'data' => [

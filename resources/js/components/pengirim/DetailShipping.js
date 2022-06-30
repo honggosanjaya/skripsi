@@ -13,17 +13,39 @@ const DetailShipping = ({ detailShipping, isLoading, show, handleClose, handlePe
             <Modal.Title>Detail Pengiriman</Modal.Title>
           </Modal.Header>
           <Modal.Body>
-
             <div className='info-shipping'>
-              <span><b>No. Invoice</b>{detailShipping.link_invoice.nomor_invoice}</span>
-              <span><b>Customer</b>{detailShipping.link_customer.nama}</span>
-              <span><b>Telepon</b>{detailShipping.link_customer.telepon}</span>
-              <span><b>Alamat</b>
-                {detailShipping.link_customer.koordinat && <a target="_blank" href={`https://www.google.com/maps/search/?api=1&query=${detailShipping.link_customer.koordinat.replace("@", ",")}`}>{detailShipping.link_customer.full_alamat}</a>}
+              <span className='d-flex'>
+                <b>No. Invoice</b>
+                <p className='mb-0 word_wrap'>{detailShipping.link_invoice.nomor_invoice}</p>
               </span>
-              <span><b>Keterangan Alamat</b>{detailShipping.link_customer.keterangan_alamat}</span>
+
+              <span className='d-flex'>
+                <b>Customer</b>
+                <p className='mb-0 word_wrap'>{detailShipping.link_customer.nama}</p>
+              </span>
+
+              <span className='d-flex'>
+                <b>Telepon</b>
+                <p className='mb-0 word_wrap'>{detailShipping.link_customer.telepon}</p>
+              </span>
+
+              <span className='d-flex'>
+                <b>Alamat</b>
+                {detailShipping.link_customer.koordinat && <a target="_blank" href={`https://www.google.com/maps/search/?api=1&query=${detailShipping.link_customer.koordinat.replace("@", ",")}`}><p className='mb-0 word_wrap'>{detailShipping.link_customer.full_alamat}</p></a>}
+              </span>
+
+              <span className='d-flex'>
+                <b>Keterangan Alamat</b>
+                <p className='mb-0 word_wrap'>{detailShipping.link_customer.keterangan_alamat}</p>
+              </span>
+
               <span className='d-flex'><b>Waktu Berangkat </b> <div>{convertDate(detailShipping.link_order_track.waktu_berangkat)}</div></span>
-              <span><b>Total Pembayaran</b>{detailShipping.link_invoice.harga_total}</span>
+
+              <span className='d-flex'>
+                <b>Total Pembayaran</b>
+                <p className='mb-0 word_wrap'>{detailShipping.link_invoice.harga_total}</p>
+              </span>
+
               {(detailShipping.link_customer.foto)
                 ? <img src={`${urlAsset}/storage/customer/${detailShipping.link_customer.foto}`} className="mt-2 img-fluid d-block mx-auto" />
                 : ''}
