@@ -346,15 +346,16 @@ table tbody th {
 .limit_notif {
     width: 350px;
     border-radius: 10px;
-    position: absolute;
-    top: -1.5rem;
-    right: 0px;
+    position: fixed;
+    z-index: 999;
+    top: 6.5rem;
+    right: 2.5rem;
     background-color: #fff;
     box-shadow: rgba(0, 0, 0, 0.15) 0px 5px 15px 0px;
 }
 
 .limit_notif {
-    top: 10px !important;
+    top: 7.5rem;
 }
 
 .alert_retur,
