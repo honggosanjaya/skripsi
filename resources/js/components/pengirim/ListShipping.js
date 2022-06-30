@@ -1,7 +1,7 @@
 import React, { Component, Fragment } from 'react';
 import { convertDate } from "../reuse/HelperFunction";
 
-const ListShipping = ({ listShipping, statusShipping, handleShow, keyword, setKeyword, cariShipping }) => {
+const ListShipping = ({ listShipping, statusShipping, handleShow, keyword, setKeyword, cariShipping, perluKirim, sudahSampai }) => {
   return (
     <Fragment>
       <form onSubmit={cariShipping}>
@@ -14,24 +14,20 @@ const ListShipping = ({ listShipping, statusShipping, handleShow, keyword, setKe
         </div>
       </form>
 
-
       {listShipping.length > 0 && <div className='pengiriman_wrapper'>
         {listShipping.map((data, index) => (
           <div className={`list_pengiriman px-2 ${data.link_order_track.status != statusShipping ? ((statusShipping == 23 && data.link_order_track.status == 24) ? "d-block" : "d-none") : "d-block"}`} key={`jadwal${index}`}>
             <div className='info-shipping'>
-
               <span className='d-flex'>
                 <b>No. Invoice</b>
                 <div>{data.link_invoice.nomor_invoice}
                 </div>
               </span>
-
               <span className='d-flex'>
                 <b>Cutomer</b>
                 <div>{data.link_customer.nama}
                 </div>
               </span>
-
               {data.link_customer.telepon &&
                 <Fragment>
                   <span className='d-flex'>
@@ -40,29 +36,29 @@ const ListShipping = ({ listShipping, statusShipping, handleShow, keyword, setKe
                     </div>
                   </span>
                 </Fragment>}
-
               <span className='d-flex'>
                 <b>Alamat</b>
                 <div>{data.link_customer.full_alamat}
                 </div>
               </span>
-
               <span className='d-flex'>
                 <b>Waktu Berangkat</b>
-                <div>{convertDate(data.link_order_track.waktu_berangkat)}
-                </div>
+                <p>{convertDate(data.link_order_track.waktu_berangkat)}</p>
               </span>
               {(data.link_order_track.waktu_sampai)
                 ?
                 <span className='d-flex'>
                   <b>Waktu Sampai</b>
-                  <div>{convertDate(data.link_order_track.waktu_sampai)}
-                  </div>
+                  <p>{convertDate(data.link_order_track.waktu_sampai)}</p>
                 </span> : ""}
             </div>
             <p className='mb-0 detail-pengiriman_link' onClick={() => handleShow(data.id)}>Lihat detail</p>
           </div>
         ))}
+
+        {statusShipping == 22 && perluKirim == 0 && <p className='text-center text-danger mb-0'>tidak ada yang perlu dikirim </p>}
+
+        {statusShipping != 22 && sudahSampai == 0 && <p className='text-center text-danger mb-0'>tidak ada yang sudah sampai </p>}
       </div>}
     </Fragment>
   );

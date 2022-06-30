@@ -39,6 +39,8 @@ const ShippingShipper = () => {
   const [keyword, setKeyword] = useState(null);
   const [isTakePhoto, setIsTakePhoto] = useState(false);
   const [isFromGalery, setISFromGalery] = useState(false);
+  const [perluKirim, setPerluKirim] = useState(null);
+  const [sudahSampai, setSudahSampai] = useState(null);
 
   const radios = [
     { name: 'Perlu Dikirim', value: 22 },
@@ -78,7 +80,9 @@ const ShippingShipper = () => {
           if (!unmounted) {
             setIsLoading(false);
             console.log('jadwal pengiriman', response.data.data);
-            setListShipping(response.data.data);
+            setListShipping(response.data.data.data);
+            setPerluKirim(response.data.data.perludikirim);
+            setSudahSampai(response.data.data.sudahsampai);
           }
         })
     }
@@ -266,6 +270,7 @@ const ShippingShipper = () => {
           <ListShipping listShipping={listShipping}
             statusShipping={statusShipping} handleShow={handleShow}
             keyword={keyword} setKeyword={setKeyword} cariShipping={cariShipping}
+            perluKirim={perluKirim} sudahSampai={sudahSampai}
           />
 
           <DetailShipping detailShipping={detailShipping}

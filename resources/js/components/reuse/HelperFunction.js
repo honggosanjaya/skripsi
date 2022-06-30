@@ -19,9 +19,10 @@ export function convertDate(datetime) {
   let month = parts[1];
   let tanggal = parts[2];
 
-  const monthName = ["Januari", "Februari", "Maret", "April", "Mei", "Juni", "Juli", "Agustus", "September", "Oktober", "November", "Desember"];
+  const monthName = ["Jan", "Feb", "Mar", "Apr", "May", "June", "July", "Aug", "Sept", "Oct", "Nov", "Dec"];
 
-  return `${tanggal} ${monthName[month - 1]} ${tahun} pukul ${jam} WIB`;
+  return `${tanggal} ${monthName[month - 1]} ${tahun}` + '\n' + `pukul ${jam} WIB`;
+
 }
 
 export function dataURLtoFile(dataurl, filename) {

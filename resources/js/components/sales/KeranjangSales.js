@@ -211,59 +211,68 @@ const KeranjangSales = ({ location }) => {
 
   const checkout = (e) => {
     e.preventDefault();
-    setIsLoading(true);
     if (estimasiWaktuPengiriman) {
-      axios({
-        method: "post",
-        url: `${window.location.origin}/api/salesman/buatOrder`,
-        headers: {
-          Accept: "application/json",
-        },
-        data: {
-          keranjang: produks,
-          idStaf: dataUser.id_staff,
-          estimasiWaktuPengiriman: estimasiWaktuPengiriman,
-          keterangan: keteranganOrderItem,
-          kodeEvent: kodeEvent,
-          totalHarga: (totalHarga - (totalHarga * (dataCustType.diskon ?? 0) / 100) - hargaPromo),
-          idTrip: idTrip,
-          tipeRetur: parseInt(tipeRetur)
-        }
-      })
-        .then(response => {
-          console.log('chekout', response);
-          if (response.data.status === 'success') {
-            hapusSemuaProduk();
-            setIsLoading(false);
-            Swal.fire({
-              icon: 'success',
-              title: 'Tersimpan!',
-              text: response.data.success_message,
-            })
-            axios({
-              method: "get",
-              url: `${window.location.origin}/api/keluarToko/${idTrip}`,
-              headers: {
-                Accept: "application/json",
-              },
-            })
-              .then(response => {
-                history.push('/salesman');
-              })
-          } else {
-            throw Error(response.data.error_message);
+      Swal.fire({
+        title: 'Apakah anda yakin?',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Checkout!'
+      }).then((result) => {
+        setIsLoading(true);
+        axios({
+          method: "post",
+          url: `${window.location.origin}/api/salesman/buatOrder`,
+          headers: {
+            Accept: "application/json",
+          },
+          data: {
+            keranjang: produks,
+            idStaf: dataUser.id_staff,
+            estimasiWaktuPengiriman: estimasiWaktuPengiriman,
+            keterangan: keteranganOrderItem,
+            kodeEvent: kodeEvent,
+            totalHarga: (totalHarga - (totalHarga * (dataCustType.diskon ?? 0) / 100) - hargaPromo),
+            idTrip: idTrip,
+            tipeRetur: parseInt(tipeRetur)
           }
         })
-        .catch(error => {
-          console.log('after checkout', error.message);
-          setIsLoading(false);
-          setIsShowRincian(false);
-          Swal.fire({
-            icon: 'error',
-            title: 'Oops...',
-            text: error.message,
+          .then(response => {
+            console.log('chekout', response);
+            if (response.data.status === 'success') {
+              hapusSemuaProduk();
+              setIsLoading(false);
+              Swal.fire({
+                icon: 'success',
+                title: 'Tersimpan!',
+                text: response.data.success_message,
+              })
+              axios({
+                method: "get",
+                url: `${window.location.origin}/api/keluarToko/${idTrip}`,
+                headers: {
+                  Accept: "application/json",
+                },
+              })
+                .then(response => {
+                  history.push('/salesman');
+                })
+            } else {
+              throw Error(response.data.error_message);
+            }
           })
-        });
+          .catch(error => {
+            console.log('after checkout', error.message);
+            setIsLoading(false);
+            setIsShowRincian(false);
+            Swal.fire({
+              icon: 'error',
+              title: 'Oops...',
+              text: error.message,
+            })
+          });
+      })
     }
   }
 
@@ -474,8 +483,8 @@ const KeranjangSales = ({ location }) => {
                 </div>
               </Modal.Body>
               <Modal.Footer>
-                <Button variant="danger" onClick={checkout}>
-                  CHEKOUT
+                <Button variant="success" onClick={checkout}>
+                  <span className="iconify fs-3 me-1" data-icon="ic:baseline-shopping-cart-checkout"></span> CHEKOUT
                 </Button>
               </Modal.Footer>
             </Modal>
