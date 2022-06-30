@@ -12,6 +12,8 @@ use App\Models\CustomerType;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\File;
 
 class CustomerController extends Controller
 {
@@ -49,7 +51,6 @@ class CustomerController extends Controller
         'customerType' => CustomerType::get(),
         'district' => District::get()
       ]);
-
     }
 
     public function simpanCustomerApi(Request $request){
@@ -122,6 +123,7 @@ class CustomerController extends Controller
         $customer = Customer::find($id_customer)->update($data);
         Customer::find($id_customer)->update(['password'=>Hash::make(12345678)]);
       }
+
       if ($request->status == 'trip') {
         if (Customer::find($id_customer)->time_to_effective_call==null) {
           Customer::find($id_customer)->update(['counter_to_effective_call' => $request->counter_to_effective_call+1]);
@@ -182,7 +184,12 @@ class CustomerController extends Controller
       }
 
       if ($fileFoto !== null) {
-        $file_name = time() . '.' . $request->foto->extension();
+        if($customer->foto){
+          Storage::delete($customer->foto);
+        }
+
+        $nama_customer = str_replace(" ", "-", $customer->nama);
+        $file_name = 'CUST-' . $nama_customer . '-' .date_format(now(),"YmdHis"). '.' . $request->foto->extension();
         $request->foto->move(public_path('storage/customer'), $file_name);
         $customer->foto = $file_name;
       }
@@ -267,7 +274,7 @@ class CustomerController extends Controller
       }
 
       if ($request->foto) {
-        $file_name = date('dFY') .'-'. $validatedData['nama'].'.' . $request->foto->extension();
+        $file_name = 'CUST-' . $nama_customer . '-' .date_format(now(),"YmdHis"). '.' . $request->foto->extension();
         $request->foto->move(public_path('storage/customer'), $file_name);
         $validatedData['foto'] = $file_name;
       }    
@@ -338,14 +345,13 @@ class CustomerController extends Controller
       $validatedData['pengajuan_limit_pembelian'] = $request->pengajuan_limit_pembelian;
 
       if ($request->foto) {
-        $file_name = date('dFY') .'-'. $validatedData['nama'].'.' . $request->foto->extension();
+        $file_name = 'CUST-' . $nama_customer . '-' .date_format(now(),"YmdHis"). '.' . $request->foto->extension();
         $request->foto->move(public_path('storage/customer'), $file_name);
         $validatedData['foto'] = $file_name;
       }
       
       if ($request->pengajuan_limit_pembelian!=null){
         $validatedData['status_limit_pembelian'] = 7;
-        //kirim notif ke spv
       }
 
       if ($request->email!=null && $customer->email==null){

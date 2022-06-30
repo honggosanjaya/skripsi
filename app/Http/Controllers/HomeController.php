@@ -13,13 +13,12 @@ use Illuminate\Http\Request;
 
 class HomeController extends Controller
 {
-    public function indexOwner()
-    {
+    public function indexOwner(){
         $role='indexOwner';
         return view('owner.dashboard',compact('role'));
     }
-    public function indexSupervisor()
-    {
+
+    public function indexSupervisor(){
         $role='indexSupervisor';
         $customersPengajuanLimit = Customer::where('status_limit_pembelian', 7)->get();
 
@@ -30,13 +29,13 @@ class HomeController extends Controller
           'lihat_notif_spv' => true
         ]);
     }
-    public function indexSalesman()
-    {
+
+    public function indexSalesman(){
         $role='indexSalesman';
         return view('salesman/dashboard',compact('role'));
     }
-    public function indexAdministrasi()
-    {
+
+    public function indexAdministrasi(){
         $role='indexAdministrasi';
         $item = Item::count();
         $item_aktif = Item::where('status', 10)->count();
@@ -86,13 +85,13 @@ class HomeController extends Controller
           'lihat_notif' => true
         ]);
     }
-    public function indexShipper()
-    {
+
+    public function indexShipper(){
         $role='indexShipper';
         return view('shipper/dashboard',compact('role'));
     }
-    public function indexCustomer()
-    {
+
+    public function indexCustomer(){
       $customer = Customer::where('id', auth()->user()->id_users)->first();
       $event = Event::where('status', 16)->get();
 
@@ -115,7 +114,6 @@ class HomeController extends Controller
           'histories' => $histories
         ]);
     }
-
 
     public function lihatProfil(){
         $data = '';

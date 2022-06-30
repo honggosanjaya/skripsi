@@ -76,7 +76,9 @@ class StaffController extends Controller
       $validatedData['created_at'] = now();
 
       if ($request->foto_profil) {
-        $file_name = date('dFY') .'-'. $validatedData['nama'].'.' . $request->foto_profil->extension();
+        $nama_staff = str_replace(" ", "-", $validatedData['nama']);
+        $file= $request->file('foto_profil');
+        $file_name = 'STF-'. $nama_staff.'-' .date_format(now(),"YmdHis").'.'.  $file->getClientOriginalExtension();
         $request->foto_profil->move(public_path('storage/staff'), $file_name);
         $validatedData['foto_profil'] = $file_name;
       }    
@@ -142,7 +144,13 @@ class StaffController extends Controller
       $validatedData['status'] = $request->status;
 
       if ($request->foto_profil) {
-        $file_name = date('dFY') .'-'. $validatedData['nama'].'.' . $request->foto_profil->extension();
+        if($request->oldGambar){
+          \Storage::delete('/staff/'.$request->oldGambar);
+        }
+
+        $nama_staff = str_replace(" ", "-", $validatedData['nama']);
+        $file= $request->file('foto_profil');
+        $file_name = 'STF-'. $nama_staff.'-' .date_format(now(),"YmdHis").'.'.  $file->getClientOriginalExtension();
         $request->foto_profil->move(public_path('storage/staff'), $file_name);
         $validatedData['foto_profil'] = $file_name;
       }    

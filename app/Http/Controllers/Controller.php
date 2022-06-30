@@ -30,6 +30,10 @@ class Controller extends BaseController
     use AuthorizesRequests, DispatchesJobs, ValidatesRequests;
 
     public function test(Request $request){
+      // \Storage::delete('/customer/CUST-Honggo-Sanjaya-20220630074556.png');
+
+      // echo asset('storage/qc.txt');
+      // \Storage::disk('public')->delete('qc.txt');
       // $all=Invoice::get();
       // foreach ($all as $one) {
       //   $data= "INV-".Invoice::where('id',$one->id)->first()->nomor_invoice."-".date_format(now(),"YmdHis");
@@ -52,5 +56,7 @@ class Controller extends BaseController
       //   ]);
       // }
            
+
+
     }
 }

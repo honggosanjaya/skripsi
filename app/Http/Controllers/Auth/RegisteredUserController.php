@@ -60,7 +60,8 @@ class RegisteredUserController extends Controller
 
         if($request->file('foto_profil')){
             $file= $request->file('foto_profil');
-            $filename=  date('Y-m-d').'-'.$request->nama.'-'.$request->email.'.'.$file->getClientOriginalExtension();
+            $nama_staff = str_replace(" ", "-", $request->nama);
+            $filename = 'STF-' . $nama_staff . '-' .date_format(now(),"YmdHis"). '.' . $file->getClientOriginalExtension();
             $request->foto_profil= $filename;
             $file=$request->file('foto_profil')->storeAs('staff', $filename);
         }

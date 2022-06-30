@@ -622,7 +622,8 @@ class OrderController extends Controller
         'foto' => 'image|file|max:1024',
       ];
 
-      $file_name = time() . '.' . $request->foto->extension();
+      $file= $request->file('foto');
+      $file_name=  'DLV-'.$order->id.'.'.$file->getClientOriginalExtension();
       $request->foto->move(public_path('storage/pengiriman'), $file_name);
       $validatedData['foto_pengiriman'] = $file_name;
       $validatedData['status'] = 23;
