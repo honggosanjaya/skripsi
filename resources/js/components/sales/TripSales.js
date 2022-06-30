@@ -143,13 +143,23 @@ const TripSales = () => {
       }))
       .then((response) => {
         setError(null);
+
         Swal.fire({
-          title: 'success',
-          text: response.data.message,
-          icon: 'success',
-          confirmButtonText: 'Trip Selanjutnya'
+          title: 'Apakah anda yakin?',
+          icon: 'warning',
+          showCancelButton: true,
+          confirmButtonColor: '#3085d6',
+          cancelButtonColor: '#d33',
+          confirmButtonText: 'Keluar!'
         }).then((result) => {
-          history.push('/salesman');
+          Swal.fire({
+            title: 'success',
+            text: response.data.message,
+            icon: 'success',
+            confirmButtonText: 'Trip Selanjutnya'
+          }).then((result) => {
+            history.push('/salesman');
+          })
         })
       })
       .catch(error => {
@@ -189,7 +199,16 @@ const TripSales = () => {
       }))
       .then((dataCustomer) => {
         setError(null);
-        history.push(`/salesman/order/${dataCustomer.data.data.id}`);
+        Swal.fire({
+          title: 'Apakah anda yakin?',
+          icon: 'warning',
+          showCancelButton: true,
+          confirmButtonColor: '#3085d6',
+          cancelButtonColor: '#d33',
+          confirmButtonText: 'Order!'
+        }).then((result) => {
+          history.push(`/salesman/order/${dataCustomer.data.data.id}`);
+        })
       })
       .catch(error => {
         setError(error.message);
@@ -308,7 +327,9 @@ const TripSales = () => {
           </div>
 
           <div className="d-flex justify-content-end">
-            <button className="btn btn-danger me-3" onClick={kirimCustomer}>Selesai dan Keluar</button>
+            <button className="btn btn-danger me-3" onClick={kirimCustomer}>
+              Selesai dan Keluar
+            </button>
             <button className="btn btn-success" onClick={handleOrder}>
               <span className="iconify me-1" data-icon="carbon:ibm-watson-orders"></span>Order
             </button>
