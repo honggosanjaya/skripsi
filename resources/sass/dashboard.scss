@@ -105,13 +105,13 @@ textarea {
     display: none;
 
     &:checked {
-        & ~ .main-content main {
+        & ~ .main-content main,
+        & ~ .main-content header .breadcrumbs-container {
             margin-left: 0;
         }
 
         & + .sidebar {
             width: 70px;
-
             .sidebar-brand h2 span:last-child,
             .sidebar-brand h3,
             .sidebar-menu li a span:last-child,
@@ -128,6 +128,13 @@ textarea {
 
     & ~ .main-content {
         margin-left: 70px;
+    }
+
+    & ~ .main-content header {
+        .breadcrumbs-container {
+            background-color: #fff !important;
+            margin-left: 185px;
+        }
     }
 }
 
@@ -186,9 +193,13 @@ main {
 }
 
 .breadcrumbs-container {
-    position: absolute;
-    top: -53px;
+    position: relative;
+    // top: -53px;
     z-index: 999;
+}
+
+.breadcrumb {
+    margin-bottom: 0;
 }
 
 @media only screen and (max-width: 768px) {
@@ -490,11 +501,5 @@ table tbody th {
 
     .mt-4 {
         margin-top: 1rem;
-    }
-}
-
-@media screen and (max-width: 568px) {
-    .breadcrumbs-container {
-        top: -40px;
     }
 }

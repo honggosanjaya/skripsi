@@ -136,10 +136,11 @@ cek kode tahap 2
 2-B@ data customer urutkan dari active ke inactive sama juga dengan barang
 
 2-H,B trip -> order -> keluar  counter_to_effective_call +2
-2-H tambahkan * warna merah di label form yang required -> ini hubungan sama testing 8 golden rules
-2-H order customer blum ada notifikas
+2-@H tambahkan * warna merah di label form yang required -> ini hubungan sama testing 8 golden rules
+2-@H order customer blum ada notifikas
 2-H limit pembelian juga belum ada
-3-H update stok toko ketika data tidak tersedia tidak dapat di rubah
+3-@H update stok toko ketika data tidak tersedia tidak dapat di rubah
+1-breadcrumb hilang saat di scroll
 
 kode invoice retur dkk penulisan
 
