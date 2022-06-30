@@ -122,9 +122,10 @@ class CustomerController extends Controller
         $customer = Customer::find($id_customer)->update($data);
         Customer::find($id_customer)->update(['password'=>Hash::make(12345678)]);
       }
-
-      if (Customer::find($id_customer)->time_to_effective_call==null) {
-        Customer::find($id_customer)->update(['counter_to_effective_call' => $request->counter_to_effective_call+1]);
+      if ($request->status == 'trip') {
+        if (Customer::find($id_customer)->time_to_effective_call==null) {
+          Customer::find($id_customer)->update(['counter_to_effective_call' => $request->counter_to_effective_call+1]);
+        }
       }
 
       if($status == 1){

@@ -127,11 +127,12 @@ class ItemController extends Controller
     $request->validate($rules);
 
     $data = [];
+    $pengadaan_count="PGD-". explode("-",Pengadaan::orderBy("id", "DESC")->first()->no_pengadaan ?? 'PGD-0')[1] + 1 ."-".date_format(now(),"YmdHis");
     foreach($cartItems as $item){
       array_push($data,[
         'id_item' => $item->id,
         'id_staff' => auth()->user()->id_users,
-        'no_pengadaan' => (Pengadaan::orderBy("no_pengadaan", "DESC")->first()->no_pengadaan ?? 0) + 1,
+        'no_pengadaan' => $pengadaan_count,
         'no_nota' => $request->no_nota,
         'kuantitas' => $item->quantity,
         'harga_total' => $request->harga_total,

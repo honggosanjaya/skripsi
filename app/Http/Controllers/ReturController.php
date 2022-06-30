@@ -35,12 +35,13 @@ class ReturController extends Controller
       $id_invoice = $request->id_invoice;
       $customer = Customer::find($id_customer);
       $data = [];
+      $retur_count="RTR-".explode("-",Retur::orderBy("id", "DESC")->first()->no_retur ?? 'RTR-0')[1] + 1 ."-".date_format(now(),"YmdHis");
       foreach($cartItems as $item){
         array_push($data,[
           'id_customer' => $item['id_customer'],
           'id_staff_pengaju' => $id_staff_pengaju,
           'id_item' => $item['id'],
-          'no_retur' => (Retur::orderBy("no_retur", "DESC")->first()->no_retur ?? 0) + 1,
+          'no_retur' => $retur_count,
           'id_invoice' => $id_invoice,
           'kuantitas' => $item['kuantitas'],
           'harga_satuan' => $item['harga_satuan'],
