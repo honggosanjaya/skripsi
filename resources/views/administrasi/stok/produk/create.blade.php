@@ -9,8 +9,9 @@
 @endsection
 
 @section('main_content')
+<div id="data-produk">
   <div class="pt-4 px-5">
-    <form method="POST" action="/administrasi/stok/produk" enctype="multipart/form-data">
+    <form method="POST" id='data-form' action="/administrasi/stok/produk" enctype="multipart/form-data">
       @csrf
       <div class="row">
         <div class="col">
@@ -163,12 +164,13 @@
 
       <div class="row justify-content-end mt-4">
         <div class="col-3 d-flex justify-content-end">
-          <button type="submit" class="btn btn-primary"><span class="iconify me-1 fs-3"
+          <button type="submit" class="btn btn-primary btn-submit"><span class="iconify me-1 fs-3"
               data-icon="dashicons:database-add"></span>Tambah Data</button>
         </div>
       </div>
     </form>
   </div>
+</div>
 
   <script>
     function prevImg() {
@@ -184,4 +186,7 @@
       }
     }
   </script>
+@push('JS')
+  <script src="{{ mix('js/administrasi.js') }}"></script>
+@endpush
 @endsection

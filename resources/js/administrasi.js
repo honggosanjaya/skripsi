@@ -90,3 +90,131 @@ if ($('.status-track').length > 0) {
   }
 }
 
+  $(document).on('click', '#detail-pesanan-admin .btn_terimaPesanan', function (e) {
+    e.preventDefault();
+    Swal.fire({
+      title: 'Apakah anda yakin untuk menerima pesanan ?',
+      showDenyButton: true,
+      confirmButtonText: 'Ya',
+      denyButtonText: `Tidak`,
+    }).then((result) => {
+      if (result.isConfirmed) {
+        $('#terimapesanan').submit();
+      } else if (result.isDenied) {
+        Swal.fire('Aksi dibatalkan', '', 'info');
+      }
+    })
+  })
+
+  $(document).on('click', '#detail-pesanan-admin .btn_tolakPesanan', function (e) {
+    e.preventDefault();
+    Swal.fire({
+      title: 'Apakah anda yakin untuk melolak pesanan ?',
+      showDenyButton: true,
+      confirmButtonText: 'Ya',
+      denyButtonText: `Tidak`,
+    }).then((result) => {
+      if (result.isConfirmed) {
+        $('#tolakpesanan').submit();
+      } else if (result.isDenied) {
+        Swal.fire('Aksi dibatalkan', '', 'info');
+      }
+    })
+  })
+
+  $(document).on('click', '#detail-pesanan-admin .btn_konfirmasikeberangkatan', function (e) {
+    e.preventDefault();
+    Swal.fire({
+      title: 'Apakah anda yakin untuk mengonfirmasi keberangkatan pengiriman ?',
+      showDenyButton: true,
+      confirmButtonText: 'Ya',
+      denyButtonText: `Tidak`,
+    }).then((result) => {
+      if (result.isConfirmed) {
+        $('#keberangkatan').submit();
+      } else if (result.isDenied) {
+        Swal.fire('Aksi dibatalkan', '', 'info');
+      }
+    })
+  })
+
+  $(document).on('click', '#detail-pesanan-admin .pesanan_selesai', function (e) {
+    e.preventDefault();
+    Swal.fire({
+      title: 'Apakah anda yakin untuk mengonfirmasi pesanan selesai ?',
+      showDenyButton: true,
+      confirmButtonText: 'Ya',
+      denyButtonText: `Tidak`,
+    }).then((result) => {
+      if (result.isConfirmed) {
+        $('#pesananselesai').submit();
+      } else if (result.isDenied) {
+        Swal.fire('Aksi dibatalkan', '', 'info');
+      }
+    })
+  })
+
+  $(document).on('click', '#data-produk .btn-submit', function (e) {
+    e.preventDefault();
+    Swal.fire({
+      title: 'Apakah anda yakin untuk menyimpan data ?',
+      showDenyButton: true,
+      confirmButtonText: 'Ya',
+      denyButtonText: `Tidak`,
+    }).then((result) => {
+      if (result.isConfirmed) {
+        $('#data-form').submit();
+      } else if (result.isDenied) {
+        Swal.fire('Aksi dibatalkan', '', 'info');
+      }
+    })
+  })
+
+  $(document).on('click', '#data-customer .btn-submit', function (e) {
+    e.preventDefault();
+    Swal.fire({
+      title: 'Apakah anda yakin untuk menyimpan data ?',
+      showDenyButton: true,
+      confirmButtonText: 'Ya',
+      denyButtonText: `Tidak`,
+    }).then((result) => {
+      if (result.isConfirmed) {
+        $('#data-form').submit();
+      } else if (result.isDenied) {
+        Swal.fire('Aksi dibatalkan', '', 'info');
+      }
+    })
+  })
+
+  $(document).on('click', '#data-pengadaan .btn-submit', function (e) {
+    e.preventDefault();
+    Swal.fire({
+      title: 'Apakah anda yakin untuk menyimpan data ?',
+      showDenyButton: true,
+      confirmButtonText: 'Ya',
+      denyButtonText: `Tidak`,
+    }).then((result) => {
+      if (result.isConfirmed) {
+        $('#data-form').submit();
+      } else if (result.isDenied) {
+        Swal.fire('Aksi dibatalkan', '', 'info');
+      }
+    })
+  })
+
+  $(document).on('click', '#data-opname .btn-submit', function (e) {
+    e.preventDefault();
+    Swal.fire({
+      title: 'Apakah anda yakin untuk menyimpan data ?',
+      showDenyButton: true,
+      confirmButtonText: 'Ya',
+      denyButtonText: `Tidak`,
+    }).then((result) => {
+      if (result.isConfirmed) {
+        window.location.href = $('#data-opname .btn-submit').attr('href');
+        
+      } else if (result.isDenied) {
+        Swal.fire('Aksi dibatalkan', '', 'info');
+      }
+    })
+  })

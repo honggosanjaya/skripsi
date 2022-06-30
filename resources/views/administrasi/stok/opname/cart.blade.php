@@ -12,7 +12,7 @@
   @if ($message = Session::get('success'))
     <p class="text-success">{{ $message }}</p>
   @endif
-
+<div id="data-opname">
   <div class="px-5 pt-4">
     <table class="table table-hover table-sm">
       <thead>
@@ -72,11 +72,15 @@
         <a type="button" class="btn btn-danger me-3" href="/administrasi/stok/opname/clear?route=opname">
           <span class="iconify fs-3 me-1" data-icon="bxs:trash"></span>Remove All Cart
         </a>
-        <a type="button" class="btn btn-success" href="/administrasi/stok/opname/tambahopname?route=opname">
+        <a type="button" class="btn btn-success btn-submit" href="/administrasi/stok/opname/tambahopname?route=opname">
           <span class="iconify fs-3 me-1" data-icon="akar-icons:double-check"></span>
           Submit
         </a>
       </div>
     </div>
   </div>
+</div>
+@push('JS')
+  <script src="{{ mix('js/administrasi.js') }}"></script>
+@endpush
 @endsection

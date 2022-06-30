@@ -9,8 +9,9 @@
 
 
 @section('main_content')
+<div id="data-customer">
   <div class="px-5 pt-4">
-    <form method="POST" action="/administrasi/datacustomer/tambahcustomer" enctype="multipart/form-data">
+    <form method="POST" id='data-form' action="/administrasi/datacustomer/tambahcustomer" enctype="multipart/form-data">
       @csrf
       <div class="mb-3">
         <label for="nama" class="form-label">Nama <span class="text-danger">*</span></label>
@@ -183,12 +184,13 @@
 
       <div class="row justify-content-end mt-4">
         <div class="col-3 d-flex justify-content-end">
-          <button type="submit" class="btn btn-primary"><span class="iconify me-1 fs-3"
+          <button type="submit" class="btn btn-primary btn-submit"><span class="iconify me-1 fs-3"
               data-icon="dashicons:database-add"></span>Tambah Data</button>
         </div>
       </div>
     </form>
   </div>
+</div>
 
 
   <script>
@@ -205,4 +207,7 @@
       }
     }
   </script>
+@push('JS')
+  <script src="{{ mix('js/administrasi.js') }}"></script>
+@endpush
 @endsection
