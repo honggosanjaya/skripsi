@@ -40,17 +40,7 @@
         </div>
       </div>
 
-      {{-- item tidak boleh ubah stok --}}
-      {{-- <div class="mb-3">
-      <label for="stok" class="form-label">Stok</label>
-      <input type="text" class="form-control @error('stok') is-invalid @enderror" id="stok" name="stok"
-        value="{{ old('stok', $item->stok) }}">
-      @error('stok')
-        <div class="invalid-feedback">
-          {{ $message }}
-        </div>
-      @enderror
-    </div> --}}
+      <input type="hidden" name="oldGambar" value="{{ $item->gambar }}">
 
       <div class="row">
         <div class="col">

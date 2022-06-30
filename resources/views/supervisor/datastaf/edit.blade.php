@@ -12,6 +12,8 @@
     <form method="POST" action="/supervisor/datastaf/{{ $staf->id }}" enctype="multipart/form-data">
       @method('put')
       @csrf
+      <input type="hidden" name="oldGambar" value="{{ $staf->foto_profil }}">
+
       <div class="mb-3">
         <label for="nama" class="form-label">Nama <span class='text-danger'>*</span></label>
         <input type="text" class="form-control @error('nama') is-invalid @enderror" id="nama" name="nama"

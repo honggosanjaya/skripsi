@@ -229,7 +229,8 @@ class ItemController extends Controller
       $validatedData['max_pengadaan'] = $request->max_stok??0 - $request->min_stok??0;
 
       if ($request->gambar) {
-        $file_name = $validatedData['nama'] .'.' . $request->gambar->extension();
+        $nama_item = str_replace(" ", "-", $request->nama);
+        $file_name = 'ITM-' . $nama_item . '-' .date_format(now(),"YmdHis"). '.' . $request->foto->extension();
         $request->gambar->move(public_path('storage/item'), $file_name);
         $validatedData['gambar'] = $file_name;
       }    
@@ -291,7 +292,13 @@ class ItemController extends Controller
       $validatedData['status'] = $request->status;
 
       if ($request->gambar) {
-        $file_name = $validatedData['nama'] .'.' . $request->gambar->extension();
+        if($request->oldGambar){
+          \Storage::delete('/item/'.$request->oldGambar);
+        }
+
+        $file= $request->file('gambar');
+        $nama_item = str_replace(" ", "-", $validatedData['nama']);
+        $file_name = 'ITM-' . $nama_item . '-' .date_format(now(),"YmdHis"). '.' . $file->getClientOriginalExtension();
         $request->gambar->move(public_path('storage/item'), $file_name);
         $validatedData['gambar'] = $file_name;
       }    

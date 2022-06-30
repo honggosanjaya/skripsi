@@ -69,8 +69,9 @@ class EventController extends Controller
         ]);
       
         if($request->gambar){
+            $nama_event = str_replace(" ", "-", $event->nama);
             $file= $request->file('gambar');
-            $filename=  $request->kode_event.'.'.$file->getClientOriginalExtension();
+            $filename=  'EVN-'.$nama_event.'.'.$file->getClientOriginalExtension();
             $request->gambar= $filename;
             $file->move(public_path('storage/event'), $filename);
         }
@@ -149,17 +150,17 @@ class EventController extends Controller
             if($request->oldGambar){
                 Storage::delete($request->oldGambar);
             }
+
+            $nama_event = str_replace(" ", "-", $event->nama);
             $file= $request->file('gambar');
-            $filename=  $request->kode_event.'.'.$file->getClientOriginalExtension();
+            $filename=  'EVN-'.$nama_event.'.'.$file->getClientOriginalExtension();
             $request->gambar= $filename;
             $foto = $request->gambar;
             $file->move(public_path('storage/event'), $filename);
-            
         }
         else{
             $foto = $request->oldGambar;
         }
-        
                 
         if($request->event_pilih_isian == "potongan"){
             $potongan = $request->potongan_diskon;
