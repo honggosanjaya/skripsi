@@ -100,8 +100,6 @@ class ReportController extends Controller
         $data['produk_slow'] = array_keys($item->orderBy('total', 'ASC')->get()->groupBy('total')->take(5)->toArray());
 
         $data['produk_slow'] = $item->orderBy('total', 'ASC')->get()->whereIn('total',  $data['produk_slow']);
-
-
         
         $data['omzet'] = Invoice::whereHas('linkOrder',function($q) use($request) {
             $q->whereHas('linkOrderTrack',function($q) use($request) {
@@ -116,8 +114,18 @@ class ReportController extends Controller
 
         // dd($data);
 
-        return view('owner.dashboard',compact('data','input'));
+        $customersPengajuanLimit = Customer::where('status_limit_pembelian', 7)->get();
+
+        return view('owner.dashboard',[
+          'data' => $data,
+          'input' => $input,
+          'customersPengajuanLimit' => $customersPengajuanLimit,
+        ])->with('datadua', [
+          'lihat_notif_spv' => true
+        ]);
     }
+
+    
     public function kinerja(Request $request){
         if (!$request->dateStart??null) {
             // request()->request->add(['dateStart'=>date('Y-m-01', strtotime("-1 months"))]);  

@@ -9,7 +9,6 @@
 @section('main_content')
   <div id="report" class="pt-4 px-3 px-sm-5">
     <form action="/{{ auth()->user()->linkStaff->linkStaffRole->nama }}/report/penjualan" method="get">
-      @csrf
       <div class="row">
         <div class="col-sm-2 col-6">
           <div class="input-group mb-3">

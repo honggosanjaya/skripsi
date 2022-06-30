@@ -7,9 +7,7 @@
 @endsection
 @section('main_content')
   <div id="report" class="px-3 px-sm-5 pt-4">
-    <form action="/{{ auth()->user()->linkStaff->linkStaffRole->nama  }}/report/kinerja" method="get">
-      @csrf
-
+    <form action="/{{ auth()->user()->linkStaff->linkStaffRole->nama }}/report/kinerja" method="get">
       <div class="row">
         <div class="col-6 col-md-2">
           <div class="input-group mb-3">
