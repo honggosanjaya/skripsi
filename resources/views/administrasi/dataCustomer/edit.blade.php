@@ -7,8 +7,9 @@
   </ol>
 @endsection
 @section('main_content')
+<div id="data-customer">
   <div class="px-5 pt-4">
-    <form method="POST" action="/administrasi/datacustomer/ubahcustomer/{{ $customer->id }}"
+    <form method="POST" id='data-form' action="/administrasi/datacustomer/ubahcustomer/{{ $customer->id }}"
       enctype="multipart/form-data">
       @method('put')
       @csrf
@@ -190,7 +191,7 @@
 
       <div class="row justify-content-end mt-4">
         <div class="col-3 d-flex justify-content-end">
-          <button type="submit" class="btn btn-warning"><span class="iconify fs-5 me-1"
+          <button type="submit" class="btn btn-warning btn-submit"><span class="iconify fs-5 me-1"
               data-icon="eva:edit-2-fill"></span>Edit Data</button>
         </div>
       </div>
@@ -198,6 +199,7 @@
 
     </form>
   </div>
+</div>
 
   <script>
     function prevImg() {
@@ -213,4 +215,7 @@
       }
     }
   </script>
+@push('JS')
+  <script src="{{ mix('js/administrasi.js') }}"></script>
+@endpush
 @endsection

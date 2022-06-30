@@ -8,8 +8,9 @@
   </ol>
 @endsection
 @section('main_content')
+<div id="data-produk">
   <div class="px-5 pt-4">
-    <form method="POST" action="/administrasi/stok/produk/{{ $item->id }}" enctype="multipart/form-data">
+    <form method="POST" id='data-form' action="/administrasi/stok/produk/{{ $item->id }}" enctype="multipart/form-data">
       @method('put')
       @csrf
 
@@ -160,11 +161,12 @@
 
       <div class="row justify-content-end mt-4">
         <div class="col-3 d-flex justify-content-end">
-          <button type="submit" class="btn btn-warning">Edit</button>
+          <button type="submit" class="btn btn-warning btn-submit">Edit</button>
         </div>
       </div>
     </form>
   </div>
+</div>
 
   <script>
     function prevImg() {
@@ -180,4 +182,7 @@
       }
     }
   </script>
+@push('JS')
+  <script src="{{ mix('js/administrasi.js') }}"></script>
+@endpush
 @endsection

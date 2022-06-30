@@ -11,7 +11,7 @@
   @if ($message = Session::get('success'))
     <p class="text-success">{{ $message }}</p>
   @endif
-
+<div id="data-pengadaan">
   <div class="px-5 pt-4">
     <table class="table table-hover table-sm">
       <thead>
@@ -51,7 +51,7 @@
       }
     @endphp
     <hr class="mt-5 mb-4">
-    <form method="POST" action="/administrasi/stok/pengadaan/tambahpengadaan?route=pengadaan"
+    <form method="POST" id='data-form' action="/administrasi/stok/pengadaan/tambahpengadaan?route=pengadaan"
       enctype="multipart/form-data">
       @csrf
 
@@ -96,10 +96,14 @@
             </button>
           </form>
 
-          <button type="submit" class="btn btn-success"><span class="iconify fs-3 me-1"
+          <button type="submit" class="btn btn-success btn-submit"><span class="iconify fs-3 me-1"
               data-icon="akar-icons:double-check"></span>Submit</button>
         </div>
       </div>
     </form>
   </div>
+</div>
+@push('JS')
+  <script src="{{ mix('js/administrasi.js') }}"></script>
+@endpush
 @endsection
