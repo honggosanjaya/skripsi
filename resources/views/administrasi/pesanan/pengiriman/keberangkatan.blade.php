@@ -6,7 +6,8 @@
   <ol class="breadcrumb">
     <li class="breadcrumb-item"><a href="/administrasi">Dashboard</a></li>
     <li class="breadcrumb-item" aria-current="page"><a href="/administrasi/pesanan">Pesanan</a></li>
-    <li class="breadcrumb-item" aria-current="page"><a href="/administrasi/pesanan/detail/{{ $order->id }}">Detail Pesanan</a></li>
+    <li class="breadcrumb-item" aria-current="page"><a href="/administrasi/pesanan/detail/{{ $order->id }}">Detail
+        Pesanan</a></li>
     <li class="breadcrumb-item active" aria-current="page">Detail Pengiriman</li>
   </ol>
 @endsection
@@ -34,7 +35,9 @@
     @if ($order->linkOrderTrack->status == 21)
       <hr>
       <h1 class="fs-4 my-4">Atur Pengiriman</h1>
-      <form class="form-submit" method="POST" action="/administrasi/pesanan/detail/{{ $order->id }}/dikirimkan">
+
+      <form class="form-submit" method="POST" id="keberangkatan"
+        action="/administrasi/pesanan/detail/{{ $order->id }}/dikirimkan">
         @csrf
         <div class="row">
           <div class="col">
@@ -60,7 +63,7 @@
         </div>
         <div class="row justify-content-end mt-4">
           <div class="col-3 d-flex justify-content-end">
-            <button type="submit" class="btn btn-primary">Pesanan Dikirim</button>
+            <button type="submit" class="btn btn-primary btn_konfirmasikeberangkatan">Pesanan Dikirim</button>
           </div>
         </div>
       </form>
@@ -68,9 +71,10 @@
 
 
     @if ($order->linkOrderTrack->linkStatus->nama == 'order telah sampai')
-      <form class="form-submit" method="POST" action="/administrasi/pesanan/detail/{{ $order->id }}/dikirimkan">
+      <form class="form-submit" id="pesananselesai" method="POST"
+        action="/administrasi/pesanan/detail/{{ $order->id }}/dikirimkan">
         @csrf
-        <button type="submit" class="btn btn-success mt-4">Pesanan Selesai</button>
+        <button type="submit" class="btn btn-success mt-4 pesanan_selesai">Pesanan Selesai</button>
       </form>
     @endif
   </div>
