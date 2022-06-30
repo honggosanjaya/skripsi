@@ -149,11 +149,11 @@ class OrderController extends Controller
     if ($kode_event != null) {
       $id_event = Event::where('kode', $kode_event)->first()->id;
     }
-
+    $invoice_count="INV-". explode("-",Invoice::orderBy("id", "DESC")->first()->nomor_invoice ?? 'INV-0')[1] + 1 ."-".date_format(now(),"YmdHis");
     Invoice::insert([
       'id_order' => $id_order,
       'id_event' => $id_event,
-      'nomor_invoice' => (Invoice::orderBy("nomor_invoice", "DESC")->first()->nomor_invoice ?? 0) + 1,
+      'nomor_invoice' => $invoice_count,
       'harga_total' => $totalPesanan,
       'created_at' => now()
     ]);
