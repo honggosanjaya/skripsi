@@ -457,12 +457,12 @@ class OrderController extends Controller
   public function getListShippingAPI(Request $request){
     $id_staff=$request->id_staff;
 
-    $data=Order::
+    $first_data=Order::
     whereHas('linkOrderTrack',function($q) use($id_staff) {
       $q->where('id_staff_pengirim', $id_staff);
-    })
-    ->with(['linkOrderTrack','linkInvoice','linkCustomer','linkOrderItem'])
-    ->where(function ($query) {
+    })->with(['linkOrderTrack','linkInvoice','linkCustomer','linkOrderItem']);
+
+    $data = $first_data->where(function ($query) {
       $query->whereHas('linkOrderTrack',function($q) {
               $q->where('status', 22);
             })
@@ -480,8 +480,25 @@ class OrderController extends Controller
     }
 
     $data = $data->get();
+
+    $perludikirim=$first_data->where(function ($query) {
+      $query->whereHas('linkOrderTrack',function($q) {
+        $q->where('status', 22);
+      });
+    })->count();
+
+    $sudahsampai=$first_data->where(function ($query) {
+      $query->whereHas('linkOrderTrack',function($q) {
+        $q->where('status','>', 22)->whereDate('waktu_sampai',now());
+      });
+    })->count();
+    
     return response()->json([
-      'data' => $data,
+      'data' => [
+        'data' => $data,
+        'perludikirim' => $perludikirim,
+        'sudahsampai' => $sudahsampai,
+      ],
       'status' => 'success'
     ]);
   }
