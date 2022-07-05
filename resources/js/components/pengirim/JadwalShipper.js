@@ -219,7 +219,7 @@ const ShippingShipper = () => {
       .then(response => {
         setIsLoading(false);
         console.log('jadwal pengiriman yang dicari', response.data.data);
-        setListShipping(response.data.data);
+        setListShipping(response.data.data.data);
       })
   }
 
