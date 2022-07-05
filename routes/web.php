@@ -157,7 +157,9 @@ Route::prefix('administrasi')->middleware('administrasi')->group(function() {
     Route::post('/pengadaan/cart', [CartController::class, 'addToCart'])->name('cart.store');
     Route::post('/pengadaan/update-cart', [CartController::class, 'updateCart'])->name('cart.update');
     Route::post('/pengadaan/remove', [CartController::class, 'removeCart'])->name('cart.remove');
-    Route::post('/pengadaan/clear', [CartController::class, 'clearAllCart'])->name('cart.clear');
+    // Route::post('/pengadaan/clear', [CartController::class, 'clearAllCart'])->name('cart.clear');
+    Route::get('/pengadaan/clear', [CartController::class, 'clearAllCart']);
+
 
     Route::post('/pengadaan/tambahpengadaan', [ItemController::class, 'simpanDataPengadaan']);
 

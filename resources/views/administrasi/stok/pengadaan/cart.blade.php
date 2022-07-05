@@ -89,12 +89,15 @@
 
       <div class="row justify-content-end mt-4">
         <div class="col d-flex justify-content-end">
-          <form action="{{ route('cart.clear') . '?route=pengadaan' }}" method="POST">
+          {{-- <form action="{{ route('cart.clear') . '?route=pengadaan' }}" method="POST">
             @csrf
             <button class="btn btn-danger me-2">
               <span class="iconify fs-3 me-1" data-icon="bxs:trash"></span>Remove All Car
             </button>
-          </form>
+          </form> --}}
+          <a type="button" class="btn btn-danger me-3" href="/administrasi/stok/pengadaan/clear?route=pengadaan">
+            <span class="iconify fs-3 me-1" data-icon="bxs:trash"></span>Remove All Cart
+          </a>
 
           <button type="submit" class="btn btn-success btn-submit"><span class="iconify fs-3 me-1"
               data-icon="akar-icons:double-check"></span>Submit</button>
