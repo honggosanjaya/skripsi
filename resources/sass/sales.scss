@@ -752,3 +752,11 @@ ul.info-list {
     max-width: 160px;
     word-wrap: break-word;
 }
+.btn-purple {
+    background-color: #6366f1;
+    color: #fff;
+    &:hover {
+        color: #fff;
+        background-color: #575af5;
+    }
+}

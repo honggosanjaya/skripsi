@@ -34,6 +34,11 @@ const ListCustomer = ({ listCustomer, isOrder }) => {
                 <span className="iconify me-1" data-icon="ant-design:picture-outlined"></span>
                 {isShowFoto ? 'Tutup Foto' : 'Lihat Foto'}
               </button>
+              {customer.koordinat && 
+              <a class="btn btn-purple" target="_blank" href={`https://www.google.com/maps/search/?api=1&query=${customer.koordinat.replace("@", ",")}`}>
+                <span className="iconify me-1" data-icon="bxs:map"></span>
+                <span className='mb-0 word_wrap'>GPS</span>
+              </a>}
               {isOrder ?
                 <Link to={`/salesman/order/${customer.id}`} className="btn btn-success">
                   <span className="iconify me-1" data-icon="carbon:ibm-watson-orders"></span>Order
