@@ -32,6 +32,7 @@ const DetailShipping = ({ detailShipping, isLoading, show, handleClose, handlePe
               <span className='d-flex'>
                 <b>Alamat</b>
                 {detailShipping.link_customer.koordinat && <a target="_blank" href={`https://www.google.com/maps/search/?api=1&query=${detailShipping.link_customer.koordinat.replace("@", ",")}`}><p className='mb-0 word_wrap'>{detailShipping.link_customer.full_alamat}</p></a>}
+                {detailShipping.link_customer.koordinat==null && <p className='mb-0 word_wrap'>{detailShipping.link_customer.full_alamat}</p>}
               </span>
 
               <span className='d-flex'>
