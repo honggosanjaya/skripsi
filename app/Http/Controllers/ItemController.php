@@ -230,7 +230,7 @@ class ItemController extends Controller
 
       if ($request->gambar) {
         $nama_item = str_replace(" ", "-", $request->nama);
-        $file_name = 'ITM-' . $nama_item . '-' .date_format(now(),"YmdHis"). '.' . $request->foto->extension();
+        $file_name = 'ITM-' . $nama_item . '-' .date_format(now(),"YmdHis"). '.' . $request->gambar->extension();
         $request->gambar->move(public_path('storage/item'), $file_name);
         $validatedData['gambar'] = $file_name;
       }    
