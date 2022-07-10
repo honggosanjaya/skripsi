@@ -1,5 +1,6 @@
 <head>
     <link href=" {{ mix('css/bootstrap.css') }}" rel="stylesheet">
+    <title>salesMan</title>
   </head>
   
 <x-guest-layout>
