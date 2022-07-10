@@ -65,7 +65,7 @@
         @csrf
         <h1 class="fs-5 fw-bold">Metode retur : </h1>
         <div class="col-2">
-          <input value="{{ $retur->no_retur }}" name="no_retur" type="number" hidden readonly>
+          <input value="{{ $retur->no_retur }}" name="no_retur" type="text" hidden readonly>
           <select class="form-select" name="tipe_retur">
             @foreach ($tipeReturs as $tipeRetur)
               <option value="{{ $tipeRetur->id }}" {{ $retur->status == 12 ? 'disabled' : '' }}
