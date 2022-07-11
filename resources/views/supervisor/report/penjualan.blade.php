@@ -53,7 +53,7 @@
         <div class="col">
           <div class="mb-3">
             <label class="form-label">Date End</label>
-            <input type="date" name="dateEnd" class="form-control" value="{{ $input['dateEnd'] ?? null }}"
+            <input type="date" name="dateEnd" class="form-control" min="{{ $input['dateStart'] ?? null }}" value="{{ $input['dateEnd'] ?? null }}"
               id="dateEnd">
           </div>
         </div>
