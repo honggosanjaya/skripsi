@@ -112,6 +112,17 @@ class ReportController extends Controller
         $data['pembelian'] = Pengadaan::whereBetween('created_at',[$request->dateStart,$request->dateEnd])
         ->select(\DB::raw('SUM(harga_total) as total'))->first();
 
+        $data['produk_slow'] =OrderItem::
+            whereHas('linkOrder',function($q) use($request){
+                $q->whereHas('linkOrderTrack',function($q) use($request) {
+                    $q->whereIn('status', [23,24])->whereBetween('waktu_sampai', [$request->dateStart, $request->dateEnd]);
+                });
+            })
+            ->whereHas('linkItem',function($q) use($request){
+                $q->where('status',10);
+            })
+            ->select('id_item', \DB::raw('SUM(kuantitas) as total'), \DB::raw('count(*) as count'))
+        ->groupBy('id_item')->with('linkItem')->orderBy('count', 'ASC')->take($request->count)->get();
         // dd($data);
 
         $customersPengajuanLimit = Customer::where('status_limit_pembelian', 7)->get();

@@ -41,6 +41,13 @@
             <option {{ 12 == $input['month'] ? 'selected' : '' }} value="12">Desember</option>
           </select>
         </div>
+        <div class="col-12 col-sm-6 col-md-3">
+          <div class="input-group mb-3">
+            <span class="input-group-text" id="basic-addon1">slow item</span>
+            <input type="number" class="form-control" placeholder="2" name="count"
+              value="{{ $input['count'] ?? 5 }}">
+          </div>
+        </div>
       </div>
 
       <div class="row">
@@ -103,9 +110,10 @@
           <h1 class="fs-5 fw-bold mb-3">Produk Slow Moving</h1>
           <div class="sales-container">
             @foreach ($data['produk_slow'] as $item)
-              <div class="sales">
-                <h3 class="fs-6 text-capitalize">{{ $item->linkItem->nama }} </h3>
-                <h3 class="fs-6">{{ $item->total }} satuan</h3>
+              <div class="sales row">
+                <h3 class="fs-6 col-4 text-capitalize">{{ $item->linkItem->nama }} </h3>
+                <h3 class="fs-6 col-4">{{ $item->count }} kali trasaksi</h3>
+                <h3 class="fs-6 col-4">{{ $item->total }} item terjual</h3>
               </div>
             @endforeach
           </div>
