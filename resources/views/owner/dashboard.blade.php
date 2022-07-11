@@ -61,7 +61,7 @@
         <div class="col">
           <div class="mb-3 mt-3 mt-sm-0">
             <label class="form-label">Date End</label>
-            <input type="date" name="dateEnd" class="form-control" value="{{ $input['dateEnd'] ?? null }}"
+            <input type="date" name="dateEnd" class="form-control" min="{{ $input['dateStart'] ?? null }}" value="{{ $input['dateEnd'] ?? null }}"
               id="dateEnd">
           </div>
         </div>
@@ -98,9 +98,9 @@
           <h1 class="fs-5 fw-bold mb-2">Total Omzet</h1>
           <span>Rp. {{ number_format($data['omzet']->total, 0, '', '.') }}</span>
           <h1 class="fs-5 fw-bold mb-2 mt-4">Total Pengeluaran</h1>
-          <span>Rp. {{ number_format($data['pembelian']->total, 0, '', '.') }}</span>
+          <span>Rp. {{ number_format($data['pembelian'], 0, '', '.') }}</span>
           <h1 class="fs-5 fw-bold mb-2 mt-4">Total Untung/Rugi</h1>
-          <span>Rp. {{ number_format($data['omzet']->total - $data['pembelian']->total, 0, '', '.') }}</span>
+          <span>Rp. {{ number_format($data['omzet']->total - $data['pembelian'], 0, '', '.') }}</span>
           {{-- <button class="btn btn-primary d-block mx-auto mt-4">View Detail</button> --}}
         </div>
       </div>

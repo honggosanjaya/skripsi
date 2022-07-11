@@ -45,7 +45,7 @@
         <div class="col-sm-6">
           <div class="mb-3">
             <label class="form-label">Date End</label>
-            <input type="date" name="dateEnd" class="form-control" value="{{ $input['dateEnd'] ?? null }}"
+            <input type="date" name="dateEnd" class="form-control" min="{{ $input['dateStart'] ?? null }}" value="{{ $input['dateEnd'] ?? null }}"
               id="dateEnd">
           </div>
         </div>
@@ -81,7 +81,7 @@
               <td class="text-center">{{ $sales->linkTrip->count() }}</td>
               <td class="text-center">{{ $sales->linkTripEcF->count() }}</td>
               <td class="text-center">{{ $sales->linkTripEc->count() }}</td>
-              <td class="text-center"> {{ number_format($sales->linkOrder[0]->total, 0, '', '.') }}</td>
+              <td class="text-center"> {{ number_format($sales->linkOrder[0]->total??null, 0, '', '.') }}</td>
             </tr>
           @endforeach
         </tbody>

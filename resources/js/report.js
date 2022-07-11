@@ -79,6 +79,8 @@ if($('#report').length>0){
 
     $( "#report [name=dateStart]" ).val(dateStart)
     $( "#report [name=dateEnd]" ).val(dateEnd)
+    $('[name="dateEnd"]').attr("min", $(this).val());
+
   });
   $( "#report [name=year]" ).on( "change", function() {
     var dateEnd = new Date( $( "#report [name=year]" ).val(), $( "#report [name=month]" ).val(), 0);
@@ -94,6 +96,8 @@ if($('#report').length>0){
 
     $( "#report [name=dateStart]" ).val(dateStart)
     $( "#report [name=dateEnd]" ).val(dateEnd)
+    $('[name="dateEnd"]').attr("min", $(this).val());
+
 
   });
 
