@@ -226,8 +226,8 @@ class ItemController extends Controller
       $validatedData = $request->validate($rules);
 
       $validatedData['status'] = $request->status;
-      $validatedData['max_pengadaan'] = $request->max_stok??0 - $request->min_stok??0;
-
+      $validatedData['max_pengadaan'] = ($request->max_stok??0) - ($request->min_stok??0);
+      
       if ($request->gambar) {
         $nama_item = str_replace(" ", "-", $request->nama);
         $file_name = 'ITM-' . $nama_item . '-' .date_format(now(),"YmdHis"). '.' . $request->gambar->extension();
