@@ -280,48 +280,48 @@ class OrderController extends Controller
     ]);
   }
 
-  public function search(){
-    //ini take out sementara
-    $orders = Order::join('order_tracks','orders.id','=','order_tracks.id_order')
-      ->join('statuses','order_tracks.status','=','statuses.id')
-      ->join('invoices','orders.id','=','invoices.id_order')
-      ->where(strtolower('nomor_invoice'),'like','%'.request('cari').'%')
-      ->paginate(10);  
+  // public function search(){
+  //   //ini take out sementara
+  //   $orders = Order::join('order_tracks','orders.id','=','order_tracks.id_order')
+  //     ->join('statuses','order_tracks.status','=','statuses.id')
+  //     ->join('invoices','orders.id','=','invoices.id_order')
+  //     ->where(strtolower('nomor_invoice'),'like','%'.request('cari').'%')
+  //     ->paginate(10);  
     
-      $statuses = Status::where('tabel','=','order_tracks')->get();
+  //     $statuses = Status::where('tabel','=','order_tracks')->get();
 
-      return view('administrasi.pesanan.index',[
-          'orders' => $orders,
-          'statuses' => $statuses
-      ]);
-  }
+  //     return view('administrasi.pesanan.index',[
+  //         'orders' => $orders,
+  //         'statuses' => $statuses
+  //     ]);
+  // }
 
-  public function filter(){
-    if(request('status') != ""){
-      $orders = Order::whereHas('linkOrderTrack',function($q) {
-          $q->where('status', request('status'));
-        })->with(['linkOrderTrack.linkStatus','linkInvoice'])->paginate(10);
-    }
-    else{
-      $orders = Order::with(['linkOrderTrack.linkStatus','linkInvoice'])->paginate(10);
-    }
+  // public function filter(){
+  //   if(request('status') != ""){
+  //     $orders = Order::whereHas('linkOrderTrack',function($q) {
+  //         $q->where('status', request('status'));
+  //       })->with(['linkOrderTrack.linkStatus','linkInvoice'])->paginate(10);
+  //   }
+  //   else{
+  //     $orders = Order::with(['linkOrderTrack.linkStatus','linkInvoice'])->paginate(10);
+  //   }
     
-      $statuses = Status::where('tabel','=','order_tracks')       
-      ->get();
+  //   $statuses = Status::where('tabel','=','order_tracks')       
+  //   ->get();
 
-      return view('administrasi/pesanan.index',[
-          'orders' => $orders,            
-          'statuses' => $statuses
-      ]);      
-  }
+  //   return view('administrasi/pesanan.index',[
+  //       'orders' => $orders,            
+  //       'statuses' => $statuses
+  //   ]);      
+  // }
 
   public function viewDetail(Order $order){
-      $items = OrderItem::where('id_order','=',$order->id)->get();
-      
-      return view('administrasi.pesanan.detailpesanan',[
-          'order' => $order,
-          'items' => $items
-      ]);
+    $items = OrderItem::where('id_order','=',$order->id)->get();
+    
+    return view('administrasi.pesanan.detailpesanan',[
+      'order' => $order,
+      'items' => $items
+    ]);
   }
 
   public function viewKapasitas(Order $order){
@@ -411,13 +411,6 @@ class OrderController extends Controller
       ]);
 
     return $pdf->stream('memo-'.$order->linkInvoice->nomor_invoice.'.pdf'); 
-    
-    // return view('administrasi/pesanan/detail.cetakMemo',[
-    //     'order' => $order,
-    //     'items' => $items,
-    //     'date' => $todayDate,
-    //     'administrasi' => $adminsitrasi
-    // ]);
   }
   
   public function simpanDataOrderCustomer(Request $request){

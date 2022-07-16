@@ -240,23 +240,6 @@ class ItemController extends Controller
       return redirect('/administrasi/stok/produk') -> with('pesanSukses', 'Produk berhasil ditambahkan' );
     }
 
-    /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function show($id)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
     public function edit($id)
     {
       return view('administrasi.stok.produk.edit',[
@@ -265,13 +248,6 @@ class ItemController extends Controller
       ]);
     }
 
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
     public function update(Request $request, $id)
     {
       $rules = ([
@@ -310,7 +286,7 @@ class ItemController extends Controller
 
     public function customerIndex(){
       $customer = Customer::where('id', auth()->user()->id_users)->first();
-        return view('customer/produk',[
+        return view('customer.produk',[
             'items' => Item::where('status',10)->orderBy("status", "ASC")->get(),
             'customer' => $customer
         ]);
@@ -327,7 +303,7 @@ class ItemController extends Controller
 
     public function indexAdministrasi(){
         $items = Item::orderBy("status", "ASC")->paginate(10);
-        return view('administrasi/stok.index',[
+        return view('administrasi.stok.index',[
             'items' => $items
         ]);
     }
@@ -347,7 +323,7 @@ class ItemController extends Controller
         ->select('no_pengadaan','no_nota','keterangan','created_at', DB::raw('SUM(harga_total) as harga'))
         ->groupBy('no_pengadaan','no_nota','keterangan','created_at')->get();
         
-        return view('administrasi/stok/riwayat.index',[
+        return view('administrasi.stok.riwayat.index',[
             'pengadaans' => $pengadaans
         ]);
     }
@@ -373,7 +349,7 @@ class ItemController extends Controller
         ->where('no_pengadaan','=',$pengadaan->no_pengadaan)
         ->first();
 
-        return view('administrasi/stok/riwayat.detail',[
+        return view('administrasi.stok.riwayat.detail',[
             'pengadaans' => $pengadaans,
             'total_harga' => $total,
             'detail' => $pengadaan
@@ -391,11 +367,11 @@ class ItemController extends Controller
 
         $administrasi = Staff::select('nama')->where('id','=',auth()->user()->id_users)->first();
         
-        $pdf = PDF::loadview('administrasi/stok/riwayat.detail-pdf',[
+        $pdf = PDF::loadview('administrasi.stok.riwayat.detail-pdf',[
           'pengadaans' => $pengadaans,
-            'total_harga' => $total,
-            'detail' => $pengadaan,
-            'administrasi' => $administrasi            
+          'total_harga' => $total,
+          'detail' => $pengadaan,
+          'administrasi' => $administrasi            
         ]);
 
         return $pdf->stream('laporan-NPB-pdf-'.$pengadaan->no_pengadaan.'.pdf');

@@ -76,11 +76,15 @@
               @else
                 <td>{{ $event->linkStatus->nama }}</td>
               @endif
-              <td><img src="{{ asset('storage/event/' . $event->gambar) }}" class="img-preview img-fluid"
-                  width="50px" height="50px"></td>
               <td>
-                <a href="/supervisor/event/ubah/{{ $event->id }}" class="btn btn-warning"><span class="iconify fs-5"
-                    data-icon="eva:edit-2-fill"></span>Ubah</a>
+                <img src="{{ asset('storage/event/' . $event->gambar) }}" class="img-fluid d-block mx-auto"
+                  width="50px" height="50px">
+              </td>
+              <td>
+                <div class="d-flex justify-content-center">
+                  <a href="/supervisor/event/ubah/{{ $event->id }}" class="btn btn-warning"><span class="iconify fs-5"
+                      data-icon="eva:edit-2-fill"></span>Ubah</a>
+                </div>
               </td>
             </tr>
           @endforeach

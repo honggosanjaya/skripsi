@@ -9,15 +9,16 @@
 
 @section('main_content')
   <div class="px-5 pt-4">
+    <h1 class="fs-4 fw-bold">Riwayat Pengadaan</h1>
     <table class="table" id="table">
       <thead>
         <tr>
-          <th scope="col">No</th>
-          <th scope="col">Tanggal</th>
-          <th scope="col">No Nota</th>
-          <th scope="col">Keterangan</th>
-          <th scope="col">Total Harga</th>
-          <th scope="col">Aksi</th>
+          <th scope="col" class="text-center">No</th>
+          <th scope="col" class="text-center">Tanggal</th>
+          <th scope="col" class="text-center">No Nota</th>
+          <th scope="col" class="text-center">Keterangan</th>
+          <th scope="col" class="text-center">Total Harga</th>
+          <th scope="col" class="text-center">Aksi</th>
         </tr>
       </thead>
       <tbody>
@@ -29,8 +30,10 @@
             <td>{{ $pengadaan->keterangan }}</td>
             <td>{{ number_format($pengadaan->harga, 0, '', '.') }}</td>
             <td>
-              <a href="/administrasi/stok/riwayat/detail/{{ $pengadaan->no_pengadaan }}"
-                class="btn btn-primary">Detail</a>
+              <div class="d-flex justify-content-center">
+                <a href="/administrasi/stok/riwayat/detail/{{ $pengadaan->no_pengadaan }}" class="btn btn-primary"><span
+                    class="iconify fs-4 me-1" data-icon="fluent:apps-list-detail-24-filled"></span>Detail</a>
+              </div>
             </td>
           </tr>
         @endforeach

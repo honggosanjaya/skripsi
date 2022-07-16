@@ -69,7 +69,7 @@ class EventController extends Controller
         ]);
       
         if($request->gambar){
-            $nama_event = str_replace(" ", "-", $event->nama);
+            $nama_event = str_replace(" ", "-", $request->nama);
             $file= $request->file('gambar');
             $filename=  'EVN-'.$nama_event.'.'.$file->getClientOriginalExtension();
             $request->gambar= $filename;

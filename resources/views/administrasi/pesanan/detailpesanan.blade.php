@@ -144,6 +144,7 @@
             </tr>
           </tbody>
         </table>
+
         @if ($order->linkOrderTrack->status != 25)
           <div class="stepper-wrapper d-flex align-items-end">
             <div class="stepper-item-date ">
@@ -153,7 +154,7 @@
                 @endif
               </div>
             </div>
-            <div class="stepper-item-date ">
+            <div class="stepper-item-date">
               <div class="step-name">
                 @if ($order->linkOrderTrack->waktu_diteruskan)
                   {{ date('F j, Y, g:i a', strtotime($order->linkOrderTrack->waktu_diteruskan)) }}
@@ -183,15 +184,15 @@
             </div>
           </div>
           <div class="stepper-wrapper status-track" data-status="{{ $order->linkOrderTrack->status }}">
-            <div class="stepper-item s-19 ">
+            <div class="stepper-item s-19">
               <div class="step-counter">1</div>
               <div class="step-name">order</div>
             </div>
-            <div class="stepper-item s-20 ">
+            <div class="stepper-item s-20">
               <div class="step-counter">2</div>
               <div class="step-name">sales</div>
             </div>
-            <div class="stepper-item s-21 ">
+            <div class="stepper-item s-21">
               <div class="step-counter">3</div>
               <div class="step-name">dikonfirmasi</div>
             </div>
@@ -236,7 +237,6 @@
               action="/administrasi/pesanan/detail/{{ $order->id }}/dikirimkan">
               @csrf
               <button type="submit" class="btn btn-success pesanan_selesai mt-4"><span class="iconify fs-3 me-1"
-                  data-icon="akar-icons:double-check"></span><span class="iconify fs-3 me-1"
                   data-icon="akar-icons:double-check"></span>Pesanan Selesai</button>
             </form>
           </div>
