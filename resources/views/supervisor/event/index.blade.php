@@ -77,8 +77,10 @@
                 <td>{{ $event->linkStatus->nama }}</td>
               @endif
               <td>
-                <img src="{{ asset('storage/event/' . $event->gambar) }}" class="img-fluid d-block mx-auto"
-                  width="50px" height="50px">
+                @if ($event->gambar)
+                  <img src="{{ asset('storage/event/' . $event->gambar) }}" class="img-fluid d-block mx-auto"
+                    width="50px" height="50px">
+                @endif
               </td>
               <td>
                 <div class="d-flex justify-content-center">
