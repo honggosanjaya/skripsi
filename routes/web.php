@@ -109,8 +109,8 @@ Route::prefix('administrasi')->middleware('administrasi')->group(function() {
   Route::get('/', [HomeController::class, 'indexAdministrasi']);
 
   Route::get('/pesanan', [OrderController::class, 'index']);
-  Route::get('/pesanan/cari', [OrderController::class, 'search']);
-  Route::get('/pesanan/filter', [OrderController::class, 'filter']);
+  // Route::get('/pesanan/cari', [OrderController::class, 'search']);
+  // Route::get('/pesanan/filter', [OrderController::class, 'filter']);
   Route::get('/pesanan/detail/{order:id}', [OrderController::class, 'viewDetail']);
   Route::get('/pesanan/detail/{order:id}/kapasitas', [OrderController::class, 'viewKapasitas']);
   Route::get('/pesanan/detail/{order:id}/cetak-memo', [OrderController::class, 'cetakMemo']);
@@ -155,8 +155,8 @@ Route::prefix('administrasi')->middleware('administrasi')->group(function() {
     Route::get('/pengadaan', [ItemController::class, 'productList'])->name('products.list');
     Route::get('/pengadaan/cart', [CartController::class, 'cartList'])->name('cart.list');
     Route::post('/pengadaan/cart', [CartController::class, 'addToCart'])->name('cart.store');
-    Route::post('/pengadaan/update-cart', [CartController::class, 'updateCart'])->name('cart.update');
-    Route::post('/pengadaan/remove', [CartController::class, 'removeCart'])->name('cart.remove');
+    // Route::post('/pengadaan/update-cart', [CartController::class, 'updateCart'])->name('cart.update');
+    // Route::post('/pengadaan/remove', [CartController::class, 'removeCart'])->name('cart.remove');
     // Route::post('/pengadaan/clear', [CartController::class, 'clearAllCart'])->name('cart.clear');
     Route::get('/pengadaan/clear', [CartController::class, 'clearAllCart']);
 
@@ -169,8 +169,8 @@ Route::prefix('administrasi')->middleware('administrasi')->group(function() {
     Route::get('/opname/riwayat/detail/{order:id}', [ItemController::class, 'detailRiwayatOpname']);
     Route::get('/opname/final', [CartController::class, 'cartList']);
     Route::post('/opname/final', [CartController::class, 'addToCart']);
-    Route::post('/opname/update-final', [CartController::class, 'updateCart']);
-    Route::post('/opname/remove', [CartController::class, 'removeCart']);
+    // Route::post('/opname/update-final', [CartController::class, 'updateCart']);
+    // Route::post('/opname/remove', [CartController::class, 'removeCart']);
     Route::get('/opname/clear', [CartController::class, 'clearAllCart']);
     Route::get('/opname/tambahopname', [ItemController::class, 'simpanDataOpname']);
   });

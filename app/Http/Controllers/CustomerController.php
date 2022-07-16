@@ -270,11 +270,10 @@ class CustomerController extends Controller
 
       if($request->pengajuan_limit_pembelian) {
         $validatedData['status_limit_pembelian'] = 7;
-        //kirim notif ke spv
       }
 
       if ($request->foto) {
-        $file_name = 'CUST-' . $nama_customer . '-' .date_format(now(),"YmdHis"). '.' . $request->foto->extension();
+        $file_name = 'CUST-' . $request->nama . '-' .date_format(now(),"YmdHis"). '.' . $request->foto->extension();
         $request->foto->move(public_path('storage/customer'), $file_name);
         $validatedData['foto'] = $file_name;
       }    
@@ -345,7 +344,7 @@ class CustomerController extends Controller
       $validatedData['pengajuan_limit_pembelian'] = $request->pengajuan_limit_pembelian;
 
       if ($request->foto) {
-        $file_name = 'CUST-' . $nama_customer . '-' .date_format(now(),"YmdHis"). '.' . $request->foto->extension();
+        $file_name = 'CUST-' . $request->nama . '-' .date_format(now(),"YmdHis"). '.' . $request->foto->extension();
         $request->foto->move(public_path('storage/customer'), $file_name);
         $validatedData['foto'] = $file_name;
       }

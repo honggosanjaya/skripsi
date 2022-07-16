@@ -55,15 +55,15 @@
               <td class="text-capitalize">{{ $staf->linkStaffRole->nama ?? null }}</td>
               <td class="text-capitalize">{{ $staf->linkStatus->nama ?? null }}</td>
               <td>
-                <div class="d-flex justify-content-between">
+                <div class="d-flex justify-content-center">
                   <a href="/supervisor/datastaf/{{ $staf->id }}/edit" class="btn btn-sm btn-warning ms-3 me-1">
-                    <span class="iconify fs-5 me-1" data-icon="eva:edit-2-fill"></span> Edit
+                    <span class="iconify fs-5" data-icon="eva:edit-2-fill"></span> Edit
                   </a>
 
                   <form action="/supervisor/datastaf/ubahstatus/{{ $staf->id }}" method="POST">
                     @csrf
                     <button type="submit"
-                      class="btn btn-sm me-3 {{ $staf->linkStatus->nama === 'active' ? 'btn-danger' : 'btn-success' }}">
+                      class="btn btn-sm {{ $staf->linkStatus->nama === 'active' ? 'btn-danger' : 'btn-success' }}">
                       @if ($staf->linkStatus->nama === 'active')
                         <span class="iconify" data-icon="material-symbols:cancel-outline"></span>
                       @else

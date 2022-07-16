@@ -24,6 +24,7 @@ class CartController extends Controller
   public function addToCart(Request $request)
   {
     $cartItem = \Cart::session(auth()->user()->id.$request->route)->get($request->id);
+    // dd($cartItem);
     if ($request->route=="pengadaan") {
       if($cartItem !== null){
         \Cart::session(auth()->user()->id.$request->route)->update(
@@ -113,10 +114,8 @@ class CartController extends Controller
           'name' => $request->nama,
           'price' => $request->harga_satuan,
           'attributes' => ['jumlah' => $request->jumlah,'keterangan' => $request->keterangan,'kode_barang' => $request->kode_barang]
-        ]);
-      
-
-      }
+        ]);      
+     }
 
       return redirect('/administrasi/stok/opname/')->with('pesanSukses', 'Produk berhasil ditambahkan ke keranjang');
     }
