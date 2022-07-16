@@ -148,8 +148,15 @@ kode invoice retur dkk penulisan
 
 
 !!kedepan!!
-bikin database baru bersama pembagian tugas dkk
-query sql
+- bikin database baru bersama pembagian tugas dkk
+- query sql
+
+- rangkap surat jalan pada penerimaan ekspedisi
+- mathiasen
+- typo
+- use case dihapus garis
+- use case desc pembenahan penomeran
+- ada unduh penjualan di desc diagram (cek semua judul sama dengan activity)
 
 
 
