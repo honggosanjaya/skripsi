@@ -68,7 +68,8 @@
               <td>{{ date('d-m-Y', strtotime($event->date_end)) }}</td>
               <td>{{ $event->linkStaff->nama }}</td>
               @if ($event->linkStatus->nama == 'active')
-                @if (date('d-m-Y', strtotime($event->date_start)) <= date('d-m-Y'))
+                {{-- @if (date('d-m-Y', strtotime($event->date_start)) <= date('d-m-Y')) --}}
+                @if (strtotime($event->date_start) <= strtotime(date('d-m-Y')))
                   <td>{{ $event->linkStatus->nama }}</td>
                 @else
                   <td>belum mulai</td>
