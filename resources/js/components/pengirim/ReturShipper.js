@@ -87,7 +87,7 @@ const ReturShipper = () => {
     else return 0;
   }
 
-  const handleKurangJumlah = (item, alasan) => {
+  const handleKurangJumlah = (item, alasan, harga) => {
     const itemincart = cartItems.find((x) => x.id === item.id);
     if ((alasan == undefined || alasan == '') && itemincart.kuantitas > 1) {
       const exist = newHistoryItems.find((x) => x.id_item === item.id);
