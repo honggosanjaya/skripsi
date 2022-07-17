@@ -18,14 +18,14 @@ use Illuminate\Support\Facades\DB;
 class ReturController extends Controller
 {
     public function index(){
-        $returs = Retur::select('no_retur','id_customer','id_staff_pengaju', 'created_at','status')        
-        ->groupBy('no_retur','id_customer','id_staff_pengaju','created_at','status')
-        ->with(['linkCustomer','linkStaffPengaju','linkStatus'])
-        ->orderBy('no_retur','DESC')->get();       
-        
-        return view('administrasi/retur.index',[
-            'returs' => $returs
-        ]);
+      $returs = Retur::select('no_retur','id_customer','id_staff_pengaju', 'created_at','status')        
+      ->groupBy('no_retur','id_customer','id_staff_pengaju','created_at','status')
+      ->with(['linkCustomer','linkStaffPengaju','linkStatus'])
+      ->orderBy('no_retur','DESC')->get();       
+      
+      return view('administrasi/retur.index',[
+          'returs' => $returs
+      ]);
     }
 
     public function pengajuanReturAPI(Request $request){
@@ -66,18 +66,18 @@ class ReturController extends Controller
       ], 200);
     }
 
-    public function search(){
-        $returs = Retur::select('no_retur','id_customer','id_staff_pengaju', 'created_at','status')        
-        ->groupBy('no_retur','id_customer','id_staff_pengaju','created_at','status')
-        ->where(strtolower('no_retur'),'like','%'.request('cari').'%')
-        ->with(['linkCustomer','linkStaffPengaju','linkStatus'])        
-        ->paginate(10); 
-                
-        return view('administrasi.retur.index',[
-            'returs' => $returs
-        ]);
-        
-    }
+    // public function search(){
+    //   $returs = Retur::select('no_retur','id_customer','id_staff_pengaju', 'created_at','status')        
+    //   ->groupBy('no_retur','id_customer','id_staff_pengaju','created_at','status')
+    //   ->where(strtolower('no_retur'),'like','%'.request('cari').'%')
+    //   ->with(['linkCustomer','linkStaffPengaju','linkStatus'])        
+    //   ->paginate(10); 
+              
+    //   return view('administrasi.retur.index',[
+    //       'returs' => $returs
+    //   ]);
+    // }
+
     public function confirmRetur(Request $request){
       $rules = ([
         'tipe_retur' => ['required'],
@@ -91,11 +91,12 @@ class ReturController extends Controller
         'tipe_retur' => $request->tipe_retur,
         'id_invoice' => $request->id_invoice,
         'status' => 12
-      ]
-      );
+      ]);
+
       $harga_total=Retur::select('no_retur',DB::raw('SUM(harga_satuan * kuantitas) as harga'))
         ->groupBy('no_retur')->where('no_retur',  $request->no_retur)->first()->harga;
       $invoice=Invoice::find($request->id_invoice);
+      
       if ($request->tipe_retur==1) {
         $invoice->update(["harga_total"=>($invoice->harga_total - $harga_total)]);
         foreach($retur->get() as $r){
@@ -111,26 +112,21 @@ class ReturController extends Controller
       $districts = District::all();
       $temp = array();
       
-      for($i=0; $i<$districtTotal; $i++)
-      {
+      for($i=0; $i<$districtTotal; $i++){
         $get1 = '';
         $get2 = '';
         $value = 0;
         
-        if($districts[$i]->id_parent == null)
-        {
+        if($districts[$i]->id_parent == null){
           $get1 = $districts[$i]->nama;
           $value = $districts[$i]->id;
           array_push($temp, [$get1, $value]);
         }
-        else if($districts[$i]->id_parent != null)
-        {
-          for($j=$districtTotal-1; $j>=0; $j--)
-          {
-            if($districts[$i]->id_parent == $districts[$j]->id)
-            {
+        else if($districts[$i]->id_parent != null){
+          for($j=$districtTotal-1; $j>=0; $j--){
+            if($districts[$i]->id_parent == $districts[$j]->id){
               $get2 = $temp[$j][0] . " - " .$districts[$i]->nama;
-                      $value = $districts[$i]->id;
+              $value = $districts[$i]->id;
               array_push($temp, [$get2,$value]);
             }
           }
@@ -152,9 +148,8 @@ class ReturController extends Controller
       })
       ->where('id_customer','=',$retur->linkCustomer->id)->with(['linkOrderTrack','linkInvoice'])
       ->get();
-
       
-      return view('administrasi/retur.detail',[
+      return view('administrasi.retur.detail',[
         'retur' => $retur,
         'wilayah' => $temp[($retur->linkCustomer->id_wilayah)-1],
         'items' => $joins,
@@ -166,58 +161,46 @@ class ReturController extends Controller
     }
 
     public function cetakRetur(Retur $retur){
-        $districtTotal = District::count();
-        $districts = District::all();
-        $temp = array();
+      $districtTotal = District::count();
+      $districts = District::all();
+      $temp = array();
+      
+      for($i=0; $i<$districtTotal; $i++){
+        $get1 = '';
+        $get2 = '';
+        $value = 0;
         
-        for($i=0; $i<$districtTotal; $i++)
-        {
-            $get1 = '';
-	        $get2 = '';
-	        $value = 0;
-	        
-            if($districts[$i]->id_parent == null)
-	        {
-		        $get1 = $districts[$i]->nama;
-		        $value = $districts[$i]->id;
-		        array_push($temp, [$get1, $value]);
-	        }
-	        else if($districts[$i]->id_parent != null)
-	        {
-		        for($j=$districtTotal-1; $j>=0; $j--)
-		        {
-			        if($districts[$i]->id_parent == $districts[$j]->id)
-			        {
-				        $get2 = $temp[$j][0] . " - " .$districts[$i]->nama;
-                        $value = $districts[$i]->id;
-				        array_push($temp, [$get2,$value]);
-			        }
-		        }
-        	}
-            
+        if($districts[$i]->id_parent == null){
+          $get1 = $districts[$i]->nama;
+          $value = $districts[$i]->id;
+          array_push($temp, [$get1, $value]);
         }
-
-        $joins = Retur::with('linkItem')->where('no_retur',$retur->no_retur)->get();
-        $administrasi = Staff::select('nama')->where('id','=',auth()->user()->id_users)->first();
-        $total_harga = 0;
-        for($k=0; $k<$joins->count();$k++){
-          $total_harga = $total_harga + ($joins[$k]->kuantitas * $joins[$k]->harga_satuan);
+        else if($districts[$i]->id_parent != null){
+          for($j=$districtTotal-1; $j>=0; $j--){
+            if($districts[$i]->id_parent == $districts[$j]->id){
+              $get2 = $temp[$j][0] . " - " .$districts[$i]->nama;
+              $value = $districts[$i]->id;
+              array_push($temp, [$get2,$value]);
+            }
+          }
         }
+      }
 
-        $pdf = PDF::loadview('administrasi/retur.cetakretur',[
-            'retur' => $retur,
-            'wilayah' => $temp[($retur->linkCustomer->id_wilayah)-1],
-            'items' => $joins,
-            'administrasi' => $administrasi,
-            'total_harga' => $total_harga      
-          ]);
-  
-        return $pdf->stream('retur-'.$retur->no_retur.'.pdf');
-        // return view('administrasi/retur.detail',[
-        //     'retur' => $retur,
-        //     'wilayah' => $temp[($retur->linkCustomer->id_wilayah)-1],
-        //     'items' => $joins,
-        //     'administrasi' => $administrasi
-        // ]);
+      $joins = Retur::with('linkItem')->where('no_retur',$retur->no_retur)->get();
+      $administrasi = Staff::select('nama')->where('id','=',auth()->user()->id_users)->first();
+      $total_harga = 0;
+      for($k=0; $k<$joins->count();$k++){
+        $total_harga = $total_harga + ($joins[$k]->kuantitas * $joins[$k]->harga_satuan);
+      }
+
+      $pdf = PDF::loadview('administrasi/retur.cetakretur',[
+        'retur' => $retur,
+        'wilayah' => $temp[($retur->linkCustomer->id_wilayah)-1],
+        'items' => $joins,
+        'administrasi' => $administrasi,
+        'total_harga' => $total_harga      
+      ]);
+
+      return $pdf->stream('retur-'.$retur->no_retur.'.pdf');
     }
 }

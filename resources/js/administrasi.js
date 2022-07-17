@@ -51,7 +51,7 @@ $(document).on('click', '#retur-admin .button-submit', function () {
       denyButtonText: `Tidak`,
     }).then((result) => {
       if (result.isConfirmed) {
-        console.log('testing');
+        // console.log('testing');
         $('#form_submit').submit();
 
       } else if (result.isDenied) {

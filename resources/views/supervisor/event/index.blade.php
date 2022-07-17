@@ -68,7 +68,8 @@
               <td>{{ date('d-m-Y', strtotime($event->date_end)) }}</td>
               <td>{{ $event->linkStaff->nama }}</td>
               @if ($event->linkStatus->nama == 'active')
-                @if (date('d-m-Y', strtotime($event->date_start)) <= date('d-m-Y'))
+                {{-- @if (date('d-m-Y', strtotime($event->date_start)) <= date('d-m-Y')) --}}
+                @if (strtotime($event->date_start) <= strtotime(date('d-m-Y')))
                   <td>{{ $event->linkStatus->nama }}</td>
                 @else
                   <td>belum mulai</td>
@@ -77,8 +78,10 @@
                 <td>{{ $event->linkStatus->nama }}</td>
               @endif
               <td>
-                <img src="{{ asset('storage/event/' . $event->gambar) }}" class="img-fluid d-block mx-auto"
-                  width="50px" height="50px">
+                @if ($event->gambar)
+                  <img src="{{ asset('storage/event/' . $event->gambar) }}" class="img-fluid d-block mx-auto"
+                    width="50px" height="50px">
+                @endif
               </td>
               <td>
                 <div class="d-flex justify-content-center">
