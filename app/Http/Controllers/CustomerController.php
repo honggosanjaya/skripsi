@@ -120,7 +120,11 @@ class CustomerController extends Controller
             'tabel' => 'customers',
           ]);
         }
-        $customer = Customer::find($id_customer)->update($data);
+        if (Customer::find($id_customer)->koordinat==null) {
+          $customer = Customer::find($id_customer)->update($data+['koordinat' =>  $request->koordinat]);
+        }else {
+          $customer = Customer::find($id_customer)->update($data);
+        }
         Customer::find($id_customer)->update(['password'=>Hash::make(12345678)]);
       }
 
