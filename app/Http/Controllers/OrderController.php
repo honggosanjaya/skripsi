@@ -661,8 +661,8 @@ class OrderController extends Controller
 
   public function hapusKodeCustomer(Order $order){
     Order::where('id', $order->id)->delete();
-    OrderItem::where('id', $order->id)->delete();
-    OrderTrack::where('id', $order->id)->delete();
+    OrderItem::where('id_order', $order->id)->delete();
+    OrderTrack::where('id_order', $order->id)->delete();
 
     return redirect('/customer') -> with('pesanSukses', 'Berhasil membatalkan pesanan' );
   }
