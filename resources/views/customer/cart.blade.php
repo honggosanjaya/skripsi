@@ -42,7 +42,10 @@
       </tfoot>
     </table>
 
-    <div class="d-flex justify-content-end">
+    <div class="d-flex justify-content-between">
+      <a type="button" class="btn btn-danger me-3 btn_deleteCart" href="/customer/produk/cart/clear?route=customerOrder">
+        <span class="iconify fs-3 me-1" data-icon="bxs:trash"></span>Remove All Cart
+      </a>
       <a href="/customer/produk/cart/tambahorder?route=customerOrder" type="button"
         class="btn btn-success checkout_btn"><span class="iconify fs-3 me-2"
           data-icon="ic:baseline-shopping-cart-checkout"></span>Checkout</a>

@@ -89,3 +89,11 @@ $(document).ready(function () {
     $('#logout_form').submit();
   })
 });
+
+$(document).ready(function () {
+  $(document).on('click', '.btn_deleteCart', function (e) {
+    if (!confirm('Are you sure?')) {
+      e.preventDefault();
+    }
+  })
+});

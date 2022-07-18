@@ -204,6 +204,7 @@ Route::prefix('customer')->middleware('customer')->group(function() {
   //Route untuk cart
   Route::get('/produk/cart', [CartController::class, 'cartList']);
   Route::get('/produk/cart/tambahorder', [OrderController::class, 'simpanDataOrderCustomer']);
+  Route::get('/produk/cart/clear', [CartController::class, 'clearAllCart']);
   //Route untuk event
   Route::get('/event', [EventController::class, 'customerIndex']);
   Route::get('/event/cari', [EventController::class, 'customerSearch']);
