@@ -163,7 +163,12 @@ class OrderController extends Controller
       'updated_at' => now(),
       'alasan_penolakan' => $request->alasan_penolakan
     ]);
-    Customer::find($id_customer)->update(['updated_at'=> now()]);
+    
+    if (Customer::find($id_customer)->koordinat==null) {
+      Customer::find($id_customer)->update(['koordinat' =>  $request->koordinat]);
+    }else{
+      Customer::find($id_customer)->update(['updated_at'=> now()]);
+    }
 
 
     if (Customer::find($id_customer)->time_to_effective_call==null) {
@@ -235,7 +240,11 @@ class OrderController extends Controller
           'counter_to_effective_call' => $customer->counter_to_effective_call+1
         ]);
       }
-      Customer::find($id_customer)->update(['updated_at'=> now()]);
+      if (Customer::find($id_customer)->koordinat==null) {
+        Customer::find($id_customer)->update(['koordinat' =>  $request->koordinat]);
+      }else{
+        Customer::find($id_customer)->update(['updated_at'=> now()]);
+      }
 
     return response()->json([
       'status' => 'success',
