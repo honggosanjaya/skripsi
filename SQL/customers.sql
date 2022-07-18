@@ -58,11 +58,11 @@ CREATE TABLE `customers` (
 --
 
 INSERT INTO `customers` (`id`, `id_jenis`, `id_wilayah`, `id_staff`, `nama`, `email`, `password`, `alamat_utama`, `alamat_nomor`, `keterangan_alamat`, `koordinat`, `telepon`, `durasi_kunjungan`, `counter_to_effective_call`, `tipe_retur`, `limit_pembelian`, `pengajuan_limit_pembelian`, `status_limit_pembelian`, `foto`, `status`, `created_at`, `updated_at`, `time_to_effective_call`) VALUES
-(1, 2, 9, 3, 'Customer Pertama', 'customer1@gmail.com', '$2y$10$RGTK4k.IJglxBl4hOWc7juRhh9JEP04GfeUc4BVr9TW36/3an8CpS', 'Jalan Soekarno Hatta', 'no 3', NULL, NULL, '0341657201', 7, 1, 1, 200000, NULL, NULL, 'CUST-Customer Pertama-20220716214052.png', 3, NULL, '2022-07-17 15:04:39', '2022-07-16 13:55:22'),
-(2, 1, 10, 3, 'Customer Kedua', 'customer2@gmail.com', '$2y$10$1IV6.xnOt6WwFSxV1NMOXO1qW8oE..U13amNqeDIypMKi/2f3UnhO', 'Jalan Sawojajar', 'E5 no 15', 'Jual Sate dan Bakso', NULL, '086789024567', 7, 1, NULL, 200000, NULL, NULL, 'CUST-Customer Kedua-20220716211218.jpg', 3, NULL, '2022-07-17 15:04:28', '2022-07-16 14:12:18'),
-(3, 1, 9, 3, 'Customer Ketiga', 'customer3@gmail.com', '$2y$10$IKW3c3YqDrF4MyUj6keyquGTTLVlMr5BOacs0hUYgt4v6msR1xP92', 'Perumahan Araya', 'Blok A1 no 1', 'Rumah Pagar Hitam', NULL, '085678934567', 7, 1, NULL, 200000, NULL, NULL, NULL, 3, NULL, '2022-07-17 15:04:48', '2022-07-17 14:52:09'),
-(4, 1, 3, 3, 'Customer Keempat', NULL, NULL, 'Perumahaan Istana Dieng', 'no 10', 'Rumah cat pink', NULL, '085678925671', 7, 1, NULL, 200000, NULL, NULL, NULL, 3, NULL, '2022-07-17 15:04:57', '2022-07-17 14:55:36'),
-(5, 1, 10, NULL, 'Customer Kelima', NULL, NULL, 'Jalan Danau Bratan', '13', NULL, '-8.0740352@111.8961664', NULL, 7, 1, NULL, NULL, NULL, NULL, NULL, 3, '2022-07-17 15:03:21', '2022-07-17 15:03:21', NULL);
+(1, 2, 9, 3, 'Customer Pertama', 'customer1@gmail.com', '$2y$10$RGTK4k.IJglxBl4hOWc7juRhh9JEP04GfeUc4BVr9TW36/3an8CpS', 'Jalan Soekarno Hatta', 'no 3', NULL, NULL, '0341657201', 7, 1, 1, 200000, NULL, NULL, 'CUST-Customer Pertama-20220716214052.png', 3, NULL, '2022-07-17 01:04:39', '2022-07-15 23:55:22'),
+(2, 1, 10, 3, 'Customer Kedua', 'customer2@gmail.com', '$2y$10$1IV6.xnOt6WwFSxV1NMOXO1qW8oE..U13amNqeDIypMKi/2f3UnhO', 'Jalan Sawojajar', 'E5 no 15', 'Jual Sate dan Bakso', NULL, '086789024567', 7, 1, NULL, 200000, NULL, NULL, 'CUST-Customer Kedua-20220716211218.jpg', 3, NULL, '2022-07-17 01:04:28', '2022-07-16 00:12:18'),
+(3, 1, 9, 3, 'Customer Ketiga', 'customer3@gmail.com', '$2y$10$IKW3c3YqDrF4MyUj6keyquGTTLVlMr5BOacs0hUYgt4v6msR1xP92', 'Perumahan Araya', 'Blok A1 no 1', 'Rumah Pagar Hitam', NULL, '085678934567', 7, 1, NULL, 200000, NULL, NULL, NULL, 3, NULL, '2022-07-17 01:04:48', '2022-07-17 00:52:09'),
+(4, 1, 3, 3, 'Customer Keempat', NULL, NULL, 'Perumahaan Istana Dieng', 'no 10', 'Rumah cat pink', NULL, '085678925671', 7, 1, NULL, 200000, NULL, NULL, NULL, 3, NULL, '2022-07-17 01:04:57', '2022-07-17 00:55:36'),
+(5, 1, 10, NULL, 'Customer Kelima', NULL, NULL, 'Jalan Danau Bratan', '13', NULL, '-8.2237269@111.7964117', NULL, 7, 1, NULL, NULL, NULL, NULL, NULL, 3, '2022-07-18 13:05:31', '2022-07-18 13:05:32', NULL);
 
 --
 -- Indexes for dumped tables
