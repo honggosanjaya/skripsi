@@ -1,0 +1,4 @@
+Panduan SQl:
+- data sql ada di sales(17-7).sql
+- untuk data customer terbaru gunakan customers.sql
+- untuk data trip gunakan trips.sql
