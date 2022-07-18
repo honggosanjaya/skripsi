@@ -34,6 +34,12 @@ class CartController extends Controller
                   'relative' => false,
                   'value' => $request->quantity
               ],
+              'attributes' => array(
+                'kode_barang' => $request->kode_barang,
+                'satuan' => $request->satuan,
+                'max_pengadaan' => $request->max_pengadaan,
+                'total_harga' => $request->total_harga
+              )
           ]
         );
   
