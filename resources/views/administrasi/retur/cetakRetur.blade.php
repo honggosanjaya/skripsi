@@ -60,7 +60,7 @@
           <td>
             <h5>Admin : </h5>
           </td>
-          <td>{{ $administrasi->nama }}</td>
+          <td>{{ $retur->linkStaffPengonfirmasi->nama ??null }}</td>
         </tr>
         <tr>
           <td>
