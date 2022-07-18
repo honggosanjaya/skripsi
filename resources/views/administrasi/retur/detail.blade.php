@@ -26,7 +26,7 @@
         <span><b>Wilayah</b> {{ $wilayah[0] }}</span>
         <span><b>No. Telepon</b> {{ $retur->linkCustomer->telepon }}</span>
         <span><b>Pengirim</b> {{ $retur->linkStaffPengaju->nama }}</span>
-        <span><b>Admin</b> {{ $administrasi->nama }}</span>
+        <span><b>Admin</b> {{ $retur->linkStaffPengonfirmasi->nama ??null }}</span>
         <span><b>No. Invoice</b> {{ $retur->linkInvoice->nomor_invoice ?? null }}</span>
       </div>
 

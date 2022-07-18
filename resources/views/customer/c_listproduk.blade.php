@@ -11,7 +11,7 @@
           @csrf
           <input type="hidden" value="{{ $item->id }}" name="id">
           <input type="hidden" value="{{ $item->nama }}" name="nama">
-          <input type="hidden" value="{{ $item->harga_satuan - ($item->harga_satuan * $customer->linkCustomerType->diskon) / 100 }}" name="harga_satuan">
+          <input type="hidden" value="{{ $item->harga_satuan }}" name="harga_satuan">
           <h1 class="fs-6 fw-bold">{{ $item->nama }}</h1>
 
           <h2 class="fs-6 mb-0 text-decoration-line-through">
