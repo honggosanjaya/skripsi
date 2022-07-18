@@ -135,7 +135,7 @@ class ItemController extends Controller
         'no_pengadaan' => $pengadaan_count,
         'no_nota' => $request->no_nota,
         'kuantitas' => $item->quantity,
-        'harga_total' => $request->harga_total,
+        'harga_total' => $item->attributes->total_harga,
         'keterangan' => $request->keterangan,
         'created_at' => now(),
       ]);
