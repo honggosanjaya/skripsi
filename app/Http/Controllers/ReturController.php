@@ -90,6 +90,7 @@ class ReturController extends Controller
       $retur->update([
         'tipe_retur' => $request->tipe_retur,
         'id_invoice' => $request->id_invoice,
+        'id_staff_pengonfirmasi' => auth()->user()->id_users,
         'status' => 12
       ]);
 

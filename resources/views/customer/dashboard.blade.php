@@ -86,7 +86,7 @@
                         <p class="mb-0 fw-bold text-center">Kuantitas</p>
                       </div>
                       <div class="col-4">
-                        <p class="mb-0 fw-bold text-center">HargaSatuan</p>
+                        <p class="mb-0 fw-bold text-center">Harga Satuan</p>
                       </div>
                     </div>
 
@@ -99,7 +99,7 @@
                           <p class="mb-0 text-center">{{ $item->kuantitas }}</p>
                         </div>
                         <div class="col-4">
-                          <p class="mb-0 text-center">{{ $item->harga_satuan }}</p>
+                          <p class="mb-0 text-center">{{ $item->harga_satuan - ($item->harga_satuan * $customer->linkCustomerType->diskon) / 100 }}</p>
                         </div>
                       </div>
                     @endforeach

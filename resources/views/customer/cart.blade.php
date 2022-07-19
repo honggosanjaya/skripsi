@@ -27,11 +27,11 @@
         @foreach ($cartItems as $item)
           <tr>
             @php
-              $t_items = $item->quantity * $item->price;
+              $t_items = $item->quantity * ($item->price - ($item->price * $customer->linkCustomerType->diskon) / 100);
               $total += $t_items;
             @endphp
             <td>{{ $item->name }}</td>
-            <td class="text-center">{{ $item->quantity . ' X ' . $item->price }}</td>
+            <td class="text-center">{{ $item->quantity . ' X ' . $item->price - ($item->price * $customer->linkCustomerType->diskon) / 100 }}</td>
             <td class="text-center"> {{ $t_items }}</td>
           </tr>
         @endforeach

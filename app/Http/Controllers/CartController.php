@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Models\Customer;
 
 class CartController extends Controller
 {
@@ -13,7 +14,8 @@ class CartController extends Controller
       return view('administrasi.stok.pengadaan.cart', compact('cartItems'));
     }elseif($request->route=="customerOrder") {
       $cartItems = \Cart::session(auth()->user()->id.$request->route)->getContent();
-      return view('customer.cart', compact('cartItems'));
+      $customer = Customer::where('id', auth()->user()->id_users)->first();
+      return view('customer.cart', compact('cartItems','customer'));
     }elseif($request->route=="opname") {
       $cartItems = \Cart::session(auth()->user()->id.$request->route)->getContent();
       return view('administrasi.stok.opname.cart', compact('cartItems'));
@@ -161,7 +163,8 @@ class CartController extends Controller
         return view('administrasi.stok.pengadaan.cart', compact('cartItems'));
       }elseif($request->route=="customerOrder") {
         $cartItems = \Cart::session(auth()->user()->id.$request->route)->getContent();
-        return view('customer.cart', compact('cartItems'));
+        $customer = Customer::where('id', auth()->user()->id_users)->first();
+        return view('customer.cart', compact('cartItems','customer'));
       }elseif($request->route=="opname") {
         $cartItems = \Cart::session(auth()->user()->id.$request->route)->getContent();
         return view('administrasi.stok.opname.cart', compact('cartItems'));
@@ -177,7 +180,8 @@ class CartController extends Controller
         return view('administrasi.stok.pengadaan.cart', compact('cartItems'));
       }elseif($request->route=="customerOrder") {
         $cartItems = \Cart::session(auth()->user()->id.$request->route)->getContent();
-        return view('customer.cart', compact('cartItems'));
+        $customer = Customer::where('id', auth()->user()->id_users)->first();
+        return view('customer.cart', compact('cartItems','customer'));
       }elseif($request->route=="opname") {
         $cartItems = \Cart::session(auth()->user()->id.$request->route)->getContent();
         return view('administrasi.stok.opname.cart', compact('cartItems'));
