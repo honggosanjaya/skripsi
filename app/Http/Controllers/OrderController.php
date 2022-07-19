@@ -27,21 +27,10 @@ class OrderController extends Controller
     $idStaf = $request->idStaf;
     $estimasiWaktuPengiriman = $request->estimasiWaktuPengiriman;
     $keterangan = $request->keterangan;
-    $id_order = null;
-    $id_customer = null;
+    $id_order = $request->kodePesanan ?? 'belum ada';
+    $id_customer = $request->idCustomer;
     $tipeRetur = $request -> tipeRetur;
 
-    if(sizeof($keranjangItems) > 0){
-      foreach($keranjangItems as $item){
-        $id_customer = $item['customer'];
-        if($item['orderId'] != 'belum ada'){
-          $id_order = $item['orderId'];
-        }
-        if($item['orderId'] == 'belum ada'){
-          $id_order = 'belum ada';
-        }
-      }
-    }
     $customertype=Customer::with(['linkCustomerType'])->find($id_customer);
 
     if($id_order == "belum ada"){
