@@ -52,8 +52,8 @@ function App() {
                 <Route exact path="/salesman/trip/:id" component={TripSales} />
                 <HitungStokContextProvider>
                   <Route exact path="/salesman/order/:idCust" component={Pemesanan} />
+                  <Route exact path="/salesman/keranjang/:idCust" component={KeranjangSales} />
                 </HitungStokContextProvider>
-                <Route exact path="/salesman/keranjang/:idCust" component={KeranjangSales} />
                 <Route exact path="/salesman/profil" component={Profil} />
               </KeranjangSalesContextProvider>
             </Route>

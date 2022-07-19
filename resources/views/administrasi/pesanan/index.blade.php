@@ -40,7 +40,11 @@
             <td>{{ $order->linkCustomer->nama ?? null }}</td>
             <td>{{ $order->linkStaff->nama ?? null }}</td>
             <td>{{ $order->linkInvoice->nomor_invoice ?? null }}</td>
-            <td>{{ number_format($order->linkInvoice->harga_total?? 0, 0, '', '.')  }}</td>
+            @if ($order->linkInvoice)
+              <td>{{ number_format($order->linkInvoice->harga_total, 0, '', '.') }}</td>
+            @else
+              <td></td>
+            @endif
             <td class="text-capitalize">{{ $order->linkOrderTrack->linkStatus->nama ?? 'null' }}</td>
             <td>{{ date('d M Y', strtotime($order->created_at)) }}</td>
             <td>

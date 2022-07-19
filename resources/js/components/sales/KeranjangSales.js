@@ -12,6 +12,7 @@ import LoadingIndicator from '../reuse/LoadingIndicator';
 import urlAsset from '../../config';
 import HeaderSales from './HeaderSales';
 import { Button, Modal } from 'react-bootstrap';
+import { HitungStokContext } from '../../contexts/HitungStokContext';
 
 const KeranjangSales = ({ location }) => {
   const { dataUser, loadingDataUser } = useContext(UserContext);
@@ -37,6 +38,7 @@ const KeranjangSales = ({ location }) => {
   const [errorProdukDlmKeranjang, setErrorProdukDlmKeranjang] = useState(false);
   const [totalHarga, setTotalHarga] = useState(0);
   const [isShowRincian, setIsShowRincian] = useState(false);
+  const { kodePesanan, setKodePesanan } = useContext(HitungStokContext);
   const Swal = require('sweetalert2');
   const { state: idTrip } = location;
   let jmlProdukError = 0;
@@ -229,6 +231,8 @@ const KeranjangSales = ({ location }) => {
           },
           data: {
             keranjang: produks,
+            idCustomer: idCust,
+            kodePesanan: kodePesanan,
             idStaf: dataUser.id_staff,
             estimasiWaktuPengiriman: estimasiWaktuPengiriman,
             keterangan: keteranganOrderItem,
@@ -243,6 +247,7 @@ const KeranjangSales = ({ location }) => {
             if (response.data.status === 'success') {
               hapusSemuaProduk();
               setIsLoading(false);
+              setKodePesanan(null);
               Swal.fire({
                 icon: 'success',
                 title: 'Tersimpan!',

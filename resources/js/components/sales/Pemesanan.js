@@ -25,7 +25,6 @@ const Pemesanan = ({ location }) => {
   const { dataUser } = useContext(UserContext);
   const history = useHistory();
   const { produks, getAllProduks } = useContext(KeranjangSalesContext);
-  const [kodePesanan, setKodePesanan] = useState('');
   const [kataKunci, setKataKunci] = useState('');
   const [errorMessage, setErrorMessage] = useState(null);
   const [orderId, setOrderId] = useState(null);
@@ -39,7 +38,7 @@ const Pemesanan = ({ location }) => {
   const jamMasuk = Date.now() / 1000;
   const [customer, setCustomer] = useState([]);
   const [historyItem, setHistoryItem] = useState([]);
-  const { newHistoryItem, setNewHistoryItem } = useContext(HitungStokContext);
+  const { newHistoryItem, setNewHistoryItem, kodePesanan, setKodePesanan } = useContext(HitungStokContext);
   const [jmlItem, setJmlItem] = useState(null);
   let jumlahProdukKeranjang = 0;
   const [jumlahOrderRealTime, setJumlahOrderRealTime] = useState([]);
