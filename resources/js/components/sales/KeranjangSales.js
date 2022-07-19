@@ -28,7 +28,7 @@ const KeranjangSales = ({ location }) => {
   const [limitPembelian, setLimitPembelian] = useState(0);
   const [dataCustType, setDataCustType] = useState({});
   const [pilihanRetur, setPilihanRetur] = useState([]);
-  const [tipeRetur, setTipeRetur] = useState("1");
+  const [tipeRetur, setTipeRetur] = useState('1');
   const [kodeEvent, setKodeEvent] = useState('');
   const [errorKodeEvent, setErrorKodeEvent] = useState(null);
   const [hargaPromo, setHargaPromo] = useState(0);
@@ -53,8 +53,21 @@ const KeranjangSales = ({ location }) => {
   }
 
   useEffect(() => {
-    console.log('total', totalHarga);
-  }, [totalHarga])
+    axios({
+      method: "get",
+      url: `${window.location.origin}/api/tripCustomer/${idCust}`,
+      headers: {
+        Accept: "application/json",
+      },
+    })
+      .then(response => {
+        const idTipeRetur = response.data.data.tipe_retur;
+        setTipeRetur(idTipeRetur.toString());
+      })
+      .catch(error => {
+        setErrorMessage(error.message);
+      });
+  }, [])
 
   useEffect(() => {
     getAllProduks();
