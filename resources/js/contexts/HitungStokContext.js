@@ -5,7 +5,7 @@ export const HitungStokContext = createContext();
 const HitungStokContextProvider = (props) => {
 
   const [newHistoryItem, setNewHistoryItem] = useState([]);
-  const [kodePesanan, setKodePesanan] = useState(null);
+  const [kodePesanan, setKodePesanan] = useState('');
 
   const defaultContext = {
     newHistoryItem,

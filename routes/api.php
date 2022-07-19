@@ -49,39 +49,28 @@ Route::prefix('salesman')->group(function() {
   Route::get('/historyitems/{id}', [ItemController::class, 'getListHistoryProductAPI']);
   Route::post('/updateStock', [ItemController::class, 'updateStockCustomer']);
 
-  // sales cari produk berdasarkan nama
   Route::get('/listitems/{id}/{name}', [ItemController::class, 'searchProductAPI']); 
   Route::get('/filteritems/{id}/{filterby}', [ItemController::class, 'filterProductAPI']);
 });
-
-
-
-//sales add/update data customer
+// TRIP
 Route::get('/tripCustomer/{id}', [CustomerController::class, 'dataCustomerApi']);
 Route::post('/tripCustomer', [CustomerController::class, 'simpanCustomerApi']);
 Route::post('/tripCustomer/foto/{id}', [CustomerController::class, 'simpanCustomerFotoApi']);
-// catat trip untuk order
 Route::post('/tripOrderCustomer', [OrderController::class, 'catatTripOrderApi']);
-
-// sales checkout
+// ORDER
 Route::get('/products/search/{name}', [ItemController::class, 'searchProductAPI']); 
 Route::post('/salesman/buatOrder', [OrderController::class, 'simpanDataOrderSalesmanAPI']);
-// sales sudah ada kode customer
-Route::get('/kodeCustomer/{id}', [OrderController::class, 'dataKodeCustomer']);
-
-// ubah trip untuk keluar
-Route::post('/keluarToko/{id}', [OrderController::class, 'keluarTripOrderApi']);
 Route::get('/tipeRetur', [ReturController::class, 'getTypeReturAPI']);
 Route::get('/kodeEvent/{kode}', [EventController::class, 'dataKodeEventAPI']);
-
-
-
+Route::get('/kodeCustomer/{id}', [OrderController::class, 'dataKodeCustomer']);
+// KELUAR
+Route::post('/keluarToko/{id}', [OrderController::class, 'keluarTripOrderApi']);
+//UBAH PASSWORD
 Route::post('/checkpassword/{staff:id}', [AuthController::class, 'checkPasswordAPI']);
 Route::post('/changepassword/{staff:id}', [AuthController::class, 'changePasswordAPI']);
 
-//customer melakukan filter item
+//CUSTOMER
 Route::get('/filterProduk', [ItemController::class, 'filterProdukApi']);
-//customer menambahkan data di keranjang
 Route::post('/customer/order/cart', [CartController::class, 'addToCart']);
 
 Route::get('/test/{id}', [Controller::class, 'test']);

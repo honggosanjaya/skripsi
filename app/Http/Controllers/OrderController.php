@@ -30,7 +30,7 @@ class OrderController extends Controller
     $id_order = $request->kodePesanan ?? 'belum ada';
     $id_customer = $request->idCustomer;
     $tipeRetur = $request -> tipeRetur;
-
+    
     $customertype=Customer::with(['linkCustomerType'])->find($id_customer);
 
     if($id_order == "belum ada"){
