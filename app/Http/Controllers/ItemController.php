@@ -91,6 +91,7 @@ class ItemController extends Controller
         "title" => "Stok Marketing - Pengadaan",
       ]);
   }
+
   //opname
   public function productListOpname(){
       $products = Item::orderBy("status", "ASC")->get();
@@ -182,107 +183,107 @@ class ItemController extends Controller
     return redirect('/administrasi/stok/')->with('pesanSukses', 'Produk berhasil ditambahkan ke database');
   }
 
-    public function index(){      
-        return view('administrasi.stok.produk.index', [
-          'items' => Item::orderBy("status", "ASC")->paginate(10),
-          "title" => "List Produk"
-        ]);
+  public function index(){      
+    return view('administrasi.stok.produk.index', [
+      'items' => Item::orderBy("status", "ASC")->get(),
+      "title" => "List Produk"
+    ]);
+  }
+
+  public function create(){
+    return view('administrasi.stok.produk.create', [
+      'items' => Item::orderBy("status", "ASC")->get(),
+      'statuses' => Status::where('tabel', 'items')->get(),
+      "title" => "Stok Marketing - List Produk - Add"
+    ]);
+  }
+
+  public function store(Request $request){
+    $rules = ([
+      'nama' => ['required', 'string', 'max:255'],
+      'kode_barang' => ['required', 'string', 'max:20', 'unique:items'],
+      'satuan' => ['required', 'string', 'max:30'],
+      'harga_satuan' => ['required', 'numeric'],
+      'gambar' => 'image|file|max:1024',
+      'volume' => 'required'
+    ]);
+
+    if($request->stok){
+      $rules['stok'] = ['integer', 'min:0'];
     }
 
-    public function create(){
-      return view('administrasi.stok.produk.create', [
-        'items' => Item::orderBy("status", "ASC")->get(),
-        'statuses' => Status::where('tabel', 'items')->get(),
-        "title" => "Stok Marketing - List Produk - Add"
-      ]);
+    if($request->min_stok){
+      $rules['min_stok'] = ['integer', 'min:0'];
     }
 
-    public function store(Request $request){
-      $rules = ([
-        'nama' => ['required', 'string', 'max:255'],
-        'kode_barang' => ['required', 'string', 'max:20', 'unique:items'],
-        'satuan' => ['required', 'string', 'max:30'],
-        'harga_satuan' => ['required', 'numeric'],
-        'gambar' => 'image|file|max:1024',
-        'volume' => 'required'
-      ]);
-
-      if($request->stok){
-        $rules['stok'] = ['integer', 'min:0'];
-      }
-
-      if($request->min_stok){
-        $rules['min_stok'] = ['integer', 'min:0'];
-      }
-
-      if($request->max_stok){
-        $rules['max_stok'] = ['integer', 'min:0'];
-      }
-
-      // if($request->max_pengadaan){
-      //   $rules['max_pengadaan'] = ['integer', 'min:0'];
-      // }
-
-      $validatedData = $request->validate($rules);
-
-      $validatedData['status'] = $request->status;
-      $validatedData['max_pengadaan'] = ($request->max_stok??0) - ($request->min_stok??0);
-      
-      if ($request->gambar) {
-        $nama_item = str_replace(" ", "-", $request->nama);
-        $file_name = 'ITM-' . $nama_item . '-' .date_format(now(),"YmdHis"). '.' . $request->gambar->extension();
-        $request->gambar->move(public_path('storage/item'), $file_name);
-        $validatedData['gambar'] = $file_name;
-      }    
-
-      Item::create($validatedData);
-
-      return redirect('/administrasi/stok/produk') -> with('pesanSukses', 'Produk berhasil ditambahkan' );
+    if($request->max_stok){
+      $rules['max_stok'] = ['integer', 'min:0'];
     }
 
-    public function edit($id)
-    {
-      return view('administrasi.stok.produk.edit',[
-        'item' => Item::where('id', $id)->first(),
-        'statuses' => Status::where('tabel', 'items')->get(),
-      ]);
-    }
+    // if($request->max_pengadaan){
+    //   $rules['max_pengadaan'] = ['integer', 'min:0'];
+    // }
 
-    public function update(Request $request, $id)
-    {
-      $rules = ([
-        'nama' => ['required', 'string', 'max:255'],
-        'gambar' => 'image|file|max:1024',
-        'min_stok' => ['required', 'integer', 'min:0'],
-        'max_stok' => ['required', 'integer', 'min:0'],
-        'satuan' => ['required', 'string', 'max:30'],
-        'harga_satuan' => ['required', 'numeric'],
-        'volume' => ['required'],
-      ]);
+    $validatedData = $request->validate($rules);
 
-      if($request->kode_barang !== Item::where('id', $id)->first()->kode_barang){
-        $rules['kode_barang'] = ['required', 'string', 'max:20', 'unique:items'];
-      }
-
-      $validatedData = $request->validate($rules);
-      $validatedData['status'] = $request->status;
-
-      if ($request->gambar) {
-        if($request->oldGambar){
-          \Storage::delete('/item/'.$request->oldGambar);
-        }
-
-        $file= $request->file('gambar');
-        $nama_item = str_replace(" ", "-", $validatedData['nama']);
-        $file_name = 'ITM-' . $nama_item . '-' .date_format(now(),"YmdHis"). '.' . $file->getClientOriginalExtension();
-        $request->gambar->move(public_path('storage/item'), $file_name);
-        $validatedData['gambar'] = $file_name;
-      }    
-
-      Item::where('id', $id)->update($validatedData);
+    $validatedData['status'] = $request->status;
+    $validatedData['max_pengadaan'] = ($request->max_stok??0) - ($request->min_stok??0);
     
-      return redirect('/administrasi/stok/produk') -> with('pesanSukses', 'Berhasil mengubah data');
+    if ($request->gambar) {
+      $nama_item = str_replace(" ", "-", $request->nama);
+      $file_name = 'ITM-' . $nama_item . '-' .date_format(now(),"YmdHis"). '.' . $request->gambar->extension();
+      $request->gambar->move(public_path('storage/item'), $file_name);
+      $validatedData['gambar'] = $file_name;
+    }    
+
+    Item::create($validatedData);
+
+    return redirect('/administrasi/stok/produk') -> with('pesanSukses', 'Produk berhasil ditambahkan' );
+  }
+
+  public function edit($id)
+  {
+    return view('administrasi.stok.produk.edit',[
+      'item' => Item::where('id', $id)->first(),
+      'statuses' => Status::where('tabel', 'items')->get(),
+    ]);
+  }
+
+  public function update(Request $request, $id)
+  {
+    $rules = ([
+      'nama' => ['required', 'string', 'max:255'],
+      'gambar' => 'image|file|max:1024',
+      'min_stok' => ['required', 'integer', 'min:0'],
+      'max_stok' => ['required', 'integer', 'min:0'],
+      'satuan' => ['required', 'string', 'max:30'],
+      'harga_satuan' => ['required', 'numeric'],
+      'volume' => ['required'],
+    ]);
+
+    if($request->kode_barang !== Item::where('id', $id)->first()->kode_barang){
+      $rules['kode_barang'] = ['required', 'string', 'max:20', 'unique:items'];
     }
+
+    $validatedData = $request->validate($rules);
+    $validatedData['status'] = $request->status;
+
+    if ($request->gambar) {
+      if($request->oldGambar){
+        \Storage::delete('/item/'.$request->oldGambar);
+      }
+
+      $file= $request->file('gambar');
+      $nama_item = str_replace(" ", "-", $validatedData['nama']);
+      $file_name = 'ITM-' . $nama_item . '-' .date_format(now(),"YmdHis"). '.' . $file->getClientOriginalExtension();
+      $request->gambar->move(public_path('storage/item'), $file_name);
+      $validatedData['gambar'] = $file_name;
+    }    
+
+    Item::where('id', $id)->update($validatedData);
+  
+    return redirect('/administrasi/stok/produk') -> with('pesanSukses', 'Berhasil mengubah data');
+  }
 
     public function customerIndex(){
       $customer = Customer::where('id', auth()->user()->id_users)->first();
@@ -328,8 +329,7 @@ class ItemController extends Controller
         ]);
     }
 
-    public function cariRiwayat()
-    {
+    public function cariRiwayat(){
         $pengadaans = Pengadaan::select('no_pengadaan','no_nota','keterangan','created_at', DB::raw('SUM(harga_total) as harga'))
         ->where(strtolower('no_nota'),'like','%'.request('cari').'%')
         ->groupBy('no_pengadaan','no_nota','keterangan','created_at')->paginate(10);
@@ -339,8 +339,7 @@ class ItemController extends Controller
         ]);
     }
 
-    public function cariRiwayatDetail(Pengadaan $pengadaan)
-    {
+    public function cariRiwayatDetail(Pengadaan $pengadaan){
         $pengadaans = Pengadaan::where('no_pengadaan','=',$pengadaan->no_pengadaan)
         ->with("linkItem")
         ->get();

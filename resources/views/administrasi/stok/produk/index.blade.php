@@ -55,7 +55,7 @@
               @else
               <tr>
             @endif
-            <td class="text-center">{{ ($items->currentPage() - 1) * $items->perPage() + $loop->iteration }}</td>
+            <td class="text-center">{{ $loop->iteration }}</td>
             <td>{{ $item->kode_barang }}</td>
             <td>{{ $item->nama }}</td>
             <td class="text-center">
@@ -96,7 +96,7 @@
           @endforeach
         </tbody>
       </table>
-      {{ $items->links() }}
+      {{-- {{ $items->links() }} --}}
     </div>
 
     @push('JS')
