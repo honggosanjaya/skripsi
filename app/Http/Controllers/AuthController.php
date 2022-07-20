@@ -39,7 +39,7 @@ class AuthController extends Controller
       return view($user->linkStaff->linkStaffRole->nama.'/profil.ubahpasswordbaru');
     }
     else{
-      return view('customer/profil.ubahpasswordbaru');
+      return view('customer.profil.ubahpasswordbaru');
     }
   }
 

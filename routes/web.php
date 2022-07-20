@@ -149,7 +149,7 @@ Route::prefix('administrasi')->middleware('administrasi')->group(function() {
     
     //Route untuk pengadaan
     Route::resource('/produk', ItemController::class);
-    Route::get('/produk/cari', [ItemController::class, 'produkSearch']);
+    // Route::get('/produk/cari', [ItemController::class, 'produkSearch']);
     Route::post('/produk/ubahstatus/{item:id}', [ItemController::class, 'administrasiEditStatusItem']);
 
     Route::get('/pengadaan', [ItemController::class, 'productList'])->name('products.list');

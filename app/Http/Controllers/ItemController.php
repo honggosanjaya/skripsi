@@ -412,15 +412,15 @@ class ItemController extends Controller
       }
     }
 
-    public function produkSearch(){
-      $items =  Item::where(strtolower('nama'),'like','%'.request('cari').'%')
-        ->paginate(10);
+    // public function produkSearch(){
+    //   $items =  Item::where(strtolower('nama'),'like','%'.request('cari').'%')
+    //     ->paginate(10);
 
-      return view('administrasi.stok.produk.index', [
-        'items' => $items,
-        "title" => "List Produk"
-      ]);
-    }
+    //   return view('administrasi.stok.produk.index', [
+    //     'items' => $items,
+    //     "title" => "List Produk"
+    //   ]);
+    // }
 
     public function searchProductAPI($id, $name){
       $history = History::where('id_customer',$id)->with('linkItem')->get();

@@ -175,19 +175,19 @@ class OrderController extends Controller
 
   public function keluarTripOrderApi(Request $request, $id){
     $idCust = Trip::find($id)->id_customer; 
-      Trip::find($id)->update([
-        'waktu_keluar' => now(),
-        'updated_at' => now(),
-        'status' => 1,
-        'alasan_penolakan' => $request->alasan_penolakan
-      ]);
-      Customer::where('id', $idCust)->update(['updated_at'=> now()]);
+    Trip::find($id)->update([
+      'waktu_keluar' => now(),
+      'updated_at' => now(),
+      'status' => 1,
+      'alasan_penolakan' => $request->alasan_penolakan
+    ]);
+    Customer::where('id', $idCust)->update(['updated_at'=> now()]);
 
-      return response()->json([
-        'status' => 'success',
-        'message'=>'Jam keluar berhasil dicatat',
-        'data' => Trip::find($id)
-      ]);
+    return response()->json([
+      'status' => 'success',
+      'message'=>'Jam keluar berhasil dicatat',
+      'data' => Trip::find($id)
+    ]);
   }
 
   public function catatTripOrderApi(Request $request){
