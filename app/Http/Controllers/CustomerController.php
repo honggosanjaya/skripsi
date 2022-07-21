@@ -366,7 +366,12 @@ class CustomerController extends Controller
         ]);
       }
 
-      Customer::where('id', $customer->id)->update($validatedData);
+      if ($request->koordinat=='on') {
+        Customer::where('id', $customer->id)->update($validatedData+['koordinat' =>  null]);
+      } else {
+        Customer::where('id', $customer->id)->update($validatedData);
+      }
+      
 
       return redirect('/administrasi/datacustomer') -> with('pesanSukses', 'Data berhasil diubah' );
     }
