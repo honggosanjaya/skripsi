@@ -158,6 +158,7 @@ kode invoice retur dkk penulisan
 - use case desc pembenahan penomeran
 - ada unduh penjualan di desc diagram (cek semua judul sama dengan activity)
 - belum ada tombol unduh data penjualan
+- cek atribut dan method dalam class
 
 
 
