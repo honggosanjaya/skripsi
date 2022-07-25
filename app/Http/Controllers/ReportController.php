@@ -153,6 +153,48 @@ class ReportController extends Controller
             })
             ->select('id_item', \DB::raw('SUM(kuantitas) as total'), \DB::raw('count(*) as count'))
         ->groupBy('id_item')->with('linkItem')->orderBy('count', 'ASC')->take($request->count??5)->get();
+
+//ceking aja
+        $data['pp'] = OrderItem::
+            whereHas('linkOrder',function($q) use($request){
+                $q->whereHas('linkOrderTrack',function($q) use($request) {
+                    $q->whereIn('status', [23,24])->whereBetween('waktu_sampai', [$request->dateStart, $request->dateEnd]);
+                });
+            })
+            ->whereHas('linkItem',function($q) use($request){
+                $q->where('status',10);
+            })
+            ->select('order_items.id_item', \DB::raw('SUM(kuantitas*harga_satuan) as total_price'))
+            ->groupBy('id_item')
+            ->get()
+            ->sum('total_price');
+
+        $data['rtrd']=Retur::whereBetween('created_at', [$request->dateStart, $request->dateEnd])->where('status',12)
+            ->select('id_invoice', \DB::raw('SUM(kuantitas*harga_satuan) as total_price'))
+            ->groupBy('id_invoice')->with('linkInvoice')->get()->pluck('total_price','linkInvoice.id_order')->toArray();
+        $data['ppd'] = OrderItem::
+            whereHas('linkOrder',function($q) use($request){
+                $q->whereHas('linkOrderTrack',function($q) use($request) {
+                    $q->whereIn('status', [23,24])->whereBetween('waktu_sampai', [$request->dateStart, $request->dateEnd]);
+                });
+            })
+            ->whereHas('linkItem',function($q) use($request){
+                $q->where('status',10);
+            })
+            ->select('id_order', \DB::raw('SUM(kuantitas*harga_satuan) as total_price'))
+            ->groupBy('id_order')
+            ->get()->pluck('total_price','id_order')->toArray();
+        $data['ppd-rtrd'] = [];
+        foreach ($data['ppd'] as $a => $val){
+            array_push( $data['ppd-rtrd'],[$a => $val-(array_key_exists($a, $data['rtrd'])?$data['rtrd'][$a]:0)]);
+        }
+
+        $data['invd'] = Invoice::whereHas('linkOrder',function($q) use($request) {
+                $q->whereHas('linkOrderTrack',function($q) use($request) {
+                    $q->whereIn('status', [23,24])->whereBetween('waktu_sampai', [$request->dateStart, $request->dateEnd]);
+                });
+            })->get()->pluck('harga_total','id_order')->toArray();
+//ceking aja
         // dd($data);
 
         $customersPengajuanLimit = Customer::where('status_limit_pembelian', 7)->get();
