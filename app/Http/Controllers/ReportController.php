@@ -11,6 +11,7 @@ use App\Models\Staff;
 use App\Models\Item;
 use App\Models\Trip;
 use App\Models\Event;
+use App\Models\Retur;
 use App\Models\Customer;
 use App\Models\Invoice;
 use App\Models\Vehicle;
@@ -110,8 +111,8 @@ class ReportController extends Controller
         })->select(\DB::raw('SUM(harga_total) as total'))->first();
 
         
-        $data['pembelian'] = Pengadaan::whereBetween('created_at',[$request->dateStart,$request->dateEnd])
-        ->select(\DB::raw('SUM(harga_total) as total'))->first();
+        // $data['pembelian'] = Pengadaan::whereBetween('created_at',[$request->dateStart,$request->dateEnd])
+        // ->select(\DB::raw('SUM(harga_total) as total'))->first();
 
         $data['pembelian'] = Pengadaan::
         // whereBetween('created_at',[$request->dateStart,$request->dateEnd])->
@@ -135,6 +136,10 @@ class ReportController extends Controller
             // ->select(\DB::raw('SUM(total_price) as total'))
             ->get()
             ->sum('total_price');
+
+        $data['retur']=Retur::whereBetween('created_at', [$request->dateStart, $request->dateEnd])->where('status',12)
+            ->select('id_item', \DB::raw('SUM(kuantitas*harga_satuan) as total_price'))
+            ->groupBy('id_item')->get()->sum('total_price');
             
 
         $data['produk_slow'] =OrderItem::
