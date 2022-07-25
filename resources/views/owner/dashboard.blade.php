@@ -98,9 +98,9 @@
           <h1 class="fs-5 fw-bold mb-2">Total Omzet</h1>
           <span>Rp. {{ number_format($data['omzet']->total, 0, '', '.') }}</span>
           <h1 class="fs-5 fw-bold mb-2 mt-4">Total Pengeluaran</h1>
-          <span>Rp. {{ number_format($data['pembelian'], 0, '', '.') }}</span>
+          <span>Rp. {{ number_format($data['pembelian']-$data['retur'], 0, '', '.') }}</span>
           <h1 class="fs-5 fw-bold mb-2 mt-4">Total Untung/Rugi</h1>
-          <span>Rp. {{ number_format($data['omzet']->total - $data['pembelian'], 0, '', '.') }}</span>
+          <span>Rp. {{ number_format($data['omzet']->total - $data['pembelian'] +$data['retur'] , 0, '', '.') }}</span>
           {{-- <button class="btn btn-primary d-block mx-auto mt-4">View Detail</button> --}}
         </div>
       </div>
