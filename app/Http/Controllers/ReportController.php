@@ -65,6 +65,7 @@ class ReportController extends Controller
             'dateEnd'=>$request->dateEnd,
             'year'=>date('Y', strtotime($request->dateEnd)),
             'month'=>date('m', strtotime($request->dateEnd)),
+            'count'=>$request->count??5
         ];
         $request->dateStart=$request->dateStart." 00:00:00";
         $request->dateEnd=$request->dateEnd." 23:59:59";
