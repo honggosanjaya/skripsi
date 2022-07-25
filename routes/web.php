@@ -143,13 +143,13 @@ Route::prefix('administrasi')->middleware('administrasi')->group(function() {
     //Route untuk riwayat stok
     Route::get('/cari', [ItemController::class, 'cariStok']);
     Route::get('/riwayat', [ItemController::class, 'riwayatAdministrasi']);
-    Route::get('/riwayat/cari', [ItemController::class, 'cariRiwayat']);
+    // Route::get('/riwayat/cari', [ItemController::class, 'cariRiwayat']);
     Route::get('/riwayat/detail/{pengadaan:no_pengadaan}', [ItemController::class, 'cariRiwayatDetail']);
     Route::get('/riwayat/detail/{pengadaan:no_pengadaan}/cetak-pdf', [ItemController::class, 'cetakPDF']);
     
     //Route untuk pengadaan
     Route::resource('/produk', ItemController::class);
-    Route::get('/produk/cari', [ItemController::class, 'produkSearch']);
+    // Route::get('/produk/cari', [ItemController::class, 'produkSearch']);
     Route::post('/produk/ubahstatus/{item:id}', [ItemController::class, 'administrasiEditStatusItem']);
 
     Route::get('/pengadaan', [ItemController::class, 'productList'])->name('products.list');
@@ -177,7 +177,7 @@ Route::prefix('administrasi')->middleware('administrasi')->group(function() {
 
   //Route untuk data customer
   Route::get('/datacustomer', [CustomerController::class, 'administrasiIndex']);
-  Route::get('/datacustomer/cari', [CustomerController::class, 'administrasiSearch']);
+  // Route::get('/datacustomer/cari', [CustomerController::class, 'administrasiSearch']);
   Route::get('/datacustomer/create', [CustomerController::class, 'administrasiCreate']);
   Route::post('/datacustomer/tambahcustomer', [CustomerController::class, 'administrasiStore']);
   Route::get('/datacustomer/ubah/{customer:id}', [CustomerController::class, 'administrasiEdit']);

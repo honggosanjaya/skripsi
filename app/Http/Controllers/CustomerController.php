@@ -112,20 +112,20 @@ class CustomerController extends Controller
         }
       } else {
         $id_customer = $request->id;
-        if ($request->email!=null&&Customer::find($id_customer)->email==null) {
+        if ($request->email!=null && Customer::find($id_customer)->email==null) {
           User::create([
             'id_users' =>  $id_customer,
             'email' => $request->email,
             'password' => Hash::make(12345678),
             'tabel' => 'customers',
           ]);
+          Customer::find($id_customer)->update(['password'=>Hash::make(12345678)]);
         }
         if (Customer::find($id_customer)->koordinat==null) {
           $customer = Customer::find($id_customer)->update($data+['koordinat' =>  $request->koordinat]);
         }else {
           $customer = Customer::find($id_customer)->update($data);
         }
-        Customer::find($id_customer)->update(['password'=>Hash::make(12345678)]);
       }
 
       if ($request->status == 'trip') {

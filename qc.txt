@@ -160,6 +160,9 @@ kode invoice retur dkk penulisan
 - belum ada tombol unduh data penjualan
 - cek atribut dan method dalam class
 - halaman 71 no 10 typo (mmebutuhkan)
+- interaktif -> interaktif
+- manfaat di spv tidk untuk evaluasi kontribusi admin
+- di API REST API penjelasan berulang
 
 
 

@@ -62,7 +62,11 @@ const KeranjangSales = ({ location }) => {
     })
       .then(response => {
         const idTipeRetur = response.data.data.tipe_retur;
-        setTipeRetur(idTipeRetur.toString());
+        if (idTipeRetur != null) {
+          setTipeRetur(idTipeRetur.toString());
+        } else {
+          setTipeRetur('1');
+        }
       })
       .catch(error => {
         setErrorMessage(error.message);

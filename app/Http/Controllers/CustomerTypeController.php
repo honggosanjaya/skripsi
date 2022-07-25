@@ -36,10 +36,9 @@ class CustomerTypeController extends Controller
 
     public function store(Request $request)
     {
-        //Validation untuk diskon belum sempurna
         $request->validate([
             'nama_jenis' => 'required|max:255',
-            'diskon' => 'required',
+            'diskon' => 'required|numeric|min:0|max:100',
             'keterangan' => 'required'            
         ]);
 

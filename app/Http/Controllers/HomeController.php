@@ -116,60 +116,60 @@ class HomeController extends Controller
     }
 
     public function lihatProfil(){
-        $data = '';
-        if(auth()->user()->tabel == 'staffs'){
-            $data = Staff::where('id','=',auth()->user()->id_users)->first();
-            return view($data->linkStaffRole->nama.'/profil.index',[
-                'data' => $data
-            ]);
-        }
-        else{
-            $data = Customer::where('id','=',auth()->user()->id_users)->first();
-            $order_diajukan=Order::where('id_customer', auth()->user()->id_users)
-            ->whereHas('linkOrderTrack',function($q) {
-              $q->where('status', 19)->orWhere('status', 20);
-            })
-            ->with(['linkOrderTrack'])
-            ->count();
+      $data = '';
+      if(auth()->user()->tabel == 'staffs'){
+        $data = Staff::where('id','=',auth()->user()->id_users)->first();
+        return view($data->linkStaffRole->nama.'/profil.index',[
+          'data' => $data
+        ]);
+      }
+      else{
+        $data = Customer::where('id','=',auth()->user()->id_users)->first();
+        $order_diajukan=Order::where('id_customer', auth()->user()->id_users)
+        ->whereHas('linkOrderTrack',function($q) {
+          $q->where('status', 19)->orWhere('status', 20);
+        })
+        ->with(['linkOrderTrack'])
+        ->count();
 
-            $order_dikonfirmasi=Order::where('id_customer', auth()->user()->id_users)
-            ->whereHas('linkOrderTrack',function($q) {
-              $q->where('status', 21);
-            })
-            ->with(['linkOrderTrack'])
-            ->count();
+        $order_dikonfirmasi=Order::where('id_customer', auth()->user()->id_users)
+        ->whereHas('linkOrderTrack',function($q) {
+          $q->where('status', 21);
+        })
+        ->with(['linkOrderTrack'])
+        ->count();
 
-            $order_dikirim=Order::where('id_customer', auth()->user()->id_users)
-            ->whereHas('linkOrderTrack',function($q) {
-              $q->where('status', 22);
-            })
-            ->with(['linkOrderTrack'])
-            ->count();
+        $order_dikirim=Order::where('id_customer', auth()->user()->id_users)
+        ->whereHas('linkOrderTrack',function($q) {
+          $q->where('status', 22);
+        })
+        ->with(['linkOrderTrack'])
+        ->count();
 
-            $order_diterima=Order::where('id_customer', auth()->user()->id_users)
-            ->whereHas('linkOrderTrack',function($q) {
-              $q->where('status', 23)->orWhere('status', 24);
-            })
-            ->with(['linkOrderTrack'])
-            ->count();
+        $order_diterima=Order::where('id_customer', auth()->user()->id_users)
+        ->whereHas('linkOrderTrack',function($q) {
+          $q->where('status', 23)->orWhere('status', 24);
+        })
+        ->with(['linkOrderTrack'])
+        ->count();
 
-            return view('customer.profil.index',[
-                'data' => $data,
-                'order' => [
-                  'diajukan' => $order_diajukan,
-                  'dikonfirmasi' => $order_dikonfirmasi,
-                  'dikirim' => $order_dikirim,
-                  'diterima' => $order_diterima
-                ]
-            ]);
-        }        
+        return view('customer.profil.index',[
+          'data' => $data,
+          'order' => [
+            'diajukan' => $order_diajukan,
+            'dikonfirmasi' => $order_dikonfirmasi,
+            'dikirim' => $order_dikirim,
+            'diterima' => $order_diterima
+          ]
+        ]);
+      }        
     }
 
     public function lihatDetailProfil(){
-        $data = Customer::where('id','=',auth()->user()->id_users)->first();
-        return view('customer/profil.detailprofil',[
-            'data' => $data
-        ]);                
+      $data = Customer::where('id','=',auth()->user()->id_users)->first();
+      return view('customer.profil.detailprofil',[
+        'data' => $data
+      ]);                
     }
 
     public function lihatPesanan(Customer $customer){
@@ -208,11 +208,11 @@ class HomeController extends Controller
     }
 
     public function lihatPassword(){
-        if(auth()->user()->tabel == 'staffs'){
-            return view(auth()->user()->linkStaff->linkStaffRole->nama.'/profil.ubahpasswordlama');
-        }
-        else{
-            return view('customer/profil.ubahpasswordlama');
-        }
+      if(auth()->user()->tabel == 'staffs'){
+        return view(auth()->user()->linkStaff->linkStaffRole->nama.'/profil.ubahpasswordlama');
+      }
+      else{
+        return view('customer.profil.ubahpasswordlama');
+      }
     }
 }

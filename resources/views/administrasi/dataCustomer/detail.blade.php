@@ -27,10 +27,10 @@
         <span><b>Status Limit Pembelian</b>
           {{ $customer->status_limit_pembelian ? $customer->linkStatusLimit->nama : 'tidak ada data' }}</span>
         @if ($customer->foto)
-          <span><b>Foto</b></span>
+          <span><b>Foto Tempat Usaha</b></span>
           <img src="{{ asset('storage/customer/' . $customer->foto) }}" class="img-preview img-fluid d-block py-5">
         @else
-          <span><b>Foto</b> 'tidak ada data'</span>
+          <span><b>Foto Tempat Usaha</b> 'tidak ada data'</span>
         @endif
         <span><b>Status</b> {{ $customer->linkStatus->nama ?? null }}</span>
       </div>

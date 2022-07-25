@@ -20,28 +20,18 @@
     </div>
   @endif
 
-  <div class="px-5 pt-4">
-    <div class="d-flex justify-content-between">
-      <form method="GET" action="/administrasi/stok/produk/cari">
-        <div class="input-group">
-          <input type="text" class="form-control" name="cari" placeholder="Cari Produk..."
-            value="{{ request('cari') }}">
-          <button type="submit" class="btn btn-primary">
-            <span class="iconify me-2" data-icon="fe:search"></span>Cari
-          </button>
-        </div>
-      </form>
-      <a href="/administrasi/stok/produk/create" class="btn btn-primary">
-        <span class="iconify fs-4" data-icon="dashicons:database-add"></span> Tambah Produk
-      </a>
-    </div>
+  <div class="px-5">
+    <a href="/administrasi/stok/produk/create" class="btn btn-primary btn_add-relative">
+      <span class="iconify fs-3 me-2" data-icon="dashicons:database-add"></span> Tambah Produk
+    </a>
 
-    <div class="table-responsive mt-5">
-      <table class="table table-hover table-sm">
+    <div class="table-responsive mt-3">
+      <table class="table table-hover table-sm" id="table">
         <thead>
           <tr>
             <th scope="col" class="text-center">No</th>
             <th scope="col" class="text-center">Kode Barang</th>
+            <th scope="col" class="text-center">Nama Barang</th>
             <th scope="col" class="text-center">Gambar</th>
             <th scope="col" class="text-center">Satuan</th>
             <th scope="col" class="text-center">Stok</th>
@@ -65,8 +55,9 @@
               @else
               <tr>
             @endif
-            <td class="text-center">{{ ($items->currentPage() - 1) * $items->perPage() + $loop->iteration }}</td>
+            <td class="text-center">{{ $loop->iteration }}</td>
             <td>{{ $item->kode_barang }}</td>
+            <td>{{ $item->nama }}</td>
             <td class="text-center">
               @if ($item->gambar)
                 <img src="{{ asset('storage/item/' . $item->gambar) }}" class="img-fluid" width="40">
@@ -105,6 +96,10 @@
           @endforeach
         </tbody>
       </table>
-      {{ $items->links() }}
+      {{-- {{ $items->links() }} --}}
     </div>
+
+    @push('JS')
+      <script src="{{ mix('js/administrasi.js') }}"></script>
+    @endpush
   @endsection

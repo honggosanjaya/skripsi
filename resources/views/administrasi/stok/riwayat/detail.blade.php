@@ -43,13 +43,13 @@
     <table class="table">
       <tbody>
         <tr>
-          <td scope="col" style="width: 15%">No Nota</td>
-          <td style="width: 20%">{{ $detail->no_nota }}</td>
-          <td style="width: 10%">Tanggal</td>
-          <td>{{ $detail->created_at }}</td>
+          <td scope="col" style="width: 15%"><b>No Nota</b></td>
+          <td style="width: 34%">{{ $detail->no_nota }}</td>
+          <td style="width: 10%"><b>Tanggal</b></td>
+          <td>{{ date('d M Y G:i', strtotime($detail->created_at)) }}</td>
         </tr>
         <tr>
-          <td>Keterangan</td>
+          <td><b>Keterangan</b></td>
           <td colspan="3">{{ $detail->keterangan }}</td>
         </tr>
       </tbody>

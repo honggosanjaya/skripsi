@@ -31,9 +31,9 @@
     @endif
 
     <div class="info-pesanan mt-3 py-3">
-      <span><b>Nama</b>{{ $data->nama }}</span>
-      <span><b>Email</b>{{ $data->email }}</span>
-      <span><b>Alamat Lengkap</b>{{ $data->full_alamat }}</span>
+      <span><b>Nama</b>{{ $data->nama }}</span> <br>
+      <span><b>Email</b>{{ $data->email }}</span> <br>
+      <span><b>Alamat Lengkap</b>{{ $data->full_alamat }}</span> <br>
       <span><b>Nomor Telepon</b>{{ $data->telepon }}</span>
     </div>
   </div>
