@@ -115,6 +115,12 @@
             </div>
           @enderror
         </div>
+        <div class="mb-4">
+          <div class="form-check form-switch">
+            <input class="form-check-input" name="koordinat"type="checkbox" id="flexSwitchCheckDefault" {{$customer->koordinat==null?'disabled':''}}>
+            <label class="form-check-label" for="flexSwitchCheckDefault">Hapus koordinat saat ini, ({{$customer->koordinat??'koordinat belum terpasang'}}) </label>
+          </div>
+        </div>
 
         <div class="row">
           <div class="col">

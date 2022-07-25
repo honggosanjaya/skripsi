@@ -200,12 +200,14 @@ class ReportController extends Controller
             ->get();
             // dd($staffs);
 
+        $customer_baru= Customer::whereBetween('time_to_effective_call', [$request->dateStart, $request->dateEnd])->where('status',3)->select('id_staff', \DB::raw('count(*) as count'))
+        ->groupBy('id_staff')->get()->pluck('count','id_staff')->toArray();
         //cadangan buat rule linkorder punya $sales
         // $omset= Order::whereHas('linkOrderTrack',function($q) use($request) {
         //     $q->whereIn('status', [23,24])->whereBetween('waktu_sampai', [$request->dateStart, $request->dateEnd]);
         // })->join('invoices','orders.id','=','invoices.id_order')->select('id_staff', \DB::raw('SUM(harga_total) as total'))
         // ->groupBy('id_staff')->pluck('total','id_staff');
         // dd($staffs);
-    return view('supervisor.report.kinerja',compact('staffs','input'));
+    return view('supervisor.report.kinerja',compact('staffs','input','customer_baru'));
     }
 }
