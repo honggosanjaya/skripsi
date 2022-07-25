@@ -152,14 +152,16 @@ const TripSales = () => {
           cancelButtonColor: '#d33',
           confirmButtonText: 'Keluar!'
         }).then((result) => {
-          Swal.fire({
-            title: 'success',
-            text: response.data.message,
-            icon: 'success',
-            confirmButtonText: 'Trip Selanjutnya'
-          }).then((result) => {
-            history.push('/salesman');
-          })
+          if (result.isConfirmed) {
+            Swal.fire({
+              title: 'success',
+              text: response.data.message,
+              icon: 'success',
+              confirmButtonText: 'Trip Selanjutnya'
+            }).then((result) => {
+              history.push('/salesman');
+            })
+          }
         })
       })
       .catch(error => {
