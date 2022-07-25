@@ -360,7 +360,7 @@ class OrderController extends Controller
     $items = OrderItem::where('id_order','=',$order->id)->get();
     $administrasi = Staff::select('nama')->where('id','=',auth()->user()->id_users)->first();
 
-    $pdf = PDF::loadview('administrasi/pesanan/detail.cetakInvoice',[
+    $pdf = PDF::loadview('administrasi.pesanan.detail.cetakInvoice',[
         'order' => $order,
         'items' => $items,
         'administrasi' => $administrasi           
@@ -377,7 +377,7 @@ class OrderController extends Controller
     $mengetahui = Staff::select('nama')->where('id','=',$orderTrack->id_staff_pengonfirmasi)->first();
     $pengirim = Staff::select('nama')->where('id','=',$orderTrack->id_staff_pengirim)->first();
    
-    $pdf = PDF::loadview('administrasi/pesanan/detail.cetakSJ',[
+    $pdf = PDF::loadview('administrasi.pesanan.detail.cetakSJ',[
         'order' => $order,
         'items' => $items,
         'date' => $todayDate,
@@ -386,14 +386,6 @@ class OrderController extends Controller
       ]);
 
     return $pdf->stream('Surat Jalan-'.date("d F Y").'.pdf'); 
-
-    // return view('administrasi/pesanan/detail.cetakSJ', [
-    //     'order' => $order,
-    //     'items' => $items,
-    //     'date' => $todayDate,
-    //     'pengirim' => $pengirim,
-    //     'mengetahui' => $mengetahui            
-    // ]);
   }
 
   public function cetakMemo(Order $order){

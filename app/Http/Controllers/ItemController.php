@@ -185,7 +185,7 @@ class ItemController extends Controller
 
   public function index(){      
     return view('administrasi.stok.produk.index', [
-      'items' => Item::orderBy("status", "ASC")->get(),
+      'items' => Item::orderBy("status", "ASC")->orderBy('id','DESC')->get(),
       "title" => "List Produk"
     ]);
   }
@@ -329,15 +329,15 @@ class ItemController extends Controller
         ]);
     }
 
-    public function cariRiwayat(){
-        $pengadaans = Pengadaan::select('no_pengadaan','no_nota','keterangan','created_at', DB::raw('SUM(harga_total) as harga'))
-        ->where(strtolower('no_nota'),'like','%'.request('cari').'%')
-        ->groupBy('no_pengadaan','no_nota','keterangan','created_at')->paginate(10);
+    // public function cariRiwayat(){
+    //     $pengadaans = Pengadaan::select('no_pengadaan','no_nota','keterangan','created_at', DB::raw('SUM(harga_total) as harga'))
+    //     ->where(strtolower('no_nota'),'like','%'.request('cari').'%')
+    //     ->groupBy('no_pengadaan','no_nota','keterangan','created_at')->paginate(10);
         
-        return view('administrasi/stok/riwayat.index',[
-            'pengadaans' => $pengadaans
-        ]);
-    }
+    //     return view('administrasi/stok/riwayat.index',[
+    //         'pengadaans' => $pengadaans
+    //     ]);
+    // }
 
     public function cariRiwayatDetail(Pengadaan $pengadaan){
         $pengadaans = Pengadaan::where('no_pengadaan','=',$pengadaan->no_pengadaan)
