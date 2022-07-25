@@ -147,7 +147,7 @@ class ReportController extends Controller
                 $q->where('status',10);
             })
             ->select('id_item', \DB::raw('SUM(kuantitas) as total'), \DB::raw('count(*) as count'))
-        ->groupBy('id_item')->with('linkItem')->orderBy('count', 'ASC')->take($request->count)->get();
+        ->groupBy('id_item')->with('linkItem')->orderBy('count', 'ASC')->take($request->count??5)->get();
         // dd($data);
 
         $customersPengajuanLimit = Customer::where('status_limit_pembelian', 7)->get();

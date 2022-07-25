@@ -44,7 +44,7 @@
         <div class="col-12 col-sm-6 col-md-3">
           <div class="input-group mb-3">
             <span class="input-group-text" id="basic-addon1">slow item</span>
-            <input type="number" class="form-control" placeholder="2" name="count"
+            <input type="number" class="form-control" name="count"
               value="{{ $input['count'] ?? 5 }}">
           </div>
         </div>
