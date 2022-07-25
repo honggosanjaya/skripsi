@@ -79,7 +79,7 @@
               <td class="text-center">{{ $sales->id }}</td>
               <td class="text-center">{{ $sales->nama }}</td>
               <td class="text-center">{{ $sales->linkTrip->count() }}</td>
-              <td class="text-center">{{ $sales->linkTripEcF->count() }}</td>
+              <td class="text-center">{{ $customer_baru[$sales->id]??null }}</td>
               <td class="text-center">{{ $sales->linkTripEc->count() }}</td>
               <td class="text-center"> {{ number_format($sales->linkOrder[0]->total??null, 0, '', '.') }}</td>
             </tr>
