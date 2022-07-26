@@ -164,5 +164,10 @@ kode invoice retur dkk penulisan
 - manfaat di spv tidk untuk evaluasi kontribusi admin
 - di API REST API penjelasan berulang
 
+revisi dari sidang
+@brian
+- sequence dari mencari customer kurang lengkap methodnya ada yang kosong
+- hubungan yang terjadi dalam class diagram khususnya view auth seharusnya tidak diamond hitam karena menurut bu CT Diamond hitam maka data di view selanjutnya ikut hilang
+
 
 
