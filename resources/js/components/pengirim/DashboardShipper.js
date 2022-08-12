@@ -1,35 +1,34 @@
-import React, { useEffect, useContext } from 'react';
+import React, { useEffect, useContext, Fragment } from 'react';
 import { splitCharacter } from '../reuse/HelperFunction';
 import HeaderShipper from './HeaderShipper';
 import { Link } from 'react-router-dom';
-import { AuthContext } from '../../contexts/AuthContext';
+import { UserContext } from '../../contexts/UserContext';
 
 const DashboardShipper = () => {
-  // const { token, isAuth, checkIsAuth } = useContext(AuthContext);
-
-  // useEffect(() => {
-  //   checkIsAuth();
-  // }, [token, isAuth])
-
+  const { dataUser } = useContext(UserContext);
   return (
     <main className="page_main" id="listShipper">
-      <HeaderShipper isDashboard={true} />
-      <div className="page_container pt-4 dashboard_shipper">
-        <div className="word d-flex justify-content-center">
-          {splitCharacter("shipper")}
-        </div>
+      {dataUser.role == 'shipper' ?
+        <Fragment>
+          <HeaderShipper isDashboard={true} />
+          <div className="page_container pt-4 dashboard_shipper">
+            <div className="word d-flex justify-content-center">
+              {splitCharacter("shipper")}
+            </div>
 
-        <div className="object-movement">
-          <div className="car"><span className="iconify fs-2" data-icon="twemoji:delivery-truck"></span></div>
-        </div>
+            <div className="object-movement">
+              <div className="car"><span className="iconify fs-2" data-icon="twemoji:delivery-truck"></span></div>
+            </div>
 
-        <h1 className='fs-6 fw-bold'>Menu untuk Tenaga Pengirim</h1>
+            <h1 className='fs-6 fw-bold'>Menu untuk Tenaga Pengirim</h1>
 
-        <Link to='/shipper/jadwal' className='btn btn-primary btn-lg w-100 mt-3'>
-          <span className="iconify me-2" data-icon="fa-solid:shipping-fast"></span>
-          Pengiriman
-        </Link>
-      </div>
+            <Link to='/shipper/jadwal' className='btn btn-primary btn-lg w-100 mt-3'>
+              <span className="iconify me-2" data-icon="fa-solid:shipping-fast"></span>
+              Pengiriman
+            </Link>
+          </div>
+        </Fragment>
+        : ''}
     </main>
   );
 }

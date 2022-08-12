@@ -3,7 +3,6 @@ import axios from 'axios';
 import HeaderSales from './HeaderSales';
 import ListCustomer from './ListCustomer';
 import { splitCharacter } from '../reuse/HelperFunction';
-import { useHistory } from 'react-router';
 import { Link } from 'react-router-dom';
 import { AuthContext } from '../../contexts/AuthContext';
 import { UserContext } from '../../contexts/UserContext';
@@ -11,9 +10,8 @@ import Modal from 'react-bootstrap/Modal';
 
 let source;
 const DashboardSales = () => {
-  const { token, isAuth, checkIsAuth } = useContext(AuthContext);
-  const history = useHistory();
-  // const { dataUser } = useContext(UserContext);
+  const { token, isAuth } = useContext(AuthContext);
+  const { dataUser } = useContext(UserContext);
   const [namaCust, setNamaCust] = useState('');
   const [alamatUtama, setAlamatUtama] = useState('');
   const [listCustomer, setListCustomer] = useState([]);
@@ -22,10 +20,6 @@ const DashboardSales = () => {
   const [showModal, setShowModal] = useState(false);
   const [isOrder, setIsOrder] = useState();
   const _isMounted = useRef(true);
-
-  // useEffect(() => {
-  //   checkIsAuth();
-  // }, [token, isAuth]);
 
   useEffect(() => {
     source = axios.CancelToken.source();
@@ -84,7 +78,7 @@ const DashboardSales = () => {
 
   return (
     <main className="page_main">
-      {isAuth === 'true' && token !== null ?
+      {isAuth === 'true' && token !== null && dataUser.role == 'salesman' ?
         <Fragment>
           <HeaderSales isDashboard={true} />
           <div className="page_container pt-4">
