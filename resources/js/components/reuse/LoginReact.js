@@ -8,7 +8,7 @@ import { UserContext } from '../../contexts/UserContext';
 
 const LoginReact = () => {
   const history = useHistory();
-  const { token, setToken, isAuth, setIsAuth, errorAuth, setErrorAuth } = useContext(AuthContext);
+  const { token, setToken, isAuth, setIsAuth, errorAuth, setErrorAuth, setIsDefaultPassword } = useContext(AuthContext);
   const { dataUser, setDataUser } = useContext(UserContext);
   const [hiddenPassword, setHiddenPassword] = useState(true);
   const [email, setEmail] = useState('');
@@ -61,6 +61,9 @@ const LoginReact = () => {
     })
       .then((response) => {
         console.log('login', response.data.data);
+        if (password == '12345678') {
+          setIsDefaultPassword(true);
+        }
         setIsLoading(false);
         setErrorAuth('');
         if (response.data.status == 'success') {
