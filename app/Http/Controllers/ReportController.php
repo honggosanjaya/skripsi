@@ -199,6 +199,7 @@ class ReportController extends Controller
         // dd($data);
 
         $customersPengajuanLimit = Customer::where('status_limit_pembelian', 7)->get();
+        $request->session()->increment('count');
 
         return view('owner.dashboard',[
           'data' => $data,

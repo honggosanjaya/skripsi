@@ -117,8 +117,14 @@
         </div>
         <div class="mb-4">
           <div class="form-check form-switch">
-            <input class="form-check-input" name="koordinat"type="checkbox" id="flexSwitchCheckDefault" {{$customer->koordinat==null?'disabled':''}}>
-            <label class="form-check-label" for="flexSwitchCheckDefault">Hapus koordinat saat ini, ({{$customer->koordinat??'koordinat belum terpasang'}}) </label>
+            <input class="form-check-input" name="koordinat"type="checkbox" id="flexSwitchCheckDefault"
+              {{ $customer->koordinat == null ? 'disabled' : '' }}>
+            <label class="form-check-label" for="flexSwitchCheckDefault">Hapus koordinat saat ini,
+              <a target="_blank"
+                href="{{ url('https://www.google.com/maps/search/?api=1&query=' . str_replace('@', ',', "$customer->koordinat")) }}">
+                ({{ $customer->koordinat ?? 'koordinat belum terpasang' }})
+              </a>
+            </label>
           </div>
         </div>
 

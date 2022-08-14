@@ -3,17 +3,16 @@ import axios from 'axios';
 import HeaderSales from './HeaderSales';
 import ListCustomer from './ListCustomer';
 import { splitCharacter } from '../reuse/HelperFunction';
-import { useHistory } from 'react-router';
 import { Link } from 'react-router-dom';
 import { AuthContext } from '../../contexts/AuthContext';
 import { UserContext } from '../../contexts/UserContext';
 import Modal from 'react-bootstrap/Modal';
+import { useHistory } from "react-router";
 
 let source;
 const DashboardSales = () => {
-  const { token, isAuth, checkIsAuth } = useContext(AuthContext);
-  const history = useHistory();
-  // const { dataUser } = useContext(UserContext);
+  const { token, isAuth, isDefaultPassword, setIsDefaultPassword } = useContext(AuthContext);
+  const { dataUser } = useContext(UserContext);
   const [namaCust, setNamaCust] = useState('');
   const [alamatUtama, setAlamatUtama] = useState('');
   const [listCustomer, setListCustomer] = useState([]);
@@ -22,10 +21,8 @@ const DashboardSales = () => {
   const [showModal, setShowModal] = useState(false);
   const [isOrder, setIsOrder] = useState();
   const _isMounted = useRef(true);
-
-  // useEffect(() => {
-  //   checkIsAuth();
-  // }, [token, isAuth]);
+  const Swal = require('sweetalert2');
+  const history = useHistory();
 
   useEffect(() => {
     source = axios.CancelToken.source();
@@ -36,6 +33,24 @@ const DashboardSales = () => {
       }
     }
   }, []);
+
+  useEffect(() => {
+    if (isDefaultPassword) {
+      Swal.fire({
+        title: 'Anda Menggunakan Password Default',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Ubah Password!'
+      }).then((result) => {
+        if (result.isConfirmed) {
+          history.push('/changepassword');
+        }
+      })
+    }
+    setIsDefaultPassword(false);
+  }, [])
 
   const cariCustomer = (e) => {
     e.preventDefault();
@@ -82,9 +97,11 @@ const DashboardSales = () => {
 
   const handleCloseModal = () => setShowModal(false);
 
+
+
   return (
     <main className="page_main">
-      {isAuth === 'true' && token !== null ?
+      {isAuth === 'true' && token !== null && dataUser.role == 'salesman' ?
         <Fragment>
           <HeaderSales isDashboard={true} />
           <div className="page_container pt-4">

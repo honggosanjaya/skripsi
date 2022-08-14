@@ -10,6 +10,7 @@ import UserContextProvider from '../contexts/UserContext';
 
 
 import LoginReact from './reuse/LoginReact';
+import LogoutReact from './reuse/LogoutReact';
 import Profil from './reuse/Profil';
 import ChangePassword from './reuse/ChangePassword';
 
@@ -35,6 +36,8 @@ function App() {
         <UserContextProvider>
           <Switch>
             <Route path="/spa/login" component={LoginReact} />
+
+            <Route path="/spa/logout" component={LogoutReact} />
 
             <Route path={["/shipper"]}>
               <Route exact path="/shipper" component={DashboardShipper} />

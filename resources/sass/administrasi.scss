@@ -175,3 +175,37 @@
 .bg-warningg {
     background-color: rgb(253, 222, 153);
 }
+
+// TASK: Warna status dibedakan
+.badge {
+    color: #fff;
+    padding: 0.35em 0.65em;
+    font-weight: bold;
+    text-align: center;
+    border-radius: 0.25em;
+}
+
+.badge-19,
+.badge-20 {
+    background-color: #dfa916;
+}
+
+.badge-21 {
+    background-color: #20c21a;
+}
+
+.badge-22 {
+    background-color: #1ac28a;
+}
+
+.badge-23 {
+    background-color: #1aa0c2;
+}
+
+.badge-24 {
+    background-color: #1a25c2;
+}
+
+.badge-25 {
+    background-color: #c21a1a;
+}

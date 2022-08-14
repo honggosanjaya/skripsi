@@ -359,6 +359,11 @@ class OrderController extends Controller
   public function cetakInvoice(Order $order){
     $items = OrderItem::where('id_order','=',$order->id)->get();
     $administrasi = Staff::select('nama')->where('id','=',auth()->user()->id_users)->first();
+    $invoice = Invoice::where('id_order', $order->id)->first();
+
+    Invoice::where('id_order', $order->id)->update([
+      'counter_unduh' => $invoice->counter_unduh+1
+    ]);
 
     $pdf = PDF::loadview('administrasi.pesanan.detail.cetakInvoice',[
         'order' => $order,

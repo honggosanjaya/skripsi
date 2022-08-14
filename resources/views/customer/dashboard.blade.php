@@ -99,7 +99,9 @@
                           <p class="mb-0 text-center">{{ $item->kuantitas }}</p>
                         </div>
                         <div class="col-4">
-                          <p class="mb-0 text-center">{{ $item->harga_satuan - ($item->harga_satuan * $customer->linkCustomerType->diskon) / 100 }}</p>
+                          <p class="mb-0 text-center">
+                            {{ $item->harga_satuan - ($item->harga_satuan * $customer->linkCustomerType->diskon) / 100 }}
+                          </p>
                         </div>
                       </div>
                     @endforeach
@@ -140,4 +142,7 @@
       @endforeach
     </div>
   </div>
+
+  <input type="hidden" name="loginPassword" value="{{ session('password') }}">
+  <input type="hidden" name="countt" value="{{ session('count') }}">
 @endsection

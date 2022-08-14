@@ -7,6 +7,7 @@ const AuthContextProvider = (props) => {
   const history = useHistory();
   const prevToken = window.localStorage.getItem('token') || null;
   const prevLogin = window.localStorage.getItem('isAuth ') || 'false';
+  const [isDefaultPassword, setIsDefaultPassword] = useState(false);
 
   const [token, setToken] = useState(prevToken);
   const [errorAuth, setErrorAuth] = useState('');
@@ -57,7 +58,8 @@ const AuthContextProvider = (props) => {
     successAuth, setSuccessAuth,
     isAuth, setIsAuth,
     isLoadingAuth, handleLogout,
-    checkIsAuth
+    checkIsAuth,
+    isDefaultPassword, setIsDefaultPassword
   }
 
   return (

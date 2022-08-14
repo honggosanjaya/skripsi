@@ -1,5 +1,6 @@
 import React, { useRef, useEffect, useContext, useState } from 'react';
 import axios from 'axios';
+import { AuthContext } from '../../contexts/AuthContext';
 import { UserContext } from '../../contexts/UserContext';
 import { useHistory } from 'react-router';
 import AlertComponent from './AlertComponent';
@@ -10,6 +11,7 @@ import LoadingIndicator from './LoadingIndicator';
 let source;
 const ChangePassword = () => {
   const { dataUser } = useContext(UserContext);
+  const { setIsDefaultPassword } = useContext(AuthContext);
   const [oldPassword, setOldPassword] = useState('');
   const [newPassword, setNewPassword] = useState('');
   const [confirmNewPassword, setConfirmNewPassword] = useState('');
@@ -82,6 +84,7 @@ const ChangePassword = () => {
             setSuccessMessage(response.data.message);
             setNewPassword('');
             setConfirmNewPassword('');
+            setIsDefaultPassword(false);
             if (dataUser.role == 'salesman') {
               history.push('/salesman/profil');
             } else if (dataUser.role == 'shipper') {

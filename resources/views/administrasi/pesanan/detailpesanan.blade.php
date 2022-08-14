@@ -56,8 +56,19 @@
                   class="bi bi-download px-1"></i>Unduh Surat Jalan</a>
             @endif
             @if ($order->linkOrderTrack->status > 20 && $order->linkOrderTrack->status < 25)
-              <a href="/administrasi/pesanan/detail/{{ $order->id }}/cetak-invoice" class="btn btn_purple mx-1"><i
-                  class="bi bi-download px-1"></i>Unduh Invoice</a>
+              {{-- @php
+                $counter_unduh = $order->linkInvoice->counter_unduh ?? null;
+                $max_unduh = $order->linkInvoice->max_unduh ?? null;
+              @endphp --}}
+              @if ($order->linkInvoice->counter_unduh < $order->linkInvoice->max_unduh)
+                <a href="/administrasi/pesanan/detail/{{ $order->id }}/cetak-invoice" class="btn btn_purple mx-1"><i
+                    class="bi bi-download px-1"></i>Unduh Invoice
+                  {{ '(' . $order->linkInvoice->counter_unduh . '/' . $order->linkInvoice->max_unduh . ')' }}</a>
+              @else
+                <button class="btn btn_purple mx-1" disabled><i class="bi bi-download px-1"></i>Unduh Invoice
+                  {{ '(' . $order->linkInvoice->counter_unduh . '/' . $order->linkInvoice->max_unduh . ')' }}</button>
+              @endif
+              {{-- <h1>{{ $order->linkInvoice->counter_unduh }} </h1> --}}
             @endif
           </div>
         </div>
@@ -249,4 +260,15 @@
       </div>
     </div>
   </div>
+
+  <script>
+    window.addEventListener("pageshow", function(event) {
+      var historyTraversal = event.persisted || (typeof window.performance != "undefined" && window.performance
+        .navigation.type === 2);
+      if (historyTraversal) {
+        window.location.reload();
+      }
+    });
+  </script>
+
 @endsection

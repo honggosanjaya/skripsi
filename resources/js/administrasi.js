@@ -219,3 +219,22 @@ $(document).on('click', '#data-opname .btn-submit', function (e) {
     }
   })
 })
+
+const loginPassword = $('input[name="loginPassword"]').val();
+const countt = $('input[name="countt"]').val();
+
+if (loginPassword == "12345678" && countt == 2) {
+  Swal.fire({
+    title: 'Anda Menggunakan Password Default',
+    icon: 'warning',
+    showCancelButton: true,
+    confirmButtonColor: '#3085d6',
+    cancelButtonColor: '#d33',
+    confirmButtonText: 'Ubah Password!'
+  }).then((result) => {
+    if (result.isConfirmed) {
+      window.location.href = "/administrasi/profil/ubahpassword";
+    }
+  })
+}
+

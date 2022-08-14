@@ -35,7 +35,7 @@ class HomeController extends Controller
         return view('salesman/dashboard',compact('role'));
     }
 
-    public function indexAdministrasi(){
+    public function indexAdministrasi(Request $request){
         $role='indexAdministrasi';
         $item = Item::count();
         $item_aktif = Item::where('status', 10)->count();
@@ -70,8 +70,8 @@ class HomeController extends Controller
             $q->where('status',23)->where('id_staff_pengonfirmasi',auth()->user()->id_users);
         })->with(['linkOrderTrack'])->get();
         // dd($notifikasi);
-       
-        return view('administrasi/dashboard',[
+        $request->session()->increment('count');
+        return view('administrasi.dashboard',[
           'role' => $role,
           'data' => [
             'jumlah_item' => $item,
@@ -91,7 +91,7 @@ class HomeController extends Controller
         return view('shipper/dashboard',compact('role'));
     }
 
-    public function indexCustomer(){
+    public function indexCustomer(Request $request){
       $customer = Customer::where('id', auth()->user()->id_users)->first();
       $event = Event::where('status', 16)->get();
 
@@ -104,6 +104,7 @@ class HomeController extends Controller
       ->get();
 
       $histories = History::where('id_customer', auth()->user()->id_users)->get();
+      $request->session()->increment('count');
 
         $role='indexCustomer';
         return view('customer.dashboard',[

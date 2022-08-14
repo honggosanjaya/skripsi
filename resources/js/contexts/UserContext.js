@@ -1,6 +1,7 @@
 import React, { createContext, useContext, useEffect, useState } from 'react';
 import { AuthContext } from './AuthContext';
 import { useHistory } from "react-router";
+import { useLocation } from 'react-router-dom';
 export const UserContext = createContext();
 
 const UserContextProvider = (props) => {
@@ -9,6 +10,7 @@ const UserContextProvider = (props) => {
   const [dataUser, setDataUser] = useState([]);
   const [errorDataUser, setErrorDataUser] = useState(null);
   const history = useHistory();
+  const location = useLocation();
 
   const forceLogout = () => {
     console.log('dari user context logout paksa');
@@ -65,6 +67,17 @@ const UserContextProvider = (props) => {
       unmounted = true;
       source.cancel("Cancelling in cleanup");
     };
+  }, [dataUser]);
+
+  useEffect(() => {
+    let isShipperPath = location.pathname.includes("shipper");
+    let isSalesmanPath = location.pathname.includes("salesman");
+
+    if (dataUser.role != undefined && dataUser.role != "salesman" && isSalesmanPath) {
+      history.push('/shipper');
+    } else if (dataUser.role != undefined && dataUser.role != "shipper" && isShipperPath) {
+      history.push('/salesman');
+    }
   }, [dataUser]);
 
   return (

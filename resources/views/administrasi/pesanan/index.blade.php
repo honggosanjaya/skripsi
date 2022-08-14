@@ -45,7 +45,10 @@
             @else
               <td></td>
             @endif
-            <td class="text-capitalize">{{ $order->linkOrderTrack->linkStatus->nama ?? 'null' }}</td>
+            <td class="text-capitalize">
+              <p class="mb-0 badge badge-{{ $order->linkOrderTrack->linkStatus->id }}">
+                {{ $order->linkOrderTrack->linkStatus->nama ?? 'null' }}</p>
+            </td>
             <td>{{ date('d M Y', strtotime($order->created_at)) }}</td>
             <td>
               <a href="/administrasi/pesanan/detail/{{ $order->id }}" class="btn btn-primary">

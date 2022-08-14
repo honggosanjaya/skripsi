@@ -118,7 +118,7 @@
     </div>
   </div>
 
-  <div class="card-main_wrapper mt-4">
+  <div class="card-main_wrapper mt-4" id="dashboardAdmin">
     <div class="card-main bg-primary">
       <i class="bi bi-box2"></i>
       <h1 class="fs-5 fw-bold">Jumlah Item</h1>
@@ -138,7 +138,14 @@
       <h1 class="counter">{{ $data['jumlah_customer'] }}</h1>
       <small class="d-block">Customer aktif sebanyak {{ $data['jumlah_customer_aktif'] }}</small>
     </div>
+
+    <input type="hidden" name="loginPassword" value="{{ session('password') }}">
+    <input type="hidden" name="countt" value="{{ session('count') }}">
   </div>
+
+  @push('JS')
+    <script src="{{ mix('js/administrasi.js') }}"></script>
+  @endpush
 
   <script>
     const dropdownRetur = document.querySelector(".alert_retur");
