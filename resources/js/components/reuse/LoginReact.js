@@ -135,7 +135,7 @@ const LoginReact = () => {
               </div>
             </div>
 
-            <button type="submit" className="btn btn-primary w-100 my-4">MASUK</button>
+            <button type="submit" className="btn btn-primary w-100 my-4" disabled={isLoading}>MASUK</button>
             <a href="/login" className="custom-form-input fs-7 text-center d-block">Login sebagai Tenaga Kantor</a>
           </form>
         </div>

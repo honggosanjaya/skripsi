@@ -38,14 +38,17 @@ const TripSales = () => {
   const [showListDistrict, setShowListDistrict] = useState([]);
   const Swal = require('sweetalert2');
   const jamMasuk = Date.now() / 1000;
+  const [shouldDisabled, setShouldDisabled] = useState(false);
 
   useEffect(() => {
     navigator.geolocation.getCurrentPosition(function (position) {
       setKoordinat(position.coords.latitude + '@' + position.coords.longitude)
     });
     if (id != null) {
+      setShouldDisabled(true);
       axios.get(`${window.location.origin}/api/tripCustomer/${id}`).then(response => {
-        console.log('cust', response.data.data)
+        console.log('cust', response.data.data);
+        setShouldDisabled(false);
         setNamaCust(response.data.data.nama);
         setJenis(response.data.data.id_jenis);
         setWilayah(response.data.data.id_wilayah);
@@ -60,8 +63,10 @@ const TripSales = () => {
         setPrevImage(response.data.data.foto);
       })
     }
+    setShouldDisabled(true);
     axios.get(`${window.location.origin}/api/dataFormTrip/`).then(response => {
       console.log('custtype', response.data);
+      setShouldDisabled(false);
       setDistrictArr(response.data.district);
       setCustomerTypeArr(response.data.customerType);
       setJenis(response.data.customerType[0].id);
@@ -329,10 +334,10 @@ const TripSales = () => {
           </div>
 
           <div className="d-flex justify-content-end">
-            <button className="btn btn-danger me-3" onClick={kirimCustomer}>
+            <button className="btn btn-danger me-3" onClick={kirimCustomer} disabled={shouldDisabled}>
               Selesai dan Keluar
             </button>
-            <button className="btn btn-success" onClick={handleOrder}>
+            <button className="btn btn-success" onClick={handleOrder} disabled={shouldDisabled}>
               <span className="iconify me-1" data-icon="carbon:ibm-watson-orders"></span>Order
             </button>
           </div>

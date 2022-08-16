@@ -144,6 +144,7 @@ class OrderController extends Controller
       'id_event' => $id_event,
       'nomor_invoice' => $invoice_count,
       'harga_total' => $totalPesanan,
+      'counter_unduh' => 0,
       'created_at' => now()
     ]);
 

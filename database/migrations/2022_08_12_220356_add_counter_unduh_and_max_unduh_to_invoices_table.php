@@ -14,7 +14,7 @@ class AddCounterUnduhAndMaxUnduhToInvoicesTable extends Migration
     public function up()
     {
         Schema::table('invoices', function (Blueprint $table) {
-          $table->integer('counter_unduh');
+          $table->integer('counter_unduh')->default(0);
           $table->integer('max_unduh')->default(3);
         });
     }

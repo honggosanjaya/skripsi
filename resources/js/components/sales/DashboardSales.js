@@ -23,6 +23,7 @@ const DashboardSales = () => {
   const _isMounted = useRef(true);
   const Swal = require('sweetalert2');
   const history = useHistory();
+  const [shouldDisabled, setShouldDisabled] = useState(false);
 
   useEffect(() => {
     source = axios.CancelToken.source();
@@ -55,6 +56,7 @@ const DashboardSales = () => {
   const cariCustomer = (e) => {
     e.preventDefault();
     source = axios.CancelToken.source();
+    setShouldDisabled(true);
     axios({
       method: "post",
       url: `${window.location.origin}/api/cariCustomer`,
@@ -70,6 +72,7 @@ const DashboardSales = () => {
     })
       .then(response => {
         if (_isMounted.current) {
+          setShouldDisabled(false);
           setListCustomer(response.data.data);
           setAddButton('active');
           setDataShow('inactive');
@@ -78,6 +81,7 @@ const DashboardSales = () => {
       })
       .catch(error => {
         if (_isMounted.current) {
+          setShouldDisabled(false);
           setListCustomer([]);
           setDataShow('active');
           setAddButton('active');
@@ -138,7 +142,7 @@ const DashboardSales = () => {
                 </div>
                 <div className="row">
                   <div className="col-5 offset-7">
-                    <button type="submit" className="btn btn-primary w-100"><span className="iconify me-2" data-icon="fe:search"></span>Cari</button>
+                    <button type="submit" className="btn btn-primary w-100" disabled={shouldDisabled}><span className="iconify me-2" data-icon="fe:search"></span>Cari</button>
                   </div>
                 </div>
               </form>

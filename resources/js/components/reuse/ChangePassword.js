@@ -177,7 +177,7 @@ const ChangePassword = () => {
               </div>
               {errorValidasi && <small className="text-danger mb-3">{errorValidasi.old_password}</small>}
             </div>
-            <button type="submit" className="btn btn-outline-primary w-100 mt-4">Kirim</button>
+            <button type="submit" className="btn btn-outline-primary w-100 mt-4" disabled={isLoading}>Kirim</button>
           </form>}
 
         {isAllowChangePassword &&
@@ -221,7 +221,7 @@ const ChangePassword = () => {
               </div>
               {errorValidasi && (errorValidasi.confirm_newpassword && <small className="text-danger mb-3">{errorValidasi.confirm_newpassword}</small>)}
             </div>
-            <button type="submit" className="btn btn-outline-primary w-100 mt-4">Kirim</button>
+            <button type="submit" className="btn btn-outline-primary w-100 mt-4" disabled={isLoading}>Kirim</button>
           </form>
         }
       </div>

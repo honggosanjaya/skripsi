@@ -45,6 +45,7 @@ const Pemesanan = ({ location }) => {
   const [isHandleKodeCust, setIsHandleKodeCust] = useState(false);
   const [shouldKeepOrder, setShouldKeepOrder] = useState(false);
   const [diskon, setDiskon] = useState(0);
+  const [shouldDisabled, setShouldDisabled] = useState(false);
 
   useEffect(() => {
     if (filterBy) {
@@ -164,6 +165,7 @@ const Pemesanan = ({ location }) => {
 
   const handleKeluarToko = () => {
     console.log('idTrip', idTrip);
+    setShouldDisabled(true);
     if (idTrip) {
       axios({
         method: "post",
@@ -176,11 +178,13 @@ const Pemesanan = ({ location }) => {
         }
       })
         .then((response) => {
+          setShouldDisabled(false);
           console.log('trip', response.data.message);
           hapusSemuaProduk();
           history.push('/salesman');
         })
         .catch((error) => {
+          setShouldDisabled(false);
           console.log(error.message);
         });
     } else {
@@ -468,7 +472,7 @@ const Pemesanan = ({ location }) => {
 
         <KeluarToko handleShow={handleShow} alasanPenolakan={alasanPenolakan}
           setAlasanPenolakan={setAlasanPenolakan} handleClose={handleClose}
-          handleKeluarToko={handleKeluarToko} show={show} />
+          handleKeluarToko={handleKeluarToko} show={show} shouldDisabled={shouldDisabled} />
 
         <FilterItem showFilter={showFilter} handleCloseFilter={handleCloseFilter}
           filterBy={filterBy} setFilterBy={setFilterBy} handleFilterChange={handleFilterChange} />

@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { Button, Modal } from 'react-bootstrap';
 
-const KeluarToko = ({ handleShow, alasanPenolakan, setAlasanPenolakan, handleClose, handleKeluarToko, show }) => {
+const KeluarToko = ({ handleShow, alasanPenolakan, setAlasanPenolakan, handleClose, handleKeluarToko, show, shouldDisabled }) => {
   return (
     <div className="my-5 d-flex justify-content-between align-items-center">
       <h1 className="fs-6 fw-bold"> Customer tidak jadi pesan ?</h1>
@@ -24,7 +24,7 @@ const KeluarToko = ({ handleShow, alasanPenolakan, setAlasanPenolakan, handleClo
           <Button variant="secondary" onClick={handleClose}>
             Batal
           </Button>
-          <Button variant="danger" onClick={handleKeluarToko}>
+          <Button variant="danger" onClick={handleKeluarToko} disabled={shouldDisabled}>
             Keluar
           </Button>
         </Modal.Footer>
