@@ -214,7 +214,9 @@ const TripSales = () => {
           cancelButtonColor: '#d33',
           confirmButtonText: 'Order!'
         }).then((result) => {
-          history.push(`/salesman/order/${dataCustomer.data.data.id}`);
+          if (result.isConfirmed) {
+            history.push(`/salesman/order/${dataCustomer.data.data.id}`);
+          }
         })
       })
       .catch(error => {

@@ -72,7 +72,7 @@ const HistoryTrip = () => {
                       <td>{data.link_customer.nama}</td>
                       <td>{data.link_customer.link_district.nama}</td>
                       <td>{getTime(data.waktu_masuk)}</td>
-                      <td>{getTime(data.waktu_keluar)}</td>
+                      {data.waktu_keluar ? <td>{getTime(data.waktu_keluar)}</td> : <td></td>}
                       <td className='text-center'>{data.status == '2' ? 'YA' : 'TIDAK'}</td>
                     </tr>
                   ))}

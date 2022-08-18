@@ -56,9 +56,9 @@ const HitungStok = ({ tipeHarga, historyItem, checkifexist, handleValueChange, h
             <div className="col-10">
               <h1 className="fs-6 ms-2 mb-1 text-capitalize fw-bold">{item.link_item.nama}</h1>
               <p className="mb-0 ms-2">
-                {tipeHarga && tipeHarga == 1 ? convertPrice(item.link_item.harga1_satuan) :
-                  tipeHarga == 2 && item.harga2_satuan ? convertPrice(item.link_item.harga2_satuan) :
-                    tipeHarga == 3 && item.harga3_satuan ? convertPrice(item.link_item.harga3_satuan) :
+                {
+                  tipeHarga && tipeHarga == 2 && item.link_item.harga2_satuan ? convertPrice(item.link_item.harga2_satuan) :
+                    tipeHarga == 3 && item.link_item.harga3_satuan ? convertPrice(item.link_item.harga3_satuan) :
                       convertPrice(item.link_item.harga1_satuan)
                 }
                 / {item.link_item.satuan}

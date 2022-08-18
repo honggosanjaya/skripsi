@@ -343,7 +343,7 @@ const Pemesanan = ({ location }) => {
     }
 
     if (exist && exist.jumlah == 1) {
-      let setuju = confirm(`apakah anda yakin ingin menhapus produk ${item.nama} ?`);
+      let setuju = confirm(`apakah anda yakin ingin menghapus produk ${item.nama} ?`);
       if (setuju) {
         KeranjangDB.deleteProduk(item.id);
         getAllProduks();
