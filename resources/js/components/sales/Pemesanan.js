@@ -98,6 +98,7 @@ const Pemesanan = ({ location }) => {
       },
     })
       .then(response => {
+        console.log('cust.', response.data.data);
         setDiskon(response.data.data.link_customer_type.diskon);
         setCustomer(response.data.data);
       })
@@ -162,6 +163,16 @@ const Pemesanan = ({ location }) => {
   const handleClose = () => setShow(false);
   const handleShowFilter = () => setShowFilter(true);
   const handleCloseFilter = () => setShowFilter(false);
+
+  const checkTipeHarga = (produk, item) => {
+    if (customer.tipe_harga == 2 && item.harga2_satuan) {
+      produk.harga = item.harga2_satuan;
+    } else if (customer.tipe_harga == 3 && item.harga3_satuan) {
+      produk.harga = item.harga3_satuan;
+    } else {
+      produk.harga = item.harga1_satuan;
+    }
+  }
 
   const handleKeluarToko = () => {
     console.log('idTrip', idTrip);
@@ -283,11 +294,11 @@ const Pemesanan = ({ location }) => {
         nama: item.nama,
         orderId: orderId ? parseInt(orderId) : 'belum ada',
         customer: parseInt(idCust),
-        harga: item.harga_satuan,
         jumlah: exist.jumlah < item.stok ? exist.jumlah + 1 : exist.jumlah,
         gambar: item.gambar,
         stok: item.stok
       };
+      checkTipeHarga(produk, item);
       KeranjangDB.updateProduk(produk);
       getAllProduks();
       if (exist.jumlah == item.stok) {
@@ -300,11 +311,11 @@ const Pemesanan = ({ location }) => {
         nama: item.nama,
         orderId: orderId ? parseInt(orderId) : 'belum ada',
         customer: parseInt(idCust),
-        harga: item.harga_satuan,
         jumlah: 1,
         gambar: item.gambar,
         stok: item.stok
       };
+      checkTipeHarga(produk, item);
       KeranjangDB.putProduk(produk);
       getAllProduks();
     }
@@ -322,11 +333,11 @@ const Pemesanan = ({ location }) => {
         nama: item.nama,
         orderId: orderId ? parseInt(orderId) : 'belum ada',
         customer: parseInt(idCust),
-        harga: item.harga_satuan,
         jumlah: exist.jumlah - 1,
         gambar: item.gambar,
         stok: item.stok
       };
+      checkTipeHarga(produk, item);
       KeranjangDB.updateProduk(produk);
       getAllProduks();
     }
@@ -364,11 +375,11 @@ const Pemesanan = ({ location }) => {
           nama: item.nama,
           orderId: orderId ? parseInt(orderId) : 'belum ada',
           customer: parseInt(idCust),
-          harga: item.harga_satuan,
           jumlah: isNaN(parseInt(newVal)) ? 0 : parseInt(newVal),
           gambar: item.gambar,
           stok: item.stok
         };
+        checkTipeHarga(produk, item);
         KeranjangDB.updateProduk(produk);
         getAllProduks();
       }
@@ -379,11 +390,11 @@ const Pemesanan = ({ location }) => {
           nama: item.nama,
           orderId: orderId ? parseInt(orderId) : 'belum ada',
           customer: parseInt(idCust),
-          harga: item.harga_satuan,
           gambar: item.gambar,
           jumlah: isNaN(parseInt(newVal)) ? 0 : parseInt(newVal),
           stok: item.stok
         };
+        checkTipeHarga(produk, item);
         KeranjangDB.putProduk(produk);
         getAllProduks();
       }
@@ -468,7 +479,7 @@ const Pemesanan = ({ location }) => {
         <HitungStok historyItem={historyItem} handleTambahJumlah={handleTambahJumlah}
           checkifexist={checkifexist} handleValueChange={handleValueChange}
           handleKurangJumlah={handleKurangJumlah} handleSubmitStokTerakhir={handleSubmitStokTerakhir}
-          jumlahOrderRealTime={jumlahOrderRealTime} />
+          jumlahOrderRealTime={jumlahOrderRealTime} tipeHarga={customer.tipe_harga} />
 
         <KeluarToko handleShow={handleShow} alasanPenolakan={alasanPenolakan}
           setAlasanPenolakan={setAlasanPenolakan} handleClose={handleClose}
@@ -508,7 +519,7 @@ const Pemesanan = ({ location }) => {
                 checkifexist={checkifexist} handleValueChange={handleValueChange}
                 handleKurangJumlah={handleKurangJumlah} orderRealTime={orderRealTime}
                 produkDlmKeranjang={produks} isHandleKodeCust={isHandleKodeCust}
-                shouldKeepOrder={shouldKeepOrder} diskonTypeCust={diskon}
+                shouldKeepOrder={shouldKeepOrder} diskonTypeCust={diskon} tipeHarga={customer.tipe_harga}
               />
             }
           </InfiniteScroll>

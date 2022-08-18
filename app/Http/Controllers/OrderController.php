@@ -533,7 +533,7 @@ class OrderController extends Controller
 
       foreach($orderItems as $orderItem){
         $item = Item::find($orderItem->id_item);
-        $totalHarga = $totalHarga + ($orderItem->kuantitas * $item->harga_satuan);
+        $totalHarga = $totalHarga + ($orderItem->kuantitas * $orderItem->harga_satuan);
         $item->stok -= $orderItem->kuantitas;
         $item->save();
 
@@ -592,7 +592,7 @@ class OrderController extends Controller
     $kapasitas_volume = 0;
     foreach($orderItems as $orderItem){
       $item = Item::where('id', $orderItem->id_item)->first();
-      $kapasitas_harga += $item->harga_satuan * $orderItem->kuantitas;
+      $kapasitas_harga += $orderItem->harga_satuan * $orderItem->kuantitas;
       $kapasitas_volume += $item->volume * $orderItem->kuantitas;
     };
 

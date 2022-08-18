@@ -89,7 +89,6 @@ class CartController extends Controller
           'price' => $request->harga_satuan,
         ]);
       }
-
       return response()->json([
         'status' => 'success',
         'quantityCart'=>\Cart::session(auth()->user()->id.$request->route)->getTotalQuantity()

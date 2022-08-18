@@ -9,6 +9,7 @@ use App\Http\Controllers\EventController;
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\ReturController;
 use App\Http\Controllers\Controller;
+use App\Http\Controllers\StaffController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -57,6 +58,7 @@ Route::get('/tripCustomer/{id}', [CustomerController::class, 'dataCustomerApi'])
 Route::post('/tripCustomer', [CustomerController::class, 'simpanCustomerApi']);
 Route::post('/tripCustomer/foto/{id}', [CustomerController::class, 'simpanCustomerFotoApi']);
 Route::post('/tripOrderCustomer', [OrderController::class, 'catatTripOrderApi']);
+Route::post('/historytrip/{id}', [StaffController::class, 'getHistoryTripApi']);
 // ORDER
 Route::get('/products/search/{name}', [ItemController::class, 'searchProductAPI']); 
 Route::post('/salesman/buatOrder', [OrderController::class, 'simpanDataOrderSalesmanAPI']);

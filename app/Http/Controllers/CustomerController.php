@@ -237,11 +237,17 @@ class CustomerController extends Controller
     }
 
     public function administrasiCreate(){
+      $tipe_hargas = array();
+      $tipe_hargas['harga1'] = array("value"=>1, "name"=>"Harga 1");
+      $tipe_hargas['harga2'] = array("value"=>2, "name"=>"Harga 2");
+      $tipe_hargas['harga3'] = array("value"=>3, "name"=>"Harga 3");
+
       return view('administrasi.dataCustomer.create', [
         'customer_types' => CustomerType::all(),
         'districts' => District::all(),
         'retur_types' => ReturType::all(),
         'statuses' =>  Status::where('tabel', 'customers')->get(),
+        'tipe_hargas' => $tipe_hargas,
         "title" => "Data Customer - Add"
       ]);
     }
@@ -256,6 +262,7 @@ class CustomerController extends Controller
         'keterangan_alamat' => ['nullable', 'string', 'max:255'],
         'telepon' => ['nullable', 'string', 'max:15'],
         'pengajuan_limit_pembelian' => ['nullable'],
+        'tipe_harga' => ['required', 'integer'],
         'status' => ['required'],
         'foto' => ['image', 'file', 'max:1024'],
       ];
@@ -266,6 +273,7 @@ class CustomerController extends Controller
       
       $validatedData = $request->validate($rules);
       $validatedData['tipe_retur'] = $request->tipe_retur;
+      $validatedData['tipe_harga'] = $request->tipe_harga;
       $validatedData['id_staff'] = auth()->user()->id_users;
       // $validatedData['limit_pembelian'] = 200000;
       $validatedData['durasi_kunjungan'] = 7;
@@ -311,12 +319,18 @@ class CustomerController extends Controller
     }
 
     public function administrasiEdit(Customer $customer){
+      $tipe_hargas = array();
+      $tipe_hargas['harga1'] = array("value"=>"1", "name"=>"Harga 1");
+      $tipe_hargas['harga2'] = array("value"=>"2", "name"=>"Harga 2");
+      $tipe_hargas['harga3'] = array("value"=>"3", "name"=>"Harga 3");
+
       return view('administrasi.dataCustomer.edit', [
         'customer' => $customer,
         'customer_types' => CustomerType::all(),
         'districts' => District::all(),
         'retur_types' => ReturType::all(),
         'statuses' =>  Status::where('tabel', 'customers')->get(),
+        'tipe_hargas' => $tipe_hargas,
         "title" => "Data Customer - Edit"
       ]);
     }
@@ -331,6 +345,7 @@ class CustomerController extends Controller
         'keterangan_alamat' => ['nullable','string', 'max:255'],
         'telepon' => ['nullable','string', 'max:15'],
         'pengajuan_limit_pembelian' => ['nullable'],
+        'tipe_harga' => ['required', 'integer'],
         'status' => ['required'],
         'foto' => 'image|file|max:1024',
       ];
@@ -346,6 +361,7 @@ class CustomerController extends Controller
       $validatedData['durasi_kunjungan'] = $customer->durasi_kunjungan;
       $validatedData['counter_to_effective_call'] = $customer->counter_to_effective_call;
       $validatedData['pengajuan_limit_pembelian'] = $request->pengajuan_limit_pembelian;
+      $validatedData['tipe_harga'] = $request->tipe_harga;
 
       if ($request->foto) {
         $file_name = 'CUST-' . $request->nama . '-' .date_format(now(),"YmdHis"). '.' . $request->foto->extension();

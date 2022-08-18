@@ -53,6 +53,20 @@
               </select>
             </div>
           </div>
+          <div class="col">
+            <div class="mb-3">
+              <label for="tipe_harga" class="form-label">Tipe Harga <span class="text-danger">*</span></label>
+              <select class="form-select" name="tipe_harga">
+                @foreach ($tipe_hargas as $tipe_harga)
+                  @if (old('tipe_harga', $customer->tipe_harga) == $tipe_harga['value'])
+                    <option value="{{ $tipe_harga['value'] }}" selected>{{ $tipe_harga['name'] }}</option>
+                  @else
+                    <option value="{{ $tipe_harga['value'] }}">{{ $tipe_harga['name'] }}</option>
+                  @endif
+                @endforeach
+              </select>
+            </div>
+          </div>
         </div>
 
         <div class="row">
