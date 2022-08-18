@@ -42,5 +42,5 @@ export function dataURLtoFile(dataurl, filename) {
 
 export function getTime(date) {
   const myArray = date.split(" ");
-  return myArray[1];
+  return myArray[1].slice(0, -3);
 }
