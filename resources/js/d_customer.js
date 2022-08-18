@@ -50,10 +50,12 @@ $(document).on('change', 'input[name=quantity]', function () {
 });
 
 function filter() {
+  $(".submit-filter-produk").attr('disabled', true);
   var filter = $("input[name=filter]:checked").val();
   var order = $("input[name=order]:checked").val();
   $.getJSON(window.location.origin + '/api/filterProduk', { filter: filter, order: order }, function (data) {
     if (data.status = 'success') {
+      $(".submit-filter-produk").attr('disabled', false);
       $("#list-produk").html(data.html);
       $(".close-filter-produk").trigger("click");
       filtered = true;

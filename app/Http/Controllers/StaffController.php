@@ -6,6 +6,7 @@ use App\Models\Staff;
 use App\Models\StaffRole;
 use App\Models\Status;
 use App\Models\User;
+use App\Models\Trip;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Auth\Events\Registered;
@@ -201,5 +202,23 @@ class StaffController extends Controller
       return view('owner.datasupervisor.index',[
           'supervisors' => $supervisors
       ]);
-  }
+    }
+
+    public function getHistoryTripApi(Request $request, $id){
+      $alltrip = Trip::where('id_staff', $id)->with(['linkCustomer', 'linkCustomer.linkDistrict'])->get();
+      $date = $request->date;
+      $dateTrip = Trip::where('id_staff', $id)->whereDate('created_at', '=', $date)->with(['linkCustomer', 'linkCustomer.linkDistrict'])->get();
+
+      if($date == null){
+        return response()->json([
+          'data' => $alltrip,
+          'status' => 'success'
+        ]);
+      }else{
+        return response()->json([
+          'data' => $dateTrip,
+          'status' => 'success'
+        ]);
+      }
+    }
 }

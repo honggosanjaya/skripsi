@@ -2,7 +2,7 @@ import React, { Component, useEffect, useState } from 'react';
 import { convertPrice } from "../reuse/HelperFunction";
 import urlAsset from '../../config';
 
-const ProductSales = ({ listItems, handleTambahJumlah, checkifexist, handleValueChange, handleKurangJumlah, orderRealTime, produkDlmKeranjang, isHandleKodeCust, shouldKeepOrder, diskonTypeCust }) => {
+const ProductSales = ({ tipeHarga, listItems, handleTambahJumlah, checkifexist, handleValueChange, handleKurangJumlah, orderRealTime, produkDlmKeranjang, isHandleKodeCust, shouldKeepOrder, diskonTypeCust }) => {
   const [orderItems, setOrderItems] = useState([]);
 
   useEffect(() => {
@@ -46,8 +46,16 @@ const ProductSales = ({ listItems, handleTambahJumlah, checkifexist, handleValue
           </div>
           <div className="product_desc">
             <h1 className='nama_produk fs-6'>{item.nama}</h1>
-            <p className='mb-0 text-decoration-line-through'>{convertPrice(item.harga_satuan)}</p>
-            <p className='mb-0'><b className='text-danger'>{convertPrice(item.harga_satuan - (item.harga_satuan * (diskonTypeCust ?? 0) / 100))}</b> / {item.satuan}</p>
+            <p className='mb-0 text-decoration-line-through'>
+              {tipeHarga && tipeHarga == 1 ? convertPrice(item.harga1_satuan) : tipeHarga == 2 && item.harga2_satuan ? convertPrice(item.harga2_satuan) : tipeHarga == 3 && item.harga3_satuan ? convertPrice(item.harga3_satuan) : convertPrice(item.harga1_satuan)}
+            </p>
+            <p className='mb-0'><b className='text-danger'>
+              {tipeHarga && tipeHarga == 1 ? convertPrice(item.harga1_satuan - (item.harga1_satuan * (diskonTypeCust ?? 0) / 100)) :
+                tipeHarga == 2 && item.harga2_satuan ? convertPrice(item.harga2_satuan - (item.harga2_satuan * (diskonTypeCust ?? 0) / 100)) :
+                  tipeHarga == 3 && item.harga3_satuan ? convertPrice(item.harga3_satuan - (item.harga3_satuan * (diskonTypeCust ?? 0) / 100)) :
+                    convertPrice(item.harga1_satuan - (item.harga1_satuan * (diskonTypeCust ?? 0) / 100))
+              }
+            </b> / {item.satuan}</p>
             <p className='mb-0'>Stok: </p>
             <table className='table table-bordered border-secondary mb-0'>
               <thead>
@@ -95,8 +103,16 @@ const ProductSales = ({ listItems, handleTambahJumlah, checkifexist, handleValue
           </div>
           <div className="product_desc">
             <h1 className='nama_produk fs-6 fw-bold'>{item.nama}</h1>
-            <p className='mb-0 text-decoration-line-through'>{convertPrice(item.harga_satuan)}</p>
-            <p className='mb-0'><b className='text-danger'>{convertPrice(item.harga_satuan - (item.harga_satuan * (diskonTypeCust ?? 0) / 100))}</b> / {item.satuan}</p>
+            <p className='mb-0 text-decoration-line-through'>
+              {tipeHarga && tipeHarga == 1 ? convertPrice(item.harga1_satuan) : tipeHarga == 2 && item.harga2_satuan ? convertPrice(item.harga2_satuan) : tipeHarga == 3 && item.harga3_satuan ? convertPrice(item.harga3_satuan) : convertPrice(item.harga1_satuan)}
+            </p>
+            <p className='mb-0'><b className='text-danger'>
+              {tipeHarga && tipeHarga == 1 ? convertPrice(item.harga1_satuan - (item.harga1_satuan * (diskonTypeCust ?? 0) / 100)) :
+                tipeHarga == 2 && item.harga2_satuan ? convertPrice(item.harga2_satuan - (item.harga2_satuan * (diskonTypeCust ?? 0) / 100)) :
+                  tipeHarga == 3 && item.harga3_satuan ? convertPrice(item.harga3_satuan - (item.harga3_satuan * (diskonTypeCust ?? 0) / 100)) :
+                    convertPrice(item.harga1_satuan - (item.harga1_satuan * (diskonTypeCust ?? 0) / 100))
+              }
+            </b> / {item.satuan}</p>
             <p className='mb-0'>Stok: </p>
             <table className='table table-bordered border-secondary mb-0'>
               <thead>

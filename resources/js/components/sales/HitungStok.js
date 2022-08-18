@@ -1,17 +1,14 @@
 import React, { useContext, useEffect } from 'react';
 import urlAsset from '../../config';
 import { HitungStokContext } from '../../contexts/HitungStokContext';
+import { convertPrice } from "../reuse/HelperFunction";
 
-const HitungStok = ({ historyItem, checkifexist, handleValueChange, handleTambahJumlah, handleKurangJumlah, handleSubmitStokTerakhir, jumlahOrderRealTime }) => {
+const HitungStok = ({ tipeHarga, historyItem, checkifexist, handleValueChange, handleTambahJumlah, handleKurangJumlah, handleSubmitStokTerakhir, jumlahOrderRealTime }) => {
   const { newHistoryItem, setNewHistoryItem } = useContext(HitungStokContext);
 
   useEffect(() => {
     setNewHistoryItem(historyItem);
   }, [historyItem]);
-
-  // useEffect(() => {
-  //   setNewHistoryItem(historyItem);
-  // }, []);
 
   const handlePilihProdukChange = (item) => {
     const exist = newHistoryItem.find((x) => x.link_item.id === item.link_item.id);
@@ -58,7 +55,14 @@ const HitungStok = ({ historyItem, checkifexist, handleValueChange, handleTambah
             </div>
             <div className="col-10">
               <h1 className="fs-6 ms-2 mb-1 text-capitalize fw-bold">{item.link_item.nama}</h1>
-              <p className="mb-0 ms-2">{item.link_item.harga_satuan} / {item.link_item.satuan}</p>
+              <p className="mb-0 ms-2">
+                {tipeHarga && tipeHarga == 1 ? convertPrice(item.link_item.harga1_satuan) :
+                  tipeHarga == 2 && item.harga2_satuan ? convertPrice(item.link_item.harga2_satuan) :
+                    tipeHarga == 3 && item.harga3_satuan ? convertPrice(item.link_item.harga3_satuan) :
+                      convertPrice(item.link_item.harga1_satuan)
+                }
+                / {item.link_item.satuan}
+              </p>
             </div>
 
             <p className="mb-0">Max stok : {item.stok_maksimal_customer}</p>

@@ -37,7 +37,9 @@
             <th scope="col" class="text-center">Stok</th>
             <th scope="col" class="text-center">Min Stok</th>
             <th scope="col" class="text-center">Max Stok</th>
-            <th scope="col" class="text-center">Harga Satuan (Rp)</th>
+            <th scope="col" class="text-center">Harga1 Satuan (Rp)</th>
+            <th scope="col" class="text-center">Harga2 Satuan (Rp)</th>
+            <th scope="col" class="text-center">Harga3 Satuan (Rp)</th>
             <th scope="col" class="text-center">Volume</th>
             <th scope="col" class="text-center">Status</th>
             <th scope="col" class="text-center">Aksi</th>
@@ -69,7 +71,9 @@
             <td>{{ number_format($item->stok, 0, '', '.') }}</td>
             <td>{{ number_format($item->min_stok, 0, '', '.') }}</td>
             <td>{{ number_format($item->max_stok, 0, '', '.') }}</td>
-            <td>{{ number_format($item->harga_satuan, 0, '', '.') }}</td>
+            <td>{{ number_format($item->harga1_satuan, 0, '', '.') }}</td>
+            <td>{{ number_format($item->harga2_satuan, 0, '', '.') }}</td>
+            <td>{{ number_format($item->harga3_satuan, 0, '', '.') }}</td>
             <td class="text-capitalize">{{ number_format($item->volume, 0, '', '.') }}</td>
             <td>{{ $item->linkStatus->nama }}</td>
             <td>

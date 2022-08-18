@@ -1,5 +1,5 @@
 import React, { Fragment, useContext, useEffect, useState } from 'react';
-import { useHistory } from "react-router-dom";
+import { Link, useHistory } from "react-router-dom";
 import urlAsset from '../../config';
 import { Dropdown } from 'react-bootstrap';
 import { AuthContext } from '../../contexts/AuthContext';
@@ -46,28 +46,33 @@ const HeaderSales = ({ title, isDashboard, isOrder, lihatKeranjang, toBack, juml
       {isDashboard &&
         <Fragment>
           <h1 className='logo text-white'>salesMan</h1>
-          <Dropdown align="end">
-            <Dropdown.Toggle id="dropdown-basic">
-              {dataUser.foto_profil ?
-                <img src={`${urlAsset}/storage/staff/${dataUser.foto_profil}`} className="avatar_pp" />
-                :
-                <img src={`${urlAsset}/images/default_fotoprofil.png`} className="avatar_pp" />
-              }
-            </Dropdown.Toggle>
+          <div className='d-flex align-items-center'>
+            <Link to="/salesman/history">
+              <span className="iconify fs-1 text-white" data-icon="ic:round-history"></span>
+            </Link>
+            <Dropdown align="end">
+              <Dropdown.Toggle id="dropdown-basic">
+                {dataUser.foto_profil ?
+                  <img src={`${urlAsset}/storage/staff/${dataUser.foto_profil}`} className="avatar_pp" />
+                  :
+                  <img src={`${urlAsset}/images/default_fotoprofil.png`} className="avatar_pp" />
+                }
+              </Dropdown.Toggle>
 
-            <Dropdown.Menu>
-              <Dropdown.Item>
-                <div className="btn btn-success w-100" onClick={handleViewProfile}>
-                  <span className="iconify me-2 fs-5" data-icon="carbon:user-profile"></span>Profil
-                </div>
-              </Dropdown.Item>
-              <Dropdown.Item>
-                <div className="btn btn-danger w-100" onClick={handleLogout}>
-                  <span className="iconify me-2 fs-5" data-icon="carbon:logout"></span>Logout
-                </div>
-              </Dropdown.Item>
-            </Dropdown.Menu>
-          </Dropdown>
+              <Dropdown.Menu>
+                <Dropdown.Item>
+                  <div className="btn btn-success w-100" onClick={handleViewProfile}>
+                    <span className="iconify me-2 fs-5" data-icon="carbon:user-profile"></span>Profil
+                  </div>
+                </Dropdown.Item>
+                <Dropdown.Item>
+                  <div className="btn btn-danger w-100" onClick={handleLogout}>
+                    <span className="iconify me-2 fs-5" data-icon="carbon:logout"></span>Logout
+                  </div>
+                </Dropdown.Item>
+              </Dropdown.Menu>
+            </Dropdown>
+          </div>
         </Fragment>
       }
     </header>

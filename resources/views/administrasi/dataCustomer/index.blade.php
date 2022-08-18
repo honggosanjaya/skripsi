@@ -32,6 +32,7 @@
             <th scope="col" class="text-center">Nama</th>
             <th scope="col" class="text-center">Alamat Lengkap</th>
             <th scope="col" class="text-center">Telepon</th>
+            <th scope="col" class="text-center">Penetapan Harga</th>
             <th scope="col" class="text-center">Status</th>
             <th scope="col" class="text-center">Aksi</th>
           </tr>
@@ -43,6 +44,7 @@
               <td>{{ $customer->nama }}</td>
               <td>{{ $customer->full_alamat }}</td>
               <td>{{ $customer->telepon }}</td>
+              <td>harga {{ $customer->tipe_harga }}</td>
               <td>{{ $customer->linkStatus->nama }}</td>
               <td>
                 <div class="d-flex justify-content-center">

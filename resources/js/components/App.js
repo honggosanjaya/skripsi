@@ -27,6 +27,7 @@ import DashboardShipper from './pengirim/DashboardShipper';
 import JadwalShipper from './pengirim/JadwalShipper';
 import ReturShipper from './pengirim/ReturShipper';
 import ReturContextProvider from '../contexts/ReturContext';
+import HistoryTrip from './sales/HistoryTrip';
 
 
 function App() {
@@ -53,6 +54,7 @@ function App() {
                 <Route exact path="/salesman" component={DashboardSales} />
                 <Route exact path="/salesman/trip" component={TripSales} />
                 <Route exact path="/salesman/trip/:id" component={TripSales} />
+                <Route exact path="/salesman/history" component={HistoryTrip} />
                 <HitungStokContextProvider>
                   <Route exact path="/salesman/order/:idCust" component={Pemesanan} />
                   <Route exact path="/salesman/keranjang/:idCust" component={KeranjangSales} />

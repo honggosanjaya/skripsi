@@ -22,6 +22,7 @@ const ReturShipper = () => {
   const [isShowProduct, setIsShowProduct] = useState(true);
   const [isLoading, setIsLoading] = useState(false);
   const [customerDiskon, setCustomerDiskon] = useState(null);
+  const [tipeHarga, setTipeHarga] = useState(null);
   const Swal = require('sweetalert2');
   const redirect = useHistory();
   const _isMounted = useRef(true);
@@ -58,8 +59,10 @@ const ReturShipper = () => {
       .then((response) => {
         if (!unmounted) {
           console.log('history yang dipesan', response);
+          console.log('customer', response.data.data.customer);
           setHistoryItems(response.data.data.history);
           setCustomerDiskon(response.data.data.customer.link_customer_type.diskon);
+          setTipeHarga(response.data.data.customer.tipe_harga);
         }
       })
       .catch((error) => {
@@ -280,6 +283,16 @@ const ReturShipper = () => {
       });
   }
 
+  const checkHargaSatuan = (item) => {
+    if (tipeHarga == 2 && item.link_item.harga2_satuan) {
+      return item.link_item.harga2_satuan - item.link_item.harga2_satuan * customerDiskon / 100;
+    } else if (tipeHarga == 3 && item.link_item.harga3_satuan) {
+      return item.link_item.harga3_satuan - item.link_item.harga3_satuan * customerDiskon / 100;
+    } else {
+      return item.link_item.harga1_satuan - item.link_item.harga1_satuan * customerDiskon / 100;
+    }
+  }
+
   return (
     <main className='page_main'>
       <HeaderShipper title="Retur" toBack={goBack} />
@@ -296,7 +309,13 @@ const ReturShipper = () => {
                     : <img src={`${urlAsset}/images/default_produk.png`} className="item_image me-3" />}
                   <div>
                     <h2 className='fs-6 text-capitalize fw-bold'>{item.link_item.nama}</h2>
-                    <p className='mb-0'>{convertPrice(item.link_item.harga_satuan - item.link_item.harga_satuan * customerDiskon / 100)}</p>
+                    <p className='mb-0'>
+                      {
+                        tipeHarga == 2 && item.link_item.harga2_satuan ? convertPrice(item.link_item.harga2_satuan - item.link_item.harga2_satuan * customerDiskon / 100) :
+                          tipeHarga == 3 && item.link_item.harga3_satuan ? convertPrice(item.link_item.harga3_satuan - item.link_item.harga3_satuan * customerDiskon / 100) :
+                            convertPrice(item.link_item.harga1_satuan - item.link_item.harga1_satuan * customerDiskon / 100)
+                      }
+                    </p>
                   </div>
                 </div>
 
@@ -305,11 +324,12 @@ const ReturShipper = () => {
                     <label className="form-label">Jumlah Retur</label>
                   </div>
                   <div className="col-7 d-flex justify-content-around">
-                    <button className="btn btn-primary btn_qty" onClick={() => handleKurangJumlah(item.link_item, item.alasan, item.link_item.harga_satuan - item.link_item.harga_satuan * customerDiskon / 100)}> - </button>
+                    <button className="btn btn-primary btn_qty"
+                      onClick={() => handleKurangJumlah(item.link_item, item.alasan, checkHargaSatuan(item))}> - </button>
                     <input type="number" className="form-control mx-2"
                       value={checkifexist(item.link_item)}
-                      onChange={(e) => handleValueChange(item.link_item, e.target.value, item.alasan, item.link_item.harga_satuan - item.link_item.harga_satuan * customerDiskon / 100)} />
-                    <button className="btn btn-primary btn_qty" onClick={() => handleTambahJumlah(item.link_item, item.alasan, item.link_item.harga_satuan - item.link_item.harga_satuan * customerDiskon / 100)}> + </button>
+                      onChange={(e) => handleValueChange(item.link_item, e.target.value, item.alasan, checkHargaSatuan(item))} />
+                    <button className="btn btn-primary btn_qty" onClick={() => handleTambahJumlah(item.link_item, item.alasan, checkHargaSatuan(item))}> + </button>
                   </div>
                 </div>
 
@@ -328,7 +348,7 @@ const ReturShipper = () => {
           {cartItems.map((item) => (
             <div className="info-product_retur mt-2" key={item.id}>
               <div className="d-flex align-items-center border-bottom">
-                {item.gambar ? <img src={`${urlAsset}/images/${item.gambar}`} className="img-fluid item_image me-3" />
+                {item.gambar ? <img src={`${urlAsset}/storage/item/${item.gambar}`} className="img-fluid item_image me-3" />
                   : <img src={`${urlAsset}/images/default_produk.png`} className="img-fluid item_image me-3" />}
                 <div>
                   <h2 className='fs-6 mb-0 fw-bold'>{item.nama}</h2>
@@ -343,7 +363,7 @@ const ReturShipper = () => {
             <Fragment>
               <div className="row justify-content-end mt-4">
                 <div className="col d-flex justify-content-end">
-                  <button className="btn btn-success mt-3" onClick={handlePengajuanRetur}><span className="iconify fs-3 me-1" data-icon="ic:baseline-assignment-return"></span>Ajukan Retur</button>
+                  <button className="btn btn-success mt-3" onClick={handlePengajuanRetur} disabled={isLoading}><span className="iconify fs-3 me-1" data-icon="ic:baseline-assignment-return"></span>Ajukan Retur</button>
                 </div>
               </div>
             </Fragment>

@@ -203,7 +203,9 @@ class ItemController extends Controller
       'nama' => ['required', 'string', 'max:255'],
       'kode_barang' => ['required', 'string', 'max:20', 'unique:items'],
       'satuan' => ['required', 'string', 'max:30'],
-      'harga_satuan' => ['required', 'numeric'],
+      'harga1_satuan' => ['required', 'numeric'],
+      'harga2_satuan' => ['nullable', 'numeric'],
+      'harga3_satuan' => ['nullable', 'numeric'],
       'gambar' => 'image|file|max:1024',
       'volume' => 'required'
     ]);
@@ -257,7 +259,9 @@ class ItemController extends Controller
       'min_stok' => ['required', 'integer', 'min:0'],
       'max_stok' => ['required', 'integer', 'min:0'],
       'satuan' => ['required', 'string', 'max:30'],
-      'harga_satuan' => ['required', 'numeric'],
+      'harga1_satuan' => ['required', 'numeric'],
+      'harga2_satuan' => ['nullable', 'numeric'],
+      'harga3_satuan' => ['nullable', 'numeric'],
       'volume' => ['required'],
     ]);
 
@@ -382,7 +386,7 @@ class ItemController extends Controller
         $items=$items->where(strtolower('nama'),'like','%'.$request->nama.'%');
       }
       if ($request->filter=='price') {
-        $items=$items->orderBy('harga_satuan',$request->order);
+        $items=$items->orderBy('harga1_satuan',$request->order);
       }
       if ($request->filter=='nama') {
         $items=$items->orderBy('nama',$request->order);
@@ -446,9 +450,10 @@ class ItemController extends Controller
     }
 
     public function filterProductAPI($id, $filterby){
+      $customer = Customer::find($id);
       $history = History::where('id_customer',$id)->with('linkItem')->get();
       $items = $history->pluck('id_item');
-      $items = Item::orderBy("status", "ASC")->whereNotIn('id',$items->toArray());
+      $items = Item::orderBy("status", "ASC")->whereNotIn('id', $items->toArray());
 
       $orderItemUnconfirmed=OrderItem::
       whereHas('linkOrder',function($q) {
@@ -463,9 +468,9 @@ class ItemController extends Controller
       ->groupBy('id_item')->pluck('jumlah_blmkonfirmasi','id_item')->all();
 
       if($filterby == 'hargaterendah'){
-        $items=$items->orderBy('harga_satuan','ASC')->paginate(4);
+        $items=$items->orderBy('harga1_satuan','ASC')->paginate(4);
       }else if($filterby == 'hargatertinggi'){
-        $items=$items->orderBy('harga_satuan','DESC')->paginate(4);
+        $items=$items->orderBy('harga1_satuan','DESC')->paginate(4);
       } else if($filterby == 'namaasc'){
         $items=$items->orderBy('nama','ASC')->paginate(4);
       } else if($filterby == 'namadsc'){

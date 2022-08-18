@@ -7,7 +7,7 @@ import { UserContext } from '../../contexts/UserContext';
 import { useHistory } from "react-router";
 
 const DashboardShipper = () => {
-  const { isDefaultPassword } = useContext(AuthContext);
+  const { isDefaultPassword, setIsDefaultPassword } = useContext(AuthContext);
   const { dataUser } = useContext(UserContext);
   const Swal = require('sweetalert2');
   const history = useHistory();
@@ -27,6 +27,7 @@ const DashboardShipper = () => {
         }
       })
     }
+    setIsDefaultPassword(false);
   }, [])
 
   return (

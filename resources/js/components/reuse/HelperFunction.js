@@ -22,7 +22,6 @@ export function convertDate(datetime) {
   const monthName = ["Jan", "Feb", "Mar", "Apr", "May", "June", "July", "Aug", "Sept", "Oct", "Nov", "Dec"];
 
   return `${tanggal} ${monthName[month - 1]} ${tahun}` + '\n' + `pukul ${jam} WIB`;
-
 }
 
 export function dataURLtoFile(dataurl, filename) {
@@ -37,4 +36,11 @@ export function dataURLtoFile(dataurl, filename) {
   }
 
   return new File([u8arr], filename, { type: mime });
+}
+
+
+
+export function getTime(date) {
+  const myArray = date.split(" ");
+  return myArray[1];
 }

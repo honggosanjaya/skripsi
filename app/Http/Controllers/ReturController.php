@@ -30,6 +30,7 @@ class ReturController extends Controller
 
     public function pengajuanReturAPI(Request $request){
       $cartItems = $request->cartItems;
+
       $id_staff_pengaju = $request->id_staff_pengaju;
       $id_customer = $request->id_customer;
       $id_invoice = $request->id_invoice;
@@ -51,6 +52,7 @@ class ReturController extends Controller
           'created_at'=>now()
         ]);
       }
+      
       Retur::insert($data);
 
       return response()->json([
