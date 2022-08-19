@@ -1,10 +1,17 @@
 @extends('layouts/main')
-
+@push('CSS')
+  <link href=" {{ mix('css/administrasi.css') }}" rel="stylesheet">
+@endpush
 @section('breadcrumbs')
   <ol class="breadcrumb">
     <li class="breadcrumb-item"><a href="/administrasi">Dashboard</a></li>
     <li class="breadcrumb-item"><a href="/administrasi/reimbursement">Reimbursement</a></li>
-    <li class="breadcrumb-item active" aria-current="page">Pengajuan</li>
+    @if ($type == 'pengajuan')
+      <li class="breadcrumb-item active" aria-current="page">Pengajuan</li>
+    @elseif($type == 'pembayaran')
+      <li class="breadcrumb-item active" aria-current="page">Pembayaran</li>
+    @endif
+
   </ol>
 @endsection
 
@@ -34,7 +41,10 @@
                 <td>{{ $reimbursement->linkStaffPengonfirmasi->nama ?? null }}</td>
                 <td>{{ $reimbursement->linkCashAccount->nama }}</td>
                 <td>{{ $reimbursement->jumlah_uang }}</td>
-                <td class="text-capitalize text-center">{{ $reimbursement->linkStatus->nama }}</td>
+                <td class="text-capitalize text-center">
+                  <p class="mb-0 badge badge-{{ $reimbursement->linkStatus->id }}">
+                    {{ $reimbursement->linkStatus->nama ?? null }}</p>
+                </td>
                 <td class="text-center">
                   <a href="/administrasi/reimbursement/pengajuan/{{ $reimbursement->id }}" class="btn btn-primary"><span
                       class="iconify fs-4 me-1" data-icon="fluent:apps-list-detail-24-filled"></span>Detail</a>

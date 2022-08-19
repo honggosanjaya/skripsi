@@ -201,10 +201,11 @@ Route::prefix('administrasi')->middleware('administrasi')->group(function() {
   // Route untuk reimbursement
   Route::get('/reimbursement', [CashAccountController::class, 'adminReimbursementIndex']);
   Route::get('/reimbursement/pengajuan', [CashAccountController::class, 'adminReimbursementPengajuan']);
+  Route::get('/reimbursement/pembayaran', [CashAccountController::class, 'adminReimbursementPembayaran']);
   Route::get('/reimbursement/pengajuan/{reimbursement:id}', [CashAccountController::class, 'adminReimbursementPengajuanDetail']);
-
   Route::post('/reimbursement/pengajuan/setuju/{reimbursement:id}', [CashAccountController::class, 'setujuReimbursement']);
   Route::post('/reimbursement/pengajuan/tolak/{reimbursement:id}', [CashAccountController::class, 'tolakReimbursement']);
+  Route::post('/reimbursement/pengajuan/dibayar/{reimbursement:id}', [CashAccountController::class, 'bayarReimbursement']);
 });
 
 

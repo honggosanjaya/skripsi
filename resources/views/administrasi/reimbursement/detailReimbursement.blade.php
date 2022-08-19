@@ -1,9 +1,13 @@
 @extends('layouts/main')
 @section('breadcrumbs')
   <ol class="breadcrumb">
-    <li class="breadcrumb-item"><a href="/admnistrasi">Dashboard</a></li>
-    <li class="breadcrumb-item"><a href="/admnistrasi/reimbusement">Reimbursement</a></li>
-    <li class="breadcrumb-item"><a href="/admnistrasi/reimbusement/pengajuan">Pengajuan</a></li>
+    <li class="breadcrumb-item"><a href="/administrasi">Dashboard</a></li>
+    <li class="breadcrumb-item"><a href="/administrasi/reimbursement">Reimbursement</a></li>
+    @if ($reimbursement->linkStatus->id == '27')
+      <li class="breadcrumb-item"><a href="/administrasi/reimbursement/pengajuan">Pengajuan</a></li>
+    @else
+      <li class="breadcrumb-item"><a href="/administrasi/reimbursement/pembayaran">Pembayaran</a></li>
+    @endif
     <li class="breadcrumb-item active" aria-current="page">Detail</li>
   </ol>
 @endsection
@@ -25,19 +29,28 @@
 
     <div class="row justify-content-end mt-4">
       <div class="col d-flex justify-content-end">
-        <form action="/administrasi/reimbursement/pengajuan/tolak/{{ $reimbursement->id }}" method="POST">
-          @csrf
-          <button type="submit" class="btn btn-sm btn-danger me-3">
-            <span class="iconify fs-5 me-1" data-icon="emojione-monotone:heavy-multiplication-x"></span> Tolak
-          </button>
-        </form>
+        @if ($reimbursement->linkStatus->id == '27')
+          <form action="/administrasi/reimbursement/pengajuan/tolak/{{ $reimbursement->id }}" method="POST">
+            @csrf
+            <button type="submit" class="btn btn-sm btn-danger me-3">
+              <span class="iconify fs-5 me-1" data-icon="emojione-monotone:heavy-multiplication-x"></span> Tolak
+            </button>
+          </form>
 
-        <form action="/administrasi/reimbursement/pengajuan/setuju/{{ $reimbursement->id }}" method="POST">
-          @csrf
-          <button type="submit" class="btn btn-sm btn-success">
-            <span class="iconify fs-5 me-1" data-icon="akar-icons:check"></span> Setuju
-          </button>
-        </form>
+          <form action="/administrasi/reimbursement/pengajuan/setuju/{{ $reimbursement->id }}" method="POST">
+            @csrf
+            <button type="submit" class="btn btn-sm btn-success">
+              <span class="iconify fs-5 me-1" data-icon="akar-icons:check"></span> Setuju
+            </button>
+          </form>
+        @elseif ($reimbursement->linkStatus->id == '28')
+          <form action="/administrasi/reimbursement/pengajuan/dibayar/{{ $reimbursement->id }}" method="POST">
+            @csrf
+            <button type="submit" class="btn btn-sm btn-success">
+              <span class="iconify fs-5 me-1" data-icon="akar-icons:check"></span> Dibayarkan
+            </button>
+          </form>
+        @endif
       </div>
     </div>
   </div>

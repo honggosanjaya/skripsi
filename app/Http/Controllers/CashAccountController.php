@@ -160,9 +160,17 @@ class CashAccountController extends Controller
     $reimbursements = Reimbursement::where('status', 27)->paginate(10);
     return view('administrasi.reimbursement.pengajuanReimbursement', [
       'reimbursements' => $reimbursements,
+      'type' => 'pengajuan'
     ]);
   }
 
+  public function adminReimbursementPembayaran(){
+    $reimbursements = Reimbursement::where('status', 28)->paginate(10);
+    return view('administrasi.reimbursement.pengajuanReimbursement', [
+      'reimbursements' => $reimbursements,
+      'type' => 'pembayaran'
+    ]);
+  }
   
   public function adminReimbursementPengajuanDetail(Reimbursement $reimbursement){
     $reimbursement = Reimbursement::find($reimbursement->id);
@@ -185,5 +193,12 @@ class CashAccountController extends Controller
       'status' => 30
     ]);
     return redirect('/administrasi/reimbursement') -> with('pesanSukses', 'Berhasil menolak pengajuan' );
+  }
+
+  public function bayarReimbursement(Reimbursement $reimbursement){
+    Reimbursement::find($reimbursement->id)->update([
+      'status' => 29
+    ]);
+    return redirect('/administrasi/reimbursement') -> with('pesanSukses', 'Berhasil membayar pengajuan' );
   }
 }

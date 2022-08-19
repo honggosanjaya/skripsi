@@ -21,7 +21,11 @@
 
   <div class="px-5">
     <a href="/administrasi/reimbursement/pengajuan" class="btn btn-primary btn_add-relative"><span
-        class="iconify fs-5 me-1" data-icon="carbon:data-view-alt"></span>Pengajuan Reimbursement
+        class="iconify fs-5 me-1" data-icon="carbon:data-view-alt"></span>Pengajuan
+    </a>
+
+    <a href="/administrasi/reimbursement/pembayaran" class="btn btn-success btn_add-relative"><span
+        class="iconify fs-5 me-1" data-icon="carbon:data-view-alt"></span>Pembayaran
     </a>
 
     <div class="table-responsive mt-3">
@@ -46,7 +50,10 @@
               <td>{{ $reimbursement->linkStaffPengonfirmasi->nama ?? null }}</td>
               <td>{{ $reimbursement->linkCashAccount->nama }}</td>
               <td>{{ $reimbursement->jumlah_uang }}</td>
-              <td class="text-capitalize text-center">{{ $reimbursement->linkStatus->nama }}</td>
+              <td class="text-capitalize text-center">
+                <p class="mb-0 badge badge-{{ $reimbursement->linkStatus->id }}">
+                  {{ $reimbursement->linkStatus->nama ?? null }}</p>
+              </td>
             </tr>
           @endforeach
         </tbody>

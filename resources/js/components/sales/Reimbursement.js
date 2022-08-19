@@ -219,7 +219,7 @@ const Reimbursement = () => {
 
                       {history.link_status.id > 27 && <span className='d-flex'>
                         <b>Dikonfirmasi Oleh</b>
-                        <div className='word_wrap'>{history.link_staff_pengonfirmasi.nama}</div>
+                        {history.link_staff_pengonfirmasi && <div className='word_wrap'>{history.link_staff_pengonfirmasi.nama}</div>}
                       </span>}
 
                       <span className='d-flex'>
