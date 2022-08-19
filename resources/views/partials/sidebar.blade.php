@@ -48,6 +48,11 @@
             <i class="bi bi-truck me-2"></i><span>Kendaraan</span>
           </a>
         </li>
+        <li class="mb-3">
+          <a class="{{ Request::is('administrasi/reimbursement*') ? 'active' : '' }}" href="/administrasi/reimbursement">
+            <i class="bi bi-cash-coin me-2"></i><span>Reimbursement</span>
+          </a>
+        </li>
       </ul>
     @endcan
 
@@ -89,6 +94,11 @@
         <li class="mb-3">
           <a class="{{ Request::is('supervisor/jenis*') ? 'active' : '' }}" href="/supervisor/jenis">
             <i class="bi bi-person-check me-2"></i><span>Jenis Customer</span>
+          </a>
+        </li>
+        <li class="mb-3">
+          <a class="{{ Request::is('supervisor/cashaccount*') ? 'active' : '' }}" href="/supervisor/cashaccount">
+            <i class="bi bi-cash-coin me-2"></i><span>Cash Account</span>
           </a>
         </li>
       </ul>

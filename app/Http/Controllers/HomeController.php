@@ -199,7 +199,7 @@ class HomeController extends Controller
         })->where('id_customer','=',$customer->id)->with(['linkOrderTrack','linkInvoice','linkOrderItem.linkItem'])
         ->get();      
              
-        return view('customer/profil.detailpesanan',[
+        return view('customer.profil.detailpesanan',[
             'diajukans' => $diajukans,
             'dikonfirmasiAdministrasis' => $dikonfirmasiAdministrasi,
             'dalamPerjalanans' => $dalamPerjalanan,

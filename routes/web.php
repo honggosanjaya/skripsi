@@ -15,6 +15,7 @@ use App\Http\Controllers\VehicleController;
 use App\Http\Controllers\ReturController;
 use App\Http\Controllers\Controller;
 use App\Http\Controllers\Api\LoginController;
+use App\Http\Controllers\CashAccountController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -103,6 +104,13 @@ Route::prefix('supervisor')->middleware('supervisor')->group(function() {
 
   Route::get('/report/penjualan', [ReportController::class,'penjualan']);
   Route::get('/report/kinerja', [ReportController::class,'kinerja']);
+
+  Route::get('/cashaccount', [CashAccountController::class, 'cashAccountIndex']);
+  Route::get('/cashaccount/cari', [CashAccountController::class, 'cashAccountSearch']);
+  Route::get('/cashaccount/tambah', [CashAccountController::class, 'cashAccountCreate']);
+  Route::post('/cashaccount/tambah', [CashAccountController::class, 'cashAccountStore']);
+  Route::get('/cashaccount/ubah/{cashaccount:id}', [CashAccountController::class, 'cashAccountEdit']);
+  Route::put('/cashaccount/ubah/{cashaccount:id}', [CashAccountController::class, 'cashAccountUpdate']);
 });
 
 // =============== ADMINISTRASI ====================
@@ -136,7 +144,6 @@ Route::prefix('administrasi')->middleware('administrasi')->group(function() {
   Route::post('/kendaraan/tambahkendaraan', [VehicleController::class, 'store']);
   Route::get('/kendaraan/ubah/{vehicle:id}', [VehicleController::class, 'edit']);
   Route::put('/kendaraan/ubahkendaraan/{vehicle:id}', [VehicleController::class, 'update']);
-
 
   Route::prefix('stok')->group(function(){
     Route::get('/', [ItemController::class, 'indexAdministrasi']);
@@ -178,13 +185,11 @@ Route::prefix('administrasi')->middleware('administrasi')->group(function() {
 
   //Route untuk data customer
   Route::get('/datacustomer', [CustomerController::class, 'administrasiIndex']);
-  // Route::get('/datacustomer/cari', [CustomerController::class, 'administrasiSearch']);
   Route::get('/datacustomer/create', [CustomerController::class, 'administrasiCreate']);
   Route::post('/datacustomer/tambahcustomer', [CustomerController::class, 'administrasiStore']);
   Route::get('/datacustomer/ubah/{customer:id}', [CustomerController::class, 'administrasiEdit']);
   Route::put('/datacustomer/ubahcustomer/{customer:id}', [CustomerController::class, 'administrasiUpdate']);
   Route::get('/datacustomer/{customer:id}', [CustomerController::class, 'administrasiShow']);
-  // Route::post('/datacustomer/ubahstatus/{customer:id}', [CustomerController::class, 'administrasiEditStatusCustomer']);
 
   //Route untuk profil administrasi
   Route::get('/profil', [HomeController::class, 'lihatProfil']);
@@ -192,6 +197,15 @@ Route::prefix('administrasi')->middleware('administrasi')->group(function() {
   Route::post('/profil/check/{user:id_users}', [AuthController::class, 'check']);
   Route::get('/profil/ubahpasswordbaru/{user:id}', [AuthController::class, 'passwordBaru']);
   Route::post('/profil/gantipassword/{user:id}', [AuthController::class, 'gantiPassword']);
+
+  // Route untuk reimbursement
+  Route::get('/reimbursement', [CashAccountController::class, 'adminReimbursementIndex']);
+  Route::get('/reimbursement/pengajuan', [CashAccountController::class, 'adminReimbursementPengajuan']);
+  Route::get('/reimbursement/pembayaran', [CashAccountController::class, 'adminReimbursementPembayaran']);
+  Route::get('/reimbursement/pengajuan/{reimbursement:id}', [CashAccountController::class, 'adminReimbursementPengajuanDetail']);
+  Route::post('/reimbursement/pengajuan/setuju/{reimbursement:id}', [CashAccountController::class, 'setujuReimbursement']);
+  Route::post('/reimbursement/pengajuan/tolak/{reimbursement:id}', [CashAccountController::class, 'tolakReimbursement']);
+  Route::post('/reimbursement/pengajuan/dibayar/{reimbursement:id}', [CashAccountController::class, 'bayarReimbursement']);
 });
 
 

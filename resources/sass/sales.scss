@@ -704,7 +704,7 @@ ul.info-list {
     }
 }
 
-.info-shipping {
+.info-2column {
     span b {
         position: relative;
         display: inline-block;
@@ -759,4 +759,19 @@ ul.info-list {
         color: #fff;
         background-color: #575af5;
     }
+}
+
+.card_reimbursement {
+    box-shadow: rgba(0, 0, 0, 0.16) 0px 1px 4px;
+    padding: 1rem;
+    border-radius: 0.5rem;
+    margin-top: 1rem;
+}
+
+.img_reimbursement {
+    width: 100%;
+    object-fit: cover;
+    object-position: center;
+    display: block;
+    margin: 0 auto;
 }

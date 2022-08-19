@@ -11,6 +11,7 @@ use App\Models\OrderTrack;
 use App\Models\Order;
 use App\Models\Status;
 use App\Models\Retur;
+use App\Models\Reimbursement;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
@@ -74,5 +75,13 @@ class Staff extends Model
 
     public function linkReturPengonfirmasi(){
         return $this->hasMany(Retur::class,'id_staff_pengonfirmasi','id');
+    }
+
+    public function linkReimbursementPengaju(){
+      return $this->hasMany(Reimbursement::class,'id_staff_pengaju','id');
+    }
+
+    public function linkReimbursementPengonfirmasi(){
+        return $this->hasMany(Reimbursement::class,'id_staff_pengonfirmasi','id');
     }
 }

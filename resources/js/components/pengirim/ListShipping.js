@@ -17,7 +17,7 @@ const ListShipping = ({ listShipping, statusShipping, handleShow, keyword, setKe
       {listShipping.length > 0 && <div className='pengiriman_wrapper'>
         {listShipping.map((data, index) => (
           <div className={`list_pengiriman px-2 ${data.link_order_track.status != statusShipping ? ((statusShipping == 23 && data.link_order_track.status == 24) ? "d-block" : "d-none") : "d-block"}`} key={`jadwal${index}`}>
-            <div className='info-shipping'>
+            <div className='info-2column'>
               <span className='d-flex'>
                 <b>No. Invoice</b>
                 <div className='word_wrap'>{data.link_invoice.nomor_invoice}</div>

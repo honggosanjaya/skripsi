@@ -5,6 +5,7 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\CustomerController;
 use App\Http\Controllers\ItemController;
 use App\Http\Controllers\CartController;
+use App\Http\Controllers\CashAccountController;
 use App\Http\Controllers\EventController;
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\ReturController;
@@ -76,3 +77,9 @@ Route::get('/filterProduk', [ItemController::class, 'filterProdukApi']);
 Route::post('/customer/order/cart', [CartController::class, 'addToCart']);
 
 Route::get('/test/{id}', [Controller::class, 'test']);
+
+// Reimbursement
+Route::get('/cashAcountOption', [CashAccountController::class, 'cashAccountOptionAPI']);
+Route::post('/ajukanReimbursement', [CashAccountController::class, 'simpanReimbursementAPI']);
+Route::post('/ajukanReimbursement/foto/{id}', [CashAccountController::class, 'simpanReimbursementFotoAPI']);
+Route::get('/historyReimbursement/{id}', [CashAccountController::class, 'getHistoryReimbursementAPI']);
