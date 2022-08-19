@@ -28,6 +28,7 @@ import JadwalShipper from './pengirim/JadwalShipper';
 import ReturShipper from './pengirim/ReturShipper';
 import ReturContextProvider from '../contexts/ReturContext';
 import HistoryTrip from './sales/HistoryTrip';
+import Reimbursement from './sales/Reimbursement';
 
 
 function App() {
@@ -59,6 +60,7 @@ function App() {
                   <Route exact path="/salesman/order/:idCust" component={Pemesanan} />
                   <Route exact path="/salesman/keranjang/:idCust" component={KeranjangSales} />
                 </HitungStokContextProvider>
+                <Route exact path="/salesman/reimbursement" component={Reimbursement} />
                 <Route exact path="/salesman/profil" component={Profil} />
               </KeranjangSalesContextProvider>
             </Route>

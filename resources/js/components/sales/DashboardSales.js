@@ -124,6 +124,9 @@ const DashboardSales = () => {
             <button className='btn btn-success btn-lg w-100 mt-4' onClick={() => handleShowModal(true)}>
               <span className="iconify fs-4 me-2" data-icon="carbon:ibm-watson-orders"></span> Order
             </button>
+            <Link to="/salesman/reimbursement" className='btn btn-purple btn-lg w-100 mt-4'>
+              <span className="iconify fs-3 me-2" data-icon="mdi:cash-sync"></span> Reimbursement
+            </Link>
           </div>
 
           <Modal show={showModal} onHide={handleCloseModal} centered={true}>

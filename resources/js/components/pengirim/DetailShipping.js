@@ -13,7 +13,7 @@ const DetailShipping = ({ detailShipping, isLoading, show, handleClose, handlePe
             <Modal.Title>Detail Pengiriman</Modal.Title>
           </Modal.Header>
           <Modal.Body>
-            <div className='info-shipping'>
+            <div className='info-2column'>
               <span className='d-flex'>
                 <b>No. Invoice</b>
                 <p className='mb-0 word_wrap'>{detailShipping.link_invoice.nomor_invoice}</p>
@@ -32,7 +32,7 @@ const DetailShipping = ({ detailShipping, isLoading, show, handleClose, handlePe
               <span className='d-flex'>
                 <b>Alamat</b>
                 {detailShipping.link_customer.koordinat && <a target="_blank" href={`https://www.google.com/maps/search/?api=1&query=${detailShipping.link_customer.koordinat.replace("@", ",")}`}><p className='mb-0 word_wrap'>{detailShipping.link_customer.full_alamat}</p></a>}
-                {detailShipping.link_customer.koordinat==null && <p className='mb-0 word_wrap'>{detailShipping.link_customer.full_alamat}</p>}
+                {detailShipping.link_customer.koordinat == null && <p className='mb-0 word_wrap'>{detailShipping.link_customer.full_alamat}</p>}
               </span>
 
               <span className='d-flex'>

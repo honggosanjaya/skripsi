@@ -10,6 +10,7 @@ use App\Models\Retur;
 use App\Models\Order;
 use App\Models\Event;
 use App\Models\OrderTrack;
+use App\Models\Reimbursement;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
@@ -52,4 +53,8 @@ class Status extends Model
     public function linkOrderTrack(){
         return $this->hasMany(OrderTrack::class,'status','id');
     }
+
+    public function linkReimbursement(){
+      return $this->hasMany(Reimbursement::class,'status','id');
+  }
 }
