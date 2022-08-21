@@ -15,7 +15,7 @@ use App\Models\Invoice;
 use App\Models\Vehicle;
 use App\Models\Status;
 use App\Models\History;
-
+use Illuminate\Support\Facades\DB;
 use PDF;
 use Illuminate\Support\Facades\Validator;
 
@@ -316,46 +316,151 @@ class OrderController extends Controller
 
   public function viewDetail(Order $order){
     $items = OrderItem::where('id_order','=',$order->id)->get();
+    $inactiveVehicles = Vehicle::where('is_active',false)->get();
+    $activeVehicles = Vehicle::where('is_active',true)->get();
     
     return view('administrasi.pesanan.detailpesanan',[
       'order' => $order,
-      'items' => $items
+      'items' => $items,
+      'inactiveVehicles' => $inactiveVehicles,
+      'activeVehicles' => $activeVehicles
     ]);
   }
 
   public function viewKapasitas(Order $order){
     $kendaraans = Vehicle::get();
-    $invoice = Invoice::where('id_order','=',$order->id)->first();
-    $tempVolume = array();
-    $tempPersentaseVolume = array();
-    $tempPersentaseHarga = array();
-    $orderItemDatas = $order->linkOrderItem;
-    $itemData = '';
-    $volume = 0;
-    $totalVolume = 0;
-                      
-    for($i=0; $i<$orderItemDatas->count(); $i++){
+    $tempDataOrders = array();
+    $tempDataIdOrders = array();
+
+    function getPersentaseVolume($vehicleId, $orderId){
+      // get persentase volume kendaraan thdp seuatu order
+      $kendaraan = Vehicle::where('id', $vehicleId)->first();
+      $tempVolume = array();
+      $order = Order::where('id', $orderId)->first();
+      $orderItemDatas = $order->linkOrderItem;
+      $itemData = '';
+      $volume = 0;
+      $totalVolume = 0;
+                        
+      for($i=0; $i<$orderItemDatas->count(); $i++){
         $itemData = Item::where('id','=',$orderItemDatas[$i]->id_item)->first();
         $volume = $itemData->volume * $orderItemDatas[$i]->kuantitas;
         array_push($tempVolume, $volume);
-    }   
+      }   
 
-    $totalVolume = array_sum($tempVolume);
+      $totalVolume = array_sum($tempVolume);
 
-    for($j=0; $j<$kendaraans->count();$j++){
-      array_push($tempPersentaseVolume, 
-      [$kendaraans[$j]->nama,$kendaraans[$j]->kode_kendaraan,(($totalVolume/$kendaraans[$j]->kapasitas_volume)*100)]);
-      
-      array_push($tempPersentaseHarga, 
-      [$kendaraans[$j]->nama,$kendaraans[$j]->kode_kendaraan,(($invoice->harga_total/$kendaraans[$j]->kapasitas_harga)*100)]);
+      return ($totalVolume/$kendaraan->kapasitas_volume)*100;
     }
-    
+
+    function getPersentaseHarga($vehicleId, $orderId){
+      // get persentase harga kendaraan thdp seuatu order
+      $kendaraan = Vehicle::where('id', $vehicleId)->first();
+      $invoice = Invoice::where('id_order',$orderId)->first();
+                 
+      return ($invoice->harga_total/$kendaraan->kapasitas_harga)*100;
+    }
+
+     // get all order yang menggunakan kendaraan tertentu
+    foreach($kendaraans as $kendaraan){
+      $dataOrder = Order::whereHas('linkOrderTrack', function($q) use($kendaraan){
+        $q->where([
+          ['id_vehicle', '=', $kendaraan->id],
+          ['status', '>', 20],
+          ['status', '<', 23],
+        ]);
+      })->pluck('id');
+      array_push($tempDataOrders, $dataOrder);
+    }
+
+    // dd($tempDataOrders);
+
+    for($i=0; $i<$kendaraans->count(); $i++){
+      if(sizeof($tempDataOrders[$i]) != 0){
+        // jika ada pesanan yang di assign ke kendaraan
+        for($j=0; $j<sizeof($tempDataOrders[$i]); $j++){
+          $persentaseVolume = getPersentaseVolume($kendaraans[$i]->id, $tempDataOrders[$i][$j]);
+          $persentaseHarga = getPersentaseHarga($kendaraans[$i]->id, $tempDataOrders[$i][$j]);
+
+          if($j % 5 == 0){
+            $color = 'primary';
+          }else if($j % 5 == 1){
+            $color = 'success';
+          }else if($j % 5 == 2){
+            $color = 'info';
+          }else if($j % 5 == 3){
+            $color = 'warning';
+          }else{
+            $color = 'danger';
+          }
+
+          array_push($tempDataIdOrders,[
+            'id_vehicle' => $kendaraans[$i]->id,
+            'nama_vehicle' => $kendaraans[$i]->nama,
+            'kode_vehicle' => $kendaraans[$i]->kode_kendaraan,
+            'id_order' => $tempDataOrders[$i][$j],
+            'color' => $color,
+            'persentase_volume' =>  $persentaseVolume,
+            'persentase_harga' => $persentaseHarga,
+            'total_persentase_volume' => $persentaseVolume,
+            'total_persentase_harga' => $persentaseHarga
+          ]);
+        }
+      }else{
+        // jika tidak ada pesanan yang di assign ke kendaraan
+        array_push($tempDataIdOrders,[
+          'id_vehicle' => $kendaraans[$i]->id,
+          'nama_vehicle' => $kendaraans[$i]->nama,
+          'kode_vehicle' => $kendaraans[$i]->kode_kendaraan,
+          'id_order' => null,
+          'color' => null,
+          'persentase_volume' =>  0,
+          'persentase_harga' => 0,
+          'total_persentase_volume' => 0,
+          'total_persentase_harga' => 0
+        ]);
+      }
+    }
+
+    // dd($tempDataIdOrders);
+
+    $sameVehicle = array();
+    foreach ($tempDataIdOrders as $item) {
+      $key = $item['id_vehicle'];
+      if (!array_key_exists($key, $sameVehicle)) {
+        // jika tidak ada yang sama
+        $sameVehicle[$key] = array(
+          'id_vehicle' => $item['id_vehicle'],
+          'nama_vehicle' => $item['nama_vehicle'],
+          'kode_vehicle' => $item['kode_vehicle'],
+          'id_order' => $item['id_order'],
+          'color' => $item['color'],
+          'persentase_volume' => $item['persentase_volume'],
+          'persentase_harga' => $item['persentase_harga'],
+          'total_persentase_volume' => $item['total_persentase_volume'],
+          'total_persentase_harga' => $item['total_persentase_harga'],
+        );
+      } else {
+        // jika ada yang sama
+        $sameVehicle[$key]['color'] = $sameVehicle[$key]['color'] . '+' . $item['color'];
+        $sameVehicle[$key]['id_order'] = $sameVehicle[$key]['id_order'] . '+' . $item['id_order'];
+        $sameVehicle[$key]['persentase_volume'] = $sameVehicle[$key]['persentase_volume'] . '+' . $item['persentase_volume'];
+        $sameVehicle[$key]['persentase_harga'] = $sameVehicle[$key]['persentase_harga'] . '+' . $item['persentase_harga'];
+        $sameVehicle[$key]['total_persentase_volume'] = $sameVehicle[$key]['total_persentase_volume'] + $item['total_persentase_volume'];
+        $sameVehicle[$key]['total_persentase_harga'] = $sameVehicle[$key]['total_persentase_harga'] + $item['total_persentase_harga'];
+      }
+    }
+
+    // dd($sameVehicle);
+
+    $selectedVehicle = OrderTrack::where('id_order', $order->id)->first()->id_vehicle;
+
     return view('administrasi.pesanan.kapasitaskendaraan',[
         'order' => $order,
-        'persentaseVolumes' => $tempPersentaseVolume,
-        'persentaseHargas' => $tempPersentaseHarga
+        'datas' => $sameVehicle,
+        'selectedVehicle' => $selectedVehicle
     ]);
-}
+  }
 
   public function cetakInvoice(Order $order){
     $items = OrderItem::where('id_order','=',$order->id)->get();
@@ -496,7 +601,7 @@ class OrderController extends Controller
     ]);
   }
 
-  public function setujuPesanan(Order $order){
+  public function setujuPesanan(Order $order, Request $request){
     $order = Order::find($order->id);
     $totalHarga = 0;
     $orderItems = OrderItem::where('id_order', $order->id)->get();
@@ -517,20 +622,11 @@ class OrderController extends Controller
     }
 
     if(sizeof($itemYangKurang) > 0){
-      // for($i=0; $i<sizeof($itemYangKurang);$i++){
-      //   echo $itemYangKurang[$i].', ';
-      // }
       return redirect('/administrasi/pesanan/detail/'.$order->id) 
       -> with('pesanError', 'Tidak dapat menyetujui pesanan jumlah stok kurang');
     }
 
     if($i == $jumlahItem){
-      // if($order->status == 15){
-      //   $order->update([
-      //     'status' => 14,
-      //   ]);
-      // }
-
       foreach($orderItems as $orderItem){
         $item = Item::find($orderItem->id_item);
         $totalHarga = $totalHarga + ($orderItem->kuantitas * $orderItem->harga_satuan);
@@ -562,12 +658,15 @@ class OrderController extends Controller
         'status' => 14
       ]);
 
-      OrderTrack::where('id_order', $order->id)->update([
-        'id_staff_pengonfirmasi' => auth()->user()->id_users,
-        'status' => 21,
-        'waktu_dikonfirmasi' => now()
-      ]);
-      
+      $rules = [
+        'id_vehicle' => ['required']
+      ];
+      $validatedData = $request->validate($rules);
+      $validatedData['id_staff_pengonfirmasi'] = auth()->user()->id_users;
+      $validatedData['status'] = 21;
+      $validatedData['waktu_dikonfirmasi'] = now();
+      OrderTrack::where('id_order', $order->id)->update($validatedData); 
+
       return redirect('/administrasi/pesanan/detail/'.$order->id) -> with('addPesananSuccess', 'Berhasil menyetujui pesanan');
     } 
   }
@@ -588,21 +687,29 @@ class OrderController extends Controller
     $orderItems = OrderItem::where('id_order', $order->id)->get();
     $stafs = Staff::where('status', 8)->where('role', 4)->get();
 
-    $kapasitas_harga = 0;
-    $kapasitas_volume = 0;
-    foreach($orderItems as $orderItem){
-      $item = Item::where('id', $orderItem->id_item)->first();
-      $kapasitas_harga += $orderItem->harga_satuan * $orderItem->kuantitas;
-      $kapasitas_volume += $item->volume * $orderItem->kuantitas;
-    };
+    // $kapasitas_harga = 0;
+    // $kapasitas_volume = 0;
+    // foreach($orderItems as $orderItem){
+    //   $item = Item::where('id', $orderItem->id_item)->first();
+    //   $kapasitas_harga += $orderItem->harga_satuan * $orderItem->kuantitas;
+    //   $kapasitas_volume += $item->volume * $orderItem->kuantitas;
+    // };
 
-    $vehicles = Vehicle::where('kapasitas_volume', '>=', $kapasitas_volume)
-                ->orWhere('kapasitas_harga', '>=', $kapasitas_harga)->get();
+    // $vehicleLoads = Vehicle::where('kapasitas_volume', '>=', $kapasitas_volume)
+    //             ->orWhere('kapasitas_harga', '>=', $kapasitas_harga)->get();
+
+    // $vehicles = $vehicleLoads->where('is_active',true);
+
+    $activeVehicles = Vehicle::where('is_active',true)->get();
+    $inactiveVehicles = Vehicle::where('is_active',false)->get();
+    $selectedVehicle = OrderTrack::where('id_order', $order->id)->first()->id_vehicle;
 
     return view('administrasi.pesanan.pengiriman.keberangkatan',[
       'order' => $order,
       'stafs' => $stafs,
-      'vehicles' => $vehicles
+      'activeVehicles' => $activeVehicles,
+      'inactiveVehicles' => $inactiveVehicles,
+      'selectedVehicle' => $selectedVehicle
     ]);
   }
 
@@ -616,6 +723,11 @@ class OrderController extends Controller
       $validatedData['status'] = 22;
       $validatedData['waktu_berangkat'] = now();
       OrderTrack::where('id_order', $order->id)->update($validatedData);        
+
+      Vehicle::where('id', $request->id_vehicle)->update([
+        'is_active' => false
+      ]);
+
       return redirect('/administrasi/pesanan/detail/'.$order->id) -> with('addPesananSuccess', 'Berhasil mengonfirmasi keberangkatan pengiriman untuk '.$order->linkCustomer->nama);
     }
 
@@ -631,6 +743,25 @@ class OrderController extends Controller
       $validatedData['status'] = 23;
       $validatedData['waktu_sampai'] = now();
       OrderTrack::where('id_order', $order->id)->update($validatedData);
+
+      $ordertracks = OrderTrack::all();
+      $vehicleInRoads = array();
+
+      foreach($ordertracks as $ordertrack){
+        if($ordertrack->status == 22){
+          array_push($vehicleInRoads, [
+            'id_vehicle' => $ordertrack->id_vehicle
+          ]);
+        }
+      }
+
+      DB::table('vehicles')->update(['is_active' => true]);
+
+      foreach ($vehicleInRoads as $vehicle) {
+        Vehicle::where('id', $vehicle['id_vehicle'])->update([
+          'is_active' => false
+        ]);
+      }
 
       return response()->json([
         'status' => 'success',

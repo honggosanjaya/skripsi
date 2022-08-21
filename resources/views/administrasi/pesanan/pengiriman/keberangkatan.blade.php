@@ -53,16 +53,30 @@
           <div class="col">
             <div class="mb-3">
               <label for="id_vehicle" class="form-label">Nama Kendaraan</label>
-              <select class="form-select" name="id_vehicle">
-                @foreach ($vehicles as $vehicle)
-                  <option value="{{ $vehicle->id }}">{{ $vehicle->nama }}</option>
+              <select class="form-select select_vehicle" name="id_vehicle" readonly>
+
+                @foreach ($activeVehicles as $vehicle)
+                  @if ($selectedVehicle == $vehicle->id)
+                    <option value="{{ $vehicle->id }}" selected>{{ $vehicle->nama }}</option>
+                  @else
+                    <option value="{{ $vehicle->id }}">{{ $vehicle->nama }}</option>
+                  @endif
                 @endforeach
+                @foreach ($inactiveVehicles as $vehicle)
+                  @if ($selectedVehicle == $vehicle->id)
+                    <option value="{{ $vehicle->id }}" selected>{{ $vehicle->nama }}</option>
+                  @else
+                    <option value="{{ $vehicle->id }}" disabled>{{ $vehicle->nama }}</option>
+                  @endif
+                @endforeach
+
               </select>
             </div>
           </div>
         </div>
         <div class="row justify-content-end mt-4">
           <div class="col-3 d-flex justify-content-end">
+            <button type="button" class="btn btn-warning me-2 btn_ubah_kendaraan">Ubah Kendaraan</button>
             <button type="submit" class="btn btn-primary btn_konfirmasikeberangkatan">Pesanan Dikirim</button>
           </div>
         </div>
@@ -78,4 +92,13 @@
       </form>
     @endif
   </div>
+
+  <script>
+    const btn_ubah_kendaraan = document.querySelector('.btn_ubah_kendaraan');
+    const select_vehicle = document.querySelector('.select_vehicle');
+    btn_ubah_kendaraan.addEventListener("click", () => {
+      select_vehicle.removeAttribute("readonly");
+      btn_ubah_kendaraan.classList.add('d-none');
+    })
+  </script>
 @endsection

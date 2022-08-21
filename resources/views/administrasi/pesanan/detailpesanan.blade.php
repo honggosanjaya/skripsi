@@ -219,22 +219,42 @@
         @endif
 
         @if ($order->linkOrderTrack->status == 20)
-          <div class="float-end">
-            <form action="/administrasi/pesanan/setuju/{{ $order->id }}" method="POST" class="d-inline"
-              id="terimapesanan">
-              @csrf
-              <button type="submit" class="btn btn-sm btn-success btn_terimaPesanan me-4">
-                <span class="iconify fs-3 me-1" data-icon="akar-icons:double-check"></span>Setuju
-              </button>
-            </form>
+          <div class="row justify-content-end mt-5">
+            <div class="col-12">
 
-            <form action="/administrasi/pesanan/tolak/{{ $order->id }}" method="POST" id="tolakpesanan"
-              class="d-inline">
-              @csrf
-              <button type="submit" class="btn btn-sm btn-danger btn_tolakPesanan">
-                <span class="iconify fs-3 me-1" data-icon="akar-icons:circle-x"></span>Tolak
-              </button>
-            </form>
+              <form action="/administrasi/pesanan/setuju/{{ $order->id }}" method="POST" class="d-inline"
+                id="terimapesanan">
+                @csrf
+                <div class="row">
+                  <div class="col">
+                    <div class="mb-3">
+                      <label for="id_vehicle" class="form-label">Pilih Kendaraan</label>
+                      <select class="form-select" name="id_vehicle">
+                        @foreach ($activeVehicles as $vehicle)
+                          <option value="{{ $vehicle->id }}">{{ $vehicle->nama }}</option>
+                        @endforeach
+
+                        @foreach ($inactiveVehicles as $vehicle)
+                          <option value="{{ $vehicle->id }}" disabled>{{ $vehicle->nama }}</option>
+                        @endforeach
+                      </select>
+                    </div>
+                  </div>
+                </div>
+                <button type="submit" class="btn btn-sm btn-success btn_terimaPesanan me-4">
+                  <span class="iconify fs-3 me-1" data-icon="akar-icons:double-check"></span>Setuju
+                </button>
+              </form>
+
+              <form action="/administrasi/pesanan/tolak/{{ $order->id }}" method="POST" id="tolakpesanan"
+                class="d-inline">
+                @csrf
+                <button type="submit" class="btn btn-sm btn-danger btn_tolakPesanan">
+                  <span class="iconify fs-3 me-1" data-icon="akar-icons:circle-x"></span>Tolak
+                </button>
+              </form>
+
+            </div>
           </div>
         @elseif($order->linkOrderTrack->status == 21)
           <div class="float-end">

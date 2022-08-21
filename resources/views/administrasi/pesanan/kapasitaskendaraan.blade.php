@@ -4,17 +4,79 @@
   <link href=" {{ mix('css/administrasi.css') }}" rel="stylesheet">
 @endpush
 @section('breadcrumbs')
-<ol class="breadcrumb">
-  <li class="breadcrumb-item"><a href="/administrasi">Dashboard</a></li>
-  <li class="breadcrumb-item" aria-current="page"><a href="/administrasi/pesanan">Pesanan</a></li>
-  <li class="breadcrumb-item" aria-current="page"><a href="/administrasi/pesanan/detail/{{ $order->id }}">Detail Pesanan</a></li>
-  <li class="breadcrumb-item active" aria-current="page">Kapasitas Kendaraan</li>
-</ol>
+  <ol class="breadcrumb">
+    <li class="breadcrumb-item"><a href="/administrasi">Dashboard</a></li>
+    <li class="breadcrumb-item" aria-current="page"><a href="/administrasi/pesanan">Pesanan</a></li>
+    <li class="breadcrumb-item" aria-current="page"><a href="/administrasi/pesanan/detail/{{ $order->id }}">Detail
+        Pesanan</a></li>
+    <li class="breadcrumb-item active" aria-current="page">Kapasitas Kendaraan</li>
+  </ol>
 @endsection
 
 @section('main_content')
   <div class="px-5 pt-4">
-    <div class="row mt-3">
+    <h3 class="mt-3 fs-5 fw-bold">Persentase Volume setiap Kendaraan</h3>
+    @foreach ($datas as $data)
+      @if ($selectedVehicle == $data['id_vehicle'])
+        <h4 class="mt-4 fs-6 fw-bold">
+          Kendaraan : <span class="fw-normal">{{ $data['nama_vehicle'] }}</span>
+          <span class="badge bg-danger ms-4">Dipilih</span>
+        </h4>
+      @else
+        <h4 class="mt-4 fs-6 fw-bold">Kendaraan : <span class="fw-normal">{{ $data['nama_vehicle'] }}</span></h4>
+      @endif
+      <h4 class="fs-6 fw-bold">Plat Nomor : <span class="fw-normal text-uppercase">{{ $data['kode_vehicle'] }}</span></h4>
+      <h6>Persentase : <span class="fw-normal">{{ number_format($data['total_persentase_volume'], 2, ',', '.') }} %</span>
+      </h6>
+
+      @php
+        $eachPersentases = explode('+', $data['persentase_volume']);
+        $eachColors = explode('+', $data['color']);
+        $eachOrders = explode('+', $data['id_order']);
+      @endphp
+
+      <div class="progress">
+        @for ($i = 0; $i < sizeof($eachPersentases); $i++)
+          <div class="progress-bar bg-{{ $eachColors[$i] }}" role="progressbar" style="width: {{ $eachPersentases[$i] }}%"
+            aria-valuenow="{{ $eachPersentases[$i] }}" aria-valuemin="0" aria-valuemax="100">{{ $eachOrders[$i] }}</div>
+        @endfor
+      </div>
+    @endforeach
+
+    <hr class="my-5">
+
+    <h3 class="mt-3 fs-5 fw-bold">Persentase Harga setiap Kendaraan</h3>
+    @foreach ($datas as $data)
+      @if ($selectedVehicle == $data['id_vehicle'])
+        <h4 class="mt-4 fs-6 fw-bold">
+          Kendaraan : <span class="fw-normal">{{ $data['nama_vehicle'] }}</span>
+          <span class="badge bg-danger ms-4">Dipilih</span>
+        </h4>
+      @else
+        <h4 class="mt-4 fs-6 fw-bold">Kendaraan : <span class="fw-normal">{{ $data['nama_vehicle'] }}</span></h4>
+      @endif
+      <h4 class="fs-6 fw-bold">Plat Nomor : <span class="fw-normal text-uppercase">{{ $data['kode_vehicle'] }}</span>
+      </h4>
+      <h6>Persentase : <span class="fw-normal">{{ number_format($data['total_persentase_harga'], 2, ',', '.') }}
+          %</span>
+      </h6>
+
+      @php
+        $eachPersentases = explode('+', $data['persentase_harga']);
+        $eachColors = explode('+', $data['color']);
+        $eachOrders = explode('+', $data['id_order']);
+      @endphp
+
+      <div class="progress">
+        @for ($i = 0; $i < sizeof($eachPersentases); $i++)
+          <div class="progress-bar bg-{{ $eachColors[$i] }}" role="progressbar"
+            style="width: {{ $eachPersentases[$i] }}%" aria-valuenow="{{ $eachPersentases[$i] }}" aria-valuemin="0"
+            aria-valuemax="100">{{ $eachOrders[$i] }}</div>
+        @endfor
+      </div>
+    @endforeach
+
+    {{-- <div class="row mt-3">
       <ul class="nav nav-tabs" id="myTab" role="tablist">
         <li class="nav-item" role="presentation">
           <a class="nav-link active" id="volume-tab" href="#volume" data-bs-toggle="tab" data-bs-target="#volume"
@@ -29,21 +91,25 @@
       <div class="tab-content clearfix">
         <div class="tab-pane fade show active" id="volume" role="tabpanel" aria-labelledby="volume-tab">
           <h3 class="mt-3 fs-5 fw-bold">Persentase Volume setiap Kendaraan</h3>
-          @foreach ($persentaseVolumes as $persentaseVolume)
-            <h4 class="mt-4 fs-6 fw-bold">Kendaraan : <span class="fw-normal">{{ $persentaseVolume[0] }}</span></h4>
-            <h4 class="fs-6 fw-bold">Plat Nomor : <span class="fw-normal">{{ $persentaseVolume[1] }}</span></h4>
-            <h6>Persentase : <span class="fw-normal">{{ number_format($persentaseVolume[2], 2, ',', '.') }} %</span>
+          @foreach ($datas as $data)
+            <h4 class="mt-4 fs-6 fw-bold">Kendaraan : <span class="fw-normal">{{ $data['nama_vehicle'] }}</span></h4>
+            <h4 class="fs-6 fw-bold">Plat Nomor : <span
+                class="fw-normal text-uppercase">{{ $data['kode_vehicle'] }}</span></h4>
+            <h6>Persentase : <span class="fw-normal">{{ number_format($data['total_persentase_volume'], 2, ',', '.') }}
+                %</span>
             </h6>
             <div class="progress">
-              @if ($persentaseVolume[2] >= 50 && $persentaseVolume[2] < 75)
-                <div class="progress-bar bg-warning" role="progressbar" style="width: {{ $persentaseVolume[2] }}%"
-                  aria-valuenow="{{ $persentaseVolume[2] }}" aria-valuemin="0" aria-valuemax="100"></div>
-              @elseif($persentaseVolume[2] >= 75)
-                <div class="progress-bar bg-danger" role="progressbar" style="width: {{ $persentaseVolume[2] }}%"
-                  aria-valuenow="{{ $persentaseVolume[2] }}" aria-valuemin="0" aria-valuemax="100"></div>
+              @if ($data['total_persentase_volume'] >= 50 && $data['total_persentase_volume'] < 75)
+                <div class="progress-bar bg-warning" role="progressbar"
+                  style="width: {{ $data['total_persentase_volume'] }}%" aria-valuenow="{{ $data['total_persentase_volume'] }}"
+                  aria-valuemin="0" aria-valuemax="100"></div>
+              @elseif($data['total_persentase_volume'] >= 75)
+                <div class="progress-bar bg-danger" role="progressbar"
+                  style="width: {{ $data['total_persentase_volume'] }}%" aria-valuenow="{{ $data['total_persentase_volume'] }}"
+                  aria-valuemin="0" aria-valuemax="100"></div>
               @else
-                <div class="progress-bar" role="progressbar" style="width: {{ $persentaseVolume[2] }}%"
-                  aria-valuenow="{{ $persentaseVolume[2] }}" aria-valuemin="0" aria-valuemax="100"></div>
+                <div class="progress-bar" role="progressbar" style="width: {{ $data['total_persentase_volume'] }}%"
+                  aria-valuenow="{{ $data['total_persentase_volume'] }}" aria-valuemin="0" aria-valuemax="100"></div>
               @endif
             </div>
           @endforeach
@@ -51,26 +117,29 @@
 
         <div class="tab-pane" id="harga" role="tabpanel" aria-labelledby="harga-tab">
           <h3 class="mt-3 fs-5 fw-bold">Persentase Harga setiap Kendaraan</h3>
-          @foreach ($persentaseHargas as $persentaseHarga)
-            <h4 class="mt-4 fs-6 fw-bold">Kendaraan : <span class="fw-normal">{{ $persentaseHarga[0] }}</span></h4>
-            <h4 class="fs-6 fw-bold">Plat Nomor : <span class="fw-normal">{{ $persentaseHarga[1] }}</span></h4>
-            <h6>Persentase : <span class="fw-normal">{{ number_format($persentaseHarga[2], 2, ',', '.') }} %</span>
+          @foreach ($datas as $data)
+            <h4 class="mt-4 fs-6 fw-bold">Kendaraan : <span class="fw-normal">{{ $data['nama_vehicle'] }}</span></h4>
+            <h4 class="fs-6 fw-bold">Plat Nomor : <span
+                class="fw-normal text-uppercase">{{ $data['kode_vehicle'] }}</span></h4>
+            <h6>Persentase : <span class="fw-normal">{{ number_format($data['total_persentase_harga'], 2, ',', '.') }}
+                %</span>
             </h6>
             <div class="progress">
-              @if ($persentaseHarga[2] >= 50 && $persentaseHarga[2] < 75)
-                <div class="progress-bar bg-warning" role="progressbar" style="width: {{ $persentaseHarga[2] }}%"
-                  aria-valuenow="{{ $persentaseHarga[2] }}" aria-valuemin="0" aria-valuemax="100"></div>
-              @elseif($persentaseHarga[2] >= 75)
-                <div class="progress-bar bg-danger" role="progressbar" style="width: {{ $persentaseHarga[2] }}%"
-                  aria-valuenow="{{ $persentaseHarga[2] }}" aria-valuemin="0" aria-valuemax="100"></div>
+              @if ($data['total_persentase_harga'] >= 50 && $data['total_persentase_harga'] < 75)
+                <div class="progress-bar bg-warning" role="progressbar"
+                  style="width: {{ $data['total_persentase_harga'] }}%" aria-valuenow="{{ $data['total_persentase_harga'] }}"
+                  aria-valuemin="0" aria-valuemax="100"></div>
+              @elseif($data['total_persentase_harga'] >= 75)
+                <div class="progress-bar bg-danger" role="progressbar" style="width: {{ $data['total_persentase_harga'] }}%"
+                  aria-valuenow="{{ $data['total_persentase_harga'] }}" aria-valuemin="0" aria-valuemax="100"></div>
               @else
-                <div class="progress-bar" role="progressbar" style="width: {{ $persentaseHarga[2] }}%"
-                  aria-valuenow="{{ $persentaseHarga[2] }}" aria-valuemin="0" aria-valuemax="100"></div>
+                <div class="progress-bar" role="progressbar" style="width: {{ $data['total_persentase_harga'] }}%"
+                  aria-valuenow="{{ $data['total_persentase_harga'] }}" aria-valuemin="0" aria-valuemax="100"></div>
               @endif
             </div>
           @endforeach
         </div>
       </div>
-    </div>
+    </div> --}}
   </div>
 @endsection

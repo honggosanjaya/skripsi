@@ -213,3 +213,8 @@
 .badge-30 {
     background-color: #c21a1a;
 }
+
+select[readonly] {
+    pointer-events: none;
+    background-color: lightgray;
+}

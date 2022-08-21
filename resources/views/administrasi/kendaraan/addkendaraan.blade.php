@@ -77,6 +77,21 @@
         </div>
       </div>
 
+      <div class="row">
+        <div class="col">
+          <div class="mb-3">
+            <label for="tanggal_pajak" class="form-label">Masa Pajak</label>
+            <input type="date" class="form-control @error('tanggal_pajak') is-invalid @enderror" id="tanggal_pajak"
+              name="tanggal_pajak" value="{{ old('tanggal_pajak') }}">
+            @error('tanggal_pajak')
+              <div class="invalid-feedback">
+                {{ $message }}
+              </div>
+            @enderror
+          </div>
+        </div>
+      </div>
+
       <div class="row justify-content-end mt-4">
         <div class="col-3 d-flex justify-content-end">
           <button type="submit" class="simpan_btn btn btn-primary"><span class="iconify fs-4 me-1"
