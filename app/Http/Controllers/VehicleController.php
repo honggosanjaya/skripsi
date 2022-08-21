@@ -9,7 +9,7 @@ class VehicleController extends Controller
 {
     public function index(){
         $vehicles = Vehicle::paginate(10);
-        return view ('administrasi/kendaraan.index',[
+        return view ('administrasi.kendaraan.index',[
             'vehicles' => $vehicles
         ]);
     }
@@ -25,7 +25,7 @@ class VehicleController extends Controller
     }
 
     public function create(){
-        return view('administrasi/kendaraan.addkendaraan');
+        return view('administrasi.kendaraan.addkendaraan');
     }
 
     public function store(Request $request){
@@ -33,7 +33,8 @@ class VehicleController extends Controller
             'nama_kendaraan' => 'required|max:255',
             'plat_kendaraan' => 'required|max:20',
             'kapasitas_harga' => 'required|numeric',
-            'kapasitas_volume' => 'required|numeric'
+            'kapasitas_volume' => 'required|numeric',
+            'tanggal_pajak' => 'nullable|date'
         ]);
 
         $searchPlats = Vehicle::where('kode_kendaraan',$request->plat_kendaraan)->get();
@@ -45,7 +46,8 @@ class VehicleController extends Controller
             'nama' => $request->nama_kendaraan,
             'kode_kendaraan' => $request->plat_kendaraan,
             'kapasitas_harga' => $request->kapasitas_harga,
-            'kapasitas_volume' => $request->kapasitas_volume
+            'kapasitas_volume' => $request->kapasitas_volume,
+            'tanggal_pajak' => $request->tanggal_pajak
         ]); 
 
         return redirect('/administrasi/kendaraan')->with('addKendaraanSuccess','Tambah Kendaraan berhasil');
@@ -62,7 +64,8 @@ class VehicleController extends Controller
             'nama_kendaraan' => 'required|max:255',
             'plat_kendaraan' => 'required|max:20',
             'kapasitas_harga' => 'required|numeric',
-            'kapasitas_volume' => 'required|numeric'                  
+            'kapasitas_volume' => 'required|numeric',
+            'tanggal_pajak' => 'nullable|date'                  
         ]);
 
         $searchPlats = Vehicle::get();
@@ -76,7 +79,7 @@ class VehicleController extends Controller
         $vehicle->kode_kendaraan = $request->plat_kendaraan;
         $vehicle->kapasitas_volume = $request->kapasitas_volume;
         $vehicle->kapasitas_harga = $request->kapasitas_harga;
-        
+        $vehicle->tanggal_pajak = $request->tanggal_pajak;
         $vehicle->save();
         
         return redirect('/administrasi/kendaraan')->with('updateKendaraanSuccess','Update Kendaraan Berhasil');
