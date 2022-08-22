@@ -11,6 +11,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Validation\Rules;
+use Intervention\Image\ImageManagerStatic as Image;
 
 class StaffController extends Controller
 {
@@ -80,7 +81,9 @@ class StaffController extends Controller
         $nama_staff = str_replace(" ", "-", $validatedData['nama']);
         $file= $request->file('foto_profil');
         $file_name = 'STF-'. $nama_staff.'-' .date_format(now(),"YmdHis").'.'.  $file->getClientOriginalExtension();
-        $request->foto_profil->move(public_path('storage/staff'), $file_name);
+        Image::make($request->file('foto_profil'))->resize(350, null, function ($constraint) {
+          $constraint->aspectRatio();
+        })->save(public_path('storage/staff/') . $file_name);
         $validatedData['foto_profil'] = $file_name;
       }    
 
@@ -152,7 +155,9 @@ class StaffController extends Controller
         $nama_staff = str_replace(" ", "-", $validatedData['nama']);
         $file= $request->file('foto_profil');
         $file_name = 'STF-'. $nama_staff.'-' .date_format(now(),"YmdHis").'.'.  $file->getClientOriginalExtension();
-        $request->foto_profil->move(public_path('storage/staff'), $file_name);
+        Image::make($request->file('foto_profil'))->resize(350, null, function ($constraint) {
+          $constraint->aspectRatio();
+        })->save(public_path('storage/staff/') . $file_name);
         $validatedData['foto_profil'] = $file_name;
       }    
       

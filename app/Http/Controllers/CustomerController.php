@@ -14,6 +14,7 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\File;
+use Intervention\Image\ImageManagerStatic as Image;
 
 class CustomerController extends Controller
 {
@@ -194,7 +195,9 @@ class CustomerController extends Controller
 
         $nama_customer = str_replace(" ", "-", $customer->nama);
         $file_name = 'CUST-' . $nama_customer . '-' .date_format(now(),"YmdHis"). '.' . $request->foto->extension();
-        $request->foto->move(public_path('storage/customer'), $file_name);
+        Image::make($request->file('foto'))->resize(350, null, function ($constraint) {
+          $constraint->aspectRatio();
+        })->save(public_path('storage/customer/') . $file_name);
         $customer->foto = $file_name;
       }
           
@@ -286,7 +289,9 @@ class CustomerController extends Controller
 
       if ($request->foto) {
         $file_name = 'CUST-' . $request->nama . '-' .date_format(now(),"YmdHis"). '.' . $request->foto->extension();
-        $request->foto->move(public_path('storage/customer'), $file_name);
+        Image::make($request->file('foto'))->resize(350, null, function ($constraint) {
+          $constraint->aspectRatio();
+        })->save(public_path('storage/customer/') . $file_name);
         $validatedData['foto'] = $file_name;
       }    
 
@@ -379,7 +384,9 @@ class CustomerController extends Controller
 
       if ($request->foto) {
         $file_name = 'CUST-' . $request->nama . '-' .date_format(now(),"YmdHis"). '.' . $request->foto->extension();
-        $request->foto->move(public_path('storage/customer'), $file_name);
+        Image::make($request->file('foto'))->resize(350, null, function ($constraint) {
+          $constraint->aspectRatio();
+        })->save(public_path('storage/customer/') . $file_name);
         $validatedData['foto'] = $file_name;
       }
       

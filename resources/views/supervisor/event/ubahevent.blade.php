@@ -136,14 +136,14 @@
         </div>
 
         <div class="d-flex flex-column mb-3">
-          <label for="gambar" class="form-label">Foto Profil</label>
+          <label for="gambar" class="form-label">Gambar Event</label>
           <input type="hidden" name="oldGambar" value="{{ $eventStatus->gambar }}">
 
           @if ($eventStatus->gambar)
-            <img class="img-preview img-fluid mb-4" src="{{ asset('storage/event/' . $eventStatus->gambar) }}"
-              width="150px" height="150px">
+            <img class="img-preview img-fluid mb-4 col-sm-5"
+              src="{{ asset('storage/event/' . $eventStatus->gambar) }}">
           @else
-            <img class="img-preview img-fluid">
+            <img class="img-preview img-fluid col-sm-5">
           @endif
 
           <input class="form-control @error('gambar') is-invalid @enderror" type="file" id="gambar"

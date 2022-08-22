@@ -26,7 +26,7 @@
         <span><b>Wilayah</b> {{ $wilayah[0] }}</span>
         <span><b>No. Telepon</b> {{ $retur->linkCustomer->telepon }}</span>
         <span><b>Pengirim</b> {{ $retur->linkStaffPengaju->nama }}</span>
-        <span><b>Admin</b> {{ $retur->linkStaffPengonfirmasi->nama ??null }}</span>
+        <span><b>Admin</b> {{ $retur->linkStaffPengonfirmasi->nama ?? null }}</span>
         <span><b>No. Invoice</b> {{ $retur->linkInvoice->nomor_invoice ?? null }}</span>
       </div>
 
@@ -110,14 +110,15 @@
 
       <div class="row">
         <div class="d-flex flex-row justify-content-end">
-          <a href="/administrasi/retur/cetak-retur/{{ $retur->no_retur }}" class="btn btn_purple mx-1"><i
-              class="bi bi-download px-1"></i>Unduh Retur Penjualan</a>
+          <a href="/administrasi/retur/cetak-retur/{{ $retur->no_retur }}" class="btn btn_purple mx-1">
+            <i class="bi bi-download px-1"></i>Unduh Retur Penjualan
+          </a>
           @if ($retur->status == 13)
-            <button data-id="{{ $retur->linkCustomer->id }}" class="btn btn-success button-submit mx-1"><span
-                class="iconify fs-3 me-1" data-icon="healthicons:i-documents-accepted-outline"></span>Konfirmasi</a>
+            <button data-id="{{ $retur->linkCustomer->id }}" class="btn btn-success button-submit mx-1">
+              <span class="iconify fs-3 me-1" data-icon="healthicons:i-documents-accepted-outline"></span>Konfirmasi
+            </button>
           @endif
         </div>
-
       </div>
     </div>
   </div>

@@ -363,7 +363,9 @@ const ReturShipper = () => {
             <Fragment>
               <div className="row justify-content-end mt-4">
                 <div className="col d-flex justify-content-end">
-                  <button className="btn btn-success mt-3" onClick={handlePengajuanRetur} disabled={isLoading}><span className="iconify fs-3 me-1" data-icon="ic:baseline-assignment-return"></span>Ajukan Retur</button>
+                  <button className="btn btn-success mt-3" onClick={handlePengajuanRetur} disabled={isLoading}>
+                    <span className="iconify fs-3 me-1" data-icon="ic:baseline-assignment-return"></span>Ajukan Retur
+                  </button>
                 </div>
               </div>
             </Fragment>

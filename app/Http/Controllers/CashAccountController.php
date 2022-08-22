@@ -7,6 +7,7 @@ use App\Models\Reimbursement;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Storage;
+use Intervention\Image\ImageManagerStatic as Image;
 
 class CashAccountController extends Controller
 {
@@ -110,7 +111,7 @@ class CashAccountController extends Controller
 
     if($fileFoto !== null){
       $validator = Validator::make($request->all(), [
-        'foto' => 'image|nullable|max:1024',
+        'foto' => 'image|nullable',
       ]);
   
       if ($validator->fails()) {
@@ -124,7 +125,9 @@ class CashAccountController extends Controller
     if ($fileFoto !== null) {
       $nama_pengaju = str_replace(" ", "-", $reimbursement->linkStaffPengaju->nama);
       $file_name = 'RBS-' . $nama_pengaju . '-' .date_format(now(),"YmdHis"). '.' . $request->foto->extension();
-      $request->foto->move(public_path('storage/reimbursement'), $file_name);
+      Image::make($request->file('foto'))->resize(350, null, function ($constraint) {
+        $constraint->aspectRatio();
+      })->save(public_path('storage/reimbursement/') . $file_name);
       $reimbursement->foto = $file_name;
     }
         
