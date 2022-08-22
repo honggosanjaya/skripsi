@@ -4,7 +4,25 @@
 @endpush
 
 @section('main_content')
-  <div class="retur_notif m-fadeOut p-3">
+  <div class="limit_notif notif m-fadeOut p-3">
+    @foreach ($notifikasi['pengajuan_limit'] as $notif)
+      <div class="card_notif">
+        <a href="/administrasi/datacustomer/{{ $notif->id }}?route={{ $notif->status_limit_pembelian == 7 ? 'lihatpengajuan' : 'bacapengajuan' }}"
+          class="text-black text-decoration-none">
+          <p class="mb-0"><b>Customer:</b> {{ $notif->nama ?? null }}</p>
+          <p class="mb-0"><b>Tanggal Pengajuan:</b> {{ date('d F Y', strtotime($notif->created_at)) }}</p>
+          <p class="mb-0">Pengajuan sebesar Rp.
+            {{ number_format($notif->pengajuan_limit_pembelian, 0, '', '.') }}
+            <span class="text-danger fw-bold">
+              {{ $notif->status_limit_pembelian == 5 ? 'Disetujui' : ($notif->status_limit_pembelian == 6 ? 'Tidak Disetujui' : 'Diajukan') }}
+            </span>
+          </p>
+        </a>
+      </div>
+    @endforeach
+  </div>
+
+  <div class="retur_notif notif m-fadeOut p-3">
     @foreach ($notifikasi['retur'] as $notif)
       <div class="card_notif">
         <a href="/administrasi/retur/{{ $notif->no_retur }}" class="text-black text-decoration-none">
@@ -18,7 +36,7 @@
     @endforeach
   </div>
 
-  <div class="trip_notif m-fadeOut p-3">
+  <div class="trip_notif notif m-fadeOut p-3">
     @foreach ($notifikasi['trip'] as $notif)
       <div class="card_notif">
         <p class="mb-0 fw-bold">Peringatan Kunjungan</p>
@@ -28,7 +46,7 @@
     @endforeach
   </div>
 
-  <div class="order_notif m-fadeOut p-3">
+  <div class="order_notif notif m-fadeOut p-3">
     <ul class="nav nav-tabs" id="myTab" role="tablist">
       <li class="nav-item" role="presentation">
         <a class="nav-link active" id="customer-tab" href="#customer" data-bs-toggle="tab" data-bs-target="#customer"
@@ -118,6 +136,18 @@
     </div>
   </div>
 
+  <div class="reimbursement_notif notif m-fadeOut p-3">
+    @foreach ($notifikasi['reimbursement'] as $notif)
+      <div class="card_notif">
+        <a href="/administrasi/reimbursement/pengajuan/{{ $notif->id }}" class="text-black text-decoration-none">
+          <p class="mb-0">Pengajuan dari {{ $notif->linkStaffPengaju->nama }}</p>
+          <p class="mb-0">Diajukan pada {{ date('d F Y', strtotime($notif->created_at)) }}</p>
+          <p class="mb-0">{{ $notif->status == 27 ? 'Menunggu Konfirmasi' : 'Menunggu Pembayaran' }}</p>
+        </a>
+      </div>
+    @endforeach
+  </div>
+
   <div class="card-main_wrapper mt-4" id="dashboardAdmin">
     <div class="card-main bg-primary">
       <i class="bi bi-box2"></i>
@@ -146,49 +176,4 @@
   @push('JS')
     <script src="{{ mix('js/administrasi.js') }}"></script>
   @endpush
-
-  <script>
-    const dropdownRetur = document.querySelector(".alert_retur");
-    const notifRetur = document.querySelector(".retur_notif");
-    const dropdownOrder = document.querySelector(".alert_order");
-    const notifOrder = document.querySelector(".order_notif");
-    const dropdownTrip = document.querySelector(".alert_trip");
-    const notifTrip = document.querySelector(".trip_notif");
-
-    dropdownRetur.addEventListener("click", function() {
-      dropdownRetur.classList.toggle('active');
-      notifRetur.classList.toggle("m-fadeIn");
-      notifRetur.classList.toggle("m-fadeOut");
-      notifOrder.classList.add("m-fadeOut");
-      notifOrder.classList.remove("m-fadeIn");
-      notifTrip.classList.add("m-fadeOut");
-      notifTrip.classList.remove("m-fadeIn");
-      dropdownTrip.classList.remove('active');
-      dropdownOrder.classList.remove('active');
-    });
-
-    dropdownOrder.addEventListener("click", function() {
-      dropdownOrder.classList.toggle('active');
-      notifOrder.classList.toggle("m-fadeIn");
-      notifOrder.classList.toggle("m-fadeOut");
-      notifRetur.classList.add("m-fadeOut");
-      notifRetur.classList.remove("m-fadeIn");
-      notifTrip.classList.add("m-fadeOut");
-      notifTrip.classList.remove("m-fadeIn");
-      dropdownTrip.classList.remove('active');
-      dropdownRetur.classList.remove('active');
-    });
-
-    dropdownTrip.addEventListener("click", function() {
-      dropdownTrip.classList.toggle('active');
-      notifTrip.classList.toggle("m-fadeIn");
-      notifTrip.classList.toggle("m-fadeOut");
-      notifRetur.classList.add("m-fadeOut");
-      notifRetur.classList.remove("m-fadeIn");
-      notifOrder.classList.add("m-fadeOut");
-      notifOrder.classList.remove("m-fadeIn");
-      dropdownOrder.classList.remove('active');
-      dropdownRetur.classList.remove('active');
-    });
-  </script>
 @endsection

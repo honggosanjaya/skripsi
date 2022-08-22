@@ -46,6 +46,7 @@ const Pemesanan = ({ location }) => {
   const [shouldKeepOrder, setShouldKeepOrder] = useState(false);
   const [diskon, setDiskon] = useState(0);
   const [shouldDisabled, setShouldDisabled] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
     if (filterBy) {
@@ -175,7 +176,7 @@ const Pemesanan = ({ location }) => {
   }
 
   const handleKeluarToko = () => {
-    console.log('idTrip', idTrip);
+    setIsLoading(true);
     setShouldDisabled(true);
     if (idTrip) {
       axios({
@@ -191,15 +192,15 @@ const Pemesanan = ({ location }) => {
         .then((response) => {
           setShouldDisabled(false);
           console.log('trip', response.data.message);
+          setIsLoading(false);
           hapusSemuaProduk();
           history.push('/salesman');
         })
         .catch((error) => {
           setShouldDisabled(false);
+          setIsLoading(false);
           console.log(error.message);
         });
-    } else {
-      console.log('silahkan melakukan trip terlebih dahulu');
     }
   }
 
@@ -462,6 +463,7 @@ const Pemesanan = ({ location }) => {
     <main className='page_main'>
       <HeaderSales title="Order" isOrder={true} lihatKeranjang={lihatKeranjang} jumlahProdukKeranjang={jmlItem} toBack={toBack} />
       <div className="page_container pt-4">
+        {isLoading && <LoadingIndicator />}
         <div className="kode_customer">
           <p className='fw-bold'>Sudah punya kode customer?</p>
           <form onSubmit={handleKodeCustomer}>

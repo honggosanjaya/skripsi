@@ -340,10 +340,7 @@ table tbody th {
     font-size: 1.3rem !important;
 }
 
-.retur_notif,
-.order_notif,
-.trip_notif,
-.limit_notif {
+.notif {
     width: 350px;
     border-radius: 10px;
     position: fixed;
@@ -352,16 +349,11 @@ table tbody th {
     right: 2.5rem;
     background-color: #fff;
     box-shadow: rgba(0, 0, 0, 0.15) 0px 5px 15px 0px;
+    max-height: 80vh;
+    overflow-y: auto;
 }
 
-.limit_notif {
-    top: 7.5rem;
-}
-
-.alert_retur,
-.alert_order,
-.alert_trip,
-.alert_limit {
+.alert_notif {
     &.active {
         i {
             color: rgb(243, 208, 8);
