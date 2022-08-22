@@ -394,11 +394,15 @@ class OrderController extends Controller
             $color = 'danger';
           }
 
+          $inv = Invoice::where('id_order',$tempDataOrders[$i][$j])->first()->nomor_invoice;
+          $invoice = substr($inv, 0, 5);
+
           array_push($tempDataIdOrders,[
             'id_vehicle' => $kendaraans[$i]->id,
             'nama_vehicle' => $kendaraans[$i]->nama,
             'kode_vehicle' => $kendaraans[$i]->kode_kendaraan,
             'id_order' => $tempDataOrders[$i][$j],
+            'invoice' => $invoice,
             'color' => $color,
             'persentase_volume' =>  $persentaseVolume,
             'persentase_harga' => $persentaseHarga,
@@ -413,6 +417,7 @@ class OrderController extends Controller
           'nama_vehicle' => $kendaraans[$i]->nama,
           'kode_vehicle' => $kendaraans[$i]->kode_kendaraan,
           'id_order' => null,
+          'invoice' => null,
           'color' => null,
           'persentase_volume' =>  0,
           'persentase_harga' => 0,
@@ -434,6 +439,7 @@ class OrderController extends Controller
           'nama_vehicle' => $item['nama_vehicle'],
           'kode_vehicle' => $item['kode_vehicle'],
           'id_order' => $item['id_order'],
+          'invoice' => $item['invoice'],
           'color' => $item['color'],
           'persentase_volume' => $item['persentase_volume'],
           'persentase_harga' => $item['persentase_harga'],
@@ -444,6 +450,7 @@ class OrderController extends Controller
         // jika ada yang sama
         $sameVehicle[$key]['color'] = $sameVehicle[$key]['color'] . '+' . $item['color'];
         $sameVehicle[$key]['id_order'] = $sameVehicle[$key]['id_order'] . '+' . $item['id_order'];
+        $sameVehicle[$key]['invoice'] = $sameVehicle[$key]['invoice'] . '+' . $item['invoice'];
         $sameVehicle[$key]['persentase_volume'] = $sameVehicle[$key]['persentase_volume'] . '+' . $item['persentase_volume'];
         $sameVehicle[$key]['persentase_harga'] = $sameVehicle[$key]['persentase_harga'] . '+' . $item['persentase_harga'];
         $sameVehicle[$key]['total_persentase_volume'] = $sameVehicle[$key]['total_persentase_volume'] + $item['total_persentase_volume'];

@@ -6,12 +6,12 @@ import { useHistory } from 'react-router-dom';
 import { UserContext } from '../../contexts/UserContext';
 import AlertComponent from '../reuse/AlertComponent';
 import urlAsset from '../../config';
+import LoadingIndicator from '../reuse/LoadingIndicator';
 
 const TripSales = () => {
   const { id } = useParams();
   const history = useHistory();
   const { dataUser } = useContext(UserContext);
-
   const [namaCust, setNamaCust] = useState('');
   const [email, setEmail] = useState('');
   const [alamatUtama, setAlamatUtama] = useState('');
@@ -28,7 +28,7 @@ const TripSales = () => {
 
   const [error, setError] = useState(null);
   const [errorValidasi, setErrorValidasi] = useState([]);
-
+  const [isLoading, setIsLoading] = useState(false);
   const [totalTripEC, setTotalTripEC] = useState(0);
   const [koordinat, setKoordinat] = useState('');
   const [emailInput, setEmailInput] = useState(false);
@@ -119,45 +119,46 @@ const TripSales = () => {
 
   const kirimCustomer = (e) => {
     e.preventDefault();
-    let formData = new FormData();
-    formData.append("foto", file);
-    objData["status"] = "trip";
-    axios({
-      method: "post",
-      url: `${window.location.origin}/api/tripCustomer`,
-      headers: {
-        Accept: "application/json",
-      },
-      data: objData
-    })
-      .then(response => {
-        setError(null);
-        if (response.data.status == 'success') {
-          setErrorValidasi([]);
-          return response.data.data;
-        } else {
-          setErrorValidasi(response.data.validate_err);
-          throw Error("Error validasi");
-        }
-      })
-      .then(dataCustomer => axios.post(`${window.location.origin}/api/tripCustomer/foto/${dataCustomer.id}`,
-        formData, {
-        headers: {
-          Accept: "application/json",
-        }
-      }))
-      .then((response) => {
-        setError(null);
-
-        Swal.fire({
-          title: 'Apakah anda yakin?',
-          icon: 'warning',
-          showCancelButton: true,
-          confirmButtonColor: '#3085d6',
-          cancelButtonColor: '#d33',
-          confirmButtonText: 'Keluar!'
-        }).then((result) => {
-          if (result.isConfirmed) {
+    Swal.fire({
+      title: 'Apakah anda yakin?',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Keluar!'
+    }).then((result) => {
+      if (result.isConfirmed) {
+        let formData = new FormData();
+        formData.append("foto", file);
+        objData["status"] = "trip";
+        setIsLoading(true);
+        axios({
+          method: "post",
+          url: `${window.location.origin}/api/tripCustomer`,
+          headers: {
+            Accept: "application/json",
+          },
+          data: objData
+        })
+          .then(response => {
+            setError(null);
+            if (response.data.status == 'success') {
+              setErrorValidasi([]);
+              return response.data.data;
+            } else {
+              setErrorValidasi(response.data.validate_err);
+              throw Error("Error validasi");
+            }
+          })
+          .then(dataCustomer => axios.post(`${window.location.origin}/api/tripCustomer/foto/${dataCustomer.id}`,
+            formData, {
+            headers: {
+              Accept: "application/json",
+            }
+          }))
+          .then((response) => {
+            setError(null);
+            setIsLoading(false);
             Swal.fire({
               title: 'success',
               text: response.data.message,
@@ -166,62 +167,66 @@ const TripSales = () => {
             }).then((result) => {
               history.push('/salesman');
             })
-          }
-        })
-      })
-      .catch(error => {
-        setError(error.message);
-      });
+          })
+          .catch(error => {
+            setError(error.message);
+            setIsLoading(false);
+          });
+      }
+    })
   }
 
   const handleOrder = (e) => {
     e.preventDefault();
-    let formData = new FormData();
-    formData.append("foto", file);
-    objData["status"] = "order";
-    axios({
-      method: "post",
-      url: `${window.location.origin}/api/tripCustomer`,
-      headers: {
-        Accept: "application/json",
-      },
-      data: objData
-    })
-      .then(response => {
-        setError(null);
-        if (response.data.status == 'success') {
-          setErrorValidasi([]);
-          return response.data.data;
-        }
-        else {
-          setErrorValidasi(response.data.validate_err);
-          // throw Error("Error validasi");
-        }
-      })
-      .then(dataCustomer => axios.post(`${window.location.origin}/api/tripCustomer/foto/${dataCustomer.id}`,
-        formData, {
-        headers: {
-          Accept: "application/json",
-        }
-      }))
-      .then((dataCustomer) => {
-        setError(null);
-        Swal.fire({
-          title: 'Apakah anda yakin?',
-          icon: 'warning',
-          showCancelButton: true,
-          confirmButtonColor: '#3085d6',
-          cancelButtonColor: '#d33',
-          confirmButtonText: 'Order!'
-        }).then((result) => {
-          if (result.isConfirmed) {
-            history.push(`/salesman/order/${dataCustomer.data.data.id}`);
-          }
+    Swal.fire({
+      title: 'Apakah anda yakin?',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Order!'
+    }).then((result) => {
+      if (result.isConfirmed) {
+        setIsLoading(true);
+        let formData = new FormData();
+        formData.append("foto", file);
+        objData["status"] = "order";
+        axios({
+          method: "post",
+          url: `${window.location.origin}/api/tripCustomer`,
+          headers: {
+            Accept: "application/json",
+          },
+          data: objData
         })
-      })
-      .catch(error => {
-        setError(error.message);
-      });
+          .then(response => {
+            setError(null);
+            if (response.data.status == 'success') {
+              setErrorValidasi([]);
+              return response.data.data;
+            }
+            else {
+              setErrorValidasi(response.data.validate_err);
+              // throw Error("Error validasi");
+            }
+          })
+          .then(dataCustomer => axios.post(`${window.location.origin}/api/tripCustomer/foto/${dataCustomer.id}`,
+            formData, {
+            headers: {
+              Accept: "application/json",
+            }
+          }))
+          .then((dataCustomer) => {
+            setError(null);
+            setIsLoading(false);
+            history.push(`/salesman/order/${dataCustomer.data.data.id}`);
+          })
+          .catch(error => {
+            setError(error.message);
+            setIsLoading(false);
+          });
+      }
+    })
   }
 
   let $imagePreview = null;
@@ -239,6 +244,7 @@ const TripSales = () => {
       <HeaderSales title="Trip" />
       <div className="page_container py-4">
         {error && <AlertComponent errorMsg={error} />}
+        {isLoading && <LoadingIndicator />}
         <form>
           <div className={`${errorValidasi.nama ? '' : 'mb-3'}`}>
             <label className="form-label">Nama Customer <span className='text-danger'>*</span></label>
@@ -336,9 +342,12 @@ const TripSales = () => {
           </div>
 
           <div className="d-flex justify-content-end">
-            <button className="btn btn-danger me-3" onClick={kirimCustomer} disabled={shouldDisabled}>
+            {alasanPenolakan ? <button className="btn btn-danger me-3" onClick={kirimCustomer} disabled={shouldDisabled}>
               Selesai dan Keluar
-            </button>
+            </button> : <button className="btn btn-danger me-3" disabled={true}>
+              Selesai dan Keluar
+            </button>}
+
             <button className="btn btn-success" onClick={handleOrder} disabled={shouldDisabled}>
               <span className="iconify me-1" data-icon="carbon:ibm-watson-orders"></span>Order
             </button>

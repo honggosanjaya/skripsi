@@ -306,16 +306,30 @@ class CustomerController extends Controller
       return redirect('/administrasi/datacustomer') -> with('pesanSukses', 'Data berhasil ditambahkan' );
     }
 
-    public function administrasiShow(Customer $customer)
+    public function administrasiShow(Request $request, Customer $customer)
     {
-      return view('administrasi.dataCustomer.detail', [
+      $oldData = [];
+      if($request->route == 'bacapengajuan'){
+        $oldData['pengajuan_limit_pembelian'] =$customer->pengajuan_limit_pembelian;
+        $oldData['status_limit_pembelian'] =$customer->status_limit_pembelian;
+
+        $customer->update([
+          'pengajuan_limit_pembelian' => null,
+          'status_limit_pembelian' => null
+        ]);
+      }
+
+      $data = [
         'customer' => $customer,
         'customer_types' => CustomerType::all(),
         'districts' => District::all(),
         'retur_types' => ReturType::all(),
         'statuses' =>  Status::where('tabel', 'customers')->get(),
-        "title" => "Data Customer - Detail"
-      ]);
+        "title" => "Data Customer - Detail",
+        'old_data' => $oldData
+      ];
+
+      return view('administrasi.dataCustomer.detail', $data);
     }
 
     public function administrasiEdit(Customer $customer){
@@ -434,7 +448,7 @@ class CustomerController extends Controller
     public function setujuPengajuanLimit(Customer $customer){
       Customer::find($customer->id)->update([
         'limit_pembelian' => $customer->pengajuan_limit_pembelian,
-        'pengajuan_limit_pembelian' => null,
+        // 'pengajuan_limit_pembelian' => null,
         'status_limit_pembelian' => 5
       ]);
       return redirect('/supervisor/datacustomer') -> with('pesanSukses', 'Berhasil menyetujui pengajuan' );
@@ -442,7 +456,7 @@ class CustomerController extends Controller
 
     public function tolakPengajuanLimit(Customer $customer){
       Customer::find($customer->id)->update([
-        'pengajuan_limit_pembelian' => null,
+        // 'pengajuan_limit_pembelian' => null,
         'status_limit_pembelian' => 6
       ]);
       return redirect('/supervisor/datacustomer') -> with('pesanSukses', 'Berhasil menolak pengajuan' );
