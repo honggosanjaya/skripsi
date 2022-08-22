@@ -18,6 +18,7 @@ use App\Models\History;
 use Illuminate\Support\Facades\DB;
 use PDF;
 use Illuminate\Support\Facades\Validator;
+use Intervention\Image\ImageManagerStatic as Image;
 
 class OrderController extends Controller
 {
@@ -740,12 +741,14 @@ class OrderController extends Controller
 
     if($order->linkOrderTrack->status == 22){
       $rules = [
-        'foto' => 'image|file|max:1024',
+        'foto' => 'image|file',
       ];
 
       $file= $request->file('foto');
       $file_name=  'DLV-'.$order->id.'.'.$file->getClientOriginalExtension();
-      $request->foto->move(public_path('storage/pengiriman'), $file_name);
+      Image::make($request->file('foto'))->resize(350, null, function ($constraint) {
+        $constraint->aspectRatio();
+      })->save(public_path('storage/pengiriman/') . $file_name);
       $validatedData['foto_pengiriman'] = $file_name;
       $validatedData['status'] = 23;
       $validatedData['waktu_sampai'] = now();

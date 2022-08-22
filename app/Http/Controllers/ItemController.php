@@ -17,6 +17,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use PDF;
 use Illuminate\Database\QueryException;
+use Intervention\Image\ImageManagerStatic as Image;
 
 class ItemController extends Controller
 {
@@ -207,35 +208,31 @@ class ItemController extends Controller
       'harga2_satuan' => ['nullable', 'numeric'],
       'harga3_satuan' => ['nullable', 'numeric'],
       'gambar' => 'image|file|max:1024',
+      // 'gambar' => 'image|file',
       'volume' => 'required'
     ]);
 
     if($request->stok){
       $rules['stok'] = ['integer', 'min:0'];
     }
-
     if($request->min_stok){
       $rules['min_stok'] = ['integer', 'min:0'];
     }
-
     if($request->max_stok){
       $rules['max_stok'] = ['integer', 'min:0'];
     }
 
-    // if($request->max_pengadaan){
-    //   $rules['max_pengadaan'] = ['integer', 'min:0'];
-    // }
-
     $validatedData = $request->validate($rules);
-
     $validatedData['status'] = $request->status;
     $validatedData['max_pengadaan'] = ($request->max_stok??0) - ($request->min_stok??0);
     
     if ($request->gambar) {
       $nama_item = str_replace(" ", "-", $request->nama);
       $file_name = 'ITM-' . $nama_item . '-' .date_format(now(),"YmdHis"). '.' . $request->gambar->extension();
-      $request->gambar->move(public_path('storage/item'), $file_name);
       $validatedData['gambar'] = $file_name;
+      Image::make($request->file('gambar'))->resize(350, null, function ($constraint) {
+        $constraint->aspectRatio();
+      })->save(public_path('storage/item/') . $file_name);
     }    
 
     Item::create($validatedData);
@@ -280,7 +277,9 @@ class ItemController extends Controller
       $file= $request->file('gambar');
       $nama_item = str_replace(" ", "-", $validatedData['nama']);
       $file_name = 'ITM-' . $nama_item . '-' .date_format(now(),"YmdHis"). '.' . $file->getClientOriginalExtension();
-      $request->gambar->move(public_path('storage/item'), $file_name);
+      Image::make($request->file('gambar'))->resize(350, null, function ($constraint) {
+        $constraint->aspectRatio();
+      })->save(public_path('storage/item/') . $file_name);
       $validatedData['gambar'] = $file_name;
     }    
 

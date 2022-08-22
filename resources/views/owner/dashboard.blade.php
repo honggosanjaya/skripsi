@@ -2,7 +2,7 @@
 
 @section('main_content')
   @if (auth()->user()->linkStaff->linkStaffRole->nama == 'supervisor')
-    <div class="limit_notif m-fadeOut p-3">
+    <div class="limit_notif notif m-fadeOut p-3">
       @foreach ($customersPengajuanLimit as $customerPengajuanLimit)
         <div class="card_notif">
           <a href="/supervisor/datacustomer/pengajuan/{{ $customerPengajuanLimit->id }}"

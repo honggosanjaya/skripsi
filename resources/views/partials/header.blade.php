@@ -33,7 +33,7 @@
 
     @if (auth()->user()->linkStaff->linkStaffRole->nama == 'supervisor')
       @if (!empty($datadua['lihat_notif_spv']))
-        <div class="alert_limit d-flex justify-content-center align-items-center flex-column me-5">
+        <div class="alert_limit alert_notif d-flex justify-content-center align-items-center flex-column me-5">
           <i class="bi bi-bell-fill fs-3"></i>
           <small class="d-block mb-0 fw-bold text-center">Limit<br>Pembelian</small>
         </div>

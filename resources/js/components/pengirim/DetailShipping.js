@@ -77,7 +77,9 @@ const DetailShipping = ({ detailShipping, isLoading, show, handleClose, handlePe
             {detailShipping.link_order_track.status == 22 &&
               <Button variant="success" onClick={handlePengirimanSampai}><span className="iconify fs-3 me-1" data-icon="material-symbols:download-done"></span>Pengiriman Sampai</Button>}
             {(detailShipping.link_invoice.link_retur.length == 0 && (detailShipping.link_order_track.status == 23 || detailShipping.link_order_track.status == 24)) &&
-              <Button variant="warning" onClick={() => handlePengajuanRetur(detailShipping.id_customer)}><span className="iconify fs-3 me-1" data-icon="ic:baseline-assignment-return"></span>Ajukan Retur</Button>}
+              <Button variant="warning" onClick={() => handlePengajuanRetur(detailShipping.id_customer)}>
+                <span className="iconify fs-3 me-1" data-icon="ic:baseline-assignment-return"></span>Ajukan Retur
+              </Button>}
           </Modal.Footer>
         </Modal>}
     </Fragment>

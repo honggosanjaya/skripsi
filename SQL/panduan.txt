@@ -1,2 +1,0 @@
-Panduan SQl:
-- data sql ada di sales(18-7).sql

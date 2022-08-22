@@ -89,11 +89,10 @@
         @if ($staf->foto_profil)
           <img src="{{ asset('storage/staff/' . $staf->foto_profil) }}" class="img-preview img-fluid d-block">
         @else
-          <img class="img-preview img-fluid">
           <p>Belum ada foto profil</p>
         @endif
-        <input class="form-control @error('staf') is-invalid @enderror" type="file" id="foto_profil" name="foto_profil"
-          onchange="prevImg()">
+        <input class="form-control @error('foto_profil') is-invalid @enderror" type="file" id="foto_profil"
+          name="foto_profil" onchange="prevImg()">
         @error('foto_profil')
           <div class="invalid-feedback">
             {{ $message }}

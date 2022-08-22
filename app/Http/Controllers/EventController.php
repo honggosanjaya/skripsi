@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Validation\Rules;
+use Intervention\Image\ImageManagerStatic as Image;
 
 class EventController extends Controller
 {
@@ -73,7 +74,9 @@ class EventController extends Controller
       $file= $request->file('gambar');
       $filename=  'EVN-'.$nama_event.'.'.$file->getClientOriginalExtension();
       $request->gambar= $filename;
-      $file->move(public_path('storage/event'), $filename);
+      Image::make($request->file('gambar'))->resize(350, null, function ($constraint) {
+        $constraint->aspectRatio();
+      })->save(public_path('storage/event/') . $filename);
     }
 
     if($request->event_pilih_isian == "potongan"){
@@ -114,7 +117,7 @@ class EventController extends Controller
           $tipe = 'potongan';
       }
       
-      return view('supervisor/event.ubahevent', [
+      return view('supervisor.event.ubahevent', [
           'eventStatus' => $event,
           'selections' => $eventStatuses,
           'diskon_potongan' => $diskon_potongan,
@@ -156,7 +159,9 @@ class EventController extends Controller
         $filename=  'EVN-'.$nama_event.'.'.$file->getClientOriginalExtension();
         $request->gambar= $filename;
         $foto = $request->gambar;
-        $file->move(public_path('storage/event'), $filename);
+        Image::make($request->file('gambar'))->resize(350, null, function ($constraint) {
+          $constraint->aspectRatio();
+        })->save(public_path('storage/event/') . $filename);
       }
       else{
         $foto = $request->oldGambar;

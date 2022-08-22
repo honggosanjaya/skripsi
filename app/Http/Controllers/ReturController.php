@@ -30,13 +30,13 @@ class ReturController extends Controller
 
     public function pengajuanReturAPI(Request $request){
       $cartItems = $request->cartItems;
-
       $id_staff_pengaju = $request->id_staff_pengaju;
       $id_customer = $request->id_customer;
       $id_invoice = $request->id_invoice;
       $customer = Customer::find($id_customer);
       $data = [];
       $retur_count="RTR-".explode("-",Retur::orderBy("id", "DESC")->first()->no_retur ?? 'RTR-0')[1] + 1 ."-".date_format(now(),"YmdHis");
+      
       foreach($cartItems as $item){
         array_push($data,[
           'id_customer' => $item['id_customer'],
@@ -87,8 +87,9 @@ class ReturController extends Controller
         'id_invoice' => ['required'],
       ]);
 
-      $validatedData = $request->validate($rules);
-      $retur=Retur::where('no_retur',  $request->no_retur);
+      $request->validate($rules);
+
+      $retur = Retur::where('no_retur',  $request->no_retur);
       $retur->update([
         'tipe_retur' => $request->tipe_retur,
         'id_invoice' => $request->id_invoice,
@@ -96,17 +97,31 @@ class ReturController extends Controller
         'status' => 12
       ]);
 
-      $harga_total=Retur::select('no_retur',DB::raw('SUM(harga_satuan * kuantitas) as harga'))
+      $harga_total = Retur::select('no_retur',DB::raw('SUM(harga_satuan * kuantitas) as harga'))
         ->groupBy('no_retur')->where('no_retur',  $request->no_retur)->first()->harga;
-      $invoice=Invoice::find($request->id_invoice);
+
+      $invoice = Invoice::find($request->id_invoice);
       
-      if ($request->tipe_retur==1) {
+      if ($request->tipe_retur == 1) {
+        // potongan
         $invoice->update(["harga_total"=>($invoice->harga_total - $harga_total)]);
         foreach($retur->get() as $r){
           $item=item::find($r->id_item);
-          $item->update(["stok"=>( $item->stok + $r->kuantitas)]);
+          $item->update([
+            "stok_retur" => ($item->stok_retur + $r->kuantitas)
+          ]);
+        }
+      } elseif ($request->tipe_retur == 2){
+        // tukar guling
+        foreach($retur->get() as $r){
+          $item=item::find($r->id_item);
+          $item->update([
+            "stok" => ($item->stok - $r->kuantitas),
+            "stok_retur" => ($item->stok_retur + $r->kuantitas)
+          ]);
         }
       }
+
       return redirect('/administrasi/retur') -> with('pesanSukses', 'Berhasil mengubah data');
     }
 
