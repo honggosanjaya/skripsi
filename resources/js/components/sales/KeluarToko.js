@@ -14,19 +14,21 @@ const KeluarToko = ({ handleShow, alasanPenolakan, setAlasanPenolakan, handleClo
           <Modal.Title>Keluar Toko</Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          <label className="form-label">Alasan Penolakan</label>
-          <input type="text" className="form-control"
+          <label className="form-label">Alasan Penolakan <span class="text-danger">*</span></label>
+          <textarea className="form-control"
             value={alasanPenolakan || ''}
-            onChange={(e) => setAlasanPenolakan(e.target.value)}
-          />
+            onChange={(e) => setAlasanPenolakan(e.target.value)} />
         </Modal.Body>
         <Modal.Footer>
           <Button variant="secondary" onClick={handleClose}>
             Batal
           </Button>
-          <Button variant="danger" onClick={handleKeluarToko} disabled={shouldDisabled}>
+          {alasanPenolakan ? <Button variant="danger" onClick={handleKeluarToko} disabled={shouldDisabled}>
             Keluar
-          </Button>
+          </Button> : <Button variant="danger" disabled={true}>
+            Keluar
+          </Button>}
+
         </Modal.Footer>
       </Modal>
     </div>

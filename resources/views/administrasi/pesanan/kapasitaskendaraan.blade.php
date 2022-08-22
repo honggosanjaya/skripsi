@@ -34,14 +34,14 @@
         $eachPersentaseVolumes = explode('+', $data['persentase_volume']);
         $eachPersentaseHargas = explode('+', $data['persentase_harga']);
         $eachColors = explode('+', $data['color']);
-        $eachOrders = explode('+', $data['id_order']);
+        $eachInvoices = explode('+', $data['invoice']);
       @endphp
 
       <div class="progress">
         @for ($i = 0; $i < sizeof($eachPersentaseVolumes); $i++)
           <div class="progress-bar bg-{{ $eachColors[$i] }}" role="progressbar"
             style="width: {{ $eachPersentaseVolumes[$i] }}%" aria-valuenow="{{ $eachPersentaseVolumes[$i] }}"
-            aria-valuemin="0" aria-valuemax="100">{{ $eachOrders[$i] }}</div>
+            aria-valuemin="0" aria-valuemax="100">{{ $eachInvoices[$i] }}</div>
         @endfor
       </div>
 
@@ -53,7 +53,7 @@
         @for ($i = 0; $i < sizeof($eachPersentaseHargas); $i++)
           <div class="progress-bar bg-{{ $eachColors[$i] }}" role="progressbar"
             style="width: {{ $eachPersentaseHargas[$i] }}%" aria-valuenow="{{ $eachPersentaseHargas[$i] }}"
-            aria-valuemin="0" aria-valuemax="100">{{ $eachOrders[$i] }}</div>
+            aria-valuemin="0" aria-valuemax="100">{{ $eachInvoices[$i] }}</div>
         @endfor
       </div>
 

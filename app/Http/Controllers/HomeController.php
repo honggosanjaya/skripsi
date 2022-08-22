@@ -9,6 +9,7 @@ use App\Models\Item;
 use App\Models\Vehicle;
 use App\Models\Event;
 use App\Models\History;
+use App\Models\Reimbursement;
 use Illuminate\Http\Request;
 
 class HomeController extends Controller
@@ -69,6 +70,11 @@ class HomeController extends Controller
         Order::whereHas('linkOrderTrack', function($q){
             $q->where('status',23)->where('id_staff_pengonfirmasi',auth()->user()->id_users);
         })->with(['linkOrderTrack'])->get();
+
+        $notifikasi['pengajuan_limit'] = Customer::where('Status_limit_pembelian', '!=', null)->get();
+
+        $notifikasi['reimbursement'] = Reimbursement::whereIn('status', [27,28])->get();
+
         // dd($notifikasi);
         $request->session()->increment('count');
         return view('administrasi.dashboard',[

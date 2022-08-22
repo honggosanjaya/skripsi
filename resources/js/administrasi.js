@@ -238,3 +238,38 @@ if (loginPassword == "12345678" && countt == 2) {
   })
 }
 
+// NOTIFIKASI ADMIN
+$(".alert_retur").click(function () {
+  $(this).toggleClass("active");
+  $(".retur_notif").toggleClass("m-fadeIn m-fadeOut");
+  $(".notif").not(".retur_notif").addClass("m-fadeOut").removeClass("m-fadeIn");
+  $(".alert_notif").not(".alert_retur").removeClass("active");
+});
+
+$(".alert_order").click(function () {
+  $(this).toggleClass("active");
+  $(".order_notif").toggleClass("m-fadeIn m-fadeOut");
+  $(".notif").not(".order_notif").addClass("m-fadeOut").removeClass("m-fadeIn");
+  $(".alert_notif").not(".alert_order").removeClass("active");
+});
+
+$(".alert_trip").click(function () {
+  $(this).toggleClass("active");
+  $(".trip_notif").toggleClass("m-fadeIn m-fadeOut");
+  $(".notif").not(".trip_notif").addClass("m-fadeOut").removeClass("m-fadeIn");
+  $(".alert_notif").not(".alert_trip").removeClass("active");
+});
+
+$(".alert_limit").click(function () {
+  $(this).toggleClass("active");
+  $(".limit_notif").toggleClass("m-fadeIn m-fadeOut");
+  $(".notif").not(".limit_notif").addClass("m-fadeOut").removeClass("m-fadeIn");
+  $(".alert_notif").not(".alert_limit").removeClass("active");
+});
+
+$(".alert_reimbursement").click(function () {
+  $(this).toggleClass("active");
+  $(".reimbursement_notif").toggleClass("m-fadeIn m-fadeOut");
+  $(".notif").not(".reimbursement_notif").addClass("m-fadeOut").removeClass("m-fadeIn");
+  $(".alert_notif").not(".alert_reimbursement").removeClass("active");
+});
