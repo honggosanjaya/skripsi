@@ -9,6 +9,9 @@ class CartController extends Controller
 {
   public function cartList(Request $request)
   {
+    session(['counterPengadaan' => 0]);
+    session(['counterOpname' => 0]);
+    
     if ($request->route=="pengadaan") {
       $cartItems = \Cart::session(auth()->user()->id.$request->route)->getContent();
       return view('administrasi.stok.pengadaan.cart', compact('cartItems'));

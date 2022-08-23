@@ -16,6 +16,7 @@ use App\Http\Controllers\ReturController;
 use App\Http\Controllers\Controller;
 use App\Http\Controllers\Api\LoginController;
 use App\Http\Controllers\CashAccountController;
+use App\Http\Controllers\CategoryItemController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -111,6 +112,13 @@ Route::prefix('supervisor')->middleware('supervisor')->group(function() {
   Route::post('/cashaccount/tambah', [CashAccountController::class, 'cashAccountStore']);
   Route::get('/cashaccount/ubah/{cashaccount:id}', [CashAccountController::class, 'cashAccountEdit']);
   Route::put('/cashaccount/ubah/{cashaccount:id}', [CashAccountController::class, 'cashAccountUpdate']);
+
+  Route::get('/category', [CategoryItemController::class, 'categoryIndex']);
+  Route::get('/category/cari', [CategoryItemController::class, 'categorySearch']);
+  Route::get('/category/tambah', [CategoryItemController::class, 'categoryCreate']);
+  Route::post('/category/tambah', [CategoryItemController::class, 'categoryStore']);
+  Route::get('/category/ubah/{category:id}', [CategoryItemController::class, 'categoryEdit']);
+  Route::put('/category/ubah/{category:id}', [CategoryItemController::class, 'categoryUpdate']);
 });
 
 // =============== ADMINISTRASI ====================
@@ -156,7 +164,6 @@ Route::prefix('administrasi')->middleware('administrasi')->group(function() {
     
     //Route untuk pengadaan
     Route::resource('/produk', ItemController::class);
-    // Route::get('/produk/cari', [ItemController::class, 'produkSearch']);
     Route::post('/produk/ubahstatus/{item:id}', [ItemController::class, 'administrasiEditStatusItem']);
 
     Route::get('/pengadaan', [ItemController::class, 'productList'])->name('products.list');
@@ -166,8 +173,6 @@ Route::prefix('administrasi')->middleware('administrasi')->group(function() {
     // Route::post('/pengadaan/remove', [CartController::class, 'removeCart'])->name('cart.remove');
     // Route::post('/pengadaan/clear', [CartController::class, 'clearAllCart'])->name('cart.clear');
     Route::get('/pengadaan/clear', [CartController::class, 'clearAllCart']);
-
-
     Route::post('/pengadaan/tambahpengadaan', [ItemController::class, 'simpanDataPengadaan']);
 
     //Route untuk stok

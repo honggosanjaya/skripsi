@@ -101,6 +101,11 @@
             <i class="bi bi-cash-coin me-2"></i><span>Cash Account</span>
           </a>
         </li>
+        <li class="mb-3">
+          <a class="{{ Request::is('supervisor/category*') ? 'active' : '' }}" href="/supervisor/category">
+            <i class="bi bi-tags me-2"></i><span>Category Item</span>
+          </a>
+        </li>
       </ul>
     @endcan
 

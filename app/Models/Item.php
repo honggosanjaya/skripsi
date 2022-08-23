@@ -7,6 +7,7 @@ use App\Models\Pengadaan;
 use App\Models\Status;
 use App\Models\OrderItem;
 use App\Models\Retur;
+use App\Models\CategoryItem;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
@@ -37,4 +38,8 @@ class Item extends Model
     public function linkRetur(){
         return $this->hasMany(Retur::class,'id_item','id');
     }
+
+    public function linkCategoryItem(){
+      return $this->belongsTo(CategoryItem::class,'id_category','id');
+  }
 }
