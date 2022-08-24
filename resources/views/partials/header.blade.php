@@ -7,26 +7,41 @@
     @if (!empty($datadua['lihat_notif']))
       <div class="alert_trip alert_notif d-flex justify-content-center align-items-center flex-column me-3">
         <i class="bi bi-bell-fill fs-3"></i>
+        @if ($datadua['jml_trip'] > 0)
+          <div class="hasnotif_indicator">{{ $datadua['jml_trip'] }}</div>
+        @endif
         <small class="d-block mb-0 fw-bold">Trip</small>
       </div>
 
       <div class="alert_order alert_notif d-flex justify-content-center align-items-center flex-column me-3">
         <i class="bi bi-bell-fill fs-3"></i>
+        @if ($datadua['jml_order'] > 0)
+          <div class="hasnotif_indicator">{{ $datadua['jml_order'] }}</div>
+        @endif
         <small class="d-block mb-0 fw-bold">Pesanan</small>
       </div>
 
       <div class="alert_retur alert_notif d-flex justify-content-center align-items-center flex-column me-3">
         <i class="bi bi-bell-fill fs-3"></i>
+        @if ($datadua['jml_retur'] > 0)
+          <div class="hasnotif_indicator">{{ $datadua['jml_retur'] }}</div>
+        @endif
         <small class="d-block mb-0 fw-bold">Retur</small>
       </div>
 
       <div class="alert_limit alert_notif d-flex justify-content-center align-items-center flex-column me-3">
         <i class="bi bi-bell-fill fs-3"></i>
+        @if ($datadua['jml_pengajuan_limit'] > 0)
+          <div class="hasnotif_indicator">{{ $datadua['jml_pengajuan_limit'] }}</div>
+        @endif
         <small class="d-block mb-0 fw-bold">Limit</small>
       </div>
 
       <div class="alert_reimbursement alert_notif d-flex justify-content-center align-items-center flex-column me-5">
         <i class="bi bi-bell-fill fs-3"></i>
+        @if ($datadua['jml_reimbursement'] > 0)
+          <div class="hasnotif_indicator">{{ $datadua['jml_reimbursement'] }}</div>
+        @endif
         <small class="d-block mb-0 fw-bold">Reimburs</small>
       </div>
     @endif

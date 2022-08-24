@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\CategoryItem;
 use App\Models\CustomerType;
 use App\Models\Item;
 use App\Models\Order;
@@ -85,19 +86,43 @@ class ItemController extends Controller
   }
 
   //pengadaan
-  public function productList(){
+  public function productList(Request $request){
       $products = Item::orderBy("status", "ASC")->get();
+      $counter = $request->session()->increment('counterPengadaan');
+      $pageWasRefreshed = isset($_SERVER['HTTP_CACHE_CONTROL']) && $_SERVER['HTTP_CACHE_CONTROL'] === 'max-age=0';
+
+      if(!$pageWasRefreshed) {
+        if($counter>0){
+          \Cart::session(auth()->user()->id.'pengadaan')->clear();
+          session(['counterPengadaan' => 0]);
+        }
+      }
+
       return view('administrasi.stok.pengadaan.index', [
         "products" => $products,
+        // "pageWasRefreshed" => $pageWasRefreshed,
+        // 'counter' => $counter,
         "title" => "Stok Marketing - Pengadaan",
       ]);
   }
 
   //opname
-  public function productListOpname(){
+  public function productListOpname(Request $request){
       $products = Item::orderBy("status", "ASC")->get();
+      $counter = $request->session()->increment('counterOpname');
+      $pageWasRefreshed = isset($_SERVER['HTTP_CACHE_CONTROL']) && $_SERVER['HTTP_CACHE_CONTROL'] === 'max-age=0';
+
+      if(!$pageWasRefreshed) {
+        if($counter>0){
+          \Cart::session(auth()->user()->id.'opname')->clear();
+          session(['counterOpname' => 0]);
+        }
+      }
+
       return view('administrasi.stok.opname.index', [
         "products" => $products,
+        // "pageWasRefreshed" => $pageWasRefreshed,
+        // 'counter' => $counter,
         "title" => "Stok Marketing - opname",
       ]);
   }
@@ -192,9 +217,43 @@ class ItemController extends Controller
   }
 
   public function create(){
+    // $parentItems = Item::where('link_item',null)->get();
+
+    $items = Item::all();
+    $parentItems = [];
+
+    foreach($items as $item){
+      $get1 = '';
+      $get2 = '';
+      $value = 0;
+      
+      if($item->link_item == null){
+        $get1 = $item->nama;
+        $value = $item->id;
+        array_push($parentItems, [$get1, $value]);
+      }
+      else if($item->link_item != null){
+        for($i=0; $i<Item::count(); $i++){
+          if($item->link_item == $items[$i]->id){
+            $get2 = $parentItems[$i][0] . " - " .$item->nama;
+            $value = $item->id;
+            array_push($parentItems, [$get2,$value]);
+          }
+        }
+      }
+    }
+      
+    usort($parentItems, function($a, $b) {
+      return $a[0] <=> $b[0];
+    });
+
+      // dd($parentItems);
+
     return view('administrasi.stok.produk.create', [
       'items' => Item::orderBy("status", "ASC")->get(),
+      'categories' => CategoryItem::all(),
       'statuses' => Status::where('tabel', 'items')->get(),
+      'parentItems' => $parentItems,
       "title" => "Stok Marketing - List Produk - Add"
     ]);
   }
@@ -224,6 +283,8 @@ class ItemController extends Controller
 
     $validatedData = $request->validate($rules);
     $validatedData['status'] = $request->status;
+    $validatedData['id_category'] = $request->category;
+    $validatedData['link_item'] = $request->link_item;
     $validatedData['max_pengadaan'] = ($request->max_stok??0) - ($request->min_stok??0);
     
     if ($request->gambar) {
@@ -240,10 +301,45 @@ class ItemController extends Controller
     return redirect('/administrasi/stok/produk') -> with('pesanSukses', 'Produk berhasil ditambahkan' );
   }
 
-  public function edit($id)
-  {
+  public function edit($id){
+    $items = Item::all();
+    // $cannotSelected = Item::where('id',$id)->orWhere('link_item',$id)->count();
+    $itemsCount = Item::count();
+    $parentItems = [];
+
+    foreach($items as $item){
+      $get1 = '';
+      $get2 = '';
+      $value = 0;
+
+      // if($item->id != $id && $item->link_item != $id){
+        if($item->link_item == null){
+            $get1 = $item->nama;
+            $value = $item->id;
+            array_push($parentItems, [$get1, $value]);
+        }
+        else if($item->link_item != null){
+          for($j=$itemsCount-1; $j>=0; $j--){
+            if($item->link_item == $items[$j]->id){
+              $get2 = $parentItems[$j][0] . " - " .$item->nama;
+              $value = $item->id;
+              array_push($parentItems, [$get2, $value]);
+            }
+          }
+        }
+      // }
+    }
+      
+    usort($parentItems, function($a, $b) {
+      return $a[0] <=> $b[0];
+    });
+
+    // dd($parentItems);
+
     return view('administrasi.stok.produk.edit',[
       'item' => Item::where('id', $id)->first(),
+      'parentItems' => $parentItems,
+      'categories' => CategoryItem::all(),
       'statuses' => Status::where('tabel', 'items')->get(),
     ]);
   }
@@ -267,6 +363,8 @@ class ItemController extends Controller
     }
 
     $validatedData = $request->validate($rules);
+    $validatedData['id_category'] = $request->category;
+    $validatedData['link_item'] = $request->link_item;
     $validatedData['status'] = $request->status;
 
     if ($request->gambar) {

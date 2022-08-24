@@ -28,6 +28,8 @@
           data-icon="bi:cart-check-fill"></span>Opname final</a>
     </div>
 
+    {{-- <h1>count: {{ $counter }} {{ $pageWasRefreshed == 1 ? 'true' : 'false' }}</h1> --}}
+
     <div class="table-responsive mt-3">
       <table class="table table-hover table-sm">
         <thead>
@@ -56,7 +58,8 @@
               <td class="text-center">{{ number_format($product->min_stok, 0, '', '.') }}</td>
               <td class="text-center">{{ number_format($product->max_stok, 0, '', '.') }}</td>
               <td class="text-center">{{ number_format($product->stok, 0, '', '.') }}</td>
-              <td class="text-center">{{ number_format($product->stok + ($cartItem->attributes->jumlah ?? 0), 0, '', '.') }}</td>
+              <td class="text-center">
+                {{ number_format($product->stok + ($cartItem->attributes->jumlah ?? 0), 0, '', '.') }}</td>
               <td>
                 <form action="{{ '/administrasi/stok/opname/final?route=opname' }}" method="POST"
                   enctype="multipart/form-data">
@@ -64,7 +67,7 @@
                   <input type="hidden" value="{{ $product->id }}" name="id">
                   <input type="hidden" value="{{ $product->nama }}" name="nama">
                   <input type="hidden" name="quantity" value='{{ $product->stok }}'>
-                  <input type="hidden" value="{{ $product->harga_satuan }}" name="harga_satuan">
+                  <input type="hidden" value="{{ $product->harga1_satuan }}" name="harga_satuan">
                   <input type="hidden" value="{{ $product->kode_barang }}" name="kode_barang">
                   <div class="d-flex justify-content-between">
                     <div>jumlah</div>

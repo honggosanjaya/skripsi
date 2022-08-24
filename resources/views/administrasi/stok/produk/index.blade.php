@@ -32,15 +32,12 @@
             <th scope="col" class="text-center">No</th>
             <th scope="col" class="text-center">Kode Barang</th>
             <th scope="col" class="text-center">Nama Barang</th>
-            <th scope="col" class="text-center">Gambar</th>
+            <th scope="col" class="text-center">Kategori</th>
             <th scope="col" class="text-center">Satuan</th>
             <th scope="col" class="text-center">Stok</th>
             <th scope="col" class="text-center">Min Stok</th>
             <th scope="col" class="text-center">Max Stok</th>
             <th scope="col" class="text-center">Harga1 Satuan (Rp)</th>
-            <th scope="col" class="text-center">Harga2 Satuan (Rp)</th>
-            <th scope="col" class="text-center">Harga3 Satuan (Rp)</th>
-            <th scope="col" class="text-center">Volume</th>
             <th scope="col" class="text-center">Status</th>
             <th scope="col" class="text-center">Aksi</th>
           </tr>
@@ -60,26 +57,17 @@
             <td class="text-center">{{ $loop->iteration }}</td>
             <td>{{ $item->kode_barang }}</td>
             <td>{{ $item->nama }}</td>
-            <td class="text-center">
-              @if ($item->gambar)
-                <img src="{{ asset('storage/item/' . $item->gambar) }}" class="img-fluid" width="40">
-              @else
-                <img src="{{ asset('images/default_produk.png') }}" class="img-fluid" width="40">
-              @endif
-            </td>
+            <td class="text-center">{{ $item->id_category ? $item->linkCategoryItem->nama : null }}</td>
             <td>{{ $item->satuan }}</td>
             <td>{{ number_format($item->stok, 0, '', '.') }}</td>
             <td>{{ number_format($item->min_stok, 0, '', '.') }}</td>
             <td>{{ number_format($item->max_stok, 0, '', '.') }}</td>
             <td>{{ number_format($item->harga1_satuan, 0, '', '.') }}</td>
-            <td>{{ number_format($item->harga2_satuan, 0, '', '.') }}</td>
-            <td>{{ number_format($item->harga3_satuan, 0, '', '.') }}</td>
-            <td class="text-capitalize">{{ number_format($item->volume, 0, '', '.') }}</td>
             <td>{{ $item->linkStatus->nama }}</td>
             <td>
               <div class="d-flex flex-column">
-                <a href="/administrasi/stok/produk/{{ $item->id }}/edit" class="btn btn-sm btn-warning border w-75">
-                  <span class="iconify me-2" data-icon="ant-design:edit-filled"></span> edit
+                <a href="/administrasi/stok/produk/{{ $item->id }}/edit" class="btn btn-sm btn-warning w-100">
+                  <span class="iconify me-2" data-icon="ant-design:edit-filled"></span> Edit
                 </a>
 
                 <form action="/administrasi/stok/produk/ubahstatus/{{ $item->id }}" method="POST">
