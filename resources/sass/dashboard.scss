@@ -509,3 +509,48 @@ table tbody th {
         margin-top: 1rem;
     }
 }
+
+// TASK: Warna status dibedakan
+.badge {
+    color: #fff;
+    padding: 0.35em 0.65em;
+    font-weight: bold;
+    text-align: center;
+    border-radius: 0.25em;
+}
+
+.badge-19,
+.badge-20,
+.badge-27,
+.badge-15 {
+    background-color: #dfa916;
+}
+
+.badge-21,
+.badge-29,
+.badge-14 {
+    background-color: #20c21a;
+}
+
+.badge-22 {
+    background-color: #1ac28a;
+}
+
+.badge-23 {
+    background-color: #1aa0c2;
+}
+
+.badge-24,
+.badge-28 {
+    background-color: #1a25c2;
+}
+
+.badge-25,
+.badge-30 {
+    background-color: #c21a1a;
+}
+
+select[readonly] {
+    pointer-events: none;
+    background-color: lightgray;
+}

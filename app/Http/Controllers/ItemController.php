@@ -183,7 +183,7 @@ class ItemController extends Controller
     $order_id= Order::insertGetId([
       'id_customer' => 0,
       'id_staff' => auth()->user()->id_users,
-      'status' => 14,
+      'status' => 15,
       'created_at' => now(),
     ]);
 
@@ -197,9 +197,9 @@ class ItemController extends Controller
         'keterangan' =>  $item->attributes->keterangan,
         'created_at' =>  now(),
       ]);
-      $stok = Item::find($item->id);
-      $stok->stok +=  $item->attributes->jumlah;
-      $stok->save();
+      // $stok = Item::find($item->id);
+      // $stok->stok +=  $item->attributes->jumlah;
+      // $stok->save();
     }
 
     OrderItem::insert($data);

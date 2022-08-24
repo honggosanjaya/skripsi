@@ -794,4 +794,42 @@ class OrderController extends Controller
 
     return redirect('/customer') -> with('pesanSukses', 'Berhasil membatalkan pesanan' );
   }
+
+  public function dataPengajuanOpname(){
+    $opnames = Order::where('id_customer', 0)->where('status', 15)->get();
+
+    return view('supervisor.opname.pengajuanOpname', [
+      'opnames' => $opnames,
+    ]);
+  }
+
+  public function detailPengajuanOpname(Order $order){
+    $opname = Order::where('id',$order->id)->with(['linkOrderItem'])->first();
+
+    return view('supervisor.opname.detailPengajuanOpname',[
+      'opname' => $opname
+    ]);
+  }
+
+  public function konfirmasiPengajuanOpname(Order $order){
+    $opnameItems = OrderItem::where('id_order', $order->id)->get();
+
+    foreach($opnameItems as $item){
+      $barang = Item::find($item->id_item);
+      $barang->stok +=  $item->kuantitas;
+      $barang->save();
+    }
+
+    Order::find($order->id)->update([
+      'status' => 14
+    ]);
+    return redirect('/supervisor/stokopname') -> with('pesanSukses', 'Berhasil mengonfirmasi pengajuan stok opname');
+  }
+
+  public function tolakPengajuanOpname(Order $order){
+    Order::find($order->id)->update([
+      'status' => 14
+    ]);
+    return redirect('/supervisor/stokopname') -> with('pesanSukses', 'Berhasil menolak pengajuan stok opname');
+  }
 }

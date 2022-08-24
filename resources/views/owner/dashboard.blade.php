@@ -13,6 +13,18 @@
         </div>
       @endforeach
     </div>
+
+    <div class="opname_notif notif m-fadeOut p-3">
+      @foreach ($stokOpnamePengajuan as $opname)
+        <div class="card_notif">
+          {{-- <a href="/supervisor/datacustomer/pengajuan/{{ $customerPengajuanLimit->id }}"
+            class="text-black text-decoration-none"> --}}
+          <p class="mb-0 fw-bold">Pengajuan Stok Opname</p>
+          <p class="mb-0">Pengajuan stok opname dari {{ $opname->linkStaff->nama }} </p>
+          {{-- </a> --}}
+        </div>
+      @endforeach
+    </div>
   @endif
 
   <div id="report" class="px-2 px-md-5 pt-4">
@@ -134,17 +146,6 @@
       <input type="hidden" name="countt" value="{{ session('count') }}">
     </div>
   </div>
-
-  <script>
-    const dropdownLimit = document.querySelector(".alert_limit");
-    const notifLimit = document.querySelector(".limit_notif");
-
-    dropdownLimit.addEventListener("click", function() {
-      dropdownLimit.classList.toggle('active');
-      notifLimit.classList.toggle("m-fadeIn");
-      notifLimit.classList.toggle("m-fadeOut");
-    });
-  </script>
 
   @push('JS')
     <script src="{{ asset('js/chart.js') }}"></script>

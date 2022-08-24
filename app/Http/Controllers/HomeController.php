@@ -27,7 +27,8 @@ class HomeController extends Controller
           'customersPengajuanLimit' => $customersPengajuanLimit,
           'role' => $role
         ])->with('datadua', [
-          'lihat_notif_spv' => true
+          'lihat_notif_spv' => true,
+          'jml_pengajuan' => count($customersPengajuanLimit),
         ]);
     }
 
