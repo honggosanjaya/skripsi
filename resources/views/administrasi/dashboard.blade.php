@@ -4,7 +4,7 @@
 @endpush
 
 @section('main_content')
-  <div class="limit_notif notif m-fadeOut p-3">
+  <div class="limit_notif notif m-fadeOut p-3 {{ count($notifikasi['pengajuan_limit']) ? 'hasnotif' : '' }}">
     @foreach ($notifikasi['pengajuan_limit'] as $notif)
       <div class="card_notif">
         <a href="/administrasi/datacustomer/{{ $notif->id }}?route={{ $notif->status_limit_pembelian == 7 ? 'lihatpengajuan' : 'bacapengajuan' }}"
@@ -22,7 +22,7 @@
     @endforeach
   </div>
 
-  <div class="retur_notif notif m-fadeOut p-3">
+  <div class="retur_notif notif m-fadeOut p-3 {{ count($notifikasi['retur']) ? 'hasnotif' : '' }}">
     @foreach ($notifikasi['retur'] as $notif)
       <div class="card_notif">
         <a href="/administrasi/retur/{{ $notif->no_retur }}" class="text-black text-decoration-none">
@@ -36,7 +36,7 @@
     @endforeach
   </div>
 
-  <div class="trip_notif notif m-fadeOut p-3">
+  <div class="trip_notif notif m-fadeOut p-3 {{ count($notifikasi['trip']) ? 'hasnotif' : '' }}">
     @foreach ($notifikasi['trip'] as $notif)
       <div class="card_notif">
         <p class="mb-0 fw-bold">Peringatan Kunjungan</p>
@@ -46,7 +46,8 @@
     @endforeach
   </div>
 
-  <div class="order_notif notif m-fadeOut p-3">
+  <div
+    class="order_notif notif m-fadeOut p-3 {{ count($notifikasi['order_diajukan_salesman']) || count($notifikasi['order_diajukan_customer']) || count($notifikasi['order_selesai']) ? 'hasnotif' : '' }}">
     <ul class="nav nav-tabs" id="myTab" role="tablist">
       <li class="nav-item" role="presentation">
         <a class="nav-link active" id="customer-tab" href="#customer" data-bs-toggle="tab" data-bs-target="#customer"
@@ -136,7 +137,7 @@
     </div>
   </div>
 
-  <div class="reimbursement_notif notif m-fadeOut p-3">
+  <div class="reimbursement_notif notif m-fadeOut p-3 {{ count($notifikasi['reimbursement']) ? 'hasnotif' : '' }}">
     @foreach ($notifikasi['reimbursement'] as $notif)
       <div class="card_notif">
         <a href="/administrasi/reimbursement/pengajuan/{{ $notif->id }}" class="text-black text-decoration-none">

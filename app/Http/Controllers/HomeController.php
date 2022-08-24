@@ -88,7 +88,12 @@ class HomeController extends Controller
           ],
           'notifikasi' => $notifikasi
         ])->with('datadua', [
-          'lihat_notif' => true
+          'lihat_notif' => true,
+          'jml_trip' => count($notifikasi['trip']),
+          'jml_retur' => count($notifikasi['retur']),
+          'jml_order' => count($notifikasi['order_diajukan_salesman']) + count($notifikasi['order_diajukan_customer']) + count($notifikasi['order_selesai']),
+          'jml_pengajuan_limit' => count($notifikasi['pengajuan_limit']),
+          'jml_reimbursement' => count($notifikasi['reimbursement']),
         ]);
     }
 
