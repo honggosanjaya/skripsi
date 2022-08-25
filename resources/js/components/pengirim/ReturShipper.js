@@ -16,6 +16,7 @@ const ReturShipper = () => {
   const { token } = useContext(AuthContext);
   const { idInvoice } = useContext(ReturContext);
   const [historyItems, setHistoryItems] = useState([]);
+  const [latestOrderItems, setLatestOrderItems] = useState({});
   const [cartItems, setCartItems] = useState([]);
   const { dataUser } = useContext(UserContext);
   const [newHistoryItems, setNewHistoryItems] = useState(historyItems);
@@ -56,7 +57,9 @@ const ReturShipper = () => {
     })
       .then((response) => {
         if (!unmounted) {
+          console.log('lala', response.data.data);
           setHistoryItems(response.data.data.history);
+          setLatestOrderItems(response.data.data.latestOrderItems);
         }
       })
       .catch((error) => {
@@ -285,8 +288,8 @@ const ReturShipper = () => {
         <button className="btn btn-primary" onClick={() => setIsShowProduct(!isShowProduct)}>{isShowProduct ? 'Sembunyikan' : 'Lihat Produk'}</button>
         {isShowProduct &&
           <div className="retur-product_wrapper my-3 border">
-            {newHistoryItems && newHistoryItems.map((item) => (
-              <div className="list_history-item p-3" key={item.id}>
+            {Object.keys(latestOrderItems).length > 0 && newHistoryItems.map((item) => (
+              <div className="list_history-item p-3" key={item.id_item}>
                 <div className="d-flex align-items-center">
                   {item.link_item.gambar ?
                     <img src={`${urlAsset}/storage/item/${item.link_item.gambar}`} className="item_image me-3" />
@@ -294,7 +297,7 @@ const ReturShipper = () => {
                   <div>
                     <h2 className='fs-6 text-capitalize fw-bold'>{item.link_item.nama}</h2>
                     <p className="mb-0">
-                      {convertPrice(item.link_item.link_order_item[(item.link_item.link_order_item.length - 1)].harga_satuan)}
+                      {convertPrice(latestOrderItems[item.id_item][0].harga_satuan)}
                     </p>
                   </div>
                 </div>
@@ -305,11 +308,11 @@ const ReturShipper = () => {
                   </div>
                   <div className="col-7 d-flex justify-content-around">
                     <button className="btn btn-primary btn_qty"
-                      onClick={() => handleKurangJumlah(item.link_item, item.alasan, item.link_item.link_order_item[(item.link_item.link_order_item.length - 1)].harga_satuan)}> - </button>
+                      onClick={() => handleKurangJumlah(item.link_item, item.alasan, latestOrderItems[item.id_item][0].harga_satuan)}> - </button>
                     <input type="number" className="form-control mx-2"
                       value={checkifexist(item.link_item)}
-                      onChange={(e) => handleValueChange(item.link_item, e.target.value, item.alasan, item.link_item.link_order_item[(item.link_item.link_order_item.length - 1)].harga_satuan)} />
-                    <button className="btn btn-primary btn_qty" onClick={() => handleTambahJumlah(item.link_item, item.alasan, item.link_item.link_order_item[(item.link_item.link_order_item.length - 1)].harga_satuan)}> + </button>
+                      onChange={(e) => handleValueChange(item.link_item, e.target.value, item.alasan, latestOrderItems[item.id_item][0].harga_satuan)} />
+                    <button className="btn btn-primary btn_qty" onClick={() => handleTambahJumlah(item.link_item, item.alasan, latestOrderItems[item.id_item][0].harga_satuan)}> + </button>
                   </div>
                 </div>
 
