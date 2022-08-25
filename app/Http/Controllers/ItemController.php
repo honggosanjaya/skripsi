@@ -51,7 +51,7 @@ class ItemController extends Controller
   }
 
   public function getListHistoryProductAPI($id){
-    $history = History::where('id_customer',$id)->with('linkItem')->get();
+    $history = History::where('id_customer',$id)->with(['linkItem'])->get();
     $customer = Customer::where('id',$id)->with('linkCustomerType')->first();
 
     $orderItemUnconfirmed=OrderItem::
