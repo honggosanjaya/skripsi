@@ -76,7 +76,28 @@ class HomeController extends Controller
 
         $notifikasi['reimbursement'] = Reimbursement::whereIn('status', [27,28])->get();
 
-        // dd($notifikasi);
+        
+        $kendaraans = Vehicle::all();
+        $today = date_create(now());
+        $pajakVehicles = [];
+
+        foreach($kendaraans as $kendaraan){
+          if($kendaraan->tanggal_pajak){
+            $date2 = date_create($kendaraan->tanggal_pajak);
+            $diff = date_diff($today, $date2);
+            if($diff->format("%R%a")<15){
+              array_push($pajakVehicles, [
+                'id_vehicle' => $kendaraan->id,
+                'tanggal_pajak' => $kendaraan->tanggal_pajak,
+                'nama_vehicle' => $kendaraan->nama,
+                'dateDiff' => $diff->format("%R%a")
+              ]);
+            }
+          }
+        }
+
+        $notifikasi['pajak_kendaraan'] = $pajakVehicles;
+
         $request->session()->increment('count');
         return view('administrasi.dashboard',[
           'role' => $role,
@@ -95,6 +116,7 @@ class HomeController extends Controller
           'jml_order' => count($notifikasi['order_diajukan_salesman']) + count($notifikasi['order_diajukan_customer']) + count($notifikasi['order_selesai']),
           'jml_pengajuan_limit' => count($notifikasi['pengajuan_limit']),
           'jml_reimbursement' => count($notifikasi['reimbursement']),
+          'jml_pajak' => count($pajakVehicles),
         ]);
     }
 

@@ -65,4 +65,3 @@ $(".alert_opname").click(function () {
   $(".alert_notif").not(".alert_opname").removeClass("active");
 });
 
-
