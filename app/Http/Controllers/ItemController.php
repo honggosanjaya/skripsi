@@ -51,8 +51,30 @@ class ItemController extends Controller
   }
 
   public function getListHistoryProductAPI($id){
-    $history = History::where('id_customer',$id)->with('linkItem')->get();
+    $history = History::where('id_customer',$id)->with(['linkItem'])->get();
     $customer = Customer::where('id',$id)->with('linkCustomerType')->first();
+
+    $latestOrderItem = [];
+
+    $histories = History::select('id_item')->where('id_customer',$id)->get();
+    foreach($histories as $h){
+      $query = OrderItem::where('id_item',$h['id_item'])
+      ->whereHas('linkOrder', function($q) use($id){
+          $q->where('id_customer', $id);
+        })
+      ->join('order_tracks','order_items.id_order','=','order_tracks.id_order')
+      ->select('order_items.id', 'order_items.id_order' ,'id_item', 'harga_satuan', 'order_tracks.waktu_diteruskan' ,'order_items.created_at')
+      ->where('order_tracks.waktu_diteruskan', '!=', null)
+      ->latest()->first();
+
+      $latestOrderItem[$h->id_item] = array(
+        $query,
+      );
+
+      // array_push($latestOrderItem, $query);
+    }
+
+    // dd($latestOrderItem);
 
     $orderItemUnconfirmed=OrderItem::
     whereHas('linkOrder',function($q) {
@@ -71,7 +93,8 @@ class ItemController extends Controller
       "status" => "success",
       "data" => [
         "history" => $history,
-        "customer" => $customer
+        "customer" => $customer,
+        "latestOrderItems" => $latestOrderItem
       ],
       "orderRealTime" => $orderItemUnconfirmed
     ], 200);
@@ -183,7 +206,7 @@ class ItemController extends Controller
     $order_id= Order::insertGetId([
       'id_customer' => 0,
       'id_staff' => auth()->user()->id_users,
-      'status' => 14,
+      'status' => 15,
       'created_at' => now(),
     ]);
 
@@ -197,9 +220,9 @@ class ItemController extends Controller
         'keterangan' =>  $item->attributes->keterangan,
         'created_at' =>  now(),
       ]);
-      $stok = Item::find($item->id);
-      $stok->stok +=  $item->attributes->jumlah;
-      $stok->save();
+      // $stok = Item::find($item->id);
+      // $stok->stok +=  $item->attributes->jumlah;
+      // $stok->save();
     }
 
     OrderItem::insert($data);

@@ -273,3 +273,10 @@ $(".alert_reimbursement").click(function () {
   $(".notif").not(".reimbursement_notif").addClass("m-fadeOut").removeClass("m-fadeIn");
   $(".alert_notif").not(".alert_reimbursement").removeClass("active");
 });
+
+$(".alert_pajak").click(function () {
+  $(this).toggleClass("active");
+  $(".pajak_notif").toggleClass("m-fadeIn m-fadeOut");
+  $(".notif").not(".pajak_notif").addClass("m-fadeOut").removeClass("m-fadeIn");
+  $(".alert_notif").not(".alert_pajak").removeClass("active");
+});

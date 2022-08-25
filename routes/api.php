@@ -83,3 +83,5 @@ Route::get('/cashAcountOption', [CashAccountController::class, 'cashAccountOptio
 Route::post('/ajukanReimbursement', [CashAccountController::class, 'simpanReimbursementAPI']);
 Route::post('/ajukanReimbursement/foto/{id}', [CashAccountController::class, 'simpanReimbursementFotoAPI']);
 Route::get('/historyReimbursement/{id}', [CashAccountController::class, 'getHistoryReimbursementAPI']);
+
+Route::post('/historyinvoice', [OrderController::class, 'getInvoiceAPI']);

@@ -127,6 +127,10 @@ const DashboardSales = () => {
             <Link to="/salesman/reimbursement" className='btn btn-purple btn-lg w-100 mt-4'>
               <span className="iconify fs-3 me-2" data-icon="mdi:cash-sync"></span> Reimbursement
             </Link>
+
+            <Link to="/salesman/historyinvoice" className='btn btn-danger btn-lg w-100 mt-4'>
+              <span className="iconify fs-3 me-2" data-icon="fa-solid:file-invoice-dollar"></span> Riwayat Invoice
+            </Link>
           </div>
 
           <Modal show={showModal} onHide={handleCloseModal} centered={true}>

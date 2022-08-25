@@ -794,4 +794,60 @@ class OrderController extends Controller
 
     return redirect('/customer') -> with('pesanSukses', 'Berhasil membatalkan pesanan' );
   }
+
+  public function dataPengajuanOpname(){
+    $opnames = Order::where('id_customer', 0)->where('status', 15)->get();
+
+    return view('supervisor.opname.pengajuanOpname', [
+      'opnames' => $opnames,
+    ]);
+  }
+
+  public function detailPengajuanOpname(Order $order){
+    $opname = Order::where('id',$order->id)->with(['linkOrderItem'])->first();
+
+    return view('supervisor.opname.detailPengajuanOpname',[
+      'opname' => $opname
+    ]);
+  }
+
+  public function konfirmasiPengajuanOpname(Order $order){
+    $opnameItems = OrderItem::where('id_order', $order->id)->get();
+
+    foreach($opnameItems as $item){
+      $barang = Item::find($item->id_item);
+      $barang->stok +=  $item->kuantitas;
+      $barang->save();
+    }
+
+    Order::find($order->id)->update([
+      'status' => 14
+    ]);
+    return redirect('/supervisor/stokopname') -> with('pesanSukses', 'Berhasil mengonfirmasi pengajuan stok opname');
+  }
+
+  public function tolakPengajuanOpname(Order $order){
+    Order::find($order->id)->update([
+      'status' => 14
+    ]);
+    return redirect('/supervisor/stokopname') -> with('pesanSukses', 'Berhasil menolak pengajuan stok opname');
+  }
+
+  public function getInvoiceAPI(Request $request){
+    $id_staff = $request->id_staff;
+    $request->dateStart = $request->dateStart." 00:00:00";
+    $request->dateEnd = $request->dateEnd." 23:59:59";
+
+    $datas = Invoice::whereBetween('created_at', [$request->dateStart, $request->dateEnd])
+    ->whereHas('linkOrder', function($q) use($id_staff) {
+        $q->where('id_staff', $id_staff);
+      })
+    ->with(['linkOrder'])
+    ->get();
+
+    return response()->json([
+      'data' => $datas,
+      'status' => 'success'
+    ]);
+  }
 }

@@ -37,20 +37,38 @@
         <small class="d-block mb-0 fw-bold">Limit</small>
       </div>
 
-      <div class="alert_reimbursement alert_notif d-flex justify-content-center align-items-center flex-column me-5">
+      <div class="alert_reimbursement alert_notif d-flex justify-content-center align-items-center flex-column me-3">
         <i class="bi bi-bell-fill fs-3"></i>
         @if ($datadua['jml_reimbursement'] > 0)
           <div class="hasnotif_indicator">{{ $datadua['jml_reimbursement'] }}</div>
         @endif
         <small class="d-block mb-0 fw-bold">Reimburs</small>
       </div>
+
+      <div class="alert_pajak alert_notif d-flex justify-content-center align-items-center flex-column me-5">
+        <i class="bi bi-bell-fill fs-3"></i>
+        @if ($datadua['jml_pajak'] > 0)
+          <div class="hasnotif_indicator">{{ $datadua['jml_pajak'] }}</div>
+        @endif
+        <small class="d-block mb-0 fw-bold text-center">Pajak<br>Kendaraan</small>
+      </div>
     @endif
 
     @if (auth()->user()->linkStaff->linkStaffRole->nama == 'supervisor')
       @if (!empty($datadua['lihat_notif_spv']))
-        <div class="alert_limit alert_notif d-flex justify-content-center align-items-center flex-column me-5">
+        <div class="alert_limit alert_notif d-flex justify-content-center align-items-center flex-column me-3">
           <i class="bi bi-bell-fill fs-3"></i>
+          @if ($datadua['jml_pengajuan'] > 0)
+            <div class="hasnotif_indicator">{{ $datadua['jml_pengajuan'] }}</div>
+          @endif
           <small class="d-block mb-0 fw-bold text-center">Limit<br>Pembelian</small>
+        </div>
+        <div class="alert_opname alert_notif d-flex justify-content-center align-items-center flex-column me-5">
+          <i class="bi bi-bell-fill fs-3"></i>
+          @if ($datadua['juml_opname'] > 0)
+            <div class="hasnotif_indicator">{{ $datadua['juml_opname'] }}</div>
+          @endif
+          <small class="d-block mb-0 fw-bold text-center">Stok<br>Opname</small>
         </div>
       @endif
     @endif

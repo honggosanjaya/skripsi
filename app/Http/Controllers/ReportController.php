@@ -199,14 +199,18 @@ class ReportController extends Controller
         // dd($data);
 
         $customersPengajuanLimit = Customer::where('status_limit_pembelian', 7)->get();
+        $stokOpnamePengajuan = Order::where('id_customer',0)->where('status',15)->get();
         $request->session()->increment('count');
 
         return view('owner.dashboard',[
           'data' => $data,
           'input' => $input,
           'customersPengajuanLimit' => $customersPengajuanLimit,
+          'stokOpnamePengajuan' => $stokOpnamePengajuan
         ])->with('datadua', [
-          'lihat_notif_spv' => true
+          'lihat_notif_spv' => true,
+          'jml_pengajuan' => count($customersPengajuanLimit),
+          'juml_opname' => count($stokOpnamePengajuan)
         ]);
     }
 

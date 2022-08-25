@@ -20,6 +20,6 @@ class History extends Model
     }
 
     public function linkItem(){
-        return $this->belongsTo(Item::class,'id_item');
+        return $this->belongsTo(Item::class,'id_item')->with(['linkOrderItem']);
     }
 }
