@@ -82,6 +82,19 @@ class ReportController extends Controller
             ->select('id_item', \DB::raw('SUM(kuantitas) as total'))
         ->groupBy('id_item')->with('linkItem');
 
+
+        // Perhitungan Uang Retur 
+        $returInvoices = Retur::where('status', 12)->where('tipe_retur', 1)
+        ->whereHas('linkInvoice', function($q) use($request){
+          $q->whereHas('linkOrder', function($q) use($request){
+            $q->whereHas('linkOrderTrack', function($q) use($request){
+              $q->whereIn('status', [23,24])->whereBetween('waktu_sampai', [$request->dateStart, $request->dateEnd]);
+            });
+          });
+        })
+        ->select('id_item', \DB::raw('SUM(kuantitas*harga_satuan) as total_retur'))
+        ->groupBy('id_item')->get()->sum('total_retur');
+
         $data=[];
         $data['produk_laris'] = $item->orderBy('total', 'DESC')->take(10)->get();
         $item =OrderItem::
@@ -155,7 +168,7 @@ class ReportController extends Controller
             ->select('id_item', \DB::raw('SUM(kuantitas) as total'), \DB::raw('count(*) as count'))
         ->groupBy('id_item')->with('linkItem')->orderBy('count', 'ASC')->take($request->count??5)->get();
 
-//ceking aja
+
         $data['pp'] = OrderItem::
             whereHas('linkOrder',function($q) use($request){
                 $q->whereHas('linkOrderTrack',function($q) use($request) {
@@ -195,7 +208,9 @@ class ReportController extends Controller
                     $q->whereIn('status', [23,24])->whereBetween('waktu_sampai', [$request->dateStart, $request->dateEnd]);
                 });
             })->get()->pluck('harga_total','id_order')->toArray();
-//ceking aja
+
+        $data['totalReturInvoice'] = $returInvoices;
+        //ceking aja
         // dd($data);
 
         $customersPengajuanLimit = Customer::where('status_limit_pembelian', 7)->get();

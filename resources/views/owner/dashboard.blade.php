@@ -113,6 +113,8 @@
           <h1 class="fs-5 fw-bold mb-2 mt-4">Total Untung/Rugi</h1>
           <span>Rp. {{ number_format($data['omzet']->total - $data['pembelian'] + $data['retur'], 0, '', '.') }}</span>
           {{-- <button class="btn btn-primary d-block mx-auto mt-4">View Detail</button> --}}
+          <h1 class="fs-5 fw-bold mb-2 mt-4">Total Retur</h1>
+          <span>Rp. {{ number_format($data['totalReturInvoice'], 0, '', '.') }}</span>
         </div>
       </div>
 
