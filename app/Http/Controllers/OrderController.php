@@ -832,4 +832,22 @@ class OrderController extends Controller
     ]);
     return redirect('/supervisor/stokopname') -> with('pesanSukses', 'Berhasil menolak pengajuan stok opname');
   }
+
+  public function getInvoiceAPI(Request $request){
+    $id_staff = $request->id_staff;
+    $request->dateStart = $request->dateStart." 00:00:00";
+    $request->dateEnd = $request->dateEnd." 23:59:59";
+
+    $datas = Invoice::whereBetween('created_at', [$request->dateStart, $request->dateEnd])
+    ->whereHas('linkOrder', function($q) use($id_staff) {
+        $q->where('id_staff', $id_staff);
+      })
+    ->with(['linkOrder'])
+    ->get();
+
+    return response()->json([
+      'data' => $datas,
+      'status' => 'success'
+    ]);
+  }
 }
