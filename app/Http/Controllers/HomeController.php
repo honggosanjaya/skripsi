@@ -126,7 +126,7 @@ class HomeController extends Controller
 
     public function indexCustomer(Request $request){
       $customer = Customer::where('id', auth()->user()->id_users)->first();
-      $event = Event::where('status', 16)->get();
+      $event = Event::where('status_enum', '1')->get();
 
 
       $kode_customers=Order::where('id_customer', auth()->user()->id_users)

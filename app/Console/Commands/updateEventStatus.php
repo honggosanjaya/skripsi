@@ -39,7 +39,7 @@ class updateEventStatus extends Command
      */
     public function handle()
     {
-        Event::where('date_end','<', now())->update(['status'=>17]);
+        Event::where('date_end','<', now())->update(['status_enum'=>'-1']);
         $this->info('event Update has been send successfully');
         return 0;
     }

@@ -46,9 +46,9 @@ class Status extends Model
     //     return $this->hasMany(Order::class,'status','id');
     // }
 
-    public function linkEvent(){
-        return $this->hasMany(Event::class,'status','id');
-    }
+    // public function linkEvent(){
+    //     return $this->hasMany(Event::class,'status','id');
+    // }
 
     public function linkOrderTrack(){
         return $this->hasMany(OrderTrack::class,'status','id');
