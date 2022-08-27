@@ -14,7 +14,7 @@ class DropStatusInStaffsTable extends Migration
     public function up()
     {
         Schema::table('staffs', function (Blueprint $table) {
-          // $table->dropColumn('status');
+          $table->dropColumn('status');
         });
     }
 

@@ -14,7 +14,7 @@ class DropStatusInOrderTracksTable extends Migration
     public function up()
     {
         Schema::table('order_tracks', function (Blueprint $table) {
-          // $table->dropColumn('status');
+          $table->dropColumn('status');
         });
     }
 

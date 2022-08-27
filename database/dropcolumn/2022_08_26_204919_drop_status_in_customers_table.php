@@ -14,7 +14,7 @@ class DropStatusInCustomersTable extends Migration
     public function up()
     {
         Schema::table('customers', function (Blueprint $table) {
-          // $table->dropColumn('status');
+          $table->dropColumn('status');
         });
     }
 

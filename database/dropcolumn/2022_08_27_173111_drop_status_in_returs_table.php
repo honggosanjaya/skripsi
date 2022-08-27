@@ -14,7 +14,7 @@ class DropStatusInRetursTable extends Migration
     public function up()
     {
         Schema::table('returs', function (Blueprint $table) {
-            // $table->dropColumn('status');
+            $table->dropColumn('status');
         });
     }
 

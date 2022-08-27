@@ -14,7 +14,7 @@ class DropStatusInTripsTable extends Migration
     public function up()
     {
         Schema::table('trips', function (Blueprint $table) {
-            // $table->dropColumn('status');
+            $table->dropColumn('status');
         });
     }
 

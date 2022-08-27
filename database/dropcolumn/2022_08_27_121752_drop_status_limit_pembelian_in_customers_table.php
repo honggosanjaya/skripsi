@@ -14,7 +14,7 @@ class DropStatusLimitPembelianInCustomersTable extends Migration
     public function up()
     {
         Schema::table('customers', function (Blueprint $table) {
-          // $table->dropColumn('status_limit_pembelian');
+          $table->dropColumn('status_limit_pembelian');
         });
     }
 

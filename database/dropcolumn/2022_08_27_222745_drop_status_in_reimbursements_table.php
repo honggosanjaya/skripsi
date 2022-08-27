@@ -14,7 +14,7 @@ class DropStatusInReimbursementsTable extends Migration
     public function up()
     {
         Schema::table('reimbursements', function (Blueprint $table) {
-            // $table->dropColumn('status');
+            $table->dropColumn('status');
         });
     }
 
