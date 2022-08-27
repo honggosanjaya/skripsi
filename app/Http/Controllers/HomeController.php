@@ -59,17 +59,17 @@ class HomeController extends Controller
 
         $notifikasi['order_diajukan_salesman'] = 
         Order::whereHas('linkOrderTrack', function($q){
-            $q->where('status',20);
+            $q->where('status_enum','1');
         })->with(['linkOrderTrack'])->get();
 
         $notifikasi['order_diajukan_customer'] = 
         Order::whereHas('linkOrderTrack', function($q){
-          $q->where('status',19);
+          $q->where('status_enum','0');
         })->with(['linkOrderTrack'])->get();
 
         $notifikasi['order_selesai'] = 
         Order::whereHas('linkOrderTrack', function($q){
-            $q->where('status',23)->where('id_staff_pengonfirmasi',auth()->user()->id_users);
+            $q->where('status_enum','4')->where('id_staff_pengonfirmasi',auth()->user()->id_users);
         })->with(['linkOrderTrack'])->get();
 
         $notifikasi['pengajuan_limit'] = Customer::where('status_limit_pembelian_enum', '!=', null)->get();
@@ -161,28 +161,28 @@ class HomeController extends Controller
         $data = Customer::where('id','=',auth()->user()->id_users)->first();
         $order_diajukan=Order::where('id_customer', auth()->user()->id_users)
         ->whereHas('linkOrderTrack',function($q) {
-          $q->where('status', 19)->orWhere('status', 20);
+          $q->where('status_enum', '0')->orWhere('status_enum', '1');
         })
         ->with(['linkOrderTrack'])
         ->count();
 
         $order_dikonfirmasi=Order::where('id_customer', auth()->user()->id_users)
         ->whereHas('linkOrderTrack',function($q) {
-          $q->where('status', 21);
+          $q->where('status_enum', '2');
         })
         ->with(['linkOrderTrack'])
         ->count();
 
         $order_dikirim=Order::where('id_customer', auth()->user()->id_users)
         ->whereHas('linkOrderTrack',function($q) {
-          $q->where('status', 22);
+          $q->where('status_enum', '3');
         })
         ->with(['linkOrderTrack'])
         ->count();
 
         $order_diterima=Order::where('id_customer', auth()->user()->id_users)
         ->whereHas('linkOrderTrack',function($q) {
-          $q->where('status', 23)->orWhere('status', 24);
+          $q->where('status_enum', '4')->orWhere('status_enum', '5');
         })
         ->with(['linkOrderTrack'])
         ->count();
@@ -208,27 +208,27 @@ class HomeController extends Controller
 
     public function lihatPesanan(Customer $customer){
         $diajukans = Order::whereHas('linkOrderTrack', function($q){
-            $q->where('status',19)->orWhere('status', 20);
+            $q->where('status_enum','0')->orWhere('status_enum', '1');
         })->where('id_customer','=',$customer->id)->with(['linkOrderTrack','linkInvoice','linkOrderItem.linkItem'])
         ->get();
 
         $dikonfirmasiAdministrasi = Order::whereHas('linkOrderTrack', function($q){
-            $q->where('status',21);
+            $q->where('status_enum','2');
         })->where('id_customer','=',$customer->id)->with(['linkOrderTrack.linkStaffPengonfirmasi','linkInvoice','linkOrderItem.linkItem'])
         ->get();
 
         $dalamPerjalanan = Order::whereHas('linkOrderTrack', function($q){
-            $q->where('status',22);
+            $q->where('status_enum','3');
         })->where('id_customer','=',$customer->id)->with(['linkOrderTrack','linkInvoice','linkOrderItem.linkItem'])
         ->get();
 
         $telahSampai = Order::whereHas('linkOrderTrack', function($q){
-            $q->where('status',23)->orWhere('status',24);
+            $q->where('status_enum','4')->orWhere('status_enum','5');
         })->where('id_customer','=',$customer->id)->with(['linkOrderTrack','linkInvoice','linkOrderItem.linkItem'])
         ->get();
 
         $ditolak = Order::whereHas('linkOrderTrack', function($q){
-            $q->where('status',25);
+            $q->where('status_enum','-1');
         })->where('id_customer','=',$customer->id)->with(['linkOrderTrack','linkInvoice','linkOrderItem.linkItem'])
         ->get();      
              

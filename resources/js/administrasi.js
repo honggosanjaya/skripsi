@@ -80,7 +80,8 @@ $(document).on('click', '#retur-admin .button-submit-modal', function () {
 
 if ($('.status-track').length > 0) {
   let statustrack = $('.status-track').data('status') + 1
-  for (let index = 19; index <= statustrack; index++) {
+  // for (let index = 19; index <= statustrack; index++) {
+  for (let index = -1; index <= statustrack; index++) {
     if (index != statustrack) {
       $('.s-' + index).addClass('completed');
 

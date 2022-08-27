@@ -38,7 +38,7 @@ class ReportController extends Controller
         $request->dateEnd=$request->dateEnd." 23:59:59";
         $data = 
         Order::whereHas('linkOrderTrack',function($q) use($request){
-            $q->whereIn('status', [23,24])->whereBetween('waktu_sampai',[$request->dateStart,$request->dateEnd]);
+            $q->where('status_enum', '4')->orWhere('status_enum', '5')->whereBetween('waktu_sampai',[$request->dateStart,$request->dateEnd]);
         })->with(['linkOrderTrack.linkStatus','linkInvoice', 'linkStaff', 'linkCustomer.linkCustomerType']);
         if($request->salesman??null){
             $data = $data->whereHas('linkStaff',function($q) use($request){
@@ -73,7 +73,7 @@ class ReportController extends Controller
         $item =OrderItem::
             whereHas('linkOrder',function($q) use($request){
                 $q->whereHas('linkOrderTrack',function($q) use($request) {
-                    $q->whereIn('status', [23,24])->whereBetween('waktu_sampai', [$request->dateStart, $request->dateEnd]);
+                    $q->where('status_enum', '4')->orWhere('status_enum', '5')->whereBetween('waktu_sampai', [$request->dateStart, $request->dateEnd]);
                 });
             })
             ->whereHas('linkItem',function($q) use($request){
@@ -88,7 +88,7 @@ class ReportController extends Controller
         ->whereHas('linkInvoice', function($q) use($request){
           $q->whereHas('linkOrder', function($q) use($request){
             $q->whereHas('linkOrderTrack', function($q) use($request){
-              $q->whereIn('status', [23,24])->whereBetween('waktu_sampai', [$request->dateStart, $request->dateEnd]);
+              $q->where('status_enum', '4')->orWhere('status_enum', '5')->whereBetween('waktu_sampai', [$request->dateStart, $request->dateEnd]);
             });
           });
         })
@@ -100,7 +100,7 @@ class ReportController extends Controller
         $item =OrderItem::
             whereHas('linkOrder',function($q) use($request){
                 $q->whereHas('linkOrderTrack',function($q) use($request) {
-                    $q->whereIn('status', [23,24])->whereBetween('waktu_sampai', [$request->dateStart, $request->dateEnd]);
+                    $q->where('status_enum', '4')->orWhere('status_enum', '5')->whereBetween('waktu_sampai', [$request->dateStart, $request->dateEnd]);
                 });
             })
             ->whereHas('linkItem',function($q) use($request){
@@ -120,7 +120,7 @@ class ReportController extends Controller
         
         $data['omzet'] = Invoice::whereHas('linkOrder',function($q) use($request) {
             $q->whereHas('linkOrderTrack',function($q) use($request) {
-                $q->whereIn('status', [23,24])->whereBetween('waktu_sampai', [$request->dateStart, $request->dateEnd]);
+                $q->where('status_enum', '4')->orWhere('status_enum', '5')->whereBetween('waktu_sampai', [$request->dateStart, $request->dateEnd]);
             });
         })->select(\DB::raw('SUM(harga_total) as total'))->first();
 
@@ -136,7 +136,7 @@ class ReportController extends Controller
         $data['pembelian'] = OrderItem::
             whereHas('linkOrder',function($q) use($request){
                 $q->whereHas('linkOrderTrack',function($q) use($request) {
-                    $q->whereIn('status', [23,24])->whereBetween('waktu_sampai', [$request->dateStart, $request->dateEnd]);
+                    $q->where('status_enum', '4')->orWhere('status_enum', '5')->whereBetween('waktu_sampai', [$request->dateStart, $request->dateEnd]);
                 });
             })
             ->whereHas('linkItem',function($q) use($request){
@@ -159,7 +159,7 @@ class ReportController extends Controller
         $data['produk_slow'] =OrderItem::
             whereHas('linkOrder',function($q) use($request){
                 $q->whereHas('linkOrderTrack',function($q) use($request) {
-                    $q->whereIn('status', [23,24])->whereBetween('waktu_sampai', [$request->dateStart, $request->dateEnd]);
+                    $q->where('status_enum', '4')->orWhere('status_enum', '5')->whereBetween('waktu_sampai', [$request->dateStart, $request->dateEnd]);
                 });
             })
             ->whereHas('linkItem',function($q) use($request){
@@ -172,7 +172,7 @@ class ReportController extends Controller
         $data['pp'] = OrderItem::
             whereHas('linkOrder',function($q) use($request){
                 $q->whereHas('linkOrderTrack',function($q) use($request) {
-                    $q->whereIn('status', [23,24])->whereBetween('waktu_sampai', [$request->dateStart, $request->dateEnd]);
+                    $q->where('status_enum', '4')->orWhere('status_enum', '5')->whereBetween('waktu_sampai', [$request->dateStart, $request->dateEnd]);
                 });
             })
             ->whereHas('linkItem',function($q) use($request){
@@ -189,7 +189,7 @@ class ReportController extends Controller
         $data['ppd'] = OrderItem::
             whereHas('linkOrder',function($q) use($request){
                 $q->whereHas('linkOrderTrack',function($q) use($request) {
-                    $q->whereIn('status', [23,24])->whereBetween('waktu_sampai', [$request->dateStart, $request->dateEnd]);
+                    $q->where('status_enum', '4')->orWhere('status_enum', '5')->whereBetween('waktu_sampai', [$request->dateStart, $request->dateEnd]);
                 });
             })
             ->whereHas('linkItem',function($q) use($request){
@@ -205,7 +205,7 @@ class ReportController extends Controller
 
         $data['invd'] = Invoice::whereHas('linkOrder',function($q) use($request) {
                 $q->whereHas('linkOrderTrack',function($q) use($request) {
-                    $q->whereIn('status', [23,24])->whereBetween('waktu_sampai', [$request->dateStart, $request->dateEnd]);
+                    $q->where('status_enum', '4')->orWhere('status_enum', '5')->whereBetween('waktu_sampai', [$request->dateStart, $request->dateEnd]);
                 });
             })->get()->pluck('harga_total','id_order')->toArray();
 

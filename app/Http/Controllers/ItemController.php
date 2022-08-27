@@ -37,7 +37,7 @@ class ItemController extends Controller
     })
     ->whereHas('linkOrder',function($q) {
       $q->whereHas('linkOrderTrack',function($q) {
-        $q->where('status','!=', 25);
+        $q->where('status_enum','!=', '-1');
       });
     })
     ->select('id_item', DB::raw('SUM(kuantitas) as jumlah_blmkonfirmasi'))      
@@ -80,7 +80,7 @@ class ItemController extends Controller
     })
     ->whereHas('linkOrder',function($q) {
       $q->whereHas('linkOrderTrack',function($q) {
-        $q->where('status','!=', 25);
+        $q->where('status_enum','!=', '-1');
       });
     })
     ->select('id_item', DB::raw('SUM(kuantitas) as jumlah_blmkonfirmasi'))      
@@ -564,7 +564,7 @@ class ItemController extends Controller
       })
       ->whereHas('linkOrder',function($q) {
         $q->whereHas('linkOrderTrack',function($q) {
-          $q->where('status','!=', 25);
+          $q->where('status_enum','!=', '-1');
         });
       })
       ->select('id_item', DB::raw('SUM(kuantitas) as jumlah_blmkonfirmasi'))      
@@ -589,7 +589,7 @@ class ItemController extends Controller
       })
       ->whereHas('linkOrder',function($q) {
         $q->whereHas('linkOrderTrack',function($q) {
-          $q->where('status','!=', 25);
+          $q->where('status_enum','!=', '-1');
         });
       })
       ->select('id_item', DB::raw('SUM(kuantitas) as jumlah_blmkonfirmasi'))      

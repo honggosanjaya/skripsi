@@ -50,9 +50,9 @@ class Status extends Model
     //     return $this->hasMany(Event::class,'status','id');
     // }
 
-    public function linkOrderTrack(){
-        return $this->hasMany(OrderTrack::class,'status','id');
-    }
+    // public function linkOrderTrack(){
+    //     return $this->hasMany(OrderTrack::class,'status','id');
+    // }
 
     public function linkReimbursement(){
       return $this->hasMany(Reimbursement::class,'status','id');

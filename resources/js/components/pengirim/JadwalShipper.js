@@ -27,7 +27,7 @@ const ShippingShipper = () => {
   const [listShipping, setListShipping] = useState([]);
   const [listDetailItem, setListDetailItem] = useState([]);
   const [show, setShow] = useState(false);
-  const [statusShipping, setStatusShipping] = useState(22);
+  const [statusShipping, setStatusShipping] = useState('3');
   const [showBuktiPengiriman, setShowBuktiPengiriman] = useState(false);
   const [detailShipping, setDetailShipping] = useState(null);
   const [file, setFile] = useState(null);
@@ -43,8 +43,8 @@ const ShippingShipper = () => {
   const [sudahSampai, setSudahSampai] = useState(null);
 
   const radios = [
-    { name: 'Perlu Dikirim', value: 22 },
-    { name: 'Sudah Sampai', value: 23 },
+    { name: 'Perlu Dikirim', value: '3' },
+    { name: 'Sudah Sampai', value: '4' },
   ];
   let $imagePreview = null;
 

@@ -16,7 +16,7 @@ const ListShipping = ({ listShipping, statusShipping, handleShow, keyword, setKe
 
       {listShipping.length > 0 && <div className='pengiriman_wrapper'>
         {listShipping.map((data, index) => (
-          <div className={`list_pengiriman px-2 ${data.link_order_track.status != statusShipping ? ((statusShipping == 23 && data.link_order_track.status == 24) ? "d-block" : "d-none") : "d-block"}`} key={`jadwal${index}`}>
+          <div className={`list_pengiriman px-2 ${data.link_order_track.status_enum != statusShipping ? ((statusShipping == '4' && data.link_order_track.status_enum == '5') ? "d-block" : "d-none") : "d-block"}`} key={`jadwal${index}`}>
             <div className='info-2column'>
               <span className='d-flex'>
                 <b>No. Invoice</b>
@@ -52,9 +52,9 @@ const ListShipping = ({ listShipping, statusShipping, handleShow, keyword, setKe
           </div>
         ))}
 
-        {statusShipping == 22 && perluKirim == 0 && <p className='text-center text-danger mb-0'>tidak ada yang perlu dikirim </p>}
+        {statusShipping == '3' && perluKirim == 0 && <p className='text-center text-danger mb-0'>tidak ada yang perlu dikirim </p>}
 
-        {statusShipping != 22 && sudahSampai == 0 && <p className='text-center text-danger mb-0'>tidak ada yang sudah sampai </p>}
+        {statusShipping != '3' && sudahSampai == 0 && <p className='text-center text-danger mb-0'>tidak ada yang sudah sampai </p>}
       </div>}
     </Fragment>
   );
