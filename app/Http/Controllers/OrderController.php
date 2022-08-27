@@ -212,7 +212,7 @@ class OrderController extends Controller
       'koordinat' => $request->koordinat,
       'waktu_masuk' => date('Y-m-d H:i:s', $request->jam_masuk),
       'waktu_keluar' => null,
-      'status' => 2,
+      'status_enum' => '2',
       'created_at'=> now()
     ];
     if($trip == null){

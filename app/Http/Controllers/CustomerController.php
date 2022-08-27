@@ -145,7 +145,6 @@ class CustomerController extends Controller
           'koordinat' => $request->koordinat,
           'waktu_masuk' => date('Y-m-d H:i:s', $request->jam_masuk),
           'waktu_keluar' => now(),
-          'status' => 1,
           'status_enum' => '1',
           'created_at'=> now()
         ]);
