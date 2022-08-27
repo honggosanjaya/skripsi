@@ -213,7 +213,7 @@ class ReportController extends Controller
         //ceking aja
         // dd($data);
 
-        $customersPengajuanLimit = Customer::where('status_limit_pembelian', 7)->get();
+        $customersPengajuanLimit = Customer::where('status_limit_pembelian_enum', '0')->get();
         $stokOpnamePengajuan = Order::where('id_customer',0)->where('status',15)->get();
         $request->session()->increment('count');
 

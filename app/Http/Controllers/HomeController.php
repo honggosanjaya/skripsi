@@ -21,7 +21,7 @@ class HomeController extends Controller
 
     public function indexSupervisor(){
         $role='indexSupervisor';
-        $customersPengajuanLimit = Customer::where('status_limit_pembelian', 7)->get();
+        $customersPengajuanLimit = Customer::where('status_limit_pembelian_enum', 0)->get();
 
         return view('supervisor.dashboard',[
           'customersPengajuanLimit' => $customersPengajuanLimit,
@@ -43,7 +43,7 @@ class HomeController extends Controller
         $item_aktif = Item::where('status', 10)->count();
         $vehicle = Vehicle::count();
         $customer = Customer::count();
-        $customer_aktif = Customer::where('status', 3)->count();
+        $customer_aktif = Customer::where('status_enum', 1)->count();
 
         $notifikasi = [];
         $notifikasi['trip'] = 
@@ -72,11 +72,10 @@ class HomeController extends Controller
             $q->where('status',23)->where('id_staff_pengonfirmasi',auth()->user()->id_users);
         })->with(['linkOrderTrack'])->get();
 
-        $notifikasi['pengajuan_limit'] = Customer::where('Status_limit_pembelian', '!=', null)->get();
+        $notifikasi['pengajuan_limit'] = Customer::where('status_limit_pembelian_enum', '!=', null)->get();
 
         $notifikasi['reimbursement'] = Reimbursement::whereIn('status', [27,28])->get();
 
-        
         $kendaraans = Vehicle::all();
         $today = date_create(now());
         $pajakVehicles = [];

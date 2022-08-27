@@ -21,8 +21,9 @@
       <span><b>Counter Effective Call</b>{{ $customer->counter_to_effective_call }}</span>
       <span><b>Limit Pembelian</b>{{ $customer->limit_pembelian }}</span>
       <span><b>Pengajuan Limit Pembelian</b>{{ $customer->pengajuan_limit_pembelian }}</span>
-      <span><b>Status Limit Pembelian</b>{{ $customer->status_limit_pembelian }}</span>
-      <span><b>Status</b>{{ $customer->linkStatus->nama }}</span>
+      <span><b>Status Limit
+          Pembelian</b>{{ $customer->status_limit_pembelian_enum == 1 ? 'Disetujui' : ($customer->status_limit_pembelian_enum == -1 ? 'Tidak Disetujui' : 'Diajukan') }}</span>
+      <span><b>Status</b>{{ $customer->status_enum == 1 ? 'Active' : 'Inactive' }}</span>
       <span><b>Foto Tempat Usaha</b>
         @if ($customer->foto)
           <img src="{{ asset('storage/customer/' . $customer->foto) }}" class="img-preview img-fluid">

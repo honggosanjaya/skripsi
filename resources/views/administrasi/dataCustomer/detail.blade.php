@@ -33,9 +33,19 @@
 
         <span><b>Status Limit Pembelian</b>
           @if ($old_data)
-            {{ $old_data['status_limit_pembelian'] == 5 ? 'Disetujui' : 'Tidak Disetujui' }}
+            {{ $old_data['status_limit_pembelian_enum'] == 1
+                ? 'Disetujui'
+                : ($old_data['status_limit_pembelian_enum'] == -1
+                    ? 'Tidak Disetujui'
+                    : 'Diajukan') }}
           @else
-            {{ $customer->status_limit_pembelian ?? null }}
+            @if ($customer->status_limit_pembelian_enum != null)
+              {{ $customer->status_limit_pembelian_enum == 1
+                  ? 'Disetujui'
+                  : ($customer->status_limit_pembelian_enum == -1
+                      ? 'Tidak Disetujui'
+                      : 'Diajukan') }}
+            @endif
         </span>
         @endif
 
@@ -45,7 +55,12 @@
         @else
           <span><b>Foto Tempat Usaha</b> </span>
         @endif
-        <span><b>Status</b> {{ $customer->linkStatus->nama ?? null }}</span>
+
+        @if ($customer->status_enum)
+          <span><b>Status</b> {{ $customer->status_enum == 1 ? 'Active' : 'Inactive' }}</span>
+        @else
+          <span><b>Status</b> </span>
+        @endif
       </div>
     </div>
   </div>

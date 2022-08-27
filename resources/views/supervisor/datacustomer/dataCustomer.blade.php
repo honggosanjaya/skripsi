@@ -65,7 +65,7 @@
               <td>{{ $customer->email }}</td>
               <td>{{ $customer->full_alamat }}</td>
               <td>{{ $customer->telepon }}</td>
-              <td class="text-capitalize text-center">{{ $customer->linkStatus->nama }}</td>
+              <td class="text-capitalize text-center">{{ $customer->status_enum == 1 ? 'Active' : 'Inactive' }}</td>
             </tr>
           @endforeach
         </tbody>
