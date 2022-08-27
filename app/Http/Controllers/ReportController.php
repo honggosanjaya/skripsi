@@ -214,7 +214,7 @@ class ReportController extends Controller
         // dd($data);
 
         $customersPengajuanLimit = Customer::where('status_limit_pembelian_enum', '0')->get();
-        $stokOpnamePengajuan = Order::where('id_customer',0)->where('status',15)->get();
+        $stokOpnamePengajuan = Order::where('id_customer',0)->where('status_enum','-1')->get();
         $request->session()->increment('count');
 
         return view('owner.dashboard',[

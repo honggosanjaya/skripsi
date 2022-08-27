@@ -40,7 +40,7 @@ class OrderController extends Controller
         $id_order=Order::insertGetId([
           'id_customer' => $id_customer,
           'id_staff' => $idStaf,
-          'status' => 15,
+          'status_enum' => '-1',
           'created_at'=> now(),
         ]);
         
@@ -527,7 +527,7 @@ class OrderController extends Controller
 
     $order_id=Order::insertGetId([
         'id_customer' => auth()->user()->id_users,
-        'status' => 15,
+        'status_enum' => '-1',
         'created_at'=> now(),
     ]);
 
@@ -663,7 +663,7 @@ class OrderController extends Controller
       ]);
 
       Order::where('id', $order->id)->update([
-        'status' => 14
+        'status_enum' => '1'
       ]);
 
       $rules = [
@@ -796,7 +796,7 @@ class OrderController extends Controller
   }
 
   public function dataPengajuanOpname(){
-    $opnames = Order::where('id_customer', 0)->where('status', 15)->get();
+    $opnames = Order::where('id_customer', 0)->where('status_enum', '-1')->get();
 
     return view('supervisor.opname.pengajuanOpname', [
       'opnames' => $opnames,
@@ -821,14 +821,14 @@ class OrderController extends Controller
     }
 
     Order::find($order->id)->update([
-      'status' => 14
+      'status_enum' => '1'
     ]);
     return redirect('/supervisor/stokopname') -> with('pesanSukses', 'Berhasil mengonfirmasi pengajuan stok opname');
   }
 
   public function tolakPengajuanOpname(Order $order){
     Order::find($order->id)->update([
-      'status' => 14
+      'status_enum' => '1'
     ]);
     return redirect('/supervisor/stokopname') -> with('pesanSukses', 'Berhasil menolak pengajuan stok opname');
   }

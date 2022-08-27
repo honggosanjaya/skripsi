@@ -33,7 +33,7 @@ class ItemController extends Controller
 
     $orderItemUnconfirmed=OrderItem::
     whereHas('linkOrder',function($q) {
-      $q->where('status', 15);
+      $q->where('status_enum', '-1');
     })
     ->whereHas('linkOrder',function($q) {
       $q->whereHas('linkOrderTrack',function($q) {
@@ -76,7 +76,7 @@ class ItemController extends Controller
 
     $orderItemUnconfirmed=OrderItem::
     whereHas('linkOrder',function($q) {
-      $q->where('status', 15);
+      $q->where('status_enum', '-1');
     })
     ->whereHas('linkOrder',function($q) {
       $q->whereHas('linkOrderTrack',function($q) {
@@ -204,7 +204,7 @@ class ItemController extends Controller
     $order_id= Order::insertGetId([
       'id_customer' => 0,
       'id_staff' => auth()->user()->id_users,
-      'status' => 15,
+      'status_enum' => '-1',
       'created_at' => now(),
     ]);
 
@@ -560,7 +560,7 @@ class ItemController extends Controller
   
       $orderItemUnconfirmed=OrderItem::
       whereHas('linkOrder',function($q) {
-        $q->where('status', 15);
+        $q->where('status_enum', '-1');
       })
       ->whereHas('linkOrder',function($q) {
         $q->whereHas('linkOrderTrack',function($q) {
@@ -585,7 +585,7 @@ class ItemController extends Controller
 
       $orderItemUnconfirmed=OrderItem::
       whereHas('linkOrder',function($q) {
-        $q->where('status', 15);
+        $q->where('status_enum', '-1');
       })
       ->whereHas('linkOrder',function($q) {
         $q->whereHas('linkOrderTrack',function($q) {
