@@ -39,7 +39,7 @@ class ReportController extends Controller
         $data = 
         Order::whereHas('linkOrderTrack',function($q) use($request){
             $q->where('status_enum', '4')->orWhere('status_enum', '5')->whereBetween('waktu_sampai',[$request->dateStart,$request->dateEnd]);
-        })->with(['linkOrderTrack.linkStatus','linkInvoice', 'linkStaff', 'linkCustomer.linkCustomerType']);
+        })->with(['linkInvoice', 'linkStaff', 'linkCustomer.linkCustomerType']);
         if($request->salesman??null){
             $data = $data->whereHas('linkStaff',function($q) use($request){
                 $q->where('nama', $request->salesman);

@@ -28,7 +28,4 @@ class Reimbursement extends Model
       return $this->belongsTo(CashAccount::class,'id_cash_account');
     }
 
-    public function linkStatus(){
-        return $this->belongsTo(Status::class,'status');
-    }
 }

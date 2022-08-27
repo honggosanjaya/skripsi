@@ -42,8 +42,17 @@
                 <td>{{ $reimbursement->linkCashAccount->nama }}</td>
                 <td>{{ $reimbursement->jumlah_uang }}</td>
                 <td class="text-capitalize text-center">
-                  <p class="mb-0 badge badge-{{ $reimbursement->linkStatus->id }}">
-                    {{ $reimbursement->linkStatus->nama ?? null }}</p>
+                  <p class="mb-0 badge badge-reimbursement-{{ $reimbursement->status_enum }}">
+                    @if ($reimbursement->status_enum == '0')
+                      {{ 'Diajukan' }}
+                    @elseif ($reimbursement->status_enum == '1')
+                      {{ 'Diproses' }}
+                    @elseif ($reimbursement->status_enum == '2')
+                      {{ 'Dibayar' }}
+                    @elseif ($reimbursement->status_enum == '-1')
+                      {{ 'Ditolak' }}
+                    @endif
+                  </p>
                 </td>
                 <td class="text-center">
                   <a href="/administrasi/reimbursement/pengajuan/{{ $reimbursement->id }}" class="btn btn-primary"><span

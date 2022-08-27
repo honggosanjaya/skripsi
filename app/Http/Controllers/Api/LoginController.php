@@ -34,7 +34,7 @@ class LoginController extends Controller
           'message' => 'email atau password anda salah'
         ], 401);
       }
-      if ($user->linkStaff->status==9){
+      if ($user->linkStaff->status_enum=='-1'){
         return response() -> json([
           'status' => 'error',
           'message' => 'akun sudah tidak aktif'

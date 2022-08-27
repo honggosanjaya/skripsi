@@ -90,7 +90,7 @@ class CashAccountController extends Controller
       'jumlah_uang' => $request->jumlah_uang,
       'keterangan_pengajuan' => $request->keterangan_pengajuan,
       'id_cash_account' => $request->id_cash_account,
-      'status' => 27,
+      'status_enum' => '0',
       'created_at'=>now()
     ]);
 
@@ -142,7 +142,7 @@ class CashAccountController extends Controller
   public function getHistoryReimbursementAPI($id){
     $reimbursements = Reimbursement::where('id_staff_pengaju',$id)
                       ->orderBy('id','DESC')
-                      ->with(['linkStatus', 'linkStaffPengonfirmasi', 'linkCashAccount'])
+                      ->with(['linkStaffPengonfirmasi', 'linkCashAccount'])
                       ->get();
 
     return response()->json([
@@ -152,7 +152,7 @@ class CashAccountController extends Controller
   }
 
   public function adminReimbursementIndex(){
-    $reimbursements = Reimbursement::orderBy("status", "ASC")->paginate(10);
+    $reimbursements = Reimbursement::orderBy("status_enum", "ASC")->paginate(10);
     return view('administrasi.reimbursement.index', [
       'reimbursements' => $reimbursements,
     ]);
@@ -160,7 +160,7 @@ class CashAccountController extends Controller
 
 
   public function adminReimbursementPengajuan(){
-    $reimbursements = Reimbursement::where('status', 27)->paginate(10);
+    $reimbursements = Reimbursement::where('status_enum', '0')->paginate(10);
     return view('administrasi.reimbursement.pengajuanReimbursement', [
       'reimbursements' => $reimbursements,
       'type' => 'pengajuan'
@@ -168,7 +168,7 @@ class CashAccountController extends Controller
   }
 
   public function adminReimbursementPembayaran(){
-    $reimbursements = Reimbursement::where('status', 28)->paginate(10);
+    $reimbursements = Reimbursement::where('status_enum', '1')->paginate(10);
     return view('administrasi.reimbursement.pengajuanReimbursement', [
       'reimbursements' => $reimbursements,
       'type' => 'pembayaran'
@@ -185,7 +185,7 @@ class CashAccountController extends Controller
   public function setujuReimbursement(Reimbursement $reimbursement){
     Reimbursement::find($reimbursement->id)->update([
       'id_staff_pengonfirmasi' => auth()->user()->id_users,
-      'status' => 28
+      'status_enum' => '1'
     ]);
     return redirect('/administrasi/reimbursement') -> with('pesanSukses', 'Berhasil menyetujui pengajuan' );
   }
@@ -193,14 +193,14 @@ class CashAccountController extends Controller
   public function tolakReimbursement(Reimbursement $reimbursement){
     Reimbursement::find($reimbursement->id)->update([
       'id_staff_pengonfirmasi' => auth()->user()->id_users,
-      'status' => 30
+      'status_enum' => '-1'
     ]);
     return redirect('/administrasi/reimbursement') -> with('pesanSukses', 'Berhasil menolak pengajuan' );
   }
 
   public function bayarReimbursement(Reimbursement $reimbursement){
     Reimbursement::find($reimbursement->id)->update([
-      'status' => 29
+      'status_enum' => '2'
     ]);
     return redirect('/administrasi/reimbursement') -> with('pesanSukses', 'Berhasil membayar pengajuan' );
   }

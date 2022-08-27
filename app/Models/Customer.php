@@ -55,14 +55,6 @@ class Customer extends Model
         return $this->hasMany(Order::class,'id_customer','id');
     }
 
-    // public function linkStatus(){
-    //     return $this->belongsTo(Status::class,'status','id');
-    // }
-
-    // public function linkStatusLimit(){
-    //   return $this->belongsTo(Status::class,'status_limit_pembelian','id');
-    // }
-
     public function linkReturType(){
         return $this->belongsTo(ReturType::class,'tipe_retur','id');
     }

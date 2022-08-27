@@ -69,18 +69,6 @@ class ReturController extends Controller
       ], 200);
     }
 
-    // public function search(){
-    //   $returs = Retur::select('no_retur','id_customer','id_staff_pengaju', 'created_at','status')        
-    //   ->groupBy('no_retur','id_customer','id_staff_pengaju','created_at','status')
-    //   ->where(strtolower('no_retur'),'like','%'.request('cari').'%')
-    //   ->with(['linkCustomer','linkStaffPengaju','linkStatus'])        
-    //   ->paginate(10); 
-              
-    //   return view('administrasi.retur.index',[
-    //       'returs' => $returs
-    //   ]);
-    // }
-
     public function confirmRetur(Request $request){
       $rules = ([
         'tipe_retur' => ['required'],
@@ -160,7 +148,7 @@ class ReturController extends Controller
         $total_harga = $total_harga + ($joins[$k]->kuantitas * $joins[$k]->harga_satuan);
       }
       $invoices = Order::orderBy('id','DESC')->whereHas('linkOrderTrack', function($q){
-        $q->whereIn('status', [21,22,23,24]);
+        $q->where('status_enum', '2')->orWhere('status_enum', '3')->orWhere('status_enum', '4')->orWhere('status_enum', '5');
       })
       ->whereHas('linkInvoice', function($q) use($total_harga){
         $q->where('harga_total', '>=',$total_harga);

@@ -65,10 +65,6 @@ class Staff extends Model
         return $this->hasMany(Order::class,'id_staff','id');
     }
 
-    // public function linkStatus(){
-    //     return $this->hasOne(Status::class,'id','status');
-    // }
-
     public function linkReturPengaju(){
         return $this->hasMany(Retur::class,'id_staff_pengaju','id');
     }

@@ -39,7 +39,4 @@ class Order extends Model
         return $this->hasOne(Invoice::class,'id_order','id');
     }
 
-    // public function linkStatus(){
-    //     return $this->belongsTo(Status::class,'status');
-    // }
 }
