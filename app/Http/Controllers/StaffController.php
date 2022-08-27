@@ -24,14 +24,6 @@ class StaffController extends Controller
     }
 
     public function datasupervisor(){
-      // $supervisors = [];
-      // $staffs = Staff::all();
-      // foreach($staffs as $staf){
-      //   if($staf->linkStaffRole->nama == 'supervisor'){
-      //     array_push($supervisors, $staf);
-      //   }
-      // }
-
       $role_spv = StaffRole::where('nama', 'supervisor')->first();
       $supervisors = Staff::where('role', $role_spv->id)->paginate(10);
 
@@ -43,19 +35,29 @@ class StaffController extends Controller
 
     public function create()
     {
+      $statuses = [
+        1 => 'active',
+        -1 => 'inactive',
+      ];
+
       return view('supervisor.datastaf.create', [
         'stafs' => Staff::all(),
         'roles' => StaffRole::whereNotIn('nama', ['owner', 'supervisor'])->get(),
-        'statuses' => Status::where('tabel', 'staffs')->get(),
+        'statuses' => $statuses,
         "title" => "Data Tim Markting - Add"
       ]);
     }
 
     public function createSupervisor()
     {
+      $statuses = [
+        1 => 'active',
+        -1 => 'inactive',
+      ];
+      
       return view('owner.dataSupervisor.create', [
         'roles' => StaffRole::where('nama', 'supervisor')->get(),
-        'statuses' => Status::where('tabel', 'staffs')->get(),
+        'statuses' => $statuses,
         "title" => "Data Supervisor - Add"
       ]);
     }
@@ -67,14 +69,14 @@ class StaffController extends Controller
         'telepon' => ['required','string', 'max:15'],
         'foto_profil' => ['image','file','max:1024'],
         'role' => ['required'],
-        'status' => ['required'],
+        'status_enum' => ['required'],
       ]);
 
       $validatedData = $request->validate($rules);
 
       $validatedData['password'] = Hash::make(12345678);
       $validatedData['role'] = $request->role;
-      $validatedData['status'] = $request->status;
+      $validatedData['status_enum'] = $request->status_enum;
       $validatedData['created_at'] = now();
 
       if ($request->foto_profil) {
@@ -90,9 +92,9 @@ class StaffController extends Controller
       $staff=Staff::insertGetId($validatedData);
 
       if (Staff::with('linkStaffRole')->find($staff)->linkStaffRole->nama=="supervisor") {
-        if (Staff::where('role',2)->where('status',8)->count()>1) {
+        if (Staff::where('role',2)->where('status_enum','1')->count()>1) {
           $inactive=Staff::find($staff);
-          $inactive->status=9;
+          $inactive->status_enum='-1';
           $inactive->save();
         }
       }
@@ -113,19 +115,29 @@ class StaffController extends Controller
     }
 
     public function edit($id){
+      $statuses = [
+        1 => 'active',
+        -1 => 'inactive',
+      ];
+
       return view('supervisor.datastaf.edit',[
         'staf' => Staff::where('id', $id)->first(),
         'roles' => StaffRole::whereNotIn('nama', ['owner', 'supervisor'])->get(),
-        'statuses' => Status::where('tabel', 'staffs')->get(),
+        'statuses' => $statuses,
         "title" => "Data Tim Markting - Edit"
       ]);
     }
 
     public function editSupervisor(Staff $staff){
+      $statuses = [
+        1 => 'active',
+        -1 => 'inactive',
+      ];
+      
       return view('owner.dataSupervisor.edit',[
         'supervisor' => $staff,
         'roles' => StaffRole::where('nama', 'supervisor')->get(),
-        'statuses' => Status::where('tabel', 'staffs')->get(),
+        'statuses' => $statuses,
         "title" => "Data Tim Markting - Edit"
       ]);
     }
@@ -136,7 +148,7 @@ class StaffController extends Controller
         'telepon' => ['required','string', 'max:15'],
         'foto_profil' => ['image','file','max:1024'],
         'role' => ['required'],
-        'status' => ['required'],
+        'status_enum' => ['required'],
       ];
 
       if($request->email !== Staff::where('id', $id)->first()->email){
@@ -145,7 +157,7 @@ class StaffController extends Controller
 
       $validatedData = $request->validate($rules);
       $validatedData['role'] = $request->role;
-      $validatedData['status'] = $request->status;
+      $validatedData['status_enum'] = $request->status_enum;
 
       if ($request->foto_profil) {
         if($request->oldGambar){
@@ -164,10 +176,10 @@ class StaffController extends Controller
       Staff::where('id', $id)->update($validatedData);
 
       if($request->route == 'editsupervisor'){
-        if($request->status == 8){
-          if (Staff::where('role',2)->where('status',8)->count()>1) {
-            $inactive=Staff::where('role',2)->where('status',8)->where('id','!=',$id)->first();
-            $inactive->status=9;
+        if($request->status_enum == '1'){
+          if (Staff::where('role',2)->where('status_enum','1')->count()>1) {
+            $inactive=Staff::where('role',2)->where('status_enum','1')->where('id','!=',$id)->first();
+            $inactive->status_enum='-1';
             $inactive->save();
           }
         }
@@ -178,17 +190,16 @@ class StaffController extends Controller
     }
 
     public function editStatusStaf(Request $request, Staff $staf){
-      $status = $staf->status;
-      $nama_status = Status::where('id', $status)->first()->nama; 
+      $status = $staf->status_enum;
 
-      if($nama_status === 'active'){
-        Staff::where('id', $staf->id)->update(['status' => 9]);
-      }else if($nama_status === 'inactive'){
-        Staff::where('id', $staf->id)->update(['status' => 8]);
+      if($status === '1'){
+        Staff::where('id', $staf->id)->update(['status_enum' => '-1']);
+      }else if($status === '-1'){
+        Staff::where('id', $staf->id)->update(['status_enum' => '1']);
         if($request->route == 'editstatussupervisor'){
-          if (Staff::where('role',2)->where('status',8)->count()>1) {
-            $inactive=Staff::where('role',2)->where('status',8)->where('id','!=',$staf->id)->first();
-            $inactive->status=9;
+          if (Staff::where('role',2)->where('status_enum','1')->count()>1) {
+            $inactive=Staff::where('role',2)->where('status_enum','1')->where('id','!=',$staf->id)->first();
+            $inactive->status_enum='-1';
             $inactive->save();
           }
         }

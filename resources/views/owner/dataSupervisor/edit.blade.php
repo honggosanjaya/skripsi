@@ -74,13 +74,13 @@
 
         <div class="col-12 col-sm-6">
           <div class="mb-3">
-            <label for="status" class="form-label">Status</label>
-            <select class="form-select" name="status">
-              @foreach ($statuses as $status)
-                @if (old('status', $supervisor->status) == $status->id)
-                  <option value="{{ $status->id }}" selected>{{ $status->nama }}</option>
+            <label for="status_enum" class="form-label">Status</label>
+            <select class="form-select" name="status_enum">
+              @foreach ($statuses as $key => $val)
+                @if (old('status_enum', $supervisor->status_enum) == $key)
+                  <option value="{{ $key }}" selected>{{ $val }}</option>
                 @else
-                  <option value="{{ $status->id }}">{{ $status->nama }}</option>
+                  <option value="{{ $key }}">{{ $val }}</option>
                 @endif
               @endforeach
             </select>

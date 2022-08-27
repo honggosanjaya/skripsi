@@ -22,17 +22,17 @@ class Status extends Model
         'id'
       ];
   
-    public function linkTrip(){
-        return $this->hasMany(Trip::class,'status','id');
-    }
+    // public function linkTrip(){
+    //     return $this->hasMany(Trip::class,'status','id');
+    // }
 
-    public function linkCustomer(){
-        return $this->hasMany(Customer::class,'status','id');
-    }
+    // public function linkCustomer(){
+    //     return $this->hasMany(Customer::class,'status','id');
+    // }
 
-    public function linkStaff(){
-        return $this->hasMany(Staff::class,'status','id');
-    }
+    // public function linkStaff(){
+    //     return $this->hasMany(Staff::class,'status','id');
+    // }
 
     public function linkItem(){
         return $this->hasMany(Item::class,'status','id');

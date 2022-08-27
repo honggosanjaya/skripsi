@@ -72,15 +72,15 @@ class RegisteredUserController extends Controller
             'password' => Hash::make($request->password),
             'telepon' => $request->telepon,
             'role' => $request->role,
-            'status' => 8,
+            'status_enum' => '1',
             'foto_profil'=> $request->foto_profil,
             'created_at'=>now()
         ]);
         if (Staff::with('linkStaffRole')->find($staff)->linkStaffRole->nama=="supervisor") {
-            if (Staff::where('role',2)->where('status',8)->count()>1) {
+            if (Staff::where('role',2)->where('status_enum','1')->count()>1) {
                 //jika spv sudah ada dan masih aktif maka status yang baru di non aktifkan
                 $inactive=Staff::find($staff);
-                $inactive->status=9;
+                $inactive->status_enum='-1';
                 $inactive->save();
             }
         }

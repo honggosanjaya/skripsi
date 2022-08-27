@@ -247,7 +247,7 @@ class ReportController extends Controller
         $request->dateEnd=$request->dateEnd." 23:59:59";
 
         $staffs =Staff::
-            where('status',8)->where('role',3)
+            where('status_enum','1')->where('role',3)
             ->with([
             'linkTrip'=>function($q) use($request){
                     $q->whereBetween('created_at', [$request->dateStart, $request->dateEnd]);
