@@ -19,9 +19,9 @@ use Illuminate\Support\Facades\DB;
 class ReturController extends Controller
 {
     public function index(){
-      $returs = Retur::select('no_retur','id_customer','id_staff_pengaju', 'created_at','status')        
-      ->groupBy('no_retur','id_customer','id_staff_pengaju','created_at','status')
-      ->with(['linkCustomer','linkStaffPengaju','linkStatus'])
+      $returs = Retur::select('no_retur','id_customer','id_staff_pengaju', 'created_at','status_enum')        
+      ->groupBy('no_retur','id_customer','id_staff_pengaju','created_at','status_enum')
+      ->with(['linkCustomer','linkStaffPengaju'])
       ->orderBy('no_retur','DESC')->get();       
       
       return view('administrasi/retur.index',[
@@ -49,7 +49,7 @@ class ReturController extends Controller
           'harga_satuan' => $item['harga_satuan'],
           'tipe_retur' => $customer->tipe_retur,
           'alasan' => $item['alasan'],
-          'status' => 13,
+          'status_enum' => '0',
           'created_at'=>now()
         ]);
       }
@@ -95,7 +95,7 @@ class ReturController extends Controller
         'tipe_retur' => $request->tipe_retur,
         'id_invoice' => $request->id_invoice,
         'id_staff_pengonfirmasi' => auth()->user()->id_users,
-        'status' => 12
+        'status_enum' => '1'
       ]);
 
       $harga_total = Retur::select('no_retur',DB::raw('SUM(harga_satuan * kuantitas) as harga'))

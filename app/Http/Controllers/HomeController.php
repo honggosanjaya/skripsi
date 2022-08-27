@@ -52,9 +52,9 @@ class HomeController extends Controller
             ->get();
 
         $notifikasi['retur'] = 
-         Retur::where('status','13')->select('no_retur','id_customer','id_staff_pengaju', 'created_at','status')        
-            ->groupBy('no_retur','id_customer','id_staff_pengaju','created_at','status')
-            ->with(['linkCustomer','linkStaffPengaju','linkStatus','linkInvoice'])
+         Retur::where('status_enum','0')->select('no_retur','id_invoice','id_customer','id_staff_pengaju', 'created_at','status_enum')        
+            ->groupBy('no_retur','id_invoice','id_customer','id_staff_pengaju','created_at','status_enum')
+            ->with(['linkCustomer','linkStaffPengaju','linkInvoice'])
             ->orderBy('no_retur','DESC')->get();
 
         $notifikasi['order_diajukan_salesman'] = 

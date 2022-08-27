@@ -43,7 +43,7 @@ class Retur extends Model
         return $this->belongsTo(ReturType::class,'tipe_retur');
     }
 
-    public function linkStatus(){
-        return $this->belongsTo(Status::class,'status');
-    }
+    // public function linkStatus(){
+    //     return $this->belongsTo(Status::class,'status');
+    // }
 }

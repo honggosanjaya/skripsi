@@ -84,7 +84,7 @@ class ReportController extends Controller
 
 
         // Perhitungan Uang Retur 
-        $returInvoices = Retur::where('status', 12)->where('tipe_retur', 1)
+        $returInvoices = Retur::where('status_enum', '1')->where('tipe_retur', 1)
         ->whereHas('linkInvoice', function($q) use($request){
           $q->whereHas('linkOrder', function($q) use($request){
             $q->whereHas('linkOrderTrack', function($q) use($request){
@@ -151,7 +151,7 @@ class ReportController extends Controller
             ->get()
             ->sum('total_price');
 
-        $data['retur']=Retur::whereBetween('created_at', [$request->dateStart, $request->dateEnd])->where('status',12)
+        $data['retur']=Retur::whereBetween('created_at', [$request->dateStart, $request->dateEnd])->where('status_enum','1')
             ->select('id_item', \DB::raw('SUM(kuantitas*harga_satuan) as total_price'))
             ->groupBy('id_item')->get()->sum('total_price');
             
@@ -183,7 +183,7 @@ class ReportController extends Controller
             ->get()
             ->sum('total_price');
 
-        $data['rtrd']=Retur::whereBetween('created_at', [$request->dateStart, $request->dateEnd])->where('status',12)
+        $data['rtrd']=Retur::whereBetween('created_at', [$request->dateStart, $request->dateEnd])->where('status_enum','1')
             ->select('id_invoice', \DB::raw('SUM(kuantitas*harga_satuan) as total_price'))
             ->groupBy('id_invoice')->with('linkInvoice')->get()->pluck('total_price','linkInvoice.id_order')->toArray();
         $data['ppd'] = OrderItem::

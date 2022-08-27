@@ -68,7 +68,7 @@
           <input value="{{ $retur->no_retur }}" name="no_retur" type="text" hidden readonly>
           <select class="form-select" name="tipe_retur">
             @foreach ($tipeReturs as $tipeRetur)
-              <option value="{{ $tipeRetur->id }}" {{ $retur->status == 12 ? 'disabled' : '' }}
+              <option value="{{ $tipeRetur->id }}" {{ $retur->status_enum == '1' ? 'disabled' : '' }}
                 {{ $tipeRetur->id === $retur->tipe_retur ? 'selected' : '' }}>
                 {{ $tipeRetur->nama }}
               </option>
@@ -113,7 +113,7 @@
           <a href="/administrasi/retur/cetak-retur/{{ $retur->no_retur }}" class="btn btn_purple mx-1">
             <i class="bi bi-download px-1"></i>Unduh Retur Penjualan
           </a>
-          @if ($retur->status == 13)
+          @if ($retur->status_enum == '0')
             <button data-id="{{ $retur->linkCustomer->id }}" class="btn btn-success button-submit mx-1">
               <span class="iconify fs-3 me-1" data-icon="healthicons:i-documents-accepted-outline"></span>Konfirmasi
             </button>

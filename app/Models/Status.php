@@ -38,9 +38,9 @@ class Status extends Model
     //     return $this->hasMany(Item::class,'status','id');
     // }
 
-    public function linkRetur(){
-        return $this->hasMany(Retur::class,'status','id');
-    }
+    // public function linkRetur(){
+    //     return $this->hasMany(Retur::class,'status','id');
+    // }
 
     public function linkOrder(){
         return $this->hasMany(Order::class,'status','id');
