@@ -40,10 +40,10 @@ class HomeController extends Controller
     public function indexAdministrasi(Request $request){
         $role='indexAdministrasi';
         $item = Item::count();
-        $item_aktif = Item::where('status', 10)->count();
+        $item_aktif = Item::where('status_enum', '1')->count();
         $vehicle = Vehicle::count();
         $customer = Customer::count();
-        $customer_aktif = Customer::where('status_enum', 1)->count();
+        $customer_aktif = Customer::where('status_enum', '1')->count();
 
         $notifikasi = [];
         $notifikasi['trip'] = 

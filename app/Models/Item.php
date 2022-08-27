@@ -27,9 +27,9 @@ class Item extends Model
         return $this->hasMany(Pengadaan::class,'id_item','id');
     }
 
-    public function linkStatus(){
-        return $this->belongsTo(Status::class,'status','id');
-    }
+    // public function linkStatus(){
+    //     return $this->belongsTo(Status::class,'status','id');
+    // }
 
     public function linkOrderItem(){
         return $this->hasMany(OrderItem::class,'id_item','id');

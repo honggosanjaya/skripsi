@@ -29,7 +29,7 @@ class ItemController extends Controller
   public function getListAllProductAPI($id){
     $history = History::where('id_customer',$id)->with('linkItem')->get();
     $items = $history->pluck('id_item');
-    $items = Item::orderBy("status", "ASC")->whereNotIn('id',$items->toArray())->paginate(4);
+    $items = Item::orderBy("status_enum", "ASC")->whereNotIn('id',$items->toArray())->paginate(4);
 
     $orderItemUnconfirmed=OrderItem::
     whereHas('linkOrder',function($q) {
@@ -70,8 +70,6 @@ class ItemController extends Controller
       $latestOrderItem[$h->id_item] = array(
         $query,
       );
-
-      // array_push($latestOrderItem, $query);
     }
 
     // dd($latestOrderItem);
@@ -110,7 +108,7 @@ class ItemController extends Controller
 
   //pengadaan
   public function productList(Request $request){
-      $products = Item::orderBy("status", "ASC")->get();
+      $products = Item::orderBy("status_enum", "ASC")->get();
       $counter = $request->session()->increment('counterPengadaan');
       $pageWasRefreshed = isset($_SERVER['HTTP_CACHE_CONTROL']) && $_SERVER['HTTP_CACHE_CONTROL'] === 'max-age=0';
 
@@ -131,7 +129,7 @@ class ItemController extends Controller
 
   //opname
   public function productListOpname(Request $request){
-      $products = Item::orderBy("status", "ASC")->get();
+      $products = Item::orderBy("status_enum", "ASC")->get();
       $counter = $request->session()->increment('counterOpname');
       $pageWasRefreshed = isset($_SERVER['HTTP_CACHE_CONTROL']) && $_SERVER['HTTP_CACHE_CONTROL'] === 'max-age=0';
 
@@ -234,7 +232,7 @@ class ItemController extends Controller
 
   public function index(){      
     return view('administrasi.stok.produk.index', [
-      'items' => Item::orderBy("status", "ASC")->orderBy('id','DESC')->get(),
+      'items' => Item::orderBy("status_enum", "ASC")->orderBy('id','DESC')->get(),
       "title" => "List Produk"
     ]);
   }
@@ -272,10 +270,15 @@ class ItemController extends Controller
 
       // dd($parentItems);
 
+      $statuses = [
+        1 => 'active',
+        -1 => 'inactive',
+      ];
+
     return view('administrasi.stok.produk.create', [
-      'items' => Item::orderBy("status", "ASC")->get(),
+      'items' => Item::orderBy("status_enum", "ASC")->get(),
       'categories' => CategoryItem::all(),
-      'statuses' => Status::where('tabel', 'items')->get(),
+      'statuses' => $statuses,
       'parentItems' => $parentItems,
       "title" => "Stok Marketing - List Produk - Add"
     ]);
@@ -305,7 +308,7 @@ class ItemController extends Controller
     }
 
     $validatedData = $request->validate($rules);
-    $validatedData['status'] = $request->status;
+    $validatedData['status_enum'] = $request->status_enum;
     $validatedData['id_category'] = $request->category;
     $validatedData['link_item'] = $request->link_item;
     $validatedData['max_pengadaan'] = ($request->max_stok??0) - ($request->min_stok??0);
@@ -359,11 +362,16 @@ class ItemController extends Controller
 
     // dd($parentItems);
 
+    $statuses = [
+      1 => 'active',
+      -1 => 'inactive',
+    ];
+  
     return view('administrasi.stok.produk.edit',[
       'item' => Item::where('id', $id)->first(),
       'parentItems' => $parentItems,
       'categories' => CategoryItem::all(),
-      'statuses' => Status::where('tabel', 'items')->get(),
+      'statuses' => $statuses,
     ]);
   }
 
@@ -388,7 +396,7 @@ class ItemController extends Controller
     $validatedData = $request->validate($rules);
     $validatedData['id_category'] = $request->category;
     $validatedData['link_item'] = $request->link_item;
-    $validatedData['status'] = $request->status;
+    $validatedData['status_enum'] = $request->status_enum;
 
     if ($request->gambar) {
       if($request->oldGambar){
@@ -412,7 +420,7 @@ class ItemController extends Controller
     public function customerIndex(){
       $customer = Customer::where('id', auth()->user()->id_users)->first();
         return view('customer.produk',[
-            'items' => Item::where('status',10)->orderBy("status", "ASC")->get(),
+            'items' => Item::where('status_enum','1')->orderBy("status_enum", "ASC")->get(),
             'customer' => $customer
         ]);
     }
@@ -427,7 +435,7 @@ class ItemController extends Controller
     }
 
     public function indexAdministrasi(){
-        $items = Item::orderBy("status", "ASC")->paginate(10);
+        $items = Item::orderBy("status_enum", "ASC")->paginate(10);
         return view('administrasi.stok.index',[
             'items' => $items
         ]);
@@ -501,7 +509,7 @@ class ItemController extends Controller
     }
 
     public function filterProdukApi(Request $request){
-      $items=Item::orderBy('status','ASC');
+      $items=Item::orderBy('status_enum','ASC');
       if ($request->nama??null) {
         $items=$items->where(strtolower('nama'),'like','%'.$request->nama.'%');
       }
@@ -548,7 +556,7 @@ class ItemController extends Controller
     public function searchProductAPI($id, $name){
       $history = History::where('id_customer',$id)->with('linkItem')->get();
       $items = $history->pluck('id_item');
-      $items = Item::orderBy("status", "ASC")->whereNotIn('id',$items->toArray())->where(strtolower('nama'), 'like', '%'.$name.'%')->paginate(4);
+      $items = Item::orderBy("status_enum", "ASC")->whereNotIn('id',$items->toArray())->where(strtolower('nama'), 'like', '%'.$name.'%')->paginate(4);
   
       $orderItemUnconfirmed=OrderItem::
       whereHas('linkOrder',function($q) {
@@ -573,7 +581,7 @@ class ItemController extends Controller
       $customer = Customer::find($id);
       $history = History::where('id_customer',$id)->with('linkItem')->get();
       $items = $history->pluck('id_item');
-      $items = Item::orderBy("status", "ASC")->whereNotIn('id', $items->toArray());
+      $items = Item::orderBy("status_enum", "ASC")->whereNotIn('id', $items->toArray());
 
       $orderItemUnconfirmed=OrderItem::
       whereHas('linkOrder',function($q) {
@@ -605,13 +613,12 @@ class ItemController extends Controller
     }
 
     public function administrasiEditStatusItem(Item $item){
-      $status = $item->status;
-      $nama_status = Status::where('id', $status)->first()->nama; 
+      $status = $item->status_enum;
 
-      if($nama_status === 'active'){
-        Item::where('id', $item->id)->update(['status' => 11]);
-      }else if($nama_status === 'inactive'){
-        Item::where('id', $item->id)->update(['status' => 10]);
+      if($status === '1'){
+        Item::where('id', $item->id)->update(['status_enum' => '-1']);
+      }else if($status === '-1'){
+        Item::where('id', $item->id)->update(['status_enum' => '1']);
       }
 
       return redirect('/administrasi/stok/produk') -> with('pesanSukses', 'Berhasil ubah status' );

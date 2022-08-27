@@ -184,7 +184,7 @@
               <label for="category" class="form-label">Category Item</label>
               <select class="form-select" name="category">
                 @foreach ($categories as $category)
-                  @if (old('status', $item->id_category) == $category->id)
+                  @if (old('category', $item->id_category) == $category->id)
                     <option value="{{ $category->id }}" selected>{{ $category->nama }}</option>
                   @else
                     <option value="{{ $category->id }}">{{ $category->nama }}</option>
@@ -196,15 +196,15 @@
 
           <div class="col">
             <div class="mb-3">
-              <label for="status" class="form-label">Status</label>
-              <select class="form-select" name="status">
-                @foreach ($statuses as $status)
-                  @if (old('status', $item->status) == $status->id)
-                    <option value="{{ $status->id }}" selected>{{ $status->nama }}</option>
-                  @else
-                    <option value="{{ $status->id }}">{{ $status->nama }}</option>
-                  @endif
-                @endforeach
+              <label for="status_enum" class="form-label">Status</label>
+              <select class="form-select" name="status_enum">
+                @foreach ($statuses as $key => $val)
+                @if (old('status_enum', $item->status_enum) == $key)
+                  <option value="{{ $key }}" selected>{{ $val }}</option>
+                @else
+                  <option value="{{ $key }}">{{ $val }}</option>
+                @endif
+              @endforeach
               </select>
             </div>
           </div>

@@ -77,7 +77,7 @@ class ReportController extends Controller
                 });
             })
             ->whereHas('linkItem',function($q) use($request){
-                $q->where('status',10);
+                $q->where('status_enum','1');
             })
             ->select('id_item', \DB::raw('SUM(kuantitas) as total'))
         ->groupBy('id_item')->with('linkItem');
@@ -104,14 +104,14 @@ class ReportController extends Controller
                 });
             })
             ->whereHas('linkItem',function($q) use($request){
-                $q->where('status',10);
+                $q->where('status_enum','1');
             })
             ->select('id_item', \DB::raw('SUM(kuantitas) as total'))
         ->groupBy('id_item')->with('linkItem');
 
 
         $data['produk_tidak_terjual'] = $item->pluck('id_item')->toArray();
-        $data['produk_tidak_terjual'] = Item::where('status',10)->whereNotIn('id',$data['produk_tidak_terjual'])->get();
+        $data['produk_tidak_terjual'] = Item::where('status_enum','1')->whereNotIn('id',$data['produk_tidak_terjual'])->get();
 
         //produk jual dikit
         // $data['produk_slow'] = array_keys($item->orderBy('total', 'ASC')->get()->groupBy('total')->take(5)->toArray());
@@ -140,7 +140,7 @@ class ReportController extends Controller
                 });
             })
             ->whereHas('linkItem',function($q) use($request){
-                $q->where('status',10);
+                $q->where('status_enum','1');
             })
             ->joinSub($data['pembelian'], 'harga_beli', function ($join) {
                 $join->on('order_items.id_item', '=', 'harga_beli.id_item');
@@ -163,7 +163,7 @@ class ReportController extends Controller
                 });
             })
             ->whereHas('linkItem',function($q) use($request){
-                $q->where('status',10);
+                $q->where('status_enum','1');
             })
             ->select('id_item', \DB::raw('SUM(kuantitas) as total'), \DB::raw('count(*) as count'))
         ->groupBy('id_item')->with('linkItem')->orderBy('count', 'ASC')->take($request->count??5)->get();
@@ -176,7 +176,7 @@ class ReportController extends Controller
                 });
             })
             ->whereHas('linkItem',function($q) use($request){
-                $q->where('status',10);
+                $q->where('status_enum','1');
             })
             ->select('order_items.id_item', \DB::raw('SUM(kuantitas*harga_satuan) as total_price'))
             ->groupBy('id_item')
@@ -193,7 +193,7 @@ class ReportController extends Controller
                 });
             })
             ->whereHas('linkItem',function($q) use($request){
-                $q->where('status',10);
+                $q->where('status_enum','1');
             })
             ->select('id_order', \DB::raw('SUM(kuantitas*harga_satuan) as total_price'))
             ->groupBy('id_order')

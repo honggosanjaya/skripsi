@@ -89,7 +89,7 @@ class LoginController extends Controller
         "telepon" => $detail_user->telepon,
         "foto_profil" => $detail_user->foto_profil,
         "role" => $detail_user->linkStaffRole->nama,
-        "status" => $detail_user->linkStatus->nama
+        "status_enum" => $detail_user->status_enum
       ];
 
       if($detail_user->linkStaffRole->nama == 'salesman' || $detail_user->linkStaffRole->nama == 'shipper')
