@@ -58,25 +58,33 @@
             </div>
           </div>
 
-          @php
+          {{-- @php
             $newItems = [];
             foreach ($parentItems as $parentItem) {
                 if (strpos($parentItem[0], $item->nama) === false) {
                     array_push($newItems, $parentItem);
                 }
             }
-          @endphp
+          @endphp --}}
 
           <div class="col">
             <div class="mb-3">
               <label for="link_item" class="form-label">Item yang Dituju (Parent)</label>
               <select class="form-select" name="link_item">
                 <option value="">-- Pilih Item --</option>
-                @foreach ($newItems as $parentItem)
+                {{-- @foreach ($newItems as $parentItem)
                   @if (old('link_item', $item->link_item) == $parentItem[1])
                     <option value="{{ $parentItem[1] }}" selected>{{ $parentItem[0] }}</option>
                   @else
                     <option value="{{ $parentItem[1] }}">{{ $parentItem[0] }}</option>
+                  @endif
+                @endforeach --}}
+
+                @foreach ($parentItems as $parentItem)
+                  @if (old('link_item', $item->link_item) == $parentItem->id)
+                    <option value="{{ $parentItem->id }}" selected>{{ $parentItem->nama }}</option>
+                  @else
+                    <option value="{{ $parentItem->id }}">{{ $parentItem->nama }}</option>
                   @endif
                 @endforeach
               </select>
@@ -199,12 +207,12 @@
               <label for="status_enum" class="form-label">Status</label>
               <select class="form-select" name="status_enum">
                 @foreach ($statuses as $key => $val)
-                @if (old('status_enum', $item->status_enum) == $key)
-                  <option value="{{ $key }}" selected>{{ $val }}</option>
-                @else
-                  <option value="{{ $key }}">{{ $val }}</option>
-                @endif
-              @endforeach
+                  @if (old('status_enum', $item->status_enum) == $key)
+                    <option value="{{ $key }}" selected>{{ $val }}</option>
+                  @else
+                    <option value="{{ $key }}">{{ $val }}</option>
+                  @endif
+                @endforeach
               </select>
             </div>
           </div>

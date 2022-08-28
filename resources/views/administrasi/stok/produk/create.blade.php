@@ -60,12 +60,12 @@
               <select class="form-select @error('nama_wilayah') is-invalid @enderror" name="link_item">
                 <option value="">-- Pilih Item --</option>
                 @foreach ($parentItems as $parentItem)
-                  @if (old('link_item') == $parentItem[1])
-                    {{-- <option value="{{ $parentItem->id }}" selected>{{ $parentItem->nama }}</option> --}}
-                    <option value="{{ $parentItem[1] }}" selected>{{ $parentItem[0] }}</option>
+                  @if (old('link_item') == $parentItem->id)
+                    <option value="{{ $parentItem->id }}" selected>{{ $parentItem->nama }}</option>
+                    {{-- <option value="{{ $parentItem[1] }}" selected>{{ $parentItem[0] }}</option> --}}
                   @else
-                    {{-- <option value="{{ $parentItem->id }}">{{ $parentItem->nama }}</option> --}}
-                    <option value="{{ $parentItem[1] }}">{{ $parentItem[0] }}</option>
+                    <option value="{{ $parentItem->id }}">{{ $parentItem->nama }}</option>
+                    {{-- <option value="{{ $parentItem[1] }}">{{ $parentItem[0] }}</option> --}}
                   @endif
                 @endforeach
               </select>

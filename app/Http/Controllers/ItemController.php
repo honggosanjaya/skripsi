@@ -238,35 +238,35 @@ class ItemController extends Controller
   }
 
   public function create(){
-    // $parentItems = Item::where('link_item',null)->get();
+    $parentItems = Item::where('link_item',null)->get();
 
-    $items = Item::all();
-    $parentItems = [];
+    // $items = Item::all();
+    // $parentItems = [];
 
-    foreach($items as $item){
-      $get1 = '';
-      $get2 = '';
-      $value = 0;
+    // foreach($items as $item){
+    //   $get1 = '';
+    //   $get2 = '';
+    //   $value = 0;
       
-      if($item->link_item == null){
-        $get1 = $item->nama;
-        $value = $item->id;
-        array_push($parentItems, [$get1, $value]);
-      }
-      else if($item->link_item != null){
-        for($i=0; $i<Item::count(); $i++){
-          if($item->link_item == $items[$i]->id){
-            $get2 = $parentItems[$i][0] . " - " .$item->nama;
-            $value = $item->id;
-            array_push($parentItems, [$get2,$value]);
-          }
-        }
-      }
-    }
+    //   if($item->link_item == null){
+    //     $get1 = $item->nama;
+    //     $value = $item->id;
+    //     array_push($parentItems, [$get1, $value]);
+    //   }
+    //   else if($item->link_item != null){
+    //     for($i=0; $i<Item::count(); $i++){
+    //       if($item->link_item == $items[$i]->id){
+    //         $get2 = $parentItems[$i][0] . " - " .$item->nama;
+    //         $value = $item->id;
+    //         array_push($parentItems, [$get2,$value]);
+    //       }
+    //     }
+    //   }
+    // }
       
-    usort($parentItems, function($a, $b) {
-      return $a[0] <=> $b[0];
-    });
+    // usort($parentItems, function($a, $b) {
+    //   return $a[0] <=> $b[0];
+    // });
 
       // dd($parentItems);
 
@@ -328,37 +328,39 @@ class ItemController extends Controller
   }
 
   public function edit($id){
-    $items = Item::all();
+    $parentItems = Item::where('link_item',null)->get();
     // $cannotSelected = Item::where('id',$id)->orWhere('link_item',$id)->count();
-    $itemsCount = Item::count();
-    $parentItems = [];
+    
+    // $items = Item::all();
+    // $itemsCount = Item::count();
+    // $parentItems = [];
 
-    foreach($items as $item){
-      $get1 = '';
-      $get2 = '';
-      $value = 0;
+    // foreach($items as $item){
+    //   $get1 = '';
+    //   $get2 = '';
+    //   $value = 0;
 
-      // if($item->id != $id && $item->link_item != $id){
-        if($item->link_item == null){
-            $get1 = $item->nama;
-            $value = $item->id;
-            array_push($parentItems, [$get1, $value]);
-        }
-        else if($item->link_item != null){
-          for($j=$itemsCount-1; $j>=0; $j--){
-            if($item->link_item == $items[$j]->id){
-              $get2 = $parentItems[$j][0] . " - " .$item->nama;
-              $value = $item->id;
-              array_push($parentItems, [$get2, $value]);
-            }
-          }
-        }
-      // }
-    }
+    //   // if($item->id != $id && $item->link_item != $id){
+    //     if($item->link_item == null){
+    //         $get1 = $item->nama;
+    //         $value = $item->id;
+    //         array_push($parentItems, [$get1, $value]);
+    //     }
+    //     else if($item->link_item != null){
+    //       for($j=$itemsCount-1; $j>=0; $j--){
+    //         if($item->link_item == $items[$j]->id){
+    //           $get2 = $parentItems[$j][0] . " - " .$item->nama;
+    //           $value = $item->id;
+    //           array_push($parentItems, [$get2, $value]);
+    //         }
+    //       }
+    //     }
+    //   // }
+    // }
       
-    usort($parentItems, function($a, $b) {
-      return $a[0] <=> $b[0];
-    });
+    // usort($parentItems, function($a, $b) {
+    //   return $a[0] <=> $b[0];
+    // });
 
     // dd($parentItems);
 
