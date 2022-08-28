@@ -272,11 +272,9 @@ class OrderController extends Controller
     ->whereHas('linkOrderTrack',function($q) {
       $q->where('id_staff_pengonfirmasi', auth()->user()->id_users)->orWhere('id_staff_pengonfirmasi', null);
     })->get();
-    $statuses = Status::where('tabel','=','order_tracks')->get();
 
     return view('administrasi.pesanan.index',[
       'orders' => $orders,                      
-      'statuses' => $statuses
     ]);
   }
 

@@ -338,7 +338,6 @@ class CustomerController extends Controller
         'customer_types' => CustomerType::all(),
         'districts' => District::all(),
         'retur_types' => ReturType::all(),
-        'statuses' =>  Status::where('tabel', 'customers')->get(),
         "title" => "Data Customer - Detail",
         'old_data' => $oldData
       ];
