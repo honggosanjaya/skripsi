@@ -65,7 +65,7 @@
               <td>{{ $supervisor->nama ?? null }}</td>
               <td>{{ $supervisor->email ?? null }}</td>
               <td>{{ $supervisor->telepon ?? null }}</td>
-              <td class="text-center text-capitalize">{{ $supervisor->linkStatus->nama ?? null }}</td>
+              <td class="text-center text-capitalize">{{ $supervisor->status_enum == '1' ? 'Active' : 'Inactive' }}</td>
               <td class="text-center">
                 <a href="/owner/datasupervisor/edit/{{ $supervisor->id }}" class="btn btn-sm btn-warning mb-2">
                   <span class="iconify fs-5 me-1" data-icon="eva:edit-2-fill"></span>Edit
@@ -75,8 +75,8 @@
                   method="POST">
                   @csrf
                   <button type="submit"
-                    class="btn btn-sm {{ $supervisor->linkStatus->nama === 'active' ? 'btn-danger' : 'btn-success' }}">
-                    {{ $supervisor->linkStatus->nama === 'active' ? 'Nonaktifkan' : 'Aktifkan' }}
+                    class="btn btn-sm {{ $supervisor->status_enum === '1' ? 'btn-danger' : 'btn-success' }}">
+                    {{ $supervisor->status_enum === '1' ? 'Nonaktifkan' : 'Aktifkan' }}
                   </button>
                 </form>
               </td>

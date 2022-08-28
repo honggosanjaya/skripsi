@@ -121,14 +121,17 @@
         </div>
 
         <div class="mb-3">
-          <label for="status" class="form-label">Status Event</label>
-          <select class="form-select @error('status') is-invalid @enderror" name="status">
-            @foreach ($selections as $selection)
-              <option value="{{ $selection->id }}" {{ $selection->id === $eventStatus->status ? 'selected' : '' }}>
-                {{ $selection->nama }}</option>
+          <label for="status_enum" class="form-label">Status Event</label>
+          <select class="form-select @error('status_enum') is-invalid @enderror" name="status_enum">
+            @foreach ($statuses as $key => $val)
+              @if (old('status_enum', $eventStatus->status_enum) == $key)
+                <option value="{{ $key }}" selected>{{ $val }}</option>
+              @else
+                <option value="{{ $key }}">{{ $val }}</option>
+              @endif
             @endforeach
           </select>
-          @error('status')
+          @error('status_enum')
             <div class="invalid-feedback">
               {{ $message }}
             </div>
@@ -136,14 +139,14 @@
         </div>
 
         <div class="d-flex flex-column mb-3">
-          <label for="gambar" class="form-label">Foto Profil</label>
+          <label for="gambar" class="form-label">Gambar Event</label>
           <input type="hidden" name="oldGambar" value="{{ $eventStatus->gambar }}">
 
           @if ($eventStatus->gambar)
-            <img class="img-preview img-fluid mb-4" src="{{ asset('storage/event/' . $eventStatus->gambar) }}"
-              width="150px" height="150px">
+            <img class="img-preview img-fluid mb-4 col-sm-5"
+              src="{{ asset('storage/event/' . $eventStatus->gambar) }}">
           @else
-            <img class="img-preview img-fluid">
+            <img class="img-preview img-fluid col-sm-5">
           @endif
 
           <input class="form-control @error('gambar') is-invalid @enderror" type="file" id="gambar"

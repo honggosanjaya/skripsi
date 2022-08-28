@@ -12,15 +12,16 @@ use App\Models\ReturType;
 use App\Models\Order;
 use App\Models\OrderTrack;
 use App\Models\Invoice;
+use App\Models\OrderItem;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
 class ReturController extends Controller
 {
     public function index(){
-      $returs = Retur::select('no_retur','id_customer','id_staff_pengaju', 'created_at','status')        
-      ->groupBy('no_retur','id_customer','id_staff_pengaju','created_at','status')
-      ->with(['linkCustomer','linkStaffPengaju','linkStatus'])
+      $returs = Retur::select('no_retur','id_customer','id_staff_pengaju', 'created_at','status_enum')        
+      ->groupBy('no_retur','id_customer','id_staff_pengaju','created_at','status_enum')
+      ->with(['linkCustomer','linkStaffPengaju'])
       ->orderBy('no_retur','DESC')->get();       
       
       return view('administrasi/retur.index',[
@@ -30,13 +31,13 @@ class ReturController extends Controller
 
     public function pengajuanReturAPI(Request $request){
       $cartItems = $request->cartItems;
-
       $id_staff_pengaju = $request->id_staff_pengaju;
       $id_customer = $request->id_customer;
       $id_invoice = $request->id_invoice;
       $customer = Customer::find($id_customer);
       $data = [];
       $retur_count="RTR-".explode("-",Retur::orderBy("id", "DESC")->first()->no_retur ?? 'RTR-0')[1] + 1 ."-".date_format(now(),"YmdHis");
+      
       foreach($cartItems as $item){
         array_push($data,[
           'id_customer' => $item['id_customer'],
@@ -48,7 +49,7 @@ class ReturController extends Controller
           'harga_satuan' => $item['harga_satuan'],
           'tipe_retur' => $customer->tipe_retur,
           'alasan' => $item['alasan'],
-          'status' => 13,
+          'status_enum' => '0',
           'created_at'=>now()
         ]);
       }
@@ -68,18 +69,6 @@ class ReturController extends Controller
       ], 200);
     }
 
-    // public function search(){
-    //   $returs = Retur::select('no_retur','id_customer','id_staff_pengaju', 'created_at','status')        
-    //   ->groupBy('no_retur','id_customer','id_staff_pengaju','created_at','status')
-    //   ->where(strtolower('no_retur'),'like','%'.request('cari').'%')
-    //   ->with(['linkCustomer','linkStaffPengaju','linkStatus'])        
-    //   ->paginate(10); 
-              
-    //   return view('administrasi.retur.index',[
-    //       'returs' => $returs
-    //   ]);
-    // }
-
     public function confirmRetur(Request $request){
       $rules = ([
         'tipe_retur' => ['required'],
@@ -87,26 +76,41 @@ class ReturController extends Controller
         'id_invoice' => ['required'],
       ]);
 
-      $validatedData = $request->validate($rules);
-      $retur=Retur::where('no_retur',  $request->no_retur);
+      $request->validate($rules);
+
+      $retur = Retur::where('no_retur',  $request->no_retur);
       $retur->update([
         'tipe_retur' => $request->tipe_retur,
         'id_invoice' => $request->id_invoice,
         'id_staff_pengonfirmasi' => auth()->user()->id_users,
-        'status' => 12
+        'status_enum' => '1'
       ]);
 
-      $harga_total=Retur::select('no_retur',DB::raw('SUM(harga_satuan * kuantitas) as harga'))
+      $harga_total = Retur::select('no_retur',DB::raw('SUM(harga_satuan * kuantitas) as harga'))
         ->groupBy('no_retur')->where('no_retur',  $request->no_retur)->first()->harga;
-      $invoice=Invoice::find($request->id_invoice);
+
+      $invoice = Invoice::find($request->id_invoice);
       
-      if ($request->tipe_retur==1) {
+      if ($request->tipe_retur == 1) {
+        // potongan
         $invoice->update(["harga_total"=>($invoice->harga_total - $harga_total)]);
         foreach($retur->get() as $r){
           $item=item::find($r->id_item);
-          $item->update(["stok"=>( $item->stok + $r->kuantitas)]);
+          $item->update([
+            "stok_retur" => ($item->stok_retur + $r->kuantitas)
+          ]);
+        }
+      } elseif ($request->tipe_retur == 2){
+        // tukar guling
+        foreach($retur->get() as $r){
+          $item=item::find($r->id_item);
+          $item->update([
+            "stok" => ($item->stok - $r->kuantitas),
+            "stok_retur" => ($item->stok_retur + $r->kuantitas)
+          ]);
         }
       }
+
       return redirect('/administrasi/retur') -> with('pesanSukses', 'Berhasil mengubah data');
     }
 
@@ -144,7 +148,7 @@ class ReturController extends Controller
         $total_harga = $total_harga + ($joins[$k]->kuantitas * $joins[$k]->harga_satuan);
       }
       $invoices = Order::orderBy('id','DESC')->whereHas('linkOrderTrack', function($q){
-        $q->whereIn('status', [21,22,23,24]);
+        $q->where('status_enum', '2')->orWhere('status_enum', '3')->orWhere('status_enum', '4')->orWhere('status_enum', '5');
       })
       ->whereHas('linkInvoice', function($q) use($total_harga){
         $q->where('harga_total', '>=',$total_harga);

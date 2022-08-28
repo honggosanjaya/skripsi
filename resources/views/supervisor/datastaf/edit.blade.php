@@ -69,13 +69,13 @@
         </div>
         <div class="col">
           <div class="mb-3">
-            <label for="status" class="form-label">Status</label>
-            <select class="form-select" name="status">
-              @foreach ($statuses as $status)
-                @if (old('status', $staf->status) == $status->id)
-                  <option value="{{ $status->id }}" selected>{{ $status->nama }}</option>
+            <label for="status_enum" class="form-label">Status</label>
+            <select class="form-select" name="status_enum">
+              @foreach ($statuses as $key => $val)
+                @if (old('status_enum', $staf->status_enum) == $key)
+                  <option value="{{ $key }}" selected>{{ $val }}</option>
                 @else
-                  <option value="{{ $status->id }}">{{ $status->nama }}</option>
+                  <option value="{{ $key }}">{{ $val }}</option>
                 @endif
               @endforeach
             </select>
@@ -89,11 +89,10 @@
         @if ($staf->foto_profil)
           <img src="{{ asset('storage/staff/' . $staf->foto_profil) }}" class="img-preview img-fluid d-block">
         @else
-          <img class="img-preview img-fluid">
           <p>Belum ada foto profil</p>
         @endif
-        <input class="form-control @error('staf') is-invalid @enderror" type="file" id="foto_profil" name="foto_profil"
-          onchange="prevImg()">
+        <input class="form-control @error('foto_profil') is-invalid @enderror" type="file" id="foto_profil"
+          name="foto_profil" onchange="prevImg()">
         @error('foto_profil')
           <div class="invalid-feedback">
             {{ $message }}

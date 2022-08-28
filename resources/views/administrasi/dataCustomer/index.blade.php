@@ -45,25 +45,12 @@
               <td>{{ $customer->full_alamat }}</td>
               <td>{{ $customer->telepon }}</td>
               <td>harga {{ $customer->tipe_harga }}</td>
-              <td>{{ $customer->linkStatus->nama }}</td>
+              <td>{{ $customer->status_enum == 1 ? 'Active' : 'Inactive' }}</td>
               <td>
                 <div class="d-flex justify-content-center">
                   <a href="/administrasi/datacustomer/ubah/{{ $customer->id }}" class="btn btn-sm btn-warning me-3">
                     <span class="iconify fs-5 me-1" data-icon="eva:edit-2-fill"></span> Edit
                   </a>
-
-                  {{-- <form action="/administrasi/datacustomer/ubahstatus/{{ $customer->id }}" method="POST">
-                    @csrf
-                    <button type="submit"
-                      class="btn btn-sm {{ $customer->linkStatus->nama === 'active' ? 'btn-danger' : 'btn-success' }}">
-                      @if ($customer->linkStatus->nama === 'active')
-                        <span class="iconify fs-5 me-1" data-icon="material-symbols:cancel-outline"></span>
-                      @else
-                        <span class="iconify fs-5 me-1" data-icon="akar-icons:double-check"></span>
-                      @endif
-                      {{ $customer->linkStatus->nama === 'active' ? 'Nonaktifkan' : 'Aktifkan' }}
-                    </button>
-                  </form> --}}
                 </div>
               </td>
             </tr>

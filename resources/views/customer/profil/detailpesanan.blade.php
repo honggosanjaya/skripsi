@@ -46,8 +46,15 @@
               <p class="fs-7 mb-0 fw-bold">Tanggal pemesanan:</p>
               <p class="fs-7 mb-0">{{ date('d F Y', strtotime($diajukan->linkOrderTrack->waktu_order)) }}</p>
             </div>
-            <div class="badge bg-warning text-black fw-normal">{{ $diajukan->linkOrderTrack->linkStatus->nama ?? null }}
-            </div>
+            @if ($diajukan->linkOrderTrack->status_enum == '0')
+              <div class="badge bg-warning text-black fw-normal">
+                Diajukan Customer
+              </div>
+            @elseif ($diajukan->linkOrderTrack->status_enum == '1')
+              <div class="badge bg-warning text-black fw-normal">
+                Diajukan Salesman
+              </div>
+            @endif
           </div>
           @php
             $i = 0;
@@ -89,7 +96,13 @@
                   <div class="info-pesanan">
                     <span><b>Tanggal pesan</b>
                       {{ date('d F Y', strtotime($diajukan->linkOrderTrack->waktu_order)) }}</span>
-                    <span><b>Status pesanan</b>{{ $diajukan->linkOrderTrack->linkStatus->nama ?? null }}</span>
+                    @if ($diajukan->linkOrderTrack->status_enum)
+                      @if ($diajukan->linkOrderTrack->status_enum == '0')
+                        <span><b>Status pesanan</b>Diajukan Customer</span>
+                      @elseif ($diajukan->linkOrderTrack->status_enum == '1')
+                        <span><b>Status pesanan</b>Diajukan Salesman</span>
+                      @endif
+                    @endif
                     @if ($diajukan->linkOrderTrack->estimasi_waktu_pengiriman)
                       <span><b>Estimasi pengiriman</b>{{ $diajukan->linkOrderTrack->estimasi_waktu_pengiriman }}
                         hari</span>
@@ -134,8 +147,7 @@
               <p class="fs-7 mb-0">
                 {{ date('d F Y', strtotime($dikonfirmasiAdministrasi->linkOrderTrack->waktu_order)) }}</p>
             </div>
-            <div class="badge bg-warning text-black fw-normal">
-              {{ $dikonfirmasiAdministrasi->linkOrderTrack->linkStatus->nama ?? null }}</div>
+            <div class="badge bg-warning text-black fw-normal">Dikonfirmasi Admin</div>
           </div>
           @php
             $i = 0;
@@ -150,8 +162,7 @@
           <div class="card_body mt-2">
             <div class="d-flex">
               @if ($first_item->linkItem->gambar)
-                <img src="{{ asset('storage/item/' . $first_item->linkItem->gambar) }}"
-                  class="img-fluid img_riwayat">
+                <img src="{{ asset('storage/item/' . $first_item->linkItem->gambar) }}" class="img-fluid img_riwayat">
               @else
                 <img src="{{ asset('images/default_produk.png') }}" class="img-fluid img_riwayat">
               @endif
@@ -179,12 +190,14 @@
                     <span><b>Tanggal pesan</b>
                       {{ date('d F Y', strtotime($dikonfirmasiAdministrasi->linkOrderTrack->waktu_order)) }}</span>
                     <span><b>Status
-                        pesanan</b>{{ $dikonfirmasiAdministrasi->linkOrderTrack->linkStatus->nama ?? null }}</span>
+                        pesanan</b>Dikonfirmasi Admin</span>
                     <span><b>Invoice</b>{{ $dikonfirmasiAdministrasi->linkInvoice->nomor_invoice }}</span>
                     <span><b>Kode Event</b>{{ $dikonfirmasiAdministrasi->linkInvoice->linkEvent->kode ?? '-' }}</span>
-                    @if ($dikonfirmasiAdministrasi->linkInvoice->linkEvent && $dikonfirmasiAdministrasi->linkInvoice->linkEvent->diskon != null)
+                    @if ($dikonfirmasiAdministrasi->linkInvoice->linkEvent &&
+                        $dikonfirmasiAdministrasi->linkInvoice->linkEvent->diskon != null)
                       <span><b>Diskon</b>{{ $dikonfirmasiAdministrasi->linkInvoice->linkEvent->diskon }}%</span>
-                    @elseif($dikonfirmasiAdministrasi->linkInvoice->linkEvent && $dikonfirmasiAdministrasi->linkInvoice->linkEvent->potongan != null)
+                    @elseif($dikonfirmasiAdministrasi->linkInvoice->linkEvent &&
+                        $dikonfirmasiAdministrasi->linkInvoice->linkEvent->potongan != null)
                       <span><b>Potongan</b>Rp.
                         {{ number_format($dikonfirmasiAdministrasi->linkInvoice->linkEvent->potongan, 0, '', '.') }}</span>
                     @endif
@@ -231,8 +244,7 @@
               <p class="fs-7 mb-0 fw-bold">Tanggal pemesanan:</p>
               <p class="fs-7 mb-0">{{ date('d F Y', strtotime($dalamPerjalanan->linkOrderTrack->waktu_order)) }}</p>
             </div>
-            <div class="badge bg-warning text-black fw-normal">
-              {{ $dalamPerjalanan->linkOrderTrack->linkStatus->nama ?? null }}</div>
+            <div class="badge bg-warning text-black fw-normal">Dalam Perjalanan</div>
           </div>
           @php
             $i = 0;
@@ -247,8 +259,7 @@
           <div class="card_body mt-2">
             <div class="d-flex">
               @if ($first_item->linkItem->gambar)
-                <img src="{{ asset('storage/item/' . $first_item->linkItem->gambar) }}"
-                  class="img-fluid img_riwayat">
+                <img src="{{ asset('storage/item/' . $first_item->linkItem->gambar) }}" class="img-fluid img_riwayat">
               @else
                 <img src="{{ asset('images/default_produk.png') }}" class="img-fluid img_riwayat">
               @endif
@@ -275,7 +286,7 @@
                   <div class="info-pesanan">
                     <span><b>Tanggal pesan</b>
                       {{ date('d F Y', strtotime($dalamPerjalanan->linkOrderTrack->waktu_order)) }}</span>
-                    <span><b>Status pesanan</b>{{ $dalamPerjalanan->linkOrderTrack->linkStatus->nama ?? null }}</span>
+                    <span><b>Status pesanan</b>Dalam Perjalanan</span>
                     <span><b>Invoice</b>{{ $dalamPerjalanan->linkInvoice->nomor_invoice }}</span>
                     <span><b>Kode Event</b>{{ $dalamPerjalanan->linkInvoice->linkEvent->kode ?? '-' }}</span>
                     @if ($dalamPerjalanan->linkInvoice->linkEvent && $dalamPerjalanan->linkInvoice->linkEvent->diskon != null)
@@ -327,7 +338,7 @@
               <p class="fs-7 mb-0">{{ date('d F Y', strtotime($telahsampai->linkOrderTrack->waktu_order)) }}</p>
             </div>
             <div class="badge bg-warning text-black fw-normal">
-              {{ $telahsampai->linkOrderTrack->linkStatus->nama ?? null }}
+              Order Telah Sampai
             </div>
           </div>
           @php
@@ -343,8 +354,7 @@
           <div class="card_body mt-2">
             <div class="d-flex">
               @if ($first_item->linkItem->gambar)
-                <img src="{{ asset('storage/item/' . $first_item->linkItem->gambar) }}"
-                  class="img-fluid img_riwayat">
+                <img src="{{ asset('storage/item/' . $first_item->linkItem->gambar) }}" class="img-fluid img_riwayat">
               @else
                 <img src="{{ asset('images/default_produk.png') }}" class="img-fluid img_riwayat">
               @endif
@@ -359,8 +369,8 @@
             @endif
           </div>
 
-          <div class="modal fade" id="order{{ $telahsampai->id }}" tabindex="-1"
-            aria-labelledby="exampleModalLabel" aria-hidden="true">
+          <div class="modal fade" id="order{{ $telahsampai->id }}" tabindex="-1" aria-labelledby="exampleModalLabel"
+            aria-hidden="true">
             <div class="modal-dialog">
               <div class="modal-content">
                 <div class="modal-header">
@@ -371,7 +381,7 @@
                   <div class="info-pesanan">
                     <span><b>Tanggal pesan</b>
                       {{ date('d F Y', strtotime($telahsampai->linkOrderTrack->waktu_order)) }}</span>
-                    <span><b>Status pesanan</b>{{ $telahsampai->linkOrderTrack->linkStatus->nama ?? null }}</span>
+                    <span><b>Status pesanan</b>Order telah Sampai</span>
                     <span><b>Invoice</b>{{ $telahsampai->linkInvoice->nomor_invoice }}</span>
                     <span><b>Kode Event</b>{{ $telahsampai->linkInvoice->linkEvent->kode ?? '-' }}</span>
                     @if ($telahsampai->linkInvoice->linkEvent && $telahsampai->linkInvoice->linkEvent->diskon != null)
@@ -422,8 +432,7 @@
               <p class="fs-7 mb-0 fw-bold">Tanggal pemesanan:</p>
               <p class="fs-7 mb-0">{{ date('d F Y', strtotime($ditolak->linkOrderTrack->waktu_order)) }}</p>
             </div>
-            <div class="badge bg-warning text-black fw-normal">
-              {{ $ditolak->linkOrderTrack->linkStatus->nama ?? null }}</div>
+            <div class="badge bg-warning text-black fw-normal">Order Ditolak</div>
           </div>
 
           @php
@@ -440,8 +449,7 @@
           <div class="card_body mt-2">
             <div class="d-flex">
               @if ($first_item->linkItem->gambar)
-                <img src="{{ asset('storage/item/' . $first_item->linkItem->gambar) }}"
-                  class="img-fluid img_riwayat">
+                <img src="{{ asset('storage/item/' . $first_item->linkItem->gambar) }}" class="img-fluid img_riwayat">
               @else
                 <img src="{{ asset('images/default_produk.png') }}" class="img-fluid img_riwayat">
               @endif
@@ -468,7 +476,7 @@
                   <div class="info-pesanan">
                     <span><b>Tanggal pesan</b>
                       {{ date('d F Y', strtotime($ditolak->linkOrderTrack->waktu_order)) }}</span>
-                    <span><b>Status pesanan</b>{{ $ditolak->linkOrderTrack->linkStatus->nama ?? null }}</span>
+                    <span><b>Status pesanan</b>Order Ditolak</span>
                     <span><b>Invoice</b>{{ $ditolak->linkInvoice->nomor_invoice }}</span>
                     <span><b>Kode Event</b>{{ $ditolak->linkInvoice->linkEvent->kode ?? '-' }}</span>
                     @if ($ditolak->linkInvoice->linkEvent && $ditolak->linkInvoice->linkEvent->diskon != null)

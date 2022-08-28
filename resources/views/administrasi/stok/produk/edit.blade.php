@@ -47,6 +47,59 @@
         <div class="row">
           <div class="col">
             <div class="mb-3">
+              <label for="satuan" class="form-label">Satuan <span class='text-danger'>*</span></label>
+              <input type="text" class="form-control @error('satuan') is-invalid @enderror" id="satuan"
+                name="satuan" value="{{ old('satuan', $item->satuan) }}">
+              @error('satuan')
+                <div class="invalid-feedback">
+                  {{ $message }}
+                </div>
+              @enderror
+            </div>
+          </div>
+
+          {{-- @php
+            $newItems = [];
+            foreach ($parentItems as $parentItem) {
+                if (strpos($parentItem[0], $item->nama) === false) {
+                    array_push($newItems, $parentItem);
+                }
+            }
+          @endphp --}}
+
+          <div class="col">
+            <div class="mb-3">
+              <label for="link_item" class="form-label">Item yang Dituju (Parent)</label>
+              <select class="form-select" name="link_item">
+                <option value="">-- Pilih Item --</option>
+                {{-- @foreach ($newItems as $parentItem)
+                  @if (old('link_item', $item->link_item) == $parentItem[1])
+                    <option value="{{ $parentItem[1] }}" selected>{{ $parentItem[0] }}</option>
+                  @else
+                    <option value="{{ $parentItem[1] }}">{{ $parentItem[0] }}</option>
+                  @endif
+                @endforeach --}}
+
+                @foreach ($parentItems as $parentItem)
+                  @if (old('link_item', $item->link_item) == $parentItem->id)
+                    <option value="{{ $parentItem->id }}" selected>{{ $parentItem->nama }}</option>
+                  @else
+                    <option value="{{ $parentItem->id }}">{{ $parentItem->nama }}</option>
+                  @endif
+                @endforeach
+              </select>
+              @error('link_item')
+                <div class="invalid-feedback">
+                  {{ $message }}
+                </div>
+              @enderror
+            </div>
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="col">
+            <div class="mb-3">
               <label for="min_stok" class="form-label">Min Stok</label>
               <input type="text" class="form-control @error('min_stok') is-invalid @enderror" id="min_stok"
                 name="min_stok" value="{{ old('min_stok', $item->min_stok) }}">
@@ -71,18 +124,6 @@
           </div>
         </div>
 
-        {{-- takeout sementara --}}
-        {{-- <div class="mb-3">
-      <label for="max_pengadaan" class="form-label">Max Pengadaan</label>
-      <input type="text" class="form-control @error('max_pengadaan') is-invalid @enderror" id="max_pengadaan"
-        name="max_pengadaan" value="{{ old('max_pengadaan', $item->max_pengadaan) }}">
-      @error('max_pengadaan')
-        <div class="invalid-feedback">
-          {{ $message }}
-        </div>
-      @enderror
-    </div> --}}
-
         <div class="row">
           <div class="col">
             <div class="mb-3">
@@ -104,8 +145,8 @@
               <label for="harga2_satuan" class="form-label">Harga2 Satuan</label>
               <div class="input-group">
                 <span class="input-group-text" id="basic-addon1">Rp.</span>
-                <input type="text" class="form-control @error('harga2_satuan') is-invalid @enderror" id="harga2_satuan"
-                  name="harga2_satuan" value="{{ old('harga2_satuan', $item->harga2_satuan) }}">
+                <input type="text" class="form-control @error('harga2_satuan') is-invalid @enderror"
+                  id="harga2_satuan" name="harga2_satuan" value="{{ old('harga2_satuan', $item->harga2_satuan) }}">
               </div>
               @error('harga2_satuan')
                 <div class="invalid-feedback">
@@ -119,8 +160,8 @@
               <label for="harga3_satuan" class="form-label">Harga3 Satuan</label>
               <div class="input-group">
                 <span class="input-group-text" id="basic-addon1">Rp.</span>
-                <input type="text" class="form-control @error('harga3_satuan') is-invalid @enderror" id="harga3_satuan"
-                  name="harga3_satuan" value="{{ old('harga3_satuan', $item->harga3_satuan) }}">
+                <input type="text" class="form-control @error('harga3_satuan') is-invalid @enderror"
+                  id="harga3_satuan" name="harga3_satuan" value="{{ old('harga3_satuan', $item->harga3_satuan) }}">
               </div>
               @error('harga3_satuan')
                 <div class="invalid-feedback">
@@ -132,18 +173,7 @@
         </div>
 
         <div class="row">
-          <div class="col">
-            <div class="mb-3">
-              <label for="satuan" class="form-label">Satuan <span class='text-danger'>*</span></label>
-              <input type="text" class="form-control @error('satuan') is-invalid @enderror" id="satuan"
-                name="satuan" value="{{ old('satuan', $item->satuan) }}">
-              @error('satuan')
-                <div class="invalid-feedback">
-                  {{ $message }}
-                </div>
-              @enderror
-            </div>
-          </div>
+
           <div class="col">
             <div class="mb-3">
               <label for="volume" class="form-label">Volume Barang <span class='text-danger'>*</span></label>
@@ -156,15 +186,31 @@
               @enderror
             </div>
           </div>
+
           <div class="col">
             <div class="mb-3">
-              <label for="status" class="form-label">Status</label>
-              <select class="form-select" name="status">
-                @foreach ($statuses as $status)
-                  @if (old('status', $item->status) == $status->id)
-                    <option value="{{ $status->id }}" selected>{{ $status->nama }}</option>
+              <label for="category" class="form-label">Category Item</label>
+              <select class="form-select" name="category">
+                @foreach ($categories as $category)
+                  @if (old('category', $item->id_category) == $category->id)
+                    <option value="{{ $category->id }}" selected>{{ $category->nama }}</option>
                   @else
-                    <option value="{{ $status->id }}">{{ $status->nama }}</option>
+                    <option value="{{ $category->id }}">{{ $category->nama }}</option>
+                  @endif
+                @endforeach
+              </select>
+            </div>
+          </div>
+
+          <div class="col">
+            <div class="mb-3">
+              <label for="status_enum" class="form-label">Status</label>
+              <select class="form-select" name="status_enum">
+                @foreach ($statuses as $key => $val)
+                  @if (old('status_enum', $item->status_enum) == $key)
+                    <option value="{{ $key }}" selected>{{ $val }}</option>
+                  @else
+                    <option value="{{ $key }}">{{ $val }}</option>
                   @endif
                 @endforeach
               </select>

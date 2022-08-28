@@ -29,10 +29,6 @@ class OrderTrack extends Model
         return $this->belongsTo(Staff::class,'id_staff_pengirim');
     }
 
-    public function linkStatus(){
-        return $this->belongsTo(Status::class,'status');
-    }
-
     public function linkVehicle(){
         return $this->belongsTo(Vehicle::class,'id_vehicle');
     }

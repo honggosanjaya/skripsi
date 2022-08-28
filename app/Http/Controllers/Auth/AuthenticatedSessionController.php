@@ -42,10 +42,12 @@ class AuthenticatedSessionController extends Controller
         $request->session()->put('role', $role);
         $request->session()->put('password', $request->input()['password']);
         $request->session()->put('count', 1);
-
+        $request->session()->put('counterPengadaan', 0);
+        $request->session()->put('counterOpname', 0);
         $request->session()->put('id',User::with('linkStaff.linkStaffRole')->find(auth()->user()->id)->id);
+        
         if ($role!='customer') {
-            if(User::with('linkStaff.linkStaffRole')->find(auth()->user()->id)->linkStaff->status==9){
+            if(User::with('linkStaff.linkStaffRole')->find(auth()->user()->id)->linkStaff->status_enum=='-1'){
                 Auth::guard('web')->logout();
                 $request->session()->invalidate();
                 $request->session()->regenerateToken();

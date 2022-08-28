@@ -21,13 +21,14 @@ class HomeController extends Controller
 
     public function indexSupervisor(){
         $role='indexSupervisor';
-        $customersPengajuanLimit = Customer::where('status_limit_pembelian', 7)->get();
+        $customersPengajuanLimit = Customer::where('status_limit_pembelian_enum', 0)->get();
 
         return view('supervisor.dashboard',[
           'customersPengajuanLimit' => $customersPengajuanLimit,
           'role' => $role
         ])->with('datadua', [
-          'lihat_notif_spv' => true
+          'lihat_notif_spv' => true,
+          'jml_pengajuan' => count($customersPengajuanLimit),
         ]);
     }
 
@@ -39,10 +40,10 @@ class HomeController extends Controller
     public function indexAdministrasi(Request $request){
         $role='indexAdministrasi';
         $item = Item::count();
-        $item_aktif = Item::where('status', 10)->count();
+        $item_aktif = Item::where('status_enum', '1')->count();
         $vehicle = Vehicle::count();
         $customer = Customer::count();
-        $customer_aktif = Customer::where('status', 3)->count();
+        $customer_aktif = Customer::where('status_enum', '1')->count();
 
         $notifikasi = [];
         $notifikasi['trip'] = 
@@ -51,31 +52,51 @@ class HomeController extends Controller
             ->get();
 
         $notifikasi['retur'] = 
-         Retur::where('status','13')->select('no_retur','id_customer','id_staff_pengaju', 'created_at','status')        
-            ->groupBy('no_retur','id_customer','id_staff_pengaju','created_at','status')
-            ->with(['linkCustomer','linkStaffPengaju','linkStatus','linkInvoice'])
+         Retur::where('status_enum','0')->select('no_retur','id_invoice','id_customer','id_staff_pengaju', 'created_at','status_enum')        
+            ->groupBy('no_retur','id_invoice','id_customer','id_staff_pengaju','created_at','status_enum')
+            ->with(['linkCustomer','linkStaffPengaju','linkInvoice'])
             ->orderBy('no_retur','DESC')->get();
 
         $notifikasi['order_diajukan_salesman'] = 
         Order::whereHas('linkOrderTrack', function($q){
-            $q->where('status',20);
+            $q->where('status_enum','1');
         })->with(['linkOrderTrack'])->get();
 
         $notifikasi['order_diajukan_customer'] = 
         Order::whereHas('linkOrderTrack', function($q){
-          $q->where('status',19);
+          $q->where('status_enum','0');
         })->with(['linkOrderTrack'])->get();
 
         $notifikasi['order_selesai'] = 
         Order::whereHas('linkOrderTrack', function($q){
-            $q->where('status',23)->where('id_staff_pengonfirmasi',auth()->user()->id_users);
+            $q->where('status_enum','4')->where('id_staff_pengonfirmasi',auth()->user()->id_users);
         })->with(['linkOrderTrack'])->get();
 
-        $notifikasi['pengajuan_limit'] = Customer::where('Status_limit_pembelian', '!=', null)->get();
+        $notifikasi['pengajuan_limit'] = Customer::where('status_limit_pembelian_enum', '!=', null)->get();
 
-        $notifikasi['reimbursement'] = Reimbursement::whereIn('status', [27,28])->get();
+        $notifikasi['reimbursement'] = Reimbursement::where('status_enum', '0')->where('status_enum', '1')->get();
 
-        // dd($notifikasi);
+        $kendaraans = Vehicle::all();
+        $today = date_create(now());
+        $pajakVehicles = [];
+
+        foreach($kendaraans as $kendaraan){
+          if($kendaraan->tanggal_pajak){
+            $date2 = date_create($kendaraan->tanggal_pajak);
+            $diff = date_diff($today, $date2);
+            if($diff->format("%R%a")<15){
+              array_push($pajakVehicles, [
+                'id_vehicle' => $kendaraan->id,
+                'tanggal_pajak' => $kendaraan->tanggal_pajak,
+                'nama_vehicle' => $kendaraan->nama,
+                'dateDiff' => $diff->format("%R%a")
+              ]);
+            }
+          }
+        }
+
+        $notifikasi['pajak_kendaraan'] = $pajakVehicles;
+
         $request->session()->increment('count');
         return view('administrasi.dashboard',[
           'role' => $role,
@@ -88,7 +109,13 @@ class HomeController extends Controller
           ],
           'notifikasi' => $notifikasi
         ])->with('datadua', [
-          'lihat_notif' => true
+          'lihat_notif' => true,
+          'jml_trip' => count($notifikasi['trip']),
+          'jml_retur' => count($notifikasi['retur']),
+          'jml_order' => count($notifikasi['order_diajukan_salesman']) + count($notifikasi['order_diajukan_customer']) + count($notifikasi['order_selesai']),
+          'jml_pengajuan_limit' => count($notifikasi['pengajuan_limit']),
+          'jml_reimbursement' => count($notifikasi['reimbursement']),
+          'jml_pajak' => count($pajakVehicles),
         ]);
     }
 
@@ -99,7 +126,7 @@ class HomeController extends Controller
 
     public function indexCustomer(Request $request){
       $customer = Customer::where('id', auth()->user()->id_users)->first();
-      $event = Event::where('status', 16)->get();
+      $event = Event::where('status_enum', '1')->get();
 
 
       $kode_customers=Order::where('id_customer', auth()->user()->id_users)
@@ -134,28 +161,28 @@ class HomeController extends Controller
         $data = Customer::where('id','=',auth()->user()->id_users)->first();
         $order_diajukan=Order::where('id_customer', auth()->user()->id_users)
         ->whereHas('linkOrderTrack',function($q) {
-          $q->where('status', 19)->orWhere('status', 20);
+          $q->where('status_enum', '0')->orWhere('status_enum', '1');
         })
         ->with(['linkOrderTrack'])
         ->count();
 
         $order_dikonfirmasi=Order::where('id_customer', auth()->user()->id_users)
         ->whereHas('linkOrderTrack',function($q) {
-          $q->where('status', 21);
+          $q->where('status_enum', '2');
         })
         ->with(['linkOrderTrack'])
         ->count();
 
         $order_dikirim=Order::where('id_customer', auth()->user()->id_users)
         ->whereHas('linkOrderTrack',function($q) {
-          $q->where('status', 22);
+          $q->where('status_enum', '3');
         })
         ->with(['linkOrderTrack'])
         ->count();
 
         $order_diterima=Order::where('id_customer', auth()->user()->id_users)
         ->whereHas('linkOrderTrack',function($q) {
-          $q->where('status', 23)->orWhere('status', 24);
+          $q->where('status_enum', '4')->orWhere('status_enum', '5');
         })
         ->with(['linkOrderTrack'])
         ->count();
@@ -181,27 +208,27 @@ class HomeController extends Controller
 
     public function lihatPesanan(Customer $customer){
         $diajukans = Order::whereHas('linkOrderTrack', function($q){
-            $q->where('status',19)->orWhere('status', 20);
+            $q->where('status_enum','0')->orWhere('status_enum', '1');
         })->where('id_customer','=',$customer->id)->with(['linkOrderTrack','linkInvoice','linkOrderItem.linkItem'])
         ->get();
 
         $dikonfirmasiAdministrasi = Order::whereHas('linkOrderTrack', function($q){
-            $q->where('status',21);
+            $q->where('status_enum','2');
         })->where('id_customer','=',$customer->id)->with(['linkOrderTrack.linkStaffPengonfirmasi','linkInvoice','linkOrderItem.linkItem'])
         ->get();
 
         $dalamPerjalanan = Order::whereHas('linkOrderTrack', function($q){
-            $q->where('status',22);
+            $q->where('status_enum','3');
         })->where('id_customer','=',$customer->id)->with(['linkOrderTrack','linkInvoice','linkOrderItem.linkItem'])
         ->get();
 
         $telahSampai = Order::whereHas('linkOrderTrack', function($q){
-            $q->where('status',23)->orWhere('status',24);
+            $q->where('status_enum','4')->orWhere('status_enum','5');
         })->where('id_customer','=',$customer->id)->with(['linkOrderTrack','linkInvoice','linkOrderItem.linkItem'])
         ->get();
 
         $ditolak = Order::whereHas('linkOrderTrack', function($q){
-            $q->where('status',25);
+            $q->where('status_enum','-1');
         })->where('id_customer','=',$customer->id)->with(['linkOrderTrack','linkInvoice','linkOrderItem.linkItem'])
         ->get();      
              

@@ -80,7 +80,8 @@ $(document).on('click', '#retur-admin .button-submit-modal', function () {
 
 if ($('.status-track').length > 0) {
   let statustrack = $('.status-track').data('status') + 1
-  for (let index = 19; index <= statustrack; index++) {
+  // for (let index = 19; index <= statustrack; index++) {
+  for (let index = -1; index <= statustrack; index++) {
     if (index != statustrack) {
       $('.s-' + index).addClass('completed');
 
@@ -272,4 +273,11 @@ $(".alert_reimbursement").click(function () {
   $(".reimbursement_notif").toggleClass("m-fadeIn m-fadeOut");
   $(".notif").not(".reimbursement_notif").addClass("m-fadeOut").removeClass("m-fadeIn");
   $(".alert_notif").not(".alert_reimbursement").removeClass("active");
+});
+
+$(".alert_pajak").click(function () {
+  $(this).toggleClass("active");
+  $(".pajak_notif").toggleClass("m-fadeIn m-fadeOut");
+  $(".notif").not(".pajak_notif").addClass("m-fadeOut").removeClass("m-fadeIn");
+  $(".alert_notif").not(".alert_pajak").removeClass("active");
 });

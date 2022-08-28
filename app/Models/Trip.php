@@ -20,10 +20,6 @@ class Trip extends Model
         return $this->belongsTo(Staff::class,'id_staff');
     }
 
-    public function linkStatus(){
-        return $this->belongsTo(Status::class,'status');
-    }
-
     public function linkCustomer(){
         return $this->belongsTo(Customer::class,'id_customer');
     }

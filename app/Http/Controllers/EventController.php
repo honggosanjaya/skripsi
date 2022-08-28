@@ -9,11 +9,12 @@ use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Validation\Rules;
+use Intervention\Image\ImageManagerStatic as Image;
 
 class EventController extends Controller
 {
   public function dataKodeEventAPI($kode){
-    $event = Event::where('kode', $kode)->where('status','!=', 26)->first();
+    $event = Event::where('kode', $kode)->where('status_enum','!=', '-2')->first();
   
     if($event!==null){
       return response()->json([
@@ -29,16 +30,16 @@ class EventController extends Controller
   }
 
   public function index(){
-    $events = Event::where('status','!=', 26)->paginate(10);
+    $events = Event::where('status_enum','!=', '-2')->paginate(10);
     return view('supervisor.event.index',[
       'events' => $events
     ]);
   }
 
   public function search(){
-    $events = Event::where('status','!=', 26)->where(strtolower('nama'),'like','%'.request('cari').'%')
+    $events = Event::where('status_enum','!=', '-2')->where(strtolower('nama'),'like','%'.request('cari').'%')
     ->orWhere(strtolower('kode'),'like','%'.request('cari').'%')
-    ->where('status','!=', 26)->paginate(10);
+    ->where('status_enum','!=', '-2')->paginate(10);
             
     return view('supervisor.event.index',[
       'events' => $events
@@ -46,10 +47,14 @@ class EventController extends Controller
   }
 
   public function create(){
-    $eventStatuses = Status::where('tabel','=','events')->get();
+    $statuses = [
+      1 => 'active',
+      -1 => 'inactive',
+      0 => 'belum mulai'
+    ];
             
     return view('supervisor.event.addevent', [
-      'eventStatuses' => $eventStatuses
+      'statuses' => $statuses
     ]);
   }
 
@@ -73,7 +78,9 @@ class EventController extends Controller
       $file= $request->file('gambar');
       $filename=  'EVN-'.$nama_event.'.'.$file->getClientOriginalExtension();
       $request->gambar= $filename;
-      $file->move(public_path('storage/event'), $filename);
+      Image::make($request->file('gambar'))->resize(350, null, function ($constraint) {
+        $constraint->aspectRatio();
+      })->save(public_path('storage/event/') . $filename);
     }
 
     if($request->event_pilih_isian == "potongan"){
@@ -93,7 +100,7 @@ class EventController extends Controller
       'kode' => $request->kode_event,
       'date_start' => $request->tanggal_mulai,
       'date_end' => $request->tanggal_selesai,
-      'status' => $request->status,
+      'status_enum' => $request->status_enum,
       'gambar' => $request->gambar
     ]);
     
@@ -101,7 +108,12 @@ class EventController extends Controller
   }
 
   public function edit(Event $event){
-      $eventStatuses = Status::where('tabel','=','events')->get();
+    $statuses = [
+      1 => 'active',
+      -1 => 'inactive',
+      0 => 'belum mulai'
+    ];
+
       $diskon_potongan = 0;
       $tipe = '';
 
@@ -114,9 +126,9 @@ class EventController extends Controller
           $tipe = 'potongan';
       }
       
-      return view('supervisor/event.ubahevent', [
+      return view('supervisor.event.ubahevent', [
           'eventStatus' => $event,
-          'selections' => $eventStatuses,
+          'statuses' => $statuses,
           'diskon_potongan' => $diskon_potongan,
           'tipe' => $tipe
       ]);
@@ -156,7 +168,9 @@ class EventController extends Controller
         $filename=  'EVN-'.$nama_event.'.'.$file->getClientOriginalExtension();
         $request->gambar= $filename;
         $foto = $request->gambar;
-        $file->move(public_path('storage/event'), $filename);
+        Image::make($request->file('gambar'))->resize(350, null, function ($constraint) {
+          $constraint->aspectRatio();
+        })->save(public_path('storage/event/') . $filename);
       }
       else{
         $foto = $request->oldGambar;
@@ -178,7 +192,7 @@ class EventController extends Controller
       $event->kode = $request->kode_event;
       $event->date_start = $request->tanggal_mulai;
       $event->date_end = $request->tanggal_selesai;
-      $event->status = $request->status;
+      $event->status_enum = $request->status_enum;
       $event->gambar = $foto;
 
       $event->save();        
@@ -187,14 +201,14 @@ class EventController extends Controller
   }
 
   public function delete(Request $request, Event $event){
-      $event->update(['status'=>26]);        
+      $event->update(['status_enum'=>'-2']);        
       
       return redirect('/supervisor/event')->with('updateEventSuccess','data Event berhasil dihapus');
   }
 
   //Controller untuk Customer
   public function customerIndex(){
-    $events = Event::where('status','!=', 26)->paginate(10);
+    $events = Event::where('status_enum','!=', '-2')->paginate(10);
 
     return view('customer.event',[
         'events' => $events
@@ -202,7 +216,7 @@ class EventController extends Controller
   }
 
   public function customerSearch(){
-    $events = Event::where('status','!=', 26)->where(strtolower('nama'),'like','%'.request('cari').'%')
+    $events = Event::where('status_enum','!=', '-2')->where(strtolower('nama'),'like','%'.request('cari').'%')
     ->orWhere(strtolower('kode'),'like','%'.request('cari').'%')
     ->paginate(10);
             

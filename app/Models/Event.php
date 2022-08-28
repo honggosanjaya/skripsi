@@ -19,10 +19,6 @@ class Event extends Model
         return $this->hasMany(Invoice::class,'id_event','id');
     }
 
-    public function linkStatus(){
-        return $this->belongsTo(Status::class,'status');
-    }
-
     public function linkStaff(){
         return $this->belongsTo(Staff::class,'id_staff');
     }

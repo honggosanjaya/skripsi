@@ -31,13 +31,13 @@ class Staff extends Model
         return $this->hasMany(Trip::class,'id_staff','id');
     }
     public function linkTripEc(){
-        return $this->hasMany(Trip::class,'id_staff','id')->where('status',2)->whereHas('linkCustomer',function($q) {
-            $q->where('status',3);
+        return $this->hasMany(Trip::class,'id_staff','id')->where('status_enum','2')->whereHas('linkCustomer',function($q) {
+            $q->where('status_enum','1');
         });
     }
     public function linkTripEcF(){
-        return $this->hasMany(Trip::class,'id_staff','id')->where('status',2)->whereHas('linkCustomer',function($q) {
-            $q->where('status',3);
+        return $this->hasMany(Trip::class,'id_staff','id')->where('status_enum','2')->whereHas('linkCustomer',function($q) {
+            $q->where('status_enum','1');
         });
     }
 
@@ -63,10 +63,6 @@ class Staff extends Model
 
     public function linkOrder(){
         return $this->hasMany(Order::class,'id_staff','id');
-    }
-
-    public function linkStatus(){
-        return $this->hasOne(Status::class,'id','status');
     }
 
     public function linkReturPengaju(){

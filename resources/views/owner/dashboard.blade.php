@@ -2,7 +2,7 @@
 
 @section('main_content')
   @if (auth()->user()->linkStaff->linkStaffRole->nama == 'supervisor')
-    <div class="limit_notif m-fadeOut p-3">
+    <div class="limit_notif notif m-fadeOut p-3">
       @foreach ($customersPengajuanLimit as $customerPengajuanLimit)
         <div class="card_notif">
           <a href="/supervisor/datacustomer/pengajuan/{{ $customerPengajuanLimit->id }}"
@@ -10,6 +10,18 @@
             <p class="mb-0 fw-bold">Pengajuan Limit Pembelian</p>
             <p class="mb-0">Pengajuan limit pembeian dari {{ $customerPengajuanLimit->nama }} </p>
           </a>
+        </div>
+      @endforeach
+    </div>
+
+    <div class="opname_notif notif m-fadeOut p-3">
+      @foreach ($stokOpnamePengajuan as $opname)
+        <div class="card_notif">
+          {{-- <a href="/supervisor/datacustomer/pengajuan/{{ $customerPengajuanLimit->id }}"
+            class="text-black text-decoration-none"> --}}
+          <p class="mb-0 fw-bold">Pengajuan Stok Opname</p>
+          <p class="mb-0">Pengajuan stok opname dari {{ $opname->linkStaff->nama }} </p>
+          {{-- </a> --}}
         </div>
       @endforeach
     </div>
@@ -101,6 +113,8 @@
           <h1 class="fs-5 fw-bold mb-2 mt-4">Total Untung/Rugi</h1>
           <span>Rp. {{ number_format($data['omzet']->total - $data['pembelian'] + $data['retur'], 0, '', '.') }}</span>
           {{-- <button class="btn btn-primary d-block mx-auto mt-4">View Detail</button> --}}
+          <h1 class="fs-5 fw-bold mb-2 mt-4">Total Retur</h1>
+          <span>Rp. {{ number_format($data['totalReturInvoice'], 0, '', '.') }}</span>
         </div>
       </div>
 
@@ -134,17 +148,6 @@
       <input type="hidden" name="countt" value="{{ session('count') }}">
     </div>
   </div>
-
-  <script>
-    const dropdownLimit = document.querySelector(".alert_limit");
-    const notifLimit = document.querySelector(".limit_notif");
-
-    dropdownLimit.addEventListener("click", function() {
-      dropdownLimit.classList.toggle('active');
-      notifLimit.classList.toggle("m-fadeIn");
-      notifLimit.classList.toggle("m-fadeOut");
-    });
-  </script>
 
   @push('JS')
     <script src="{{ asset('js/chart.js') }}"></script>

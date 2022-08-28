@@ -18,6 +18,7 @@ use App\Models\History;
 use Illuminate\Support\Facades\DB;
 use PDF;
 use Illuminate\Support\Facades\Validator;
+use Intervention\Image\ImageManagerStatic as Image;
 
 class OrderController extends Controller
 {
@@ -39,7 +40,7 @@ class OrderController extends Controller
         $id_order=Order::insertGetId([
           'id_customer' => $id_customer,
           'id_staff' => $idStaf,
-          'status' => 15,
+          'status_enum' => '-1',
           'created_at'=> now(),
         ]);
         
@@ -57,7 +58,7 @@ class OrderController extends Controller
 
         OrderTrack::insert([
           'id_order' => $id_order,
-          'status' => 20,
+          'status_enum' => '1',
           'waktu_order'=> now(),
           'created_at'=> now(),
           'waktu_diteruskan' => now(),
@@ -119,7 +120,7 @@ class OrderController extends Controller
 
         OrderTrack::where('id_order', $id_order)->update([
           'waktu_diteruskan' => now(),
-          'status' => 20,
+          'status_enum' => '1',
           'estimasi_waktu_pengiriman' => $estimasiWaktuPengiriman,
         ]);
         Customer::find($id_customer) -> update([
@@ -179,7 +180,7 @@ class OrderController extends Controller
     Trip::find($id)->update([
       'waktu_keluar' => now(),
       'updated_at' => now(),
-      'status' => 1,
+      'status_enum' => '1',
       'alasan_penolakan' => $request->alasan_penolakan
     ]);
     Customer::where('id', $idCust)->update(['updated_at'=> now()]);
@@ -211,7 +212,7 @@ class OrderController extends Controller
       'koordinat' => $request->koordinat,
       'waktu_masuk' => date('Y-m-d H:i:s', $request->jam_masuk),
       'waktu_keluar' => null,
-      'status' => 2,
+      'status_enum' => '2',
       'created_at'=> now()
     ];
     if($trip == null){
@@ -271,11 +272,9 @@ class OrderController extends Controller
     ->whereHas('linkOrderTrack',function($q) {
       $q->where('id_staff_pengonfirmasi', auth()->user()->id_users)->orWhere('id_staff_pengonfirmasi', null);
     })->get();
-    $statuses = Status::where('tabel','=','order_tracks')->get();
 
     return view('administrasi.pesanan.index',[
       'orders' => $orders,                      
-      'statuses' => $statuses
     ]);
   }
 
@@ -366,8 +365,8 @@ class OrderController extends Controller
       $dataOrder = Order::whereHas('linkOrderTrack', function($q) use($kendaraan){
         $q->where([
           ['id_vehicle', '=', $kendaraan->id],
-          ['status', '>', 20],
-          ['status', '<', 23],
+          ['status_enum', '>', '1'],
+          ['status_enum', '<', '4'],
         ]);
       })->pluck('id');
       array_push($tempDataOrders, $dataOrder);
@@ -526,7 +525,7 @@ class OrderController extends Controller
 
     $order_id=Order::insertGetId([
         'id_customer' => auth()->user()->id_users,
-        'status' => 15,
+        'status_enum' => '-1',
         'created_at'=> now(),
     ]);
 
@@ -544,7 +543,7 @@ class OrderController extends Controller
 
     OrderTrack::insert([
         'id_order' => $order_id,
-        'status' => 19,
+        'status_enum' => '0',
         'waktu_order'=> now(),
         'created_at'=> now(),
     ]);
@@ -565,10 +564,10 @@ class OrderController extends Controller
 
     $data = $first_data->where(function ($query) {
       $query->whereHas('linkOrderTrack',function($q) {
-              $q->where('status', 22);
+              $q->where('status_enum', '3');
             })
             ->orWhereHas('linkOrderTrack',function($q) {
-              $q->where('status','>', 22)->where('status','<', 25)->whereBetween('waktu_sampai',[now()->subDays(2),now()]);
+              $q->where('status_enum','>', '3')->where('status_enum','<=', '5')->whereBetween('waktu_sampai',[now()->subDays(2),now()]);
             });
     })->orderBy('id','DESC');
 
@@ -584,7 +583,7 @@ class OrderController extends Controller
 
     $perludikirim=$first_data->where(function ($query) {
       $query->whereHas('linkOrderTrack',function($q) {
-        $q->where('status', 22);
+        $q->where('status_enum', '3');
       });
     })->count();
 
@@ -662,7 +661,7 @@ class OrderController extends Controller
       ]);
 
       Order::where('id', $order->id)->update([
-        'status' => 14
+        'status_enum' => '1'
       ]);
 
       $rules = [
@@ -670,7 +669,7 @@ class OrderController extends Controller
       ];
       $validatedData = $request->validate($rules);
       $validatedData['id_staff_pengonfirmasi'] = auth()->user()->id_users;
-      $validatedData['status'] = 21;
+      $validatedData['status_enum'] = '2';
       $validatedData['waktu_dikonfirmasi'] = now();
       OrderTrack::where('id_order', $order->id)->update($validatedData); 
 
@@ -682,7 +681,7 @@ class OrderController extends Controller
     $order = Order::find($order->id);
 
     OrderTrack::where('id_order', $order->id)->update([
-      'status' => 25,
+      'status_enum' => '-1',
       'waktu_dikonfirmasi'=> now()
     ]);
 
@@ -692,7 +691,7 @@ class OrderController extends Controller
 
   public function viewPengiriman(order $order){
     $orderItems = OrderItem::where('id_order', $order->id)->get();
-    $stafs = Staff::where('status', 8)->where('role', 4)->get();
+    $stafs = Staff::where('status_enum', '1')->where('role', 4)->get();
 
     // $kapasitas_harga = 0;
     // $kapasitas_volume = 0;
@@ -721,13 +720,13 @@ class OrderController extends Controller
   }
 
   public function konfirmasiPengiriman(Request $request, order $order){
-    if($request && $order->linkOrderTrack->status == 21){
+    if($request && $order->linkOrderTrack->status_enum == '2'){
       $rules = [
         'id_staff_pengirim' => ['required'],
         'id_vehicle' => ['required']
       ];
       $validatedData = $request->validate($rules);
-      $validatedData['status'] = 22;
+      $validatedData['status_enum'] = '3';
       $validatedData['waktu_berangkat'] = now();
       OrderTrack::where('id_order', $order->id)->update($validatedData);        
 
@@ -738,16 +737,18 @@ class OrderController extends Controller
       return redirect('/administrasi/pesanan/detail/'.$order->id) -> with('addPesananSuccess', 'Berhasil mengonfirmasi keberangkatan pengiriman untuk '.$order->linkCustomer->nama);
     }
 
-    if($order->linkOrderTrack->status == 22){
+    if($order->linkOrderTrack->status_enum == '3'){
       $rules = [
-        'foto' => 'image|file|max:1024',
+        'foto' => 'image|file',
       ];
 
       $file= $request->file('foto');
       $file_name=  'DLV-'.$order->id.'.'.$file->getClientOriginalExtension();
-      $request->foto->move(public_path('storage/pengiriman'), $file_name);
+      Image::make($request->file('foto'))->resize(350, null, function ($constraint) {
+        $constraint->aspectRatio();
+      })->save(public_path('storage/pengiriman/') . $file_name);
       $validatedData['foto_pengiriman'] = $file_name;
-      $validatedData['status'] = 23;
+      $validatedData['status_enum'] = '4';
       $validatedData['waktu_sampai'] = now();
       OrderTrack::where('id_order', $order->id)->update($validatedData);
 
@@ -755,7 +756,7 @@ class OrderController extends Controller
       $vehicleInRoads = array();
 
       foreach($ordertracks as $ordertrack){
-        if($ordertrack->status == 22){
+        if($ordertrack->status_enum == '3'){
           array_push($vehicleInRoads, [
             'id_vehicle' => $ordertrack->id_vehicle
           ]);
@@ -776,9 +777,9 @@ class OrderController extends Controller
       ]);
     }
 
-    if($order->linkOrderTrack->status == 23){
+    if($order->linkOrderTrack->status_enum == '4'){
       OrderTrack::where('id_order', $order->id)->update([
-        'status' => 24
+        'status_enum' => '5'
       ]);
       return redirect('/administrasi/pesanan/detail/'.$order->id) -> with('addPesananSuccess', 'Pesanan untuk '.$order->linkCustomer->nama.' telah selesai');
     }
@@ -790,5 +791,61 @@ class OrderController extends Controller
     OrderTrack::where('id_order', $order->id)->delete();
 
     return redirect('/customer') -> with('pesanSukses', 'Berhasil membatalkan pesanan' );
+  }
+
+  public function dataPengajuanOpname(){
+    $opnames = Order::where('id_customer', 0)->where('status_enum', '-1')->get();
+
+    return view('supervisor.opname.pengajuanOpname', [
+      'opnames' => $opnames,
+    ]);
+  }
+
+  public function detailPengajuanOpname(Order $order){
+    $opname = Order::where('id',$order->id)->with(['linkOrderItem'])->first();
+
+    return view('supervisor.opname.detailPengajuanOpname',[
+      'opname' => $opname
+    ]);
+  }
+
+  public function konfirmasiPengajuanOpname(Order $order){
+    $opnameItems = OrderItem::where('id_order', $order->id)->get();
+
+    foreach($opnameItems as $item){
+      $barang = Item::find($item->id_item);
+      $barang->stok +=  $item->kuantitas;
+      $barang->save();
+    }
+
+    Order::find($order->id)->update([
+      'status_enum' => '1'
+    ]);
+    return redirect('/supervisor/stokopname') -> with('pesanSukses', 'Berhasil mengonfirmasi pengajuan stok opname');
+  }
+
+  public function tolakPengajuanOpname(Order $order){
+    Order::find($order->id)->update([
+      'status_enum' => '1'
+    ]);
+    return redirect('/supervisor/stokopname') -> with('pesanSukses', 'Berhasil menolak pengajuan stok opname');
+  }
+
+  public function getInvoiceAPI(Request $request){
+    $id_staff = $request->id_staff;
+    $request->dateStart = $request->dateStart." 00:00:00";
+    $request->dateEnd = $request->dateEnd." 23:59:59";
+
+    $datas = Invoice::whereBetween('created_at', [$request->dateStart, $request->dateEnd])
+    ->whereHas('linkOrder', function($q) use($id_staff) {
+        $q->where('id_staff', $id_staff);
+      })
+    ->with(['linkOrder'])
+    ->get();
+
+    return response()->json([
+      'data' => $datas,
+      'status' => 'success'
+    ]);
   }
 }

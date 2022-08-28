@@ -66,7 +66,7 @@
               <td>{{ number_format($vehicle->kapasitas_volume, 0, '', '.') }}</td>
               <td>{{ number_format($vehicle->kapasitas_harga, 0, '', '.') }}</td>
               @if ($vehicle->tanggal_pajak)
-                <td>{{ date('d M Y', strtotime($vehicle->tanggal_pajak)) }}</td>
+                <td class="text-center">{{ date('d M Y', strtotime($vehicle->tanggal_pajak)) }}</td>
               @else
                 <td></td>
               @endif

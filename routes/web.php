@@ -16,6 +16,7 @@ use App\Http\Controllers\ReturController;
 use App\Http\Controllers\Controller;
 use App\Http\Controllers\Api\LoginController;
 use App\Http\Controllers\CashAccountController;
+use App\Http\Controllers\CategoryItemController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -62,7 +63,6 @@ Route::prefix('owner')->middleware('owner')->group(function() {
 // ============ SUPERVISOR ==============
 Route::prefix('supervisor')->middleware('supervisor')->group(function() {
   Route::get('/', [ReportController::class, 'index']);
-
   Route::get('/profil', [HomeController::class, 'lihatProfil']);
   Route::get('/profil/ubahpassword', [HomeController::class, 'lihatPassword']);
   Route::post('/profil/check/{user:id_users}', [AuthController::class, 'check']);
@@ -111,12 +111,24 @@ Route::prefix('supervisor')->middleware('supervisor')->group(function() {
   Route::post('/cashaccount/tambah', [CashAccountController::class, 'cashAccountStore']);
   Route::get('/cashaccount/ubah/{cashaccount:id}', [CashAccountController::class, 'cashAccountEdit']);
   Route::put('/cashaccount/ubah/{cashaccount:id}', [CashAccountController::class, 'cashAccountUpdate']);
+
+  Route::get('/category', [CategoryItemController::class, 'categoryIndex']);
+  Route::get('/category/cari', [CategoryItemController::class, 'categorySearch']);
+  Route::get('/category/tambah', [CategoryItemController::class, 'categoryCreate']);
+  Route::post('/category/tambah', [CategoryItemController::class, 'categoryStore']);
+  Route::get('/category/ubah/{category:id}', [CategoryItemController::class, 'categoryEdit']);
+  Route::put('/category/ubah/{category:id}', [CategoryItemController::class, 'categoryUpdate']);
+
+  Route::get('/stokopname', [OrderController::class, 'dataPengajuanOpname']);
+  Route::get('/stokopname/{order:id}', [OrderController::class, 'detailPengajuanOpname']);
+  Route::post('/stokopname/setuju/{order:id}', [OrderController::class, 'konfirmasiPengajuanOpname']);
+  Route::post('/stokopname/tolak/{order:id}', [OrderController::class, 'tolakPengajuanOpname']);
 });
+
 
 // =============== ADMINISTRASI ====================
 Route::prefix('administrasi')->middleware('administrasi')->group(function() {
   Route::get('/', [HomeController::class, 'indexAdministrasi']);
-
   Route::get('/pesanan', [OrderController::class, 'index']);
   // Route::get('/pesanan/cari', [OrderController::class, 'search']);
   // Route::get('/pesanan/filter', [OrderController::class, 'filter']);
@@ -132,7 +144,6 @@ Route::prefix('administrasi')->middleware('administrasi')->group(function() {
 
   //Route untuk retur
   Route::get('/retur', [ReturController::class, 'index']);
-  // Route::get('/retur/cari', [ReturController::class, 'search']);
   Route::get('/retur/{retur:no_retur}', [ReturController::class, 'viewRetur']);
   Route::post('/retur/konfirmasi', [ReturController::class, 'confirmRetur']);
   Route::get('/retur/cetak-retur/{retur:no_retur}', [ReturController::class, 'cetakRetur']);
@@ -157,7 +168,6 @@ Route::prefix('administrasi')->middleware('administrasi')->group(function() {
     
     //Route untuk pengadaan
     Route::resource('/produk', ItemController::class);
-    // Route::get('/produk/cari', [ItemController::class, 'produkSearch']);
     Route::post('/produk/ubahstatus/{item:id}', [ItemController::class, 'administrasiEditStatusItem']);
 
     Route::get('/pengadaan', [ItemController::class, 'productList'])->name('products.list');
@@ -167,8 +177,6 @@ Route::prefix('administrasi')->middleware('administrasi')->group(function() {
     // Route::post('/pengadaan/remove', [CartController::class, 'removeCart'])->name('cart.remove');
     // Route::post('/pengadaan/clear', [CartController::class, 'clearAllCart'])->name('cart.clear');
     Route::get('/pengadaan/clear', [CartController::class, 'clearAllCart']);
-
-
     Route::post('/pengadaan/tambahpengadaan', [ItemController::class, 'simpanDataPengadaan']);
 
     //Route untuk stok
@@ -191,14 +199,12 @@ Route::prefix('administrasi')->middleware('administrasi')->group(function() {
   Route::put('/datacustomer/ubahcustomer/{customer:id}', [CustomerController::class, 'administrasiUpdate']);
   Route::get('/datacustomer/{customer:id}', [CustomerController::class, 'administrasiShow']);
 
-  //Route untuk profil administrasi
   Route::get('/profil', [HomeController::class, 'lihatProfil']);
   Route::get('/profil/ubahpassword', [HomeController::class, 'lihatPassword']);
   Route::post('/profil/check/{user:id_users}', [AuthController::class, 'check']);
   Route::get('/profil/ubahpasswordbaru/{user:id}', [AuthController::class, 'passwordBaru']);
   Route::post('/profil/gantipassword/{user:id}', [AuthController::class, 'gantiPassword']);
 
-  // Route untuk reimbursement
   Route::get('/reimbursement', [CashAccountController::class, 'adminReimbursementIndex']);
   Route::get('/reimbursement/pengajuan', [CashAccountController::class, 'adminReimbursementPengajuan']);
   Route::get('/reimbursement/pembayaran', [CashAccountController::class, 'adminReimbursementPembayaran']);
@@ -212,27 +218,20 @@ Route::prefix('administrasi')->middleware('administrasi')->group(function() {
 // =============== CUSTOMER ====================
 Route::prefix('customer')->middleware('customer')->group(function() {
   Route::get('/', [HomeController::class, 'indexCustomer']);
-
-  //Route untuk Customer produk
   Route::get('/produk', [ItemController::class, 'customerIndex']);
   Route::get('/produk/cari', [ItemController::class, 'itemSearch']);
-  //Route untuk cart
   Route::get('/produk/cart', [CartController::class, 'cartList']);
   Route::get('/produk/cart/tambahorder', [OrderController::class, 'simpanDataOrderCustomer']);
   Route::get('/produk/cart/clear', [CartController::class, 'clearAllCart']);
-  //Route untuk event
   Route::get('/event', [EventController::class, 'customerIndex']);
   Route::get('/event/cari', [EventController::class, 'customerSearch']);
-  //Route untuk event
   Route::get('/profil', [HomeController::class, 'lihatProfil']);
   Route::get('/profil/detailprofil', [HomeController::class, 'lihatDetailProfil']);
   Route::get('/profil/pesanan/{customer:id}', [HomeController::class, 'lihatPesanan']);
-
   Route::get('/profil/ubahpassword', [HomeController::class, 'lihatPassword']);
   Route::post('/profil/check/{user:id}', [AuthController::class, 'check']);
   Route::get('/profil/ubahpasswordbaru/{user:id}', [AuthController::class, 'passwordBaru']);
   Route::post('/profil/gantipassword/{user:id}', [AuthController::class, 'gantiPassword']);
-
   Route::post('/historyorder/hapus/{order:id}', [OrderController::class, 'hapusKodeCustomer']);
 });
 

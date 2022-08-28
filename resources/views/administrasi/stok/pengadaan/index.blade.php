@@ -24,6 +24,8 @@
       </div>
     @endif
 
+    {{-- <h1>count: {{ $counter }} {{ $pageWasRefreshed == 1 ? 'true' : 'false' }}</h1> --}}
+
     <div class="px-5 pt-4">
       <div class="d-flex justify-content-between align-items-center">
         <h1 class="fs-4 fw-bold mb-4">Pengadaan</h1>
@@ -60,35 +62,33 @@
                     <input type="hidden" value="{{ $product->nama }}" name="nama">
                     <input type="hidden" value="{{ $product->satuan }}" name="satuan">
                     <input type="hidden" value="{{ $product->max_pengadaan }}" name="max_pengadaan">
-                    <input type="hidden" value="{{ $product->harga_satuan }}" name="harga_satuan">
+                    <input type="hidden" value="{{ $product->harga1_satuan }}" name="harga_satuan">
 
                     @if ($cartItem = \Cart::session(auth()->user()->id . 'pengadaan')->get($product->id) ?? null)
                       <div class="d-flex justify-content-between">
                         <div>jumlah</div>
-                        <input data-iditem="{{ $product->id }}" type="number" class="form-control"
-                          style="width: 300px" id="quantity" name="quantity" min="0"
-                          value="{{ $cartItem->quantity }}">
+                        <input data-iditem="{{ $product->id }}" type="number" class="form-control" style="width: 300px"
+                          id="quantity" name="quantity" min="0" value="{{ $cartItem->quantity }}">
                       </div>
                     @else
                       <div class="d-flex justify-content-between">
                         <div>jumlah</div>
-                        <input data-iditem="{{ $product->id }}" type="number" class="form-control"
-                          style="width: 300px" id="quantity" name="quantity" min="0">
+                        <input data-iditem="{{ $product->id }}" type="number" class="form-control" style="width: 300px"
+                          id="quantity" name="quantity" min="0">
                       </div>
                     @endif
 
                     @if ($cartItem2 = \Cart::session(auth()->user()->id . 'pengadaan')->get($product->id) ?? null)
                       <div class="d-flex justify-content-between">
                         <div>harga total</div>
-                        <input data-iditem="{{ $product->id }}" type="number" class="form-control"
-                          style="width: 300px" id="total_harga" name="total_harga"
-                          value="{{ $cartItem2->attributes->total_harga }}">
+                        <input data-iditem="{{ $product->id }}" type="number" class="form-control" style="width: 300px"
+                          id="total_harga" name="total_harga" value="{{ $cartItem2->attributes->total_harga }}">
                       </div>
                     @else
                       <div class="d-flex justify-content-between">
                         <div>harga total</div>
-                        <input data-iditem="{{ $product->id }}" type="number" class="form-control"
-                          style="width: 300px" id="total_harga" name="total_harga">
+                        <input data-iditem="{{ $product->id }}" type="number" class="form-control" style="width: 300px"
+                          id="total_harga" name="total_harga">
                       </div>
                     @endif
                     @if ($cartItem = \Cart::session(auth()->user()->id . 'pengadaan')->get($product->id) ?? null)

@@ -133,13 +133,13 @@
           </div>
           <div class="col">
             <div class="mb-3">
-              <label for="status" class="form-label">Status <span class="text-danger">*</span></label>
-              <select class="form-select" name="status">
-                @foreach ($statuses as $status)
-                  @if (old('status') == $status->id)
-                    <option value="{{ $status->id }}" selected>{{ $status->nama }}</option>
+              <label for="status_enum" class="form-label">Status <span class="text-danger">*</span></label>
+              <select class="form-select" name="status_enum">
+                @foreach ($statuses as $key => $val)
+                  @if (old('status_enum') == $key)
+                    <option value="{{ $key }}" selected>{{ $val }}</option>
                   @else
-                    <option value="{{ $status->id }}">{{ $status->nama }}</option>
+                    <option value="{{ $key }}">{{ $val }}</option>
                   @endif
                 @endforeach
               </select>

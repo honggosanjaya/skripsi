@@ -21,7 +21,7 @@ class Invoice extends Model
     }
 
     public function linkOrder(){
-        return $this->belongsTo(Order::class,'id_order');
+        return $this->belongsTo(Order::class,'id_order')->with(['linkOrderItem','linkCustomer']);
     }
 
     public function linkEvent(){

@@ -4,17 +4,27 @@
 @endpush
 
 @section('main_content')
+  <div class="pajak_notif notif m-fadeOut p-3">
+    @foreach ($notifikasi['pajak_kendaraan'] as $notif)
+      <div class="card_notif">
+        <p class="mb-0 fw-bold">Peringatan Masa Pajak Kendaraan</p>
+        <p class="mb-0">{{ $notif['nama_vehicle'] }} jatuh tempo pada
+          {{ date('d M Y', strtotime($notif['tanggal_pajak'])) }}</p>
+      </div>
+    @endforeach
+  </div>
+
   <div class="limit_notif notif m-fadeOut p-3">
     @foreach ($notifikasi['pengajuan_limit'] as $notif)
       <div class="card_notif">
-        <a href="/administrasi/datacustomer/{{ $notif->id }}?route={{ $notif->status_limit_pembelian == 7 ? 'lihatpengajuan' : 'bacapengajuan' }}"
+        <a href="/administrasi/datacustomer/{{ $notif->id }}?route={{ $notif->status_limit_pembelian_enum == 0 ? 'lihatpengajuan' : 'bacapengajuan' }}"
           class="text-black text-decoration-none">
           <p class="mb-0"><b>Customer:</b> {{ $notif->nama ?? null }}</p>
-          <p class="mb-0"><b>Tanggal Pengajuan:</b> {{ date('d F Y', strtotime($notif->created_at)) }}</p>
+          {{-- <p class="mb-0"><b>Tanggal Pengajuan:</b> {{ date('d F Y', strtotime($notif->updated_at)) }}</p> --}}
           <p class="mb-0">Pengajuan sebesar Rp.
             {{ number_format($notif->pengajuan_limit_pembelian, 0, '', '.') }}
             <span class="text-danger fw-bold">
-              {{ $notif->status_limit_pembelian == 5 ? 'Disetujui' : ($notif->status_limit_pembelian == 6 ? 'Tidak Disetujui' : 'Diajukan') }}
+              {{ $notif->status_limit_pembelian_enum == 1 ? 'Disetujui' : ($notif->status_limit_pembelian_enum == -1 ? 'Tidak Disetujui' : 'Diajukan') }}
             </span>
           </p>
         </a>

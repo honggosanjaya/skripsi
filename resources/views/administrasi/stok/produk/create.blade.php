@@ -43,6 +43,44 @@
         <div class="row">
           <div class="col">
             <div class="mb-3">
+              <label for="satuan" class="form-label">Satuan <span class='text-danger'>*</span></label>
+              <input type="text" class="form-control @error('satuan') is-invalid @enderror" id="satuan"
+                name="satuan" value="{{ old('satuan') }}">
+              @error('satuan')
+                <div class="invalid-feedback">
+                  {{ $message }}
+                </div>
+              @enderror
+            </div>
+          </div>
+
+          <div class="col">
+            <div class="mb-3">
+              <label for="link_item" class="form-label">Item yang Dituju (Parent)</label>
+              <select class="form-select @error('nama_wilayah') is-invalid @enderror" name="link_item">
+                <option value="">-- Pilih Item --</option>
+                @foreach ($parentItems as $parentItem)
+                  @if (old('link_item') == $parentItem->id)
+                    <option value="{{ $parentItem->id }}" selected>{{ $parentItem->nama }}</option>
+                    {{-- <option value="{{ $parentItem[1] }}" selected>{{ $parentItem[0] }}</option> --}}
+                  @else
+                    <option value="{{ $parentItem->id }}">{{ $parentItem->nama }}</option>
+                    {{-- <option value="{{ $parentItem[1] }}">{{ $parentItem[0] }}</option> --}}
+                  @endif
+                @endforeach
+              </select>
+              @error('link_item')
+                <div class="invalid-feedback">
+                  {{ $message }}
+                </div>
+              @enderror
+            </div>
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="col">
+            <div class="mb-3">
               <label for="stok" class="form-label">Stok</label>
               <input type="text" class="form-control @error('stok') is-invalid @enderror" id="stok" name="stok"
                 value="{{ old('stok') }}">
@@ -65,9 +103,6 @@
               @enderror
             </div>
           </div>
-        </div>
-
-        <div class="row">
           <div class="col">
             <div class="mb-3">
               <label for="max_stok" class="form-label">Max Stok</label>
@@ -80,26 +115,17 @@
               @enderror
             </div>
           </div>
-          <div class="col">
-            <div class="mb-3">
-              <label for="satuan" class="form-label">Satuan <span class='text-danger'>*</span></label>
-              <input type="text" class="form-control @error('satuan') is-invalid @enderror" id="satuan"
-                name="satuan" value="{{ old('satuan') }}">
-              @error('satuan')
-                <div class="invalid-feedback">
-                  {{ $message }}
-                </div>
-              @enderror
-            </div>
-          </div>
         </div>
 
         <div class="row">
           <div class="col">
             <div class="mb-3">
               <label for="harga1_satuan" class="form-label">Harga1 Satuan <span class='text-danger'>*</span></label>
-              <input type="text" class="form-control @error('harga1_satuan') is-invalid @enderror" id="harga1_satuan"
-                name="harga1_satuan" value="{{ old('harga1_satuan') }}">
+              <div class="input-group">
+                <span class="input-group-text" id="basic-addon1">Rp.</span>
+                <input type="text" class="form-control @error('harga1_satuan') is-invalid @enderror"
+                  id="harga1_satuan" name="harga1_satuan" value="{{ old('harga1_satuan') }}">
+              </div>
               @error('harga1_satuan')
                 <div class="invalid-feedback">
                   {{ $message }}
@@ -110,8 +136,11 @@
           <div class="col">
             <div class="mb-3">
               <label for="harga2_satuan" class="form-label">Harga2 Satuan</label>
-              <input type="text" class="form-control @error('harga2_satuan') is-invalid @enderror" id="harga2_satuan"
-                name="harga2_satuan" value="{{ old('harga2_satuan') }}">
+              <div class="input-group">
+                <span class="input-group-text" id="basic-addon1">Rp.</span>
+                <input type="text" class="form-control @error('harga2_satuan') is-invalid @enderror"
+                  id="harga2_satuan" name="harga2_satuan" value="{{ old('harga2_satuan') }}">
+              </div>
               @error('harga2_satuan')
                 <div class="invalid-feedback">
                   {{ $message }}
@@ -122,8 +151,11 @@
           <div class="col">
             <div class="mb-3">
               <label for="harga3_satuan" class="form-label">Harga3 Satuan</label>
-              <input type="text" class="form-control @error('harga3_satuan') is-invalid @enderror"
-                id="harga3_satuan" name="harga3_satuan" value="{{ old('harga3_satuan') }}">
+              <div class="input-group">
+                <span class="input-group-text" id="basic-addon1">Rp.</span>
+                <input type="text" class="form-control @error('harga3_satuan') is-invalid @enderror"
+                  id="harga3_satuan" name="harga3_satuan" value="{{ old('harga3_satuan') }}">
+              </div>
               @error('harga3_satuan')
                 <div class="invalid-feedback">
                   {{ $message }}
@@ -148,13 +180,27 @@
           </div>
           <div class="col">
             <div class="mb-3">
-              <label for="status" class="form-label">Status</label>
-              <select class="form-select" name="status">
-                @foreach ($statuses as $status)
-                  @if (old('status') == $status->id)
-                    <option value="{{ $status->id }}" selected>{{ $status->nama }}</option>
+              <label for="category" class="form-label">Category Item <span class='text-danger'>*</span></label>
+              <select class="form-select" name="category">
+                @foreach ($categories as $category)
+                  @if (old('category') == $category->id)
+                    <option value="{{ $category->id }}" selected>{{ $category->nama }}</option>
                   @else
-                    <option value="{{ $status->id }}">{{ $status->nama }}</option>
+                    <option value="{{ $category->id }}">{{ $category->nama }}</option>
+                  @endif
+                @endforeach
+              </select>
+            </div>
+          </div>
+          <div class="col">
+            <div class="mb-3">
+              <label for="status_enum" class="form-label">Status <span class='text-danger'>*</span></label>
+              <select class="form-select" name="status_enum">
+                @foreach ($statuses as $key => $val)
+                  @if (old('status_enum') == $key)
+                    <option value="{{ $key }}" selected>{{ $val }}</option>
+                  @else
+                    <option value="{{ $key }}">{{ $val }}</option>
                   @endif
                 @endforeach
               </select>
@@ -162,29 +208,21 @@
           </div>
         </div>
 
-        <div class="mb-3">
-          <label for="gambar" class="form-label">Gambar</label>
-          <img class="img-preview img-fluid">
-          <input class="form-control @error('gambar') is-invalid @enderror" type="file" id="gambar"
-            name="gambar" onchange="prevImg()">
-          @error('gambar')
-            <div class="invalid-feedback">
-              {{ $message }}
+        <div class="row">
+          <div class="col">
+            <div class="mb-3">
+              <label for="gambar" class="form-label">Gambar</label>
+              <img class="img-preview img-fluid">
+              <input class="form-control @error('gambar') is-invalid @enderror" type="file" id="gambar"
+                name="gambar" onchange="prevImg()">
+              @error('gambar')
+                <div class="invalid-feedback">
+                  {{ $message }}
+                </div>
+              @enderror
             </div>
-          @enderror
+          </div>
         </div>
-
-        {{-- takeout sementara --}}
-        {{-- <div class="mb-3">
-      <label for="max_pengadaan" class="form-label">Max Pengadaan</label>
-      <input type="text" class="form-control @error('max_pengadaan') is-invalid @enderror" id="max_pengadaan"
-        name="max_pengadaan" value="{{ old('max_pengadaan') }}">
-      @error('max_pengadaan')
-        <div class="invalid-feedback">
-          {{ $message }}
-        </div>
-      @enderror
-    </div> --}}
 
         <div class="row justify-content-end mt-4">
           <div class="col-3 d-flex justify-content-end">

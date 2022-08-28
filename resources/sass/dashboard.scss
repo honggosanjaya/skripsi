@@ -353,7 +353,20 @@ table tbody th {
     overflow-y: auto;
 }
 
+.hasnotif_indicator {
+    background-color: red;
+    width: 1.3rem;
+    height: 1.3rem;
+    border-radius: 50%;
+    position: absolute;
+    top: 0;
+    text-align: center;
+    font-weight: bold;
+    color: #fff;
+}
+
 .alert_notif {
+    position: relative;
     &.active {
         i {
             color: rgb(243, 208, 8);
@@ -495,4 +508,49 @@ table tbody th {
     .mt-4 {
         margin-top: 1rem;
     }
+}
+
+// TASK: Warna status dibedakan
+.badge {
+    color: #fff;
+    padding: 0.35em 0.65em;
+    font-weight: bold;
+    text-align: center;
+    border-radius: 0.25em;
+}
+
+.badge-order-track-0,
+.badge-order-track-1,
+.badge-reimbursement-0,
+.badge-opname--1 {
+    background-color: #dfa916;
+}
+
+.badge-order-track-2,
+.badge-reimbursement-2,
+.badge-opname-1 {
+    background-color: #20c21a;
+}
+
+.badge-order-track-3 {
+    background-color: #1ac28a;
+}
+
+.badge-order-track-4 {
+    background-color: #1aa0c2;
+}
+
+.badge-order-track-5,
+.badge-reimbursement-1 {
+    background-color: #1a25c2;
+}
+
+.badge-order-track--1,
+.badge-reimbursement--1 {
+    background-color: #c21a1a;
+}
+
+select[readonly] {
+    pointer-events: none;
+    background-color: lightgray;
 }

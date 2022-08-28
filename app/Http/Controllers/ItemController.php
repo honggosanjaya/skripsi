@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\CategoryItem;
 use App\Models\CustomerType;
 use App\Models\Item;
 use App\Models\Order;
@@ -17,6 +18,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use PDF;
 use Illuminate\Database\QueryException;
+use Intervention\Image\ImageManagerStatic as Image;
 
 class ItemController extends Controller
 {
@@ -27,15 +29,15 @@ class ItemController extends Controller
   public function getListAllProductAPI($id){
     $history = History::where('id_customer',$id)->with('linkItem')->get();
     $items = $history->pluck('id_item');
-    $items = Item::orderBy("status", "ASC")->whereNotIn('id',$items->toArray())->paginate(4);
+    $items = Item::orderBy("status_enum", "ASC")->whereNotIn('id',$items->toArray())->paginate(4);
 
     $orderItemUnconfirmed=OrderItem::
     whereHas('linkOrder',function($q) {
-      $q->where('status', 15);
+      $q->where('status_enum', '-1');
     })
     ->whereHas('linkOrder',function($q) {
       $q->whereHas('linkOrderTrack',function($q) {
-        $q->where('status','!=', 25);
+        $q->where('status_enum','!=', '-1');
       });
     })
     ->select('id_item', DB::raw('SUM(kuantitas) as jumlah_blmkonfirmasi'))      
@@ -49,16 +51,36 @@ class ItemController extends Controller
   }
 
   public function getListHistoryProductAPI($id){
-    $history = History::where('id_customer',$id)->with('linkItem')->get();
+    $history = History::where('id_customer',$id)->with(['linkItem'])->get();
     $customer = Customer::where('id',$id)->with('linkCustomerType')->first();
+
+    $latestOrderItem = [];
+
+    $histories = History::select('id_item')->where('id_customer',$id)->get();
+    foreach($histories as $h){
+      $query = OrderItem::where('id_item',$h['id_item'])
+      ->whereHas('linkOrder', function($q) use($id){
+          $q->where('id_customer', $id);
+        })
+      ->join('order_tracks','order_items.id_order','=','order_tracks.id_order')
+      ->select('order_items.id', 'order_items.id_order' ,'id_item', 'harga_satuan', 'order_tracks.waktu_diteruskan' ,'order_items.created_at')
+      ->where('order_tracks.waktu_diteruskan', '!=', null)
+      ->latest()->first();
+
+      $latestOrderItem[$h->id_item] = array(
+        $query,
+      );
+    }
+
+    // dd($latestOrderItem);
 
     $orderItemUnconfirmed=OrderItem::
     whereHas('linkOrder',function($q) {
-      $q->where('status', 15);
+      $q->where('status_enum', '-1');
     })
     ->whereHas('linkOrder',function($q) {
       $q->whereHas('linkOrderTrack',function($q) {
-        $q->where('status','!=', 25);
+        $q->where('status_enum','!=', '-1');
       });
     })
     ->select('id_item', DB::raw('SUM(kuantitas) as jumlah_blmkonfirmasi'))      
@@ -69,7 +91,8 @@ class ItemController extends Controller
       "status" => "success",
       "data" => [
         "history" => $history,
-        "customer" => $customer
+        "customer" => $customer,
+        "latestOrderItems" => $latestOrderItem
       ],
       "orderRealTime" => $orderItemUnconfirmed
     ], 200);
@@ -84,19 +107,43 @@ class ItemController extends Controller
   }
 
   //pengadaan
-  public function productList(){
-      $products = Item::orderBy("status", "ASC")->get();
+  public function productList(Request $request){
+      $products = Item::orderBy("status_enum", "ASC")->get();
+      $counter = $request->session()->increment('counterPengadaan');
+      $pageWasRefreshed = isset($_SERVER['HTTP_CACHE_CONTROL']) && $_SERVER['HTTP_CACHE_CONTROL'] === 'max-age=0';
+
+      if(!$pageWasRefreshed) {
+        if($counter>0){
+          \Cart::session(auth()->user()->id.'pengadaan')->clear();
+          session(['counterPengadaan' => 0]);
+        }
+      }
+
       return view('administrasi.stok.pengadaan.index', [
         "products" => $products,
+        // "pageWasRefreshed" => $pageWasRefreshed,
+        // 'counter' => $counter,
         "title" => "Stok Marketing - Pengadaan",
       ]);
   }
 
   //opname
-  public function productListOpname(){
-      $products = Item::orderBy("status", "ASC")->get();
+  public function productListOpname(Request $request){
+      $products = Item::orderBy("status_enum", "ASC")->get();
+      $counter = $request->session()->increment('counterOpname');
+      $pageWasRefreshed = isset($_SERVER['HTTP_CACHE_CONTROL']) && $_SERVER['HTTP_CACHE_CONTROL'] === 'max-age=0';
+
+      if(!$pageWasRefreshed) {
+        if($counter>0){
+          \Cart::session(auth()->user()->id.'opname')->clear();
+          session(['counterOpname' => 0]);
+        }
+      }
+
       return view('administrasi.stok.opname.index', [
         "products" => $products,
+        // "pageWasRefreshed" => $pageWasRefreshed,
+        // 'counter' => $counter,
         "title" => "Stok Marketing - opname",
       ]);
   }
@@ -157,7 +204,7 @@ class ItemController extends Controller
     $order_id= Order::insertGetId([
       'id_customer' => 0,
       'id_staff' => auth()->user()->id_users,
-      'status' => 14,
+      'status_enum' => '-1',
       'created_at' => now(),
     ]);
 
@@ -171,9 +218,9 @@ class ItemController extends Controller
         'keterangan' =>  $item->attributes->keterangan,
         'created_at' =>  now(),
       ]);
-      $stok = Item::find($item->id);
-      $stok->stok +=  $item->attributes->jumlah;
-      $stok->save();
+      // $stok = Item::find($item->id);
+      // $stok->stok +=  $item->attributes->jumlah;
+      // $stok->save();
     }
 
     OrderItem::insert($data);
@@ -185,15 +232,54 @@ class ItemController extends Controller
 
   public function index(){      
     return view('administrasi.stok.produk.index', [
-      'items' => Item::orderBy("status", "ASC")->orderBy('id','DESC')->get(),
+      'items' => Item::orderBy("status_enum", "ASC")->orderBy('id','DESC')->get(),
       "title" => "List Produk"
     ]);
   }
 
   public function create(){
+    $parentItems = Item::where('link_item',null)->get();
+
+    // $items = Item::all();
+    // $parentItems = [];
+
+    // foreach($items as $item){
+    //   $get1 = '';
+    //   $get2 = '';
+    //   $value = 0;
+      
+    //   if($item->link_item == null){
+    //     $get1 = $item->nama;
+    //     $value = $item->id;
+    //     array_push($parentItems, [$get1, $value]);
+    //   }
+    //   else if($item->link_item != null){
+    //     for($i=0; $i<Item::count(); $i++){
+    //       if($item->link_item == $items[$i]->id){
+    //         $get2 = $parentItems[$i][0] . " - " .$item->nama;
+    //         $value = $item->id;
+    //         array_push($parentItems, [$get2,$value]);
+    //       }
+    //     }
+    //   }
+    // }
+      
+    // usort($parentItems, function($a, $b) {
+    //   return $a[0] <=> $b[0];
+    // });
+
+      // dd($parentItems);
+
+      $statuses = [
+        1 => 'active',
+        -1 => 'inactive',
+      ];
+
     return view('administrasi.stok.produk.create', [
-      'items' => Item::orderBy("status", "ASC")->get(),
-      'statuses' => Status::where('tabel', 'items')->get(),
+      'items' => Item::orderBy("status_enum", "ASC")->get(),
+      'categories' => CategoryItem::all(),
+      'statuses' => $statuses,
+      'parentItems' => $parentItems,
       "title" => "Stok Marketing - List Produk - Add"
     ]);
   }
@@ -207,35 +293,33 @@ class ItemController extends Controller
       'harga2_satuan' => ['nullable', 'numeric'],
       'harga3_satuan' => ['nullable', 'numeric'],
       'gambar' => 'image|file|max:1024',
+      // 'gambar' => 'image|file',
       'volume' => 'required'
     ]);
 
     if($request->stok){
       $rules['stok'] = ['integer', 'min:0'];
     }
-
     if($request->min_stok){
       $rules['min_stok'] = ['integer', 'min:0'];
     }
-
     if($request->max_stok){
       $rules['max_stok'] = ['integer', 'min:0'];
     }
 
-    // if($request->max_pengadaan){
-    //   $rules['max_pengadaan'] = ['integer', 'min:0'];
-    // }
-
     $validatedData = $request->validate($rules);
-
-    $validatedData['status'] = $request->status;
+    $validatedData['status_enum'] = $request->status_enum;
+    $validatedData['id_category'] = $request->category;
+    $validatedData['link_item'] = $request->link_item;
     $validatedData['max_pengadaan'] = ($request->max_stok??0) - ($request->min_stok??0);
     
     if ($request->gambar) {
       $nama_item = str_replace(" ", "-", $request->nama);
       $file_name = 'ITM-' . $nama_item . '-' .date_format(now(),"YmdHis"). '.' . $request->gambar->extension();
-      $request->gambar->move(public_path('storage/item'), $file_name);
       $validatedData['gambar'] = $file_name;
+      Image::make($request->file('gambar'))->resize(350, null, function ($constraint) {
+        $constraint->aspectRatio();
+      })->save(public_path('storage/item/') . $file_name);
     }    
 
     Item::create($validatedData);
@@ -243,11 +327,53 @@ class ItemController extends Controller
     return redirect('/administrasi/stok/produk') -> with('pesanSukses', 'Produk berhasil ditambahkan' );
   }
 
-  public function edit($id)
-  {
+  public function edit($id){
+    $parentItems = Item::where('link_item',null)->get();
+    // $cannotSelected = Item::where('id',$id)->orWhere('link_item',$id)->count();
+    
+    // $items = Item::all();
+    // $itemsCount = Item::count();
+    // $parentItems = [];
+
+    // foreach($items as $item){
+    //   $get1 = '';
+    //   $get2 = '';
+    //   $value = 0;
+
+    //   // if($item->id != $id && $item->link_item != $id){
+    //     if($item->link_item == null){
+    //         $get1 = $item->nama;
+    //         $value = $item->id;
+    //         array_push($parentItems, [$get1, $value]);
+    //     }
+    //     else if($item->link_item != null){
+    //       for($j=$itemsCount-1; $j>=0; $j--){
+    //         if($item->link_item == $items[$j]->id){
+    //           $get2 = $parentItems[$j][0] . " - " .$item->nama;
+    //           $value = $item->id;
+    //           array_push($parentItems, [$get2, $value]);
+    //         }
+    //       }
+    //     }
+    //   // }
+    // }
+      
+    // usort($parentItems, function($a, $b) {
+    //   return $a[0] <=> $b[0];
+    // });
+
+    // dd($parentItems);
+
+    $statuses = [
+      1 => 'active',
+      -1 => 'inactive',
+    ];
+  
     return view('administrasi.stok.produk.edit',[
       'item' => Item::where('id', $id)->first(),
-      'statuses' => Status::where('tabel', 'items')->get(),
+      'parentItems' => $parentItems,
+      'categories' => CategoryItem::all(),
+      'statuses' => $statuses,
     ]);
   }
 
@@ -270,7 +396,9 @@ class ItemController extends Controller
     }
 
     $validatedData = $request->validate($rules);
-    $validatedData['status'] = $request->status;
+    $validatedData['id_category'] = $request->category;
+    $validatedData['link_item'] = $request->link_item;
+    $validatedData['status_enum'] = $request->status_enum;
 
     if ($request->gambar) {
       if($request->oldGambar){
@@ -280,7 +408,9 @@ class ItemController extends Controller
       $file= $request->file('gambar');
       $nama_item = str_replace(" ", "-", $validatedData['nama']);
       $file_name = 'ITM-' . $nama_item . '-' .date_format(now(),"YmdHis"). '.' . $file->getClientOriginalExtension();
-      $request->gambar->move(public_path('storage/item'), $file_name);
+      Image::make($request->file('gambar'))->resize(350, null, function ($constraint) {
+        $constraint->aspectRatio();
+      })->save(public_path('storage/item/') . $file_name);
       $validatedData['gambar'] = $file_name;
     }    
 
@@ -292,7 +422,7 @@ class ItemController extends Controller
     public function customerIndex(){
       $customer = Customer::where('id', auth()->user()->id_users)->first();
         return view('customer.produk',[
-            'items' => Item::where('status',10)->orderBy("status", "ASC")->get(),
+            'items' => Item::where('status_enum','1')->orderBy("status_enum", "ASC")->get(),
             'customer' => $customer
         ]);
     }
@@ -307,7 +437,7 @@ class ItemController extends Controller
     }
 
     public function indexAdministrasi(){
-        $items = Item::orderBy("status", "ASC")->paginate(10);
+        $items = Item::orderBy("status_enum", "ASC")->paginate(10);
         return view('administrasi.stok.index',[
             'items' => $items
         ]);
@@ -381,7 +511,7 @@ class ItemController extends Controller
     }
 
     public function filterProdukApi(Request $request){
-      $items=Item::orderBy('status','ASC');
+      $items=Item::orderBy('status_enum','ASC');
       if ($request->nama??null) {
         $items=$items->where(strtolower('nama'),'like','%'.$request->nama.'%');
       }
@@ -428,15 +558,15 @@ class ItemController extends Controller
     public function searchProductAPI($id, $name){
       $history = History::where('id_customer',$id)->with('linkItem')->get();
       $items = $history->pluck('id_item');
-      $items = Item::orderBy("status", "ASC")->whereNotIn('id',$items->toArray())->where(strtolower('nama'), 'like', '%'.$name.'%')->paginate(4);
+      $items = Item::orderBy("status_enum", "ASC")->whereNotIn('id',$items->toArray())->where(strtolower('nama'), 'like', '%'.$name.'%')->paginate(4);
   
       $orderItemUnconfirmed=OrderItem::
       whereHas('linkOrder',function($q) {
-        $q->where('status', 15);
+        $q->where('status_enum', '-1');
       })
       ->whereHas('linkOrder',function($q) {
         $q->whereHas('linkOrderTrack',function($q) {
-          $q->where('status','!=', 25);
+          $q->where('status_enum','!=', '-1');
         });
       })
       ->select('id_item', DB::raw('SUM(kuantitas) as jumlah_blmkonfirmasi'))      
@@ -453,15 +583,15 @@ class ItemController extends Controller
       $customer = Customer::find($id);
       $history = History::where('id_customer',$id)->with('linkItem')->get();
       $items = $history->pluck('id_item');
-      $items = Item::orderBy("status", "ASC")->whereNotIn('id', $items->toArray());
+      $items = Item::orderBy("status_enum", "ASC")->whereNotIn('id', $items->toArray());
 
       $orderItemUnconfirmed=OrderItem::
       whereHas('linkOrder',function($q) {
-        $q->where('status', 15);
+        $q->where('status_enum', '-1');
       })
       ->whereHas('linkOrder',function($q) {
         $q->whereHas('linkOrderTrack',function($q) {
-          $q->where('status','!=', 25);
+          $q->where('status_enum','!=', '-1');
         });
       })
       ->select('id_item', DB::raw('SUM(kuantitas) as jumlah_blmkonfirmasi'))      
@@ -485,13 +615,12 @@ class ItemController extends Controller
     }
 
     public function administrasiEditStatusItem(Item $item){
-      $status = $item->status;
-      $nama_status = Status::where('id', $status)->first()->nama; 
+      $status = $item->status_enum;
 
-      if($nama_status === 'active'){
-        Item::where('id', $item->id)->update(['status' => 11]);
-      }else if($nama_status === 'inactive'){
-        Item::where('id', $item->id)->update(['status' => 10]);
+      if($status === '1'){
+        Item::where('id', $item->id)->update(['status_enum' => '-1']);
+      }else if($status === '-1'){
+        Item::where('id', $item->id)->update(['status_enum' => '1']);
       }
 
       return redirect('/administrasi/stok/produk') -> with('pesanSukses', 'Berhasil ubah status' );

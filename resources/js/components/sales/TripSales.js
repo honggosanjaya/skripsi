@@ -130,7 +130,7 @@ const TripSales = () => {
       if (result.isConfirmed) {
         let formData = new FormData();
         formData.append("foto", file);
-        objData["status"] = "trip";
+        objData["status_enum"] = "trip";
         setIsLoading(true);
         axios({
           method: "post",
@@ -190,7 +190,7 @@ const TripSales = () => {
         setIsLoading(true);
         let formData = new FormData();
         formData.append("foto", file);
-        objData["status"] = "order";
+        objData["status_enum"] = "order";
         axios({
           method: "post",
           url: `${window.location.origin}/api/tripCustomer`,
