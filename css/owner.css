@@ -1,0 +1,25 @@
+#hideMeAfter3Seconds {
+  -webkit-animation: hideAnimation 0s ease-in 3s;
+          animation: hideAnimation 0s ease-in 3s;
+  -webkit-animation-fill-mode: forwards;
+          animation-fill-mode: forwards;
+}
+
+@-webkit-keyframes hideAnimation {
+  to {
+    visibility: hidden;
+    display: none;
+    width: 0;
+    height: 0;
+  }
+}
+
+@keyframes hideAnimation {
+  to {
+    visibility: hidden;
+    display: none;
+    width: 0;
+    height: 0;
+  }
+}
+/*# sourceMappingURL=owner.css.map */

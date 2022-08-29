@@ -44,7 +44,7 @@
           @foreach ($reimbursements as $reimbursement)
             <tr>
               <th scope="row" class="text-center">
-                {{ ($reimbursements->currentPage() - 1) * $reimbursements->perPage() + $loop->iteration }}
+                {{ $loop->iteration }}
               </th>
               <td>{{ $reimbursement->linkStaffPengaju->nama }}</td>
               <td>{{ $reimbursement->linkStaffPengonfirmasi->nama ?? null }}</td>
@@ -68,7 +68,6 @@
         </tbody>
       </table>
 
-      {{ $reimbursements->links() }}
     </div>
   </div>
 
