@@ -9,7 +9,6 @@ use App\Models\History;
 use App\Models\CustomerType;
 use App\Models\District;
 use App\Models\Order;
-use App\Models\Status;
 use App\Models\ReturType;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;

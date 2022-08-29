@@ -7,7 +7,7 @@ use App\Models\OrderItem;
 use App\Models\Customer;
 use App\Models\OrderTrack;
 use App\Models\Invoice;
-use App\Models\Status;
+
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 

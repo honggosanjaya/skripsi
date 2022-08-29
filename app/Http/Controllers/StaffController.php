@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Staff;
 use App\Models\StaffRole;
-use App\Models\Status;
+
 use App\Models\User;
 use App\Models\Trip;
 use Illuminate\Http\Request;

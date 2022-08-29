@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use App\Models\Trip;
 use App\Models\User;
-use App\Models\Status;
 use App\Models\Customer;
 use App\Models\District;
 use App\Models\ReturType;

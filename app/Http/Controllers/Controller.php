@@ -21,7 +21,6 @@ use App\Models\Event;
 use App\Models\Customer;
 use App\Models\Invoice;
 use App\Models\Vehicle;
-use App\Models\Status;
 
 use App\Helpers\Session;
 use App\Models\Reimbursement;

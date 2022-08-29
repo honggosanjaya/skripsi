@@ -2,7 +2,7 @@
 
 namespace App\Models;
 
-use App\Models\Status;
+
 use App\Models\Customer;
 use App\Models\Staff;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
