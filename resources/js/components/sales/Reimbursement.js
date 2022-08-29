@@ -42,13 +42,17 @@ const Reimbursement = () => {
     })
   }, [])
 
-  useEffect(() => {
+  const getHistoryReimbursement = () => {
     if (dataUser.id_staff != undefined) {
       axios.get(`${window.location.origin}/api/historyReimbursement/${dataUser.id_staff}`).then(response => {
         console.log('reimbursement', response.data);
         setHistoryReimbursement(response.data.data);
       })
     }
+  }
+
+  useEffect(() => {
+    getHistoryReimbursement();
   }, [dataUser])
 
   useEffect(() => {
@@ -133,6 +137,7 @@ const Reimbursement = () => {
             }).then((result) => {
               if (result.isConfirmed) {
                 clearAllInputField();
+                getHistoryReimbursement();
                 setTabActive('history');
               }
             })
@@ -143,11 +148,6 @@ const Reimbursement = () => {
           });
       }
     })
-  }
-
-  const getStatusReimbursement = (status) => {
-    const words = status.split(' ');
-    return words[1];
   }
 
   const getDatePengajuan = (date) => {
@@ -200,7 +200,13 @@ const Reimbursement = () => {
                       <p className="fs-7 mb-0 fw-bold">Tanggal pengajuan:</p>
                       <p className="fs-7 mb-0">{getDatePengajuan(history.created_at)}</p>
                     </div>
-                    <div className="badge bg-warning text-black fw-normal">{getStatusReimbursement(history.link_status.nama)}</div>
+                    <div className="badge bg-warning text-black fw-normal">
+                      {history.status_enum == 0 ? 'Diajukan' :
+                        history.status_enum == 1 ? 'Diproses' :
+                          history.status_enum == 2 ? 'Dibayar' :
+                            'Ditolak'
+                      }
+                    </div>
                   </div>
                   <p className="fs-7 mb-0 fw-bold">Pengajuan sebesar {convertPrice(history.jumlah_uang)}</p>
                 </div>
@@ -214,10 +220,16 @@ const Reimbursement = () => {
                     <div className='info-2column'>
                       <span className='d-flex'>
                         <b>Status</b>
-                        <div className='word_wrap'>{getStatusReimbursement(history.link_status.nama)}</div>
+                        <div className='word_wrap'>
+                          {history.status_enum == 0 ? 'Diajukan' :
+                            history.status_enum == 1 ? 'Diproses' :
+                              history.status_enum == 2 ? 'Dibayar' :
+                                'Ditolak'
+                          }
+                        </div>
                       </span>
 
-                      {history.link_status.id > 27 && <span className='d-flex'>
+                      {history.status_enum != '0' && <span className='d-flex'>
                         <b>Dikonfirmasi Oleh</b>
                         {history.link_staff_pengonfirmasi && <div className='word_wrap'>{history.link_staff_pengonfirmasi.nama}</div>}
                       </span>}
@@ -234,7 +246,7 @@ const Reimbursement = () => {
 
                       <span className='d-flex'>
                         <b>Keperluan</b>
-                        <div className='word_wrap'>{history.link_cash_account.nama}</div>
+                        {/* <div className='word_wrap'>{history.link_cash_account.nama}</div> */}
                       </span>
                     </div>
                   </Modal.Body>
