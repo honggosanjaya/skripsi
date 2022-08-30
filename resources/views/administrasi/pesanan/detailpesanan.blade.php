@@ -43,11 +43,11 @@
               <a href="/administrasi/pesanan/detail/{{ $order->id }}/cetak-memo" class="btn btn-primary mx-1"><i
                   class="bi bi-download px-1"></i>Unduh Memo Persiapan Barang</a>
             @endif
-            @if ($order->linkOrderTrack->status_enum > '2' && $order->linkOrderTrack->status_enum <= '5')
+            @if ($order->linkOrderTrack->status_enum > '2' && $order->linkOrderTrack->status_enum <= '6')
               <a href="/administrasi/pesanan/detail/{{ $order->id }}/cetak-sj" class="btn btn-success mx-1"><i
                   class="bi bi-download px-1"></i>Unduh Surat Jalan</a>
             @endif
-            @if ($order->linkOrderTrack->status_enum > '1' && $order->linkOrderTrack->status_enum <= '5')
+            @if ($order->linkOrderTrack->status_enum > '1' && $order->linkOrderTrack->status_enum <= '6')
               {{-- @php
                 $counter_unduh = $order->linkInvoice->counter_unduh ?? null;
                 $max_unduh = $order->linkInvoice->max_unduh ?? null;
@@ -85,6 +85,8 @@
               @elseif ($order->linkOrderTrack->status_enum == '4')
                 <p class="text-success fw-bold d-inline">Order telah sampai</p>
               @elseif ($order->linkOrderTrack->status_enum == '5')
+                <p class="text-success fw-bold d-inline">Pembayaran</p>
+              @elseif ($order->linkOrderTrack->status_enum == '6')
                 <p class="text-success fw-bold d-inline">Order selesai</p>
               @endif
             </span>
@@ -96,13 +98,13 @@
             <span><b>Tanggal Pesan</b> {{ date('d M Y', strtotime($order->linkInvoice->created_at ?? '-')) }}</span>
           </div>
           <div class="mt-3">
-            @if ($order->linkOrderTrack->status_enum >= '2' && $order->linkOrderTrack->status_enum <= '5')
+            @if ($order->linkOrderTrack->status_enum >= '2' && $order->linkOrderTrack->status_enum <= '6')
               <a class="btn btn-warning mt-1 d-inline me-3"
                 href="/administrasi/pesanan/detail/{{ $order->id }}/kapasitas"><i
                   class="bi bi-eye-fill p-1"></i>Kapasitas Kendaraan</a>
             @endif
 
-            @if ($order->linkOrderTrack->status_enum >= '3' && $order->linkOrderTrack->status_enum <= '5')
+            @if ($order->linkOrderTrack->status_enum >= '3' && $order->linkOrderTrack->status_enum <= '6')
               <a class="btn btn-primary mt-3 d-inline"
                 href="/administrasi/pesanan/detail/{{ $order->id }}/pengiriman">
                 <span class="iconify fs-4 me-1" data-icon="fluent:apps-list-detail-24-filled"></span>Detail Pengiriman
@@ -155,6 +157,20 @@
                 <td>menunggu pesanan dikonfirmasi</td>
               @endif
             </tr>
+
+            @if ($order->linkOrderTrack->status_enum >= '4')
+              <tr>
+                <td colspan="4" class="text-center fw-bold">Total Pembayaran : </td>
+                <td>{{ number_format($total_bayar, 0, '', '.') }}</td>
+              </tr>
+            @endif
+
+            @if ($order->linkOrderTrack->status_enum == '4')
+              <tr>
+                <td colspan="4" class="text-center fw-bold">Sisa Pembayaran : </td>
+                <td>{{ number_format($order->linkInvoice->harga_total - $total_bayar, 0, '', '.') }}</td>
+              </tr>
+            @endif
           </tbody>
         </table>
 
@@ -195,6 +211,13 @@
                 @endif
               </div>
             </div>
+            <div class="stepper-item-date">
+              <div class="step-name">
+                @if ($pembayaran_terakhir)
+                  {{ date('F j, Y', strtotime($pembayaran_terakhir->tanggal)) }}
+                @endif
+              </div>
+            </div>
           </div>
 
           <div class="stepper-wrapper status-track" data-status="{{ $order->linkOrderTrack->status_enum }}">
@@ -217,6 +240,10 @@
             <div class="stepper-item s-4">
               <div class="step-counter">5</div>
               <div class="step-name">sampai</div>
+            </div>
+            <div class="stepper-item s-5">
+              <div class="step-counter">6</div>
+              <div class="step-name">pembayaran</div>
             </div>
           </div>
         @endif
@@ -267,6 +294,12 @@
           </div>
         @elseif($order->linkOrderTrack->status_enum == '4')
           <div class="float-end">
+            <a class="btn btn-primary mt-3" href="/administrasi/pesanan/detail/{{ $order->id }}/pembayaran">
+              <i class="bi bi-cash-coin me-2"></i>Pembayaran
+            </a>
+          </div>
+        @elseif($order->linkOrderTrack->status_enum == '5')
+          <div class="float-end">
             <form class="form-submit" method="POST" id="pesananselesai"
               action="/administrasi/pesanan/detail/{{ $order->id }}/dikirimkan">
               @csrf
@@ -275,7 +308,7 @@
             </form>
           </div>
         @endif
-        @if ($order->linkOrderTrack->status_enum == '5')
+        @if ($order->linkOrderTrack->status_enum == '6')
           <div class="alert alert-success alert-dismissible fade show mt-4" role="alert">
             Pesanan telah dinyatakan sukses oleh {{ $order->linkOrderTrack->linkStaffPengonfirmasi->nama ?? null }}
           </div>
@@ -293,5 +326,4 @@
       }
     });
   </script>
-
 @endsection

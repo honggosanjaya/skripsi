@@ -33,6 +33,8 @@
       @elseif ($order->linkOrderTrack->status_enum == '4')
         <span><b>Status pesanan</b>Order Telah Sampai</span>
       @elseif ($order->linkOrderTrack->status_enum == '5')
+        <span><b>Status pesanan</b>Pembayaran</span>
+      @elseif ($order->linkOrderTrack->status_enum == '6')
         <span><b>Status pesanan</b>Order Selesai</span>
       @endif
 

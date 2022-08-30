@@ -182,7 +182,7 @@ class HomeController extends Controller
 
         $order_diterima=Order::where('id_customer', auth()->user()->id_users)
         ->whereHas('linkOrderTrack',function($q) {
-          $q->where('status_enum', '4')->orWhere('status_enum', '5');
+          $q->where('status_enum', '4')->orWhere('status_enum', '5')->orWhere('status_enum', '6');
         })
         ->with(['linkOrderTrack'])
         ->count();
@@ -223,7 +223,7 @@ class HomeController extends Controller
         ->get();
 
         $telahSampai = Order::whereHas('linkOrderTrack', function($q){
-            $q->where('status_enum','4')->orWhere('status_enum','5');
+            $q->where('status_enum','4')->orWhere('status_enum','5')->orWhere('status_enum','6');
         })->where('id_customer','=',$customer->id)->with(['linkOrderTrack','linkInvoice','linkOrderItem.linkItem'])
         ->get();
 

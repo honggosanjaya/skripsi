@@ -9,9 +9,10 @@ use App\Models\StaffRole;
 use App\Models\Customer;
 use App\Models\OrderTrack;
 use App\Models\Order;
-
+use App\Models\LaporanPenagihan;
 use App\Models\Retur;
 use App\Models\Reimbursement;
+use App\Models\Pembayaran;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
@@ -79,5 +80,13 @@ class Staff extends Model
 
     public function linkReimbursementPengonfirmasi(){
         return $this->hasMany(Reimbursement::class,'id_staff_pengonfirmasi','id');
+    }
+
+    public function linkLaporanPenagihanPenagih(){
+      return $this->hasMany(LaporanPenagihan::class,'id_staff_penagih','id');
+    }
+
+    public function linkPembayaranPenagih(){
+      return $this->hasMany(Pembayaran::class,'id_staff_penagih','id');
     }
 }

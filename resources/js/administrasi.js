@@ -281,3 +281,19 @@ $(".alert_pajak").click(function () {
   $(".notif").not(".pajak_notif").addClass("m-fadeOut").removeClass("m-fadeIn");
   $(".alert_notif").not(".alert_pajak").removeClass("active");
 });
+
+
+$(document).on('change', '#laporan-penagihan .select-invoice', function (e) {
+  e.preventDefault();
+  $.ajax({
+    url: window.location.origin + `/api/administrasi/detailpenagihan/${e.target.value}`,
+    method: "GET",
+    success: function (data) {
+      if (data.status == 'success') {
+        $('#laporan-penagihan .nama-customer').val(data.data.customer);
+        $('#laporan-penagihan .jumlah-tagihan').val(data.data.tagihan);
+      }
+    },
+  });
+
+})
