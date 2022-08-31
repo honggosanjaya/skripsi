@@ -29,7 +29,7 @@ const Pemesanan = ({ location }) => {
   const [errorMessage, setErrorMessage] = useState(null);
   const [orderId, setOrderId] = useState(null);
   const [errorKodeCustomer, setErrorKodeCustomer] = useState(null);
-  const [koordinat, setKoordinat] = useState(null);
+  const [koordinat, setKoordinat] = useState("0@0");
   const [idTrip, setIdTrip] = useState(null);
   const [show, setShow] = useState(false);
   const [showFilter, setShowFilter] = useState(false);
@@ -109,6 +109,7 @@ const Pemesanan = ({ location }) => {
   }, []);
 
   useEffect(() => {
+    console.log("HIAIAIA");
     if (dataUser.nama && koordinat && idTripTetap == null && idTrip == null) {
       axios({
         method: "post",

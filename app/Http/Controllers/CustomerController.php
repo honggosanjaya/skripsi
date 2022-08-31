@@ -137,6 +137,10 @@ class CustomerController extends Controller
       }
 
       if($status == 1){
+        if($request->koordinat == null){
+          $request->koordinat = "0@0";
+        }
+        
         Trip::create([
           'id_customer' => $id_customer,
           'id_staff' => $request->id_staff,
