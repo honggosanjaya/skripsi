@@ -587,7 +587,7 @@ class OrderController extends Controller
               $q->where('status_enum', '3');
             })
             ->orWhereHas('linkOrderTrack',function($q) {
-              $q->where('status_enum','>', '3')->where('status_enum','<=', '5')->whereBetween('waktu_sampai',[now()->subDays(2),now()]);
+              $q->where('status_enum','>', '3')->where('status_enum','<=', '6')->whereBetween('waktu_sampai',[now()->subDays(2),now()]);
             });
     })->orderBy('id','DESC');
 
