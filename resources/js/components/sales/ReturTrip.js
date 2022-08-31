@@ -1,47 +1,24 @@
-import React, { useContext, useState, useEffect, useRef, Fragment } from 'react';
+import React, { useEffect, useState, useContext } from 'react';
 import axios from 'axios';
+import HeaderSales from './HeaderSales';
 import { useHistory, useParams } from 'react-router-dom';
-import HeaderShipper from './HeaderShipper';
-import { convertPrice } from "../reuse/HelperFunction";
-import ReturDB from '../reuse/ReturDb';
 import urlAsset from '../../config';
-import { UserContext } from '../../contexts/UserContext';
-import LoadingIndicator from '../reuse/LoadingIndicator';
-import { ReturContext } from '../../contexts/ReturContext';
+import ReturDB from '../reuse/ReturDb';
+import { convertPrice } from "../reuse/HelperFunction";
 import { AuthContext } from '../../contexts/AuthContext';
+import { UserContext } from '../../contexts/UserContext';
 
-let source;
-const ReturShipper = ({ location }) => {
-  const { idCust } = useParams();
+const ReturTrip = () => {
+  const { id } = useParams();
+  const redirect = useHistory();
   const { token } = useContext(AuthContext);
-  const { idInvoice } = useContext(ReturContext);
+  const { dataUser } = useContext(UserContext);
   const [historyItems, setHistoryItems] = useState([]);
   const [latestOrderItems, setLatestOrderItems] = useState({});
-  const [cartItems, setCartItems] = useState([]);
-  const { dataUser } = useContext(UserContext);
   const [newHistoryItems, setNewHistoryItems] = useState(historyItems);
-  const [isShowProduct, setIsShowProduct] = useState(true);
+  const [cartItems, setCartItems] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const Swal = require('sweetalert2');
-  const redirect = useHistory();
-  const _isMounted = useRef(true);
-
-  const { state: isTrip } = location;
-
-  useEffect(() => {
-    console.log('istrip', isTrip);
-    // console.log('isTripVal', isTrip.isTrip);
-  }, [isTrip])
-
-  useEffect(() => {
-    source = axios.CancelToken.source();
-    return () => {
-      _isMounted.current = false;
-      if (source) {
-        source.cancel("Cancelling in cleanup");
-      }
-    }
-  }, []);
 
   const getAllProduks = () => {
     const cartItems = ReturDB.getAllProduks();
@@ -52,8 +29,7 @@ const ReturShipper = ({ location }) => {
 
   useEffect(() => {
     getAllProduks();
-    let unmounted = false;
-    let source = axios.CancelToken.source();
+
     axios({
       method: "get",
       url: `${window.location.origin}/api/salesman/historyitems/${idCust}`,
@@ -63,22 +39,13 @@ const ReturShipper = ({ location }) => {
       },
     })
       .then((response) => {
-        if (!unmounted) {
-          console.log('lala', response.data.data);
-          setHistoryItems(response.data.data.history);
-          setLatestOrderItems(response.data.data.latestOrderItems);
-        }
+        console.log('lala', response.data.data);
+        setHistoryItems(response.data.data.history);
+        setLatestOrderItems(response.data.data.latestOrderItems);
       })
       .catch((error) => {
-        if (!unmounted) {
-          console.log(error.message);
-        }
+        console.log(error.message);
       });
-
-    return function () {
-      unmounted = true;
-      source.cancel("Cancelling in cleanup");
-    };
   }, []);
 
   useEffect(() => {
@@ -236,31 +203,12 @@ const ReturShipper = ({ location }) => {
 
   const goBack = () => {
     hapusSemuaProduk();
-    if (isTrip != undefined) {
-      if (isTrip.isTrip == true) {
-        redirect.push(`/salesman/trip/${idCust}`);
-      }
-    } else {
-      redirect.push('/lapangan/jadwal');
-    }
+    redirect.push('/lapangan/jadwal');
   }
 
-  let objData = {
-    cartItems: cartItems,
-    id_staff_pengaju: dataUser.id_staff,
-    id_customer: idCust,
-  }
 
-  const handlePengajuanRetur = () => {
+  const handlePengajuanTripRetur = () => {
     setIsLoading(true);
-    source = axios.CancelToken.source();
-    if (isTrip != undefined) {
-      if (isTrip.isTrip == true) {
-        objData["id_invoice"] = null;
-      }
-    } else {
-      objData["id_invoice"] = idInvoice;
-    }
     axios({
       method: "post",
       url: `${window.location.origin}/api/shipper/retur`,
@@ -268,7 +216,12 @@ const ReturShipper = ({ location }) => {
         Accept: "application/json",
         Authorization: "Bearer " + token,
       },
-      data: objData,
+      data: {
+        cartItems: cartItems,
+        id_staff_pengaju: dataUser.id_staff,
+        id_customer: idCust,
+        id_invoice: null
+      },
       cancelToken: source.token,
     })
       .then(response => {
@@ -284,13 +237,7 @@ const ReturShipper = ({ location }) => {
             icon: 'success',
           }).then((result) => {
             if (result.isConfirmed) {
-              if (isTrip != undefined) {
-                if (isTrip.isTrip == true) {
-                  redirect.push(`/salesman/trip/${idCust}`);
-                }
-              } else {
-                redirect.push('/lapangan/jadwal');
-              }
+              redirect.push('/lapangan/jadwal');
             }
           })
         }
@@ -308,50 +255,49 @@ const ReturShipper = ({ location }) => {
   }
 
   return (
-    <main className='page_main'>
-      <HeaderShipper title="Retur" toBack={goBack} />
+    <main className="page_main">
+      <HeaderSales title="Retur" />
       <div className="page_container pt-4">
         {isLoading && <LoadingIndicator />}
-        <button className="btn btn-primary" onClick={() => setIsShowProduct(!isShowProduct)}>{isShowProduct ? 'Sembunyikan' : 'Lihat Produk'}</button>
-        {isShowProduct &&
-          <div className="retur-product_wrapper my-3 border">
-            {Object.keys(latestOrderItems).length > 0 && newHistoryItems.map((item) => (
-              <div className="list_history-item p-3" key={item.id_item}>
-                <div className="d-flex align-items-center">
-                  {item.link_item.gambar ?
-                    <img src={`${urlAsset}/storage/item/${item.link_item.gambar}`} className="item_image me-3" />
-                    : <img src={`${urlAsset}/images/default_produk.png`} className="item_image me-3" />}
-                  <div>
-                    <h2 className='fs-6 text-capitalize fw-bold'>{item.link_item.nama}</h2>
-                    <p className="mb-0">
-                      {convertPrice(latestOrderItems[item.id_item][0].harga_satuan)}
-                    </p>
-                  </div>
-                </div>
 
-                <div className="row mt-2 align-items-center">
-                  <div className="col-5">
-                    <label className="form-label">Jumlah Retur</label>
-                  </div>
-                  <div className="col-7 d-flex justify-content-around">
-                    <button className="btn btn-primary btn_qty"
-                      onClick={() => handleKurangJumlah(item.link_item, item.alasan, latestOrderItems[item.id_item][0].harga_satuan)}> - </button>
-                    <input type="number" className="form-control mx-2"
-                      value={checkifexist(item.link_item)}
-                      onChange={(e) => handleValueChange(item.link_item, e.target.value, item.alasan, latestOrderItems[item.id_item][0].harga_satuan)} />
-                    <button className="btn btn-primary btn_qty" onClick={() => handleTambahJumlah(item.link_item, item.alasan, latestOrderItems[item.id_item][0].harga_satuan)}> + </button>
-                  </div>
+        <div className="retur-product_wrapper my-3 border">
+          {Object.keys(latestOrderItems).length > 0 && newHistoryItems.map((item) => (
+            <div className="list_history-item p-3" key={item.id_item}>
+              <div className="d-flex align-items-center">
+                {item.link_item.gambar ?
+                  <img src={`${urlAsset}/storage/item/${item.link_item.gambar}`} className="item_image me-3" />
+                  : <img src={`${urlAsset}/images/default_produk.png`} className="item_image me-3" />}
+                <div>
+                  <h2 className='fs-6 text-capitalize fw-bold'>{item.link_item.nama}</h2>
+                  <p className="mb-0">
+                    {convertPrice(latestOrderItems[item.id_item][0].harga_satuan)}
+                  </p>
                 </div>
-
-                <label className="form-label">Alasan Retur</label>
-                <input type="text" className="form-control"
-                  value={item.alasan ? item.alasan : ''}
-                  onChange={(e) => handleAlasanChange(item, e.target.value)}
-                />
-                {item.error && !item.alasan && <small className="text-danger mb-0">{item.error}</small>}
               </div>
-            ))}
-          </div>}
+
+              <div className="row mt-2 align-items-center">
+                <div className="col-5">
+                  <label className="form-label">Jumlah Retur</label>
+                </div>
+                <div className="col-7 d-flex justify-content-around">
+                  <button className="btn btn-primary btn_qty"
+                    onClick={() => handleKurangJumlah(item.link_item, item.alasan, latestOrderItems[item.id_item][0].harga_satuan)}> - </button>
+                  <input type="number" className="form-control mx-2"
+                    value={checkifexist(item.link_item)}
+                    onChange={(e) => handleValueChange(item.link_item, e.target.value, item.alasan, latestOrderItems[item.id_item][0].harga_satuan)} />
+                  <button className="btn btn-primary btn_qty" onClick={() => handleTambahJumlah(item.link_item, item.alasan, latestOrderItems[item.id_item][0].harga_satuan)}> + </button>
+                </div>
+              </div>
+
+              <label className="form-label">Alasan Retur</label>
+              <input type="text" className="form-control"
+                value={item.alasan ? item.alasan : ''}
+                onChange={(e) => handleAlasanChange(item, e.target.value)}
+              />
+              {item.error && !item.alasan && <small className="text-danger mb-0">{item.error}</small>}
+            </div>
+          ))}
+        </div>
 
         {cartItems.length > 0 && <div className="mt-3">
           <h1 className='fs-5 fw-bold mt-4'>Rincian Retur</h1>
@@ -373,7 +319,7 @@ const ReturShipper = ({ location }) => {
             <Fragment>
               <div className="row justify-content-end mt-4">
                 <div className="col d-flex justify-content-end">
-                  <button className="btn btn-success mt-3" onClick={handlePengajuanRetur} disabled={isLoading}>
+                  <button className="btn btn-success mt-3" onClick={handlePengajuanTripRetur} disabled={isLoading}>
                     <span className="iconify fs-3 me-1" data-icon="ic:baseline-assignment-return"></span>Ajukan Retur
                   </button>
                 </div>
@@ -386,4 +332,4 @@ const ReturShipper = ({ location }) => {
   );
 }
 
-export default ReturShipper;
+export default ReturTrip;
