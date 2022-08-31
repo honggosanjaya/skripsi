@@ -18,6 +18,6 @@ class LaporanPenagihan extends Model
     }
 
     public function linkInvoice(){
-      return $this->belongsTo(Invoice::class,'id_invoice');
+      return $this->belongsTo(Invoice::class,'id_invoice')->with(['LinkOrder']);
     }
 }

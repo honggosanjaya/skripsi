@@ -28,7 +28,7 @@ class Order extends Model
     }
 
     public function linkCustomer(){
-        return $this->belongsTo(Customer::class,'id_customer');
+        return $this->belongsTo(Customer::class,'id_customer')->with(['linkDistrict']);
     }
 
     public function linkOrderTrack(){

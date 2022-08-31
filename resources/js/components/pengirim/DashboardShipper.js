@@ -50,6 +50,10 @@ const DashboardShipper = () => {
               <span className="iconify me-2" data-icon="fa-solid:shipping-fast"></span>
               Pengiriman
             </Link>
+
+            <Link to="/lapangan/penagihan" className='btn btn-info btn-lg w-100 mt-4 text-white'>
+              <span className="iconify fs-3 me-2 text-white" data-icon="uil:bill"></span> Penagihan
+            </Link>
           </div>
         </Fragment>
         : ''}

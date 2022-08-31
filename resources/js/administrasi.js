@@ -290,7 +290,7 @@ $(document).on('change', '#laporan-penagihan .select-invoice', function (e) {
     method: "GET",
     success: function (data) {
       if (data.status == 'success') {
-        $('#laporan-penagihan .nama-customer').val(data.data.customer);
+        $('#laporan-penagihan .nama-customer').val(data.data.customer.nama);
         $('#laporan-penagihan .jumlah-tagihan').val(data.data.tagihan);
       }
     },

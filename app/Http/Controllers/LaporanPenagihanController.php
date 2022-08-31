@@ -98,10 +98,24 @@ class LaporanPenagihanController extends Controller
 
     return response()->json([
       'data' => [
-        'customer' => $customer->nama,
-        'tagihan' => $tagihan
+        'customer' => $customer,
+        'tagihan' => $tagihan,
+        'invoice' => $invoice
       ],
       'status' => 'success',
     ]);
   }
+
+  public function getPenagihanLapanganAPI(Staff $staff){
+    $tagihans = LaporanPenagihan::where('id_staff_penagih',$staff->id)
+    ->orderBy('tanggal', 'ASC')
+    ->with('linkInvoice')
+    ->get();
+
+    return response()->json([
+      'data' => $tagihans,
+      'status' => 'success',
+    ]);
+  }
+
 }

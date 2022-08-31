@@ -30,6 +30,7 @@ import ReturContextProvider from '../contexts/ReturContext';
 import HistoryTrip from './sales/HistoryTrip';
 import Reimbursement from './sales/Reimbursement';
 import HistoryInvoice from './sales/HistoryInvoice';
+import Penagihan from './reuse/Penagihan';
 
 
 function App() {
@@ -39,8 +40,9 @@ function App() {
         <UserContextProvider>
           <Switch>
             <Route path="/spa/login" component={LoginReact} />
-
             <Route path="/spa/logout" component={LogoutReact} />
+
+            <Route exact path="/lapangan/penagihan" component={Penagihan} />
 
             <Route path={["/shipper"]}>
               <Route exact path="/shipper" component={DashboardShipper} />
