@@ -711,7 +711,7 @@ class OrderController extends Controller
 
   public function viewPengiriman(order $order){
     $orderItems = OrderItem::where('id_order', $order->id)->get();
-    $stafs = Staff::where('status_enum', '1')->where('role', 4)->get();
+    $stafs = Staff::where('status_enum', '1')->whereIn('role', [3,4])->get();
 
     // $kapasitas_harga = 0;
     // $kapasitas_volume = 0;

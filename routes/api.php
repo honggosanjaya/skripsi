@@ -90,3 +90,4 @@ Route::post('/historyinvoice', [OrderController::class, 'getInvoiceAPI']);
 Route::get('/administrasi/detailpenagihan/{invoice:id}', [LaporanPenagihanController::class, 'getDetailPenagihanAPI']);
 
 Route::get('/lapangan/penagihan/{staff:id}', [LaporanPenagihanController::class, 'getPenagihanLapanganAPI']);
+Route::get('/lapangan/handlepenagihan/{id}', [LaporanPenagihanController::class, 'handlePenagihanLapanganAPI']);
