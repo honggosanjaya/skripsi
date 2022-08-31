@@ -12,53 +12,17 @@ class LaporanPenagihanController extends Controller
 {
   
   public function index(){
-    $AllInvoices = [];
-    // invoice yang sedang ditagih
-    $invs = Invoice::whereHas('linkLaporanPenagihan', function($q) {
-        $q->where('status_enum','-1');
-    })->get();
-
-    $invTagih = [];
-
-    for($i=0; $i<count($invs); $i++){
-      $invTagih[$i] = $invs[$i]->id;
-    }
-
-    // dd($invTagih);
-
-    $selectableInvoices = Invoice::whereNotIn('id', $invTagih)->whereHas('linkOrder', function($q) {
+    $invoices = Invoice::whereHas('linkOrder', function($q) {
       $q->whereHas('linkOrderTrack', function($q) {
         $q->where('status_enum','4');
       });
     })->get();
-
-    foreach($selectableInvoices as $invoice){
-      array_push($AllInvoices,[
-        'id' => $invoice->id,
-        'nomor_invoice' => $invoice->nomor_invoice,
-        'is_disabled' => false
-      ]);
-    }
-
-    $invoices = Invoice::whereIn('id', $invTagih)->whereHas('linkOrder', function($q) {
-      $q->whereHas('linkOrderTrack', function($q) {
-        $q->where('status_enum','4');
-      });
-    })->get();
-
-    foreach($invoices as $invoice){
-      array_push($AllInvoices,[
-        'id' => $invoice->id,
-        'nomor_invoice' => $invoice->nomor_invoice,
-        'is_disabled' => true
-      ]);
-    }
     
     $staffs = Staff::where('status_enum','1')->whereIn('role', [3, 4])->get();
     $histories = LaporanPenagihan::all();
 
     return view('administrasi.lp3.index',[
-      'invoices' => $AllInvoices,  
+      'invoices' => $invoices,  
       'staffs' => $staffs,   
       'histories' => $histories          
     ]);

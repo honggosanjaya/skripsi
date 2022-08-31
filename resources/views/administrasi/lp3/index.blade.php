@@ -44,11 +44,12 @@
                   name="id_invoice" value="{{ old('id_invoice') }}">
                   <option disabled selected value>Pilih Invoice</option>
                   @foreach ($invoices as $invoice)
-                    @if ($invoice['is_disabled'] == true)
+                    {{-- @if ($invoice['is_disabled'] == true)
                       <option value="{{ $invoice['id'] }}" disabled>{{ $invoice['nomor_invoice'] }}</option>
                     @elseif ($invoice['is_disabled'] == false)
                       <option value="{{ $invoice['id'] }}">{{ $invoice['nomor_invoice'] }}</option>
-                    @endif
+                    @endif --}}
+                    <option value="{{ $invoice->id }}">{{ $invoice->nomor_invoice }}</option>
                   @endforeach
                 </select>
                 @error('id_invoice')
