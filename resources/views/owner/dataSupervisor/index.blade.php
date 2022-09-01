@@ -62,7 +62,10 @@
                   <img src="{{ asset('images/default_fotoprofil.png') }}" class="img-fluid" width="40">
                 @endif
               </td>
-              <td>{{ $supervisor->nama ?? null }}</td>
+              <td>
+                <a href="/owner/datasupervisor/{{ $supervisor->id }}"
+                  class="text-decoration-none">{{ $supervisor->nama ?? null }}</a>
+              </td>
               <td>{{ $supervisor->email ?? null }}</td>
               <td>{{ $supervisor->telepon ?? null }}</td>
               <td class="text-center text-capitalize">{{ $supervisor->status_enum == '1' ? 'Active' : 'Inactive' }}</td>

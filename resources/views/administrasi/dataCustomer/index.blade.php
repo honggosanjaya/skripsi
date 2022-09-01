@@ -39,9 +39,12 @@
         </thead>
         <tbody>
           @foreach ($customers as $customer)
-            <tr onclick="window.location='/administrasi/datacustomer/{{ $customer->id }}';">
+            <tr>
               <th scope="row">{{ $loop->iteration }}</th>
-              <td>{{ $customer->nama }}</td>
+              <td>
+                <a href="/administrasi/datacustomer/{{ $customer->id }}"
+                  class="text-decoration-none">{{ $customer->nama }}</a>
+              </td>
               <td>{{ $customer->full_alamat }}</td>
               <td>{{ $customer->telepon }}</td>
               <td>harga {{ $customer->tipe_harga }}</td>

@@ -41,7 +41,6 @@
         <thead>
           <tr>
             <th scope="col" class="text-center">No</th>
-            <th scope="col" class="text-center">Foto<br>Tempat Usaha</th>
             <th scope="col" class="text-center">Nama</th>
             <th scope="col" class="text-center">Email</th>
             <th scope="col" class="text-center">Alamat Lengkap</th>
@@ -54,14 +53,10 @@
             <tr>
               <th scope="row" class="text-center">
                 {{ ($customers->currentPage() - 1) * $customers->perPage() + $loop->iteration }}</th>
-              <td class="text-center">
-                @if ($customer->foto != null)
-                  <img src="{{ asset('storage/customer/' . $customer->foto) }}" class="img-fluid" width="40">
-                @else
-                  <img src="{{ asset('images/default_fototoko.png') }}" class="img-fluid" width="40">
-                @endif
+              <td>
+                <a href="/supervisor/datacustomer/{{ $customer->id }}"
+                  class="text-decoration-none">{{ $customer->nama }}</a>
               </td>
-              <td>{{ $customer->nama }}</td>
               <td>{{ $customer->email }}</td>
               <td>{{ $customer->full_alamat }}</td>
               <td>{{ $customer->telepon }}</td>

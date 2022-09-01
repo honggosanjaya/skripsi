@@ -49,7 +49,11 @@
                   <img src="{{ asset('images/default_fotoprofil.png') }}" class="img-fluid" width="40">
                 @endif
               </td>
-              <td>{{ $staf->nama ?? null }}</td>
+              <td>
+                <a href="/supervisor/datastaf/{{ $staf->id }}" class="text-decoration-none">
+                  {{ $staf->nama ?? null }}
+                </a>
+              </td>
               <td>{{ $staf->email ?? null }}</td>
               <td>{{ $staf->telepon ?? null }}</td>
               <td class="text-capitalize">{{ $staf->linkStaffRole->nama ?? null }}</td>

@@ -484,4 +484,10 @@ class CustomerController extends Controller
       ]);
       return redirect('/supervisor/datacustomer') -> with('pesanSukses', 'Berhasil menolak pengajuan' );
     }
+
+    public function detailCustomerSPV(Customer $customer){
+      return view('supervisor.dataCustomer.detailCustomer', [
+        'customer' => $customer,
+      ]);
+    }
 }

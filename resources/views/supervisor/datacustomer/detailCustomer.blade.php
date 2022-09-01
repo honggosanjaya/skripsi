@@ -3,13 +3,13 @@
   <ol class="breadcrumb">
     <li class="breadcrumb-item"><a href="/supervisor">Dashboard</a></li>
     <li class="breadcrumb-item"><a href="/supervisor/datacustomer">Data Customer</a></li>
-    <li class="breadcrumb-item"><a href="/supervisor/datacustomer/pengajuan">Pengajuan</a></li>
     <li class="breadcrumb-item active" aria-current="page">Detail</li>
   </ol>
 @endsection
 
 @section('main_content')
   <div class="pt-4 px-5">
+    <h3 class="mb-5">Detail Customer</h3>
     <div class="informasi-list mb_big">
       <span><b>Nama Customer</b>{{ $customer->nama }}</span>
       <span><b>Jenis Customer</b>{{ $customer->linkCustomerType->nama }}</span>
@@ -33,24 +33,6 @@
           Tidak ada foto
         @endif
       </span>
-    </div>
-
-    <div class="row justify-content-end mt-4">
-      <div class="col d-flex justify-content-end">
-        <form action="/supervisor/datacustomer/pengajuan/tolak/{{ $customer->id }}" method="POST">
-          @csrf
-          <button type="submit" class="btn btn-sm btn-danger me-3">
-            <span class="iconify fs-5 me-1" data-icon="emojione-monotone:heavy-multiplication-x"></span> Tolak
-          </button>
-        </form>
-
-        <form action="/supervisor/datacustomer/pengajuan/setuju/{{ $customer->id }}" method="POST">
-          @csrf
-          <button type="submit" class="btn btn-sm btn-success">
-            <span class="iconify fs-5 me-1" data-icon="akar-icons:check"></span> Setuju
-          </button>
-        </form>
-      </div>
     </div>
   </div>
 @endsection
