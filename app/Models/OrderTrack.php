@@ -4,7 +4,7 @@ namespace App\Models;
 
 use App\Models\Order;
 use App\Models\Staff;
-use App\Models\Status;
+
 use App\Models\Vehicle;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -27,10 +27,6 @@ class OrderTrack extends Model
 
     public function linkStaffPengirim(){
         return $this->belongsTo(Staff::class,'id_staff_pengirim');
-    }
-
-    public function linkStatus(){
-        return $this->belongsTo(Status::class,'status');
     }
 
     public function linkVehicle(){

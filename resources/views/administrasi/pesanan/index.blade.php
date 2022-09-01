@@ -19,7 +19,12 @@
     </div>
   @endif
 
+
   <div class="px-5 pt-4">
+    <a href="/administrasi/lp3" class="btn btn-primary btn_add-relative">
+      <span class="iconify fs-4 me-1" data-icon="tabler:report-money"></span> Buat LP3
+    </a>
+
     <table class="table table-hover table-sm mt-4" id="table">
       <thead>
         <tr>
@@ -46,8 +51,25 @@
               <td></td>
             @endif
             <td class="text-capitalize">
-              <p class="mb-0 badge badge-{{ $order->linkOrderTrack->linkStatus->id }}">
-                {{ $order->linkOrderTrack->linkStatus->nama ?? 'null' }}</p>
+              <p class="mb-0 badge badge-order-track-{{ $order->linkOrderTrack->status_enum }}">
+                @if ($order->linkOrderTrack->status_enum == '0')
+                  {{ 'Diajukan Customer' }}
+                @elseif ($order->linkOrderTrack->status_enum == '1')
+                  {{ 'Diajukan Salesman' }}
+                @elseif ($order->linkOrderTrack->status_enum == '2')
+                  {{ 'Dikonfirmasi Admin' }}
+                @elseif ($order->linkOrderTrack->status_enum == '3')
+                  {{ 'Dalam Perjalanan' }}
+                @elseif ($order->linkOrderTrack->status_enum == '4')
+                  {{ 'Order Telah Sampai' }}
+                @elseif ($order->linkOrderTrack->status_enum == '5')
+                  {{ 'Pembayaran' }}
+                @elseif ($order->linkOrderTrack->status_enum == '6')
+                  {{ 'Order Selesai' }}
+                @elseif ($order->linkOrderTrack->status_enum == '-1')
+                  {{ 'Order Ditolak' }}
+                @endif
+              </p>
             </td>
             <td>{{ date('d M Y', strtotime($order->created_at)) }}</td>
             <td>

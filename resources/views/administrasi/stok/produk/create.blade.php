@@ -60,12 +60,12 @@
               <select class="form-select @error('nama_wilayah') is-invalid @enderror" name="link_item">
                 <option value="">-- Pilih Item --</option>
                 @foreach ($parentItems as $parentItem)
-                  @if (old('link_item') == $parentItem[1])
-                    {{-- <option value="{{ $parentItem->id }}" selected>{{ $parentItem->nama }}</option> --}}
-                    <option value="{{ $parentItem[1] }}" selected>{{ $parentItem[0] }}</option>
+                  @if (old('link_item') == $parentItem->id)
+                    <option value="{{ $parentItem->id }}" selected>{{ $parentItem->nama }}</option>
+                    {{-- <option value="{{ $parentItem[1] }}" selected>{{ $parentItem[0] }}</option> --}}
                   @else
-                    {{-- <option value="{{ $parentItem->id }}">{{ $parentItem->nama }}</option> --}}
-                    <option value="{{ $parentItem[1] }}">{{ $parentItem[0] }}</option>
+                    <option value="{{ $parentItem->id }}">{{ $parentItem->nama }}</option>
+                    {{-- <option value="{{ $parentItem[1] }}">{{ $parentItem[0] }}</option> --}}
                   @endif
                 @endforeach
               </select>
@@ -194,13 +194,13 @@
           </div>
           <div class="col">
             <div class="mb-3">
-              <label for="status" class="form-label">Status <span class='text-danger'>*</span></label>
-              <select class="form-select" name="status">
-                @foreach ($statuses as $status)
-                  @if (old('status') == $status->id)
-                    <option value="{{ $status->id }}" selected>{{ $status->nama }}</option>
+              <label for="status_enum" class="form-label">Status <span class='text-danger'>*</span></label>
+              <select class="form-select" name="status_enum">
+                @foreach ($statuses as $key => $val)
+                  @if (old('status_enum') == $key)
+                    <option value="{{ $key }}" selected>{{ $val }}</option>
                   @else
-                    <option value="{{ $status->id }}">{{ $status->nama }}</option>
+                    <option value="{{ $key }}">{{ $val }}</option>
                   @endif
                 @endforeach
               </select>

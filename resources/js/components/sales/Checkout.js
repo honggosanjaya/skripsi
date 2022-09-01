@@ -16,7 +16,7 @@ const Checkout = () => {
           <td>{totalHarga}</td>
         </tr>
         <tr>
-          <td>potongan {dataCustType.nama}</td>
+          <td>potongan {dataCustType.nama ?? null}</td>
           <td> - {totalHarga * (dataCustType.diskon ?? 0) / 100}</td>
         </tr>
         <tr>

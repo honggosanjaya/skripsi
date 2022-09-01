@@ -3,7 +3,7 @@
   <ol class="breadcrumb">
     <li class="breadcrumb-item"><a href="/administrasi">Dashboard</a></li>
     <li class="breadcrumb-item"><a href="/administrasi/reimbursement">Reimbursement</a></li>
-    @if ($reimbursement->linkStatus->id == '27')
+    @if ($reimbursement->status_enum == '0')
       <li class="breadcrumb-item"><a href="/administrasi/reimbursement/pengajuan">Pengajuan</a></li>
     @else
       <li class="breadcrumb-item"><a href="/administrasi/reimbursement/pembayaran">Pembayaran</a></li>
@@ -21,7 +21,15 @@
       <span><b>Jumlah</b>{{ $reimbursement->jumlah_uang }}</span>
       <span><b>Keterangan Pengajuan</b>{{ $reimbursement->keterangan_pengajuan }}</span>
       <span><b>Keterangan Konfirmasi</b>{{ $reimbursement->keterangan_konfirmasi ?? null }}</span>
-      <span><b>Status</b>{{ $reimbursement->linkStatus->nama }}</span>
+      @if ($reimbursement->status_enum == '0')
+        <span><b>Status</b>Diajukan</span>
+      @elseif ($reimbursement->status_enum == '1')
+        <span><b>Status</b>Diproses</span>
+      @elseif ($reimbursement->status_enum == '2')
+        <span><b>Status</b>Dibayar</span>
+      @elseif ($reimbursement->status_enum == '-1')
+        <span><b>Status</b>Ditolak</span>
+      @endif
       <span><b>Foto Bukti</b>
         <img src="{{ asset('storage/reimbursement/' . $reimbursement->foto) }}" class="img-preview img-fluid">
       </span>
@@ -29,7 +37,7 @@
 
     <div class="row justify-content-end mt-4">
       <div class="col d-flex justify-content-end">
-        @if ($reimbursement->linkStatus->id == '27')
+        @if ($reimbursement->status_enum == '0')
           <form action="/administrasi/reimbursement/pengajuan/tolak/{{ $reimbursement->id }}" method="POST">
             @csrf
             <button type="submit" class="btn btn-sm btn-danger me-3">
@@ -43,7 +51,7 @@
               <span class="iconify fs-5 me-1" data-icon="akar-icons:check"></span> Setuju
             </button>
           </form>
-        @elseif ($reimbursement->linkStatus->id == '28')
+        @elseif ($reimbursement->status_enum == '1')
           <form action="/administrasi/reimbursement/pengajuan/dibayar/{{ $reimbursement->id }}" method="POST">
             @csrf
             <button type="submit" class="btn btn-sm btn-success">

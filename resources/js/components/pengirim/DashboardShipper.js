@@ -46,9 +46,13 @@ const DashboardShipper = () => {
 
             <h1 className='fs-6 fw-bold'>Menu untuk Tenaga Pengirim</h1>
 
-            <Link to='/shipper/jadwal' className='btn btn-primary btn-lg w-100 mt-3'>
+            <Link to='/lapangan/jadwal' className='btn btn-primary btn-lg w-100 mt-3'>
               <span className="iconify me-2" data-icon="fa-solid:shipping-fast"></span>
               Pengiriman
+            </Link>
+
+            <Link to="/lapangan/penagihan" className='btn btn-info btn-lg w-100 mt-4 text-white'>
+              <span className="iconify fs-3 me-2 text-white" data-icon="uil:bill"></span> Penagihan
             </Link>
           </div>
         </Fragment>

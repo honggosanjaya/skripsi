@@ -9,7 +9,6 @@ use App\Models\History;
 use App\Models\CustomerType;
 use App\Models\District;
 use App\Models\Order;
-use App\Models\Status;
 use App\Models\ReturType;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -53,14 +52,6 @@ class Customer extends Model
 
     public function linkOrder(){
         return $this->hasMany(Order::class,'id_customer','id');
-    }
-
-    public function linkStatus(){
-        return $this->belongsTo(Status::class,'status','id');
-    }
-
-    public function linkStatusLimit(){
-      return $this->belongsTo(Status::class,'status_limit_pembelian','id');
     }
 
     public function linkReturType(){

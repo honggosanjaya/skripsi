@@ -63,7 +63,7 @@
             <td>{{ number_format($item->min_stok, 0, '', '.') }}</td>
             <td>{{ number_format($item->max_stok, 0, '', '.') }}</td>
             <td>{{ number_format($item->harga1_satuan, 0, '', '.') }}</td>
-            <td>{{ $item->linkStatus->nama }}</td>
+            <td>{{ $item->status_enum == '1' ? 'Active' : 'Inactive' }}</td>
             <td>
               <div class="d-flex flex-column">
                 <a href="/administrasi/stok/produk/{{ $item->id }}/edit" class="btn btn-sm btn-warning w-100">
@@ -73,13 +73,13 @@
                 <form action="/administrasi/stok/produk/ubahstatus/{{ $item->id }}" method="POST">
                   @csrf
                   <button type="submit"
-                    class="btn btn-sm mt-2 {{ $item->linkStatus->nama === 'active' ? 'btn-danger' : 'btn-success' }}">
-                    @if ($item->linkStatus->nama === 'active')
+                    class="btn btn-sm mt-2 {{ $item->status_enum === '1' ? 'btn-danger' : 'btn-success' }}">
+                    @if ($item->status_enum === '1')
                       <span class="iconify" data-icon="material-symbols:cancel-outline"></span>
                     @else
                       <span class="iconify" data-icon="akar-icons:double-check"></span>
                     @endif
-                    {{ $item->linkStatus->nama === 'active' ? 'Nonaktifkan' : 'Aktifkan' }}
+                    {{ $item->status_enum === '1' ? 'Nonaktifkan' : 'Aktifkan' }}
                   </button>
                 </form>
               </div>

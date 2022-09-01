@@ -31,11 +31,11 @@ const Profil = () => {
         {!loadingDataUser &&
           <Fragment>
             <ul className="info-list mt-4">
-              <li><b>Nama</b>{dataUser.nama}</li>
-              <li><b>Email</b>{dataUser.email}</li>
-              <li><b>Telepon</b>{dataUser.telepon}</li>
-              <li><b>Role</b>{dataUser.role}</li>
-              <li><b>Status</b>{dataUser.status}</li>
+              <li><b>Nama</b>{dataUser.nama ?? null}</li>
+              <li><b>Email</b>{dataUser.email ?? null}</li>
+              <li><b>Telepon</b>{dataUser.telepon ?? null}</li>
+              <li><b>Role</b>{dataUser.role ?? null}</li>
+              {dataUser.status_enum && <li><b>Status</b>{dataUser.status_enum == '1' ? "Aktif" : "Tidak Aktif"}</li>}
             </ul>
             <Link to='/changepassword' className="btn btn-outline-primary w-100 mt-4">Ubah Password</Link>
           </Fragment>

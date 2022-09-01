@@ -32,10 +32,10 @@
             <td>{{ $retur->linkCustomer->nama }}</td>
             <td>{{ $retur->linkCustomer->alamat_utama . ' ' . $retur->linkCustomer->alamat_nomor }}</td>
             <td>{{ $retur->linkStaffPengaju->nama }}</td>
-            <td class="text-capitalize">{{ $retur->linkStatus->nama }}</td>
+            <td class="text-capitalize">{{ $retur->status_enum == '0' ? 'Diajukan' : 'Dikonfirmasi' }}</td>
             <td>
-              <a href="/administrasi/retur/{{ $retur->no_retur }}" class="btn btn-primary"><span
-                  class="iconify fs-4 me-1" data-icon="fluent:apps-list-detail-24-filled"></span>Detail</a>
+              <a href="/administrasi/retur/{{ $retur->no_retur }}" class="btn btn-primary"><span class="iconify fs-4 me-1"
+                  data-icon="fluent:apps-list-detail-24-filled"></span>Detail</a>
             </td>
           </tr>
         @endforeach

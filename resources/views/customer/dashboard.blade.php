@@ -54,7 +54,7 @@
                   data-bs-target="#kode{{ $kode->id }}">
                   <span class="iconify fs-4" data-icon="fluent:apps-list-detail-24-filled"></span>
                 </button>
-                @if ($kode->linkOrderTrack->status == 19)
+                @if ($kode->linkOrderTrack->status_enum == '0')
                   <form action="/customer/historyorder/hapus/{{ $kode->id }}" method="POST" class="handleHapusKode">
                     @csrf
                     <button class="btn btn-danger ms-2 hapus_btn">
@@ -64,7 +64,7 @@
                 @endif
               </div>
             </td>
-            <td class="align-middle">{{ $kode->linkOrderTrack->linkStatus->nama ?? null }}</td>
+            <td class="align-middle">Diajukan Customer</td>
 
             <!-- Modal -->
             <div class="modal fade" id="kode{{ $kode->id }}" tabindex="-1" aria-labelledby="exampleModalLabel"
@@ -119,8 +119,8 @@
     <h1 class="fs-5 fw-bold mb-4">History Item</h1>
     <div class="card_wrapper">
       @foreach ($histories as $history)
-        <div class="card {{ $history->linkItem->status == 11 ? 'inactive_product' : '' }}">
-          @if ($history->linkItem->status == 11)
+        <div class="card {{ $history->linkItem->status_enum == '-1' ? 'inactive_product' : '' }}">
+          @if ($history->linkItem->status_enum == '-1')
             <div class='inactive_sign'>
               <p class='mb-0'>Tidak Tersedia</p>
             </div>

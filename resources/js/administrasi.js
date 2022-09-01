@@ -80,7 +80,8 @@ $(document).on('click', '#retur-admin .button-submit-modal', function () {
 
 if ($('.status-track').length > 0) {
   let statustrack = $('.status-track').data('status') + 1
-  for (let index = 19; index <= statustrack; index++) {
+  // for (let index = 19; index <= statustrack; index++) {
+  for (let index = -1; index <= statustrack; index++) {
     if (index != statustrack) {
       $('.s-' + index).addClass('completed');
 
@@ -280,3 +281,19 @@ $(".alert_pajak").click(function () {
   $(".notif").not(".pajak_notif").addClass("m-fadeOut").removeClass("m-fadeIn");
   $(".alert_notif").not(".alert_pajak").removeClass("active");
 });
+
+
+$(document).on('change', '#laporan-penagihan .select-invoice', function (e) {
+  e.preventDefault();
+  $.ajax({
+    url: window.location.origin + `/api/administrasi/detailpenagihan/${e.target.value}`,
+    method: "GET",
+    success: function (data) {
+      if (data.status == 'success') {
+        $('#laporan-penagihan .nama-customer').val(data.data.customer.nama);
+        $('#laporan-penagihan .jumlah-tagihan').val(data.data.tagihan);
+      }
+    },
+  });
+
+})

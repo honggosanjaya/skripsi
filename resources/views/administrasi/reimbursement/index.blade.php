@@ -44,22 +44,30 @@
           @foreach ($reimbursements as $reimbursement)
             <tr>
               <th scope="row" class="text-center">
-                {{ ($reimbursements->currentPage() - 1) * $reimbursements->perPage() + $loop->iteration }}
+                {{ $loop->iteration }}
               </th>
               <td>{{ $reimbursement->linkStaffPengaju->nama }}</td>
               <td>{{ $reimbursement->linkStaffPengonfirmasi->nama ?? null }}</td>
               <td>{{ $reimbursement->linkCashAccount->nama }}</td>
               <td>{{ $reimbursement->jumlah_uang }}</td>
               <td class="text-capitalize text-center">
-                <p class="mb-0 badge badge-{{ $reimbursement->linkStatus->id }}">
-                  {{ $reimbursement->linkStatus->nama ?? null }}</p>
+                <p class="mb-0 badge badge-reimbursement-{{ $reimbursement->status_enum }}">
+                  @if ($reimbursement->status_enum == '0')
+                    {{ 'Diajukan' }}
+                  @elseif ($reimbursement->status_enum == '1')
+                    {{ 'Diproses' }}
+                  @elseif ($reimbursement->status_enum == '2')
+                    {{ 'Dibayar' }}
+                  @elseif ($reimbursement->status_enum == '-1')
+                    {{ 'Ditolak' }}
+                  @endif
+                </p>
               </td>
             </tr>
           @endforeach
         </tbody>
       </table>
 
-      {{ $reimbursements->links() }}
     </div>
   </div>
 

@@ -7,7 +7,7 @@ use App\Models\Staff;
 use App\Models\Customer;
 use App\Models\Invoice;
 use App\Models\ReturType;
-use App\Models\Status;
+
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
@@ -43,7 +43,4 @@ class Retur extends Model
         return $this->belongsTo(ReturType::class,'tipe_retur');
     }
 
-    public function linkStatus(){
-        return $this->belongsTo(Status::class,'status');
-    }
 }

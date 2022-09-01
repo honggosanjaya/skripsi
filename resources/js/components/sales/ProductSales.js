@@ -32,10 +32,10 @@ const ProductSales = ({ tipeHarga, listItems, handleTambahJumlah, checkifexist, 
   return (
     <div className="productCard_wrapper">
       {(isHandleKodeCust || shouldKeepOrder) && orderItems.map((item) => (
-        <div className={`card product_card ${(item.status == 11 || item.stok == 0 || item.stok <= item.min_stok) ? 'inactive_product' : ''}`} key={item.id}>
-          {item.stok < 10 && item.stok > 0 && item.status != 11 && item.stok > item.min_stok && <span className="badge badge_stok">Stok Menipis</span>}
+        <div className={`card product_card ${(item.status_enum == '-1' || item.stok == 0 || item.stok <= item.min_stok) ? 'inactive_product' : ''}`} key={item.id}>
+          {item.stok < 10 && item.stok > 0 && item.status_enum != '-1' && item.stok > item.min_stok && <span className="badge badge_stok">Stok Menipis</span>}
 
-          {(item.status == 11 || item.stok == 0 || item.stok <= item.min_stok) &&
+          {(item.status_enum == '-1' || item.stok == 0 || item.stok <= item.min_stok) &&
             <div className='inactive_sign'>
               <p className='mb-0'>Tidak Tersedia</p>
             </div>}
@@ -89,9 +89,9 @@ const ProductSales = ({ tipeHarga, listItems, handleTambahJumlah, checkifexist, 
       ))}
 
       {(!isHandleKodeCust && !shouldKeepOrder) && listItems.map((item) => (
-        <div className={`card product_card ${(item.status == 11 || item.stok == 0 || item.stok <= item.min_stok) ? 'inactive_product' : ''}`} key={item.id}>
-          {item.stok < 10 && item.stok > 0 && item.status != 11 && item.stok > item.min_stok && <span className="badge badge_stok">Stok Menipis</span>}
-          {(item.status == 11 || item.stok == 0 || item.stok <= item.min_stok) &&
+        <div className={`card product_card ${(item.status_enum == '-1' || item.stok == 0 || item.stok <= item.min_stok) ? 'inactive_product' : ''}`} key={item.id}>
+          {item.stok < 10 && item.stok > 0 && item.status_enum != '-1' && item.stok > item.min_stok && <span className="badge badge_stok">Stok Menipis</span>}
+          {(item.status_enum == '-1' || item.stok == 0 || item.stok <= item.min_stok) &&
             <div className='inactive_sign'>
               <p className='mb-0'>Tidak Tersedia</p>
             </div>}

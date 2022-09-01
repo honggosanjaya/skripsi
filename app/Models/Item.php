@@ -4,7 +4,7 @@ namespace App\Models;
 
 use App\Models\History;
 use App\Models\Pengadaan;
-use App\Models\Status;
+
 use App\Models\OrderItem;
 use App\Models\Retur;
 use App\Models\CategoryItem;
@@ -25,10 +25,6 @@ class Item extends Model
 
     public function linkPengadaan(){
         return $this->hasMany(Pengadaan::class,'id_item','id');
-    }
-
-    public function linkStatus(){
-        return $this->belongsTo(Status::class,'status','id');
     }
 
     public function linkOrderItem(){

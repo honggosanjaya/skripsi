@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use App\Models\Trip;
 use App\Models\User;
-use App\Models\Status;
 use App\Models\Customer;
 use App\Models\District;
 use App\Models\ReturType;
@@ -92,11 +91,13 @@ class CustomerController extends Controller
         ]);
       }
 
-      $data = $request->except(['jam_masuk','alasan_penolakan','id_staff','status','koordinat'])+[
-        'status' => 3,
+      $data = $request->except(['jam_masuk','alasan_penolakan','id_staff','status_enum','koordinat'])+[
+        'status_enum' => '1',
         'created_at' => now()
       ];
-      $status = $request->status == 'trip' ? 1:2;
+      
+      $status = $request->status_enum == 'trip' ? 1:2;
+
       $id_customer = null;
 
       if ($request->id==null) {
@@ -129,13 +130,17 @@ class CustomerController extends Controller
         }
       }
 
-      if ($request->status == 'trip') {
+      if ($request->status_enum == 'trip') {
         if (Customer::find($id_customer)->time_to_effective_call==null) {
           Customer::find($id_customer)->update(['counter_to_effective_call' => $request->counter_to_effective_call+1]);
         }
       }
 
       if($status == 1){
+        if($request->koordinat == null){
+          $request->koordinat = "0@0";
+        }
+        
         Trip::create([
           'id_customer' => $id_customer,
           'id_staff' => $request->id_staff,
@@ -143,7 +148,7 @@ class CustomerController extends Controller
           'koordinat' => $request->koordinat,
           'waktu_masuk' => date('Y-m-d H:i:s', $request->jam_masuk),
           'waktu_keluar' => now(),
-          'status' => $status,
+          'status_enum' => '1',
           'created_at'=> now()
         ]);
         Customer::find($id_customer)->update(['updated_at'=> now()]);
@@ -212,15 +217,15 @@ class CustomerController extends Controller
 
     public function administrasiIndex(){
       return view('administrasi.dataCustomer.index', [
-        'customers' => Customer::orderBy('status','ASC')->orderBy('id','DESC')->get(),
+        'customers' => Customer::orderBy('status_enum','ASC')->orderBy('id','DESC')->get(),
         "title" => "Data Customer"
       ]);
     }
 
     public function administrasiSearch(){
-      $customers =  Customer::orderBy('status','ASC')->where(strtolower('nama'),'like','%'.request('cari').'%')
+      $customers =  Customer::orderBy('status_enum','ASC')->where(strtolower('nama'),'like','%'.request('cari').'%')
         ->orWhere(strtolower('email'),'like','%'.request('cari').'%')
-        ->orderBy('status','ASC')->paginate(10);
+        ->orderBy('status_enum','ASC')->paginate(10);
 
       return view('administrasi.dataCustomer.index', [
         'customers' => $customers,
@@ -245,11 +250,16 @@ class CustomerController extends Controller
       $tipe_hargas['harga2'] = array("value"=>2, "name"=>"Harga 2");
       $tipe_hargas['harga3'] = array("value"=>3, "name"=>"Harga 3");
 
+      $statuses = [
+        1 => 'active',
+        -1 => 'inactive',
+      ];
+
       return view('administrasi.dataCustomer.create', [
         'customer_types' => CustomerType::all(),
         'districts' => District::all(),
         'retur_types' => ReturType::all(),
-        'statuses' =>  Status::where('tabel', 'customers')->get(),
+        'statuses' =>  $statuses,
         'tipe_hargas' => $tipe_hargas,
         "title" => "Data Customer - Add"
       ]);
@@ -266,7 +276,7 @@ class CustomerController extends Controller
         'telepon' => ['nullable', 'string', 'max:15'],
         'pengajuan_limit_pembelian' => ['nullable'],
         'tipe_harga' => ['required', 'integer'],
-        'status' => ['required'],
+        'status_enum' => ['required'],
         'foto' => ['image', 'file', 'max:1024'],
       ];
 
@@ -281,10 +291,12 @@ class CustomerController extends Controller
       // $validatedData['limit_pembelian'] = 200000;
       $validatedData['durasi_kunjungan'] = 7;
       $validatedData['counter_to_effective_call'] = 1;
+      $validatedData['created_at'] = now();
+      $validatedData['updated_at'] = now();
       $validatedData['time_to_effective_call'] = now();
 
       if($request->pengajuan_limit_pembelian) {
-        $validatedData['status_limit_pembelian'] = 7;
+        $validatedData['status_limit_pembelian_enum'] = '0';
       }
 
       if ($request->foto) {
@@ -316,11 +328,11 @@ class CustomerController extends Controller
       $oldData = [];
       if($request->route == 'bacapengajuan'){
         $oldData['pengajuan_limit_pembelian'] =$customer->pengajuan_limit_pembelian;
-        $oldData['status_limit_pembelian'] =$customer->status_limit_pembelian;
+        $oldData['status_limit_pembelian_enum'] =$customer->status_limit_pembelian_enum;
 
         $customer->update([
           'pengajuan_limit_pembelian' => null,
-          'status_limit_pembelian' => null
+          'status_limit_pembelian_enum' => null
         ]);
       }
 
@@ -329,7 +341,6 @@ class CustomerController extends Controller
         'customer_types' => CustomerType::all(),
         'districts' => District::all(),
         'retur_types' => ReturType::all(),
-        'statuses' =>  Status::where('tabel', 'customers')->get(),
         "title" => "Data Customer - Detail",
         'old_data' => $oldData
       ];
@@ -343,12 +354,17 @@ class CustomerController extends Controller
       $tipe_hargas['harga2'] = array("value"=>"2", "name"=>"Harga 2");
       $tipe_hargas['harga3'] = array("value"=>"3", "name"=>"Harga 3");
 
+      $statuses = [
+        1 => 'active',
+        -1 => 'inactive',
+      ];
+
       return view('administrasi.dataCustomer.edit', [
         'customer' => $customer,
         'customer_types' => CustomerType::all(),
         'districts' => District::all(),
         'retur_types' => ReturType::all(),
-        'statuses' =>  Status::where('tabel', 'customers')->get(),
+        'statuses' =>  $statuses,
         'tipe_hargas' => $tipe_hargas,
         "title" => "Data Customer - Edit"
       ]);
@@ -365,7 +381,7 @@ class CustomerController extends Controller
         'telepon' => ['nullable','string', 'max:15'],
         'pengajuan_limit_pembelian' => ['nullable'],
         'tipe_harga' => ['required', 'integer'],
-        'status' => ['required'],
+        'status_enum' => ['required'],
         'foto' => 'image|file|max:1024',
       ];
 
@@ -391,7 +407,7 @@ class CustomerController extends Controller
       }
       
       if ($request->pengajuan_limit_pembelian!=null){
-        $validatedData['status_limit_pembelian'] = 7;
+        $validatedData['status_limit_pembelian_enum'] = '0';
       }
 
       if ($request->email!=null && $customer->email==null){
@@ -427,7 +443,7 @@ class CustomerController extends Controller
     // } 
 
     public function dataCustomer(){
-      $customers = Customer::orderBy("status", "ASC")->paginate(10);
+      $customers = Customer::orderBy("status_enum", "ASC")->paginate(10);
       return view('supervisor.datacustomer.dataCustomer', [
         'customers' => $customers,
         "title" => "Seluruh Data Customer"
@@ -435,7 +451,7 @@ class CustomerController extends Controller
     }
 
     public function dataPengajuanLimit(){
-      $customers = Customer::where('status_limit_pembelian', 7)->get();
+      $customers = Customer::where('status_limit_pembelian_enum', '0')->get();
 
       return view('supervisor.datacustomer.pengajuanLimit', [
         'customers' => $customers,
@@ -456,7 +472,7 @@ class CustomerController extends Controller
       Customer::find($customer->id)->update([
         'limit_pembelian' => $customer->pengajuan_limit_pembelian,
         // 'pengajuan_limit_pembelian' => null,
-        'status_limit_pembelian' => 5
+        'status_limit_pembelian_enum' => '1'
       ]);
       return redirect('/supervisor/datacustomer') -> with('pesanSukses', 'Berhasil menyetujui pengajuan' );
     }
@@ -464,7 +480,7 @@ class CustomerController extends Controller
     public function tolakPengajuanLimit(Customer $customer){
       Customer::find($customer->id)->update([
         // 'pengajuan_limit_pembelian' => null,
-        'status_limit_pembelian' => 6
+        'status_limit_pembelian_enum' => '-1'
       ]);
       return redirect('/supervisor/datacustomer') -> with('pesanSukses', 'Berhasil menolak pengajuan' );
     }

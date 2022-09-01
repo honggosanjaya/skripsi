@@ -76,7 +76,7 @@
             <td class="text-center">{{ number_format($item->max_stok, 0, '', '.') }}</td>
             <td class="text-center">{{ number_format($item->max_pengadaan, 0, '', '.') }}</td>
             <td>{{ number_format($item->harga_satuan, 0, '', '.') }}</td>
-            <td class="text-capitalize text-center">{{ $item->linkStatus->nama }}</td>
+            <td class="text-capitalize text-center">{{ $item->status_enum == '1' ? 'Active' : 'Inactive' }}</td>
             </tr>
           @endforeach
         </tbody>

@@ -3,7 +3,7 @@
 namespace App\Models;
 use App\Models\Staff;
 use App\Models\CashAccount;
-use App\Models\Status;
+
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -28,7 +28,4 @@ class Reimbursement extends Model
       return $this->belongsTo(CashAccount::class,'id_cash_account');
     }
 
-    public function linkStatus(){
-        return $this->belongsTo(Status::class,'status');
-    }
 }

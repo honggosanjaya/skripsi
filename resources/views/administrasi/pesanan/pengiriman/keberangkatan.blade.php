@@ -21,7 +21,23 @@
       <span><b>Nama Pengirim</b>{{ $order->linkOrderTrack->linkStaffPengirim->nama ?? '-' }}</span>
       <span><b>Alamat Pengiriman</b>{{ $order->linkCustomer->full_alamat }}</span>
       <span><b>Telepon</b>{{ $order->linkCustomer->telepon ?? '-' }}</span>
-      <span><b>Status pesanan</b>{{ $order->linkOrderTrack->linkStatus->nama }}</span>
+
+      @if ($order->linkOrderTrack->status_enum == '0')
+        <span><b>Status pesanan</b>Diajukan Customer</span>
+      @elseif ($order->linkOrderTrack->status_enum == '1')
+        <span><b>Status pesanan</b>Diajukan Salesman</span>
+      @elseif ($order->linkOrderTrack->status_enum == '2')
+        <span><b>Status pesanan</b>Dikonfirmasi Admin</span>
+      @elseif ($order->linkOrderTrack->status_enum == '3')
+        <span><b>Status pesanan</b>Dalam Perjalanan</span>
+      @elseif ($order->linkOrderTrack->status_enum == '4')
+        <span><b>Status pesanan</b>Order Telah Sampai</span>
+      @elseif ($order->linkOrderTrack->status_enum == '5')
+        <span><b>Status pesanan</b>Pembayaran</span>
+      @elseif ($order->linkOrderTrack->status_enum == '6')
+        <span><b>Status pesanan</b>Order Selesai</span>
+      @endif
+
       <span><b>Foto Pengiriman</b>
         @if ($order->linkOrderTrack->foto_pengiriman != null)
           <img src="{{ asset('storage/pengiriman/' . $order->linkOrderTrack->foto_pengiriman) }}"
@@ -32,7 +48,7 @@
       </span>
     </div>
 
-    @if ($order->linkOrderTrack->status == 21)
+    @if ($order->linkOrderTrack->status_enum == '2')
       <hr>
       <h1 class="fs-4 my-4">Atur Pengiriman</h1>
 
@@ -84,7 +100,7 @@
     @endif
 
 
-    @if ($order->linkOrderTrack->linkStatus->nama == 'order telah sampai')
+    @if ($order->linkOrderTrack->status_enum == '4')
       <form class="form-submit" id="pesananselesai" method="POST"
         action="/administrasi/pesanan/detail/{{ $order->id }}/dikirimkan">
         @csrf

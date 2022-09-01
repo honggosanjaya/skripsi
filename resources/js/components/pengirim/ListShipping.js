@@ -16,15 +16,15 @@ const ListShipping = ({ listShipping, statusShipping, handleShow, keyword, setKe
 
       {listShipping.length > 0 && <div className='pengiriman_wrapper'>
         {listShipping.map((data, index) => (
-          <div className={`list_pengiriman px-2 ${data.link_order_track.status != statusShipping ? ((statusShipping == 23 && data.link_order_track.status == 24) ? "d-block" : "d-none") : "d-block"}`} key={`jadwal${index}`}>
+          <div className={`list_pengiriman px-2 ${data.link_order_track.status_enum != statusShipping ? ((statusShipping == '4' && data.link_order_track.status_enum == '5') ? "d-block" : "d-none") : "d-block"}`} key={`jadwal${index}`}>
             <div className='info-2column'>
               <span className='d-flex'>
                 <b>No. Invoice</b>
-                <div className='word_wrap'>{data.link_invoice.nomor_invoice}</div>
+                <div className='word_wrap'>{data.link_invoice.nomor_invoice ?? null}</div>
               </span>
               <span className='d-flex'>
                 <b>Cutomer</b>
-                <div className='word_wrap'>{data.link_customer.nama}</div>
+                <div className='word_wrap'>{data.link_customer.nama ?? null}</div>
               </span>
               {data.link_customer.telepon &&
                 <Fragment>
@@ -35,12 +35,13 @@ const ListShipping = ({ listShipping, statusShipping, handleShow, keyword, setKe
                 </Fragment>}
               <span className='d-flex'>
                 <b>Alamat</b>
-                <div className='text-wrap word_wrap'>{data.link_customer.full_alamat}</div>
+                <div className='text-wrap word_wrap'>{data.link_customer.full_alamat ?? null}</div>
               </span>
-              <span className='d-flex'>
-                <b>Waktu Berangkat</b>
-                <p className='mb-0 word_wrap'>{convertDate(data.link_order_track.waktu_berangkat)}</p>
-              </span>
+              {data.link_order_track.waktu_berangkat != null &&
+                <span className='d-flex'>
+                  <b>Waktu Berangkat</b>
+                  <p className='mb-0 word_wrap'>{convertDate(data.link_order_track.waktu_berangkat)}</p>
+                </span>}
               {(data.link_order_track.waktu_sampai)
                 ?
                 <span className='d-flex'>
@@ -51,11 +52,13 @@ const ListShipping = ({ listShipping, statusShipping, handleShow, keyword, setKe
             <p className='mb-0 detail-pengiriman_link' onClick={() => handleShow(data.id)}>Lihat detail</p>
           </div>
         ))}
+        {statusShipping == '3' && perluKirim == 0 && <p className='text-center text-danger mb-0'>tidak ada yang perlu dikirim </p>}
 
-        {statusShipping == 22 && perluKirim == 0 && <p className='text-center text-danger mb-0'>tidak ada yang perlu dikirim </p>}
-
-        {statusShipping != 22 && sudahSampai == 0 && <p className='text-center text-danger mb-0'>tidak ada yang sudah sampai </p>}
+        {statusShipping != '3' && sudahSampai == 0 && <p className='text-center text-danger mb-0'>tidak ada yang sudah sampai </p>}
       </div>}
+
+      {listShipping.length == 0 && statusShipping == '3' && perluKirim == 0 && <p className='text-center text-danger mb-0'>tidak ada yang perlu dikirim </p>}
+      {listShipping.length == 0 && statusShipping != '3' && sudahSampai == 0 && <p className='text-center text-danger mb-0'>tidak ada yang sudah sampai </p>}
     </Fragment>
   );
 }

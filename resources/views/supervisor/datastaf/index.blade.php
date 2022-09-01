@@ -53,7 +53,7 @@
               <td>{{ $staf->email ?? null }}</td>
               <td>{{ $staf->telepon ?? null }}</td>
               <td class="text-capitalize">{{ $staf->linkStaffRole->nama ?? null }}</td>
-              <td class="text-capitalize">{{ $staf->linkStatus->nama ?? null }}</td>
+              <td class="text-capitalize">{{ $staf->status_enum == '1' ? 'Active' : 'Inactive' }}</td>
               <td>
                 <div class="d-flex justify-content-center">
                   <a href="/supervisor/datastaf/{{ $staf->id }}/edit" class="btn btn-sm btn-warning ms-3 me-1">
@@ -63,13 +63,13 @@
                   <form action="/supervisor/datastaf/ubahstatus/{{ $staf->id }}" method="POST">
                     @csrf
                     <button type="submit"
-                      class="btn btn-sm {{ $staf->linkStatus->nama === 'active' ? 'btn-danger' : 'btn-success' }}">
-                      @if ($staf->linkStatus->nama === 'active')
+                      class="btn btn-sm {{ $staf->status_enum === '1' ? 'btn-danger' : 'btn-success' }}">
+                      @if ($staf->status_enum === '1')
                         <span class="iconify" data-icon="material-symbols:cancel-outline"></span>
                       @else
                         <span class="iconify" data-icon="akar-icons:double-check"></span>
                       @endif
-                      {{ $staf->linkStatus->nama === 'active' ? 'Nonaktifkan' : 'Aktifkan' }}
+                      {{ $staf->status_enum === '1' ? 'Nonaktifkan' : 'Aktifkan' }}
                     </button>
                   </form>
                 </div>

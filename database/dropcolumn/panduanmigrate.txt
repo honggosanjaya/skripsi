@@ -1,0 +1,6 @@
+PANDUAN:
+1. php artisan migrate
+2. Buka Controller.php
+3. Ikuti panduan di Controller.php -> routenya /test
+4. Pindahkan file dalam folder dropcolumn ke folder migrations
+5. Jalankan php artisan migrate

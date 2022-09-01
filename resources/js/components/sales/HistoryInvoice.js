@@ -3,7 +3,6 @@ import axios from 'axios';
 import HeaderSales from './HeaderSales';
 import { UserContext } from '../../contexts/UserContext';
 import { convertPrice } from '../reuse/HelperFunction';
-import Button from 'react-bootstrap/Button';
 import Modal from 'react-bootstrap/Modal';
 
 const HistoryInvoice = () => {
@@ -51,11 +50,10 @@ const HistoryInvoice = () => {
     }
   }, [dataUser, dateStart, dateEnd])
 
-  const getTotalItem = (array) => {
-    var val = array.reduce(function (previousValue, currentValue) {
-      return previousValue.kuantitas + currentValue.kuantitas
-    });
-    return (val);
+  const getTotalItem = (items, prop) => {
+    return items.reduce(function (a, b) {
+      return a + b[prop];
+    }, 0);
   }
 
   const handleClickInvoice = (idInvoice) => {
@@ -116,9 +114,9 @@ const HistoryInvoice = () => {
                 <tbody>
                   {dataInvoices.map((data) => (
                     <tr key={data.id} onClick={() => handleClickInvoice(data.id)}>
-                      <td className='align-middle'>{data.link_order.link_customer.nama}</td>
-                      <td className='text-center align-middle'>{convertPrice(data.harga_total)}</td>
-                      <td className='text-center align-middle'>{getTotalItem(data.link_order.link_order_item)}</td>
+                      <td className='align-middle'>{data.link_order.link_customer.nama ?? null}</td>
+                      {data.harga_total ? <td className='text-center align-middle'>{convertPrice(data.harga_total)}</td> : <td></td>}
+                      {data.link_order.link_order_item ? <td className='text-center align-middle'>{getTotalItem(data.link_order.link_order_item, "kuantitas")}</td> : <td></td>}
                     </tr>
                   ))}
                 </tbody>

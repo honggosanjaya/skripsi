@@ -38,9 +38,18 @@ export function dataURLtoFile(dataurl, filename) {
   return new File([u8arr], filename, { type: mime });
 }
 
-
-
 export function getTime(date) {
   const myArray = date.split(" ");
   return myArray[1].slice(0, -3);
+}
+
+export function convertTanggal(date) {
+  let parts = date.split('-');
+  let tahun = parts[0];
+  let month = parts[1];
+  let tanggal = parts[2];
+
+  const monthName = ["Jan", "Feb", "Mar", "Apr", "May", "June", "July", "Aug", "Sept", "Oct", "Nov", "Dec"];
+
+  return `${tanggal} ${monthName[month - 1]} ${tahun}`;
 }

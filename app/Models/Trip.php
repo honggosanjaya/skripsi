@@ -2,7 +2,7 @@
 
 namespace App\Models;
 
-use App\Models\Status;
+
 use App\Models\Customer;
 use App\Models\Staff;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -18,10 +18,6 @@ class Trip extends Model
   
     public function linkStaff(){
         return $this->belongsTo(Staff::class,'id_staff');
-    }
-
-    public function linkStatus(){
-        return $this->belongsTo(Status::class,'status');
     }
 
     public function linkCustomer(){

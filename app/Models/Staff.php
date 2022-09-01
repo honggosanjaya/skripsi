@@ -9,9 +9,10 @@ use App\Models\StaffRole;
 use App\Models\Customer;
 use App\Models\OrderTrack;
 use App\Models\Order;
-use App\Models\Status;
+use App\Models\LaporanPenagihan;
 use App\Models\Retur;
 use App\Models\Reimbursement;
+use App\Models\Pembayaran;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
@@ -31,13 +32,13 @@ class Staff extends Model
         return $this->hasMany(Trip::class,'id_staff','id');
     }
     public function linkTripEc(){
-        return $this->hasMany(Trip::class,'id_staff','id')->where('status',2)->whereHas('linkCustomer',function($q) {
-            $q->where('status',3);
+        return $this->hasMany(Trip::class,'id_staff','id')->where('status_enum','2')->whereHas('linkCustomer',function($q) {
+            $q->where('status_enum','1');
         });
     }
     public function linkTripEcF(){
-        return $this->hasMany(Trip::class,'id_staff','id')->where('status',2)->whereHas('linkCustomer',function($q) {
-            $q->where('status',3);
+        return $this->hasMany(Trip::class,'id_staff','id')->where('status_enum','2')->whereHas('linkCustomer',function($q) {
+            $q->where('status_enum','1');
         });
     }
 
@@ -65,10 +66,6 @@ class Staff extends Model
         return $this->hasMany(Order::class,'id_staff','id');
     }
 
-    public function linkStatus(){
-        return $this->hasOne(Status::class,'id','status');
-    }
-
     public function linkReturPengaju(){
         return $this->hasMany(Retur::class,'id_staff_pengaju','id');
     }
@@ -83,5 +80,13 @@ class Staff extends Model
 
     public function linkReimbursementPengonfirmasi(){
         return $this->hasMany(Reimbursement::class,'id_staff_pengonfirmasi','id');
+    }
+
+    public function linkLaporanPenagihanPenagih(){
+      return $this->hasMany(LaporanPenagihan::class,'id_staff_penagih','id');
+    }
+
+    public function linkPembayaranPenagih(){
+      return $this->hasMany(Pembayaran::class,'id_staff_penagih','id');
     }
 }

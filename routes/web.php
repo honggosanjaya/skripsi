@@ -17,6 +17,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Controllers\Api\LoginController;
 use App\Http\Controllers\CashAccountController;
 use App\Http\Controllers\CategoryItemController;
+use App\Http\Controllers\LaporanPenagihanController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -140,7 +141,9 @@ Route::prefix('administrasi')->middleware('administrasi')->group(function() {
   Route::post('/pesanan/setuju/{order:id}', [OrderController::class, 'setujuPesanan']);
   Route::post('/pesanan/tolak/{order:id}', [OrderController::class, 'tolakPesanan']);
   Route::get('/pesanan/detail/{order:id}/pengiriman', [OrderController::class, 'viewPengiriman']);
+  Route::get('/pesanan/detail/{order:id}/pembayaran', [OrderController::class, 'inputPembayaran']);
   Route::post('/pesanan/detail/{order:id}/dikirimkan', [OrderController::class, 'konfirmasiPengiriman']);
+  Route::post('/pesanan/detail/{order:id}/dibayar', [OrderController::class, 'konfirmasiPembayaran']);
 
   //Route untuk retur
   Route::get('/retur', [ReturController::class, 'index']);
@@ -212,6 +215,9 @@ Route::prefix('administrasi')->middleware('administrasi')->group(function() {
   Route::post('/reimbursement/pengajuan/setuju/{reimbursement:id}', [CashAccountController::class, 'setujuReimbursement']);
   Route::post('/reimbursement/pengajuan/tolak/{reimbursement:id}', [CashAccountController::class, 'tolakReimbursement']);
   Route::post('/reimbursement/pengajuan/dibayar/{reimbursement:id}', [CashAccountController::class, 'bayarReimbursement']);
+
+  Route::get('/lp3', [LaporanPenagihanController::class, 'index']);
+  Route::post('/lp3/penagihan', [LaporanPenagihanController::class, 'storeLp3']);
 });
 
 
