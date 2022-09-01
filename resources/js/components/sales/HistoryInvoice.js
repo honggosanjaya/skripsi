@@ -114,9 +114,9 @@ const HistoryInvoice = () => {
                 <tbody>
                   {dataInvoices.map((data) => (
                     <tr key={data.id} onClick={() => handleClickInvoice(data.id)}>
-                      <td className='align-middle'>{data.link_order.link_customer.nama}</td>
-                      <td className='text-center align-middle'>{convertPrice(data.harga_total)}</td>
-                      <td className='text-center align-middle'>{getTotalItem(data.link_order.link_order_item, "kuantitas")}</td>
+                      <td className='align-middle'>{data.link_order.link_customer.nama ?? null}</td>
+                      {data.harga_total ? <td className='text-center align-middle'>{convertPrice(data.harga_total)}</td> : <td></td>}
+                      {data.link_order.link_order_item ? <td className='text-center align-middle'>{getTotalItem(data.link_order.link_order_item, "kuantitas")}</td> : <td></td>}
                     </tr>
                   ))}
                 </tbody>

@@ -16,17 +16,17 @@ const DetailShipping = ({ detailShipping, isLoading, show, handleClose, handlePe
             <div className='info-2column'>
               <span className='d-flex'>
                 <b>No. Invoice</b>
-                <p className='mb-0 word_wrap'>{detailShipping.link_invoice.nomor_invoice}</p>
+                <p className='mb-0 word_wrap'>{detailShipping.link_invoice.nomor_invoice ?? null}</p>
               </span>
 
               <span className='d-flex'>
                 <b>Customer</b>
-                <p className='mb-0 word_wrap'>{detailShipping.link_customer.nama}</p>
+                <p className='mb-0 word_wrap'>{detailShipping.link_customer.nama ?? null}</p>
               </span>
 
               <span className='d-flex'>
                 <b>Telepon</b>
-                <p className='mb-0 word_wrap'>{detailShipping.link_customer.telepon}</p>
+                <p className='mb-0 word_wrap'>{detailShipping.link_customer.telepon ?? null}</p>
               </span>
 
               <span className='d-flex'>
@@ -37,14 +37,15 @@ const DetailShipping = ({ detailShipping, isLoading, show, handleClose, handlePe
 
               <span className='d-flex'>
                 <b>Keterangan Alamat</b>
-                <p className='mb-0 word_wrap'>{detailShipping.link_customer.keterangan_alamat}</p>
+                <p className='mb-0 word_wrap'>{detailShipping.link_customer.keterangan_alamat ?? null}</p>
               </span>
 
-              <span className='d-flex'><b>Waktu Berangkat </b> <div>{convertDate(detailShipping.link_order_track.waktu_berangkat)}</div></span>
+              {detailShipping.link_order_track.waktu_berangkat != null &&
+                <span className='d-flex'><b>Waktu Berangkat </b> <div>{convertDate(detailShipping.link_order_track.waktu_berangkat)}</div></span>}
 
               <span className='d-flex'>
                 <b>Total Pembayaran</b>
-                <p className='mb-0 word_wrap'>{detailShipping.link_invoice.harga_total}</p>
+                <p className='mb-0 word_wrap'>{detailShipping.link_invoice.harga_total ?? null}</p>
               </span>
 
               {(detailShipping.link_customer.foto)
@@ -63,9 +64,9 @@ const DetailShipping = ({ detailShipping, isLoading, show, handleClose, handlePe
                   {listDetailItem.map((data, index) => (
                     <tr key={`item${index}`}>
                       <th scope="row" className='text-center'>{index + 1}</th>
-                      {data.link_item && <td>{data.link_item.nama}</td>}
-                      <td className='text-center'>{data.kuantitas}</td>
-                      {data.link_item && <td className='text-center'>{data.link_item.satuan}</td>}
+                      {data.link_item && <td>{data.link_item.nama ?? null}</td>}
+                      <td className='text-center'>{data.kuantitas ?? null}</td>
+                      {data.link_item && <td className='text-center'>{data.link_item.satuan ?? null}</td>}
                     </tr>
                   ))}
                 </tbody>

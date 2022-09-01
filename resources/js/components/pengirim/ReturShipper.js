@@ -322,10 +322,10 @@ const ReturShipper = ({ location }) => {
                     <img src={`${urlAsset}/storage/item/${item.link_item.gambar}`} className="item_image me-3" />
                     : <img src={`${urlAsset}/images/default_produk.png`} className="item_image me-3" />}
                   <div>
-                    <h2 className='fs-6 text-capitalize fw-bold'>{item.link_item.nama}</h2>
-                    <p className="mb-0">
+                    <h2 className='fs-6 text-capitalize fw-bold'>{item.link_item.nama ?? null}</h2>
+                    {latestOrderItems[item.id_item][0].harga_satuan && <p className="mb-0">
                       {convertPrice(latestOrderItems[item.id_item][0].harga_satuan)}
-                    </p>
+                    </p>}
                   </div>
                 </div>
 
@@ -361,12 +361,12 @@ const ReturShipper = ({ location }) => {
                 {item.gambar ? <img src={`${urlAsset}/storage/item/${item.gambar}`} className="img-fluid item_image me-3" />
                   : <img src={`${urlAsset}/images/default_produk.png`} className="img-fluid item_image me-3" />}
                 <div>
-                  <h2 className='fs-6 mb-0 fw-bold'>{item.nama}</h2>
-                  <h5 className='mb-0'>{item.kuantitas} barang</h5>
+                  <h2 className='fs-6 mb-0 fw-bold'>{item.nama ?? null}</h2>
+                  <h5 className='mb-0'>{item.kuantitas ?? null} barang</h5>
                 </div>
               </div>
-              <span className='title'>Harga Satuan</span><span className='desc'>{item.harga_satuan}</span>
-              <span className='title'>Alasan</span><span className='desc'>{item.alasan}</span>
+              <span className='title'>Harga Satuan</span><span className='desc'>{item.harga_satuan ?? null}</span>
+              <span className='title'>Alasan</span><span className='desc'>{item.alasan ?? null}</span>
             </div>
           ))}
           {cartItems.length > 0 &&

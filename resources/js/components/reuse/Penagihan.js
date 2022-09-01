@@ -109,9 +109,9 @@ const Penagihan = () => {
             <tbody>
               {dataTagihan.map((data) => (
                 <tr key={data.id} onClick={() => handleClickLp3(data.id_invoice)}>
-                  <td>{data.link_invoice.link_order.link_customer.nama}</td>
-                  <td>{data.link_invoice.link_order.link_customer.link_district.nama}</td>
-                  <td>{convertTanggal(data.tanggal)}</td>
+                  <td>{data.link_invoice.link_order.link_customer.nama ?? null}</td>
+                  <td>{data.link_invoice.link_order.link_customer.link_district.nama ?? null}</td>
+                  {data.tanggal && <td>{convertTanggal(data.tanggal)}</td>}
                 </tr>
               ))}
             </tbody>
@@ -126,29 +126,29 @@ const Penagihan = () => {
             <div className='info-2column'>
               <span className='d-flex'>
                 <b>No. Invoice</b>
-                <p className='mb-0 word_wrap'>{detailTagihan.invoice.nomor_invoice}</p>
+                <p className='mb-0 word_wrap'>{detailTagihan.invoice.nomor_invoice ?? null}</p>
               </span>
 
               <span className='d-flex'>
                 <b>Customer</b>
-                <p className='mb-0 word_wrap'>{detailTagihan.customer.nama}</p>
+                <p className='mb-0 word_wrap'>{detailTagihan.customer.nama ?? null}</p>
               </span>
 
               <span className='d-flex'>
                 <b>Telepon</b>
-                <p className='mb-0 word_wrap'>{detailTagihan.customer.telepon}</p>
+                <p className='mb-0 word_wrap'>{detailTagihan.customer.telepon ?? null}</p>
               </span>
 
               <span className='d-flex'>
                 <b>Alamat</b>
                 {detailTagihan.customer.koordinat && <a target="_blank" href={`https://www.google.com/maps/search/?api=1&query=${detailTagihan.customer.koordinat.replace("@", ",")}`}>
-                  <p className='mb-0 word_wrap'>{detailTagihan.customer.full_alamat}</p></a>}
-                {detailTagihan.customer.koordinat == null && <p className='mb-0 word_wrap'>{detailTagihan.customer.full_alamat}</p>}
+                  <p className='mb-0 word_wrap'>{detailTagihan.customer.full_alamat ?? null}</p></a>}
+                {detailTagihan.customer.koordinat == null && <p className='mb-0 word_wrap'>{detailTagihan.customer.full_alamat ?? null}</p>}
               </span>
 
               <span className='d-flex'>
                 <b>Total Penagihan</b>
-                <p className='mb-0 word_wrap'>{convertPrice(detailTagihan.tagihan)}</p>
+                {detailTagihan.tagihan && <p className='mb-0 word_wrap'>{convertPrice(detailTagihan.tagihan)}</p>}
               </span>
             </div>
           </Modal.Body>

@@ -198,7 +198,7 @@ const Reimbursement = () => {
                   <div className="d-flex justify-content-between align-items-start">
                     <div>
                       <p className="fs-7 mb-0 fw-bold">Tanggal pengajuan:</p>
-                      <p className="fs-7 mb-0">{getDatePengajuan(history.created_at)}</p>
+                      {history.created_at && <p className="fs-7 mb-0">{getDatePengajuan(history.created_at)}</p>}
                     </div>
                     <div className="badge bg-warning text-black fw-normal">
                       {history.status_enum == 0 ? 'Diajukan' :
@@ -208,7 +208,7 @@ const Reimbursement = () => {
                       }
                     </div>
                   </div>
-                  <p className="fs-7 mb-0 fw-bold">Pengajuan sebesar {convertPrice(history.jumlah_uang)}</p>
+                  {history.jumlah_uang && <p className="fs-7 mb-0 fw-bold">Pengajuan sebesar {convertPrice(history.jumlah_uang)}</p>}
                 </div>
 
                 <Modal id={history} show={activeModal == index} onHide={hideModal}>
@@ -216,7 +216,7 @@ const Reimbursement = () => {
                     <Modal.Title>Detail Pengajuan</Modal.Title>
                   </Modal.Header>
                   <Modal.Body>
-                    <img src={`${urlAsset}/storage/reimbursement/${history.foto}`} className="img-fluid img_reimbursement mb-3" />
+                    {history.foto && <img src={`${urlAsset}/storage/reimbursement/${history.foto}`} className="img-fluid img_reimbursement mb-3" />}
                     <div className='info-2column'>
                       <span className='d-flex'>
                         <b>Status</b>
@@ -236,17 +236,17 @@ const Reimbursement = () => {
 
                       <span className='d-flex'>
                         <b>Jumlah</b>
-                        <div className='word_wrap'>{convertPrice(history.jumlah_uang)}</div>
+                        {history.jumlah_uang && <div className='word_wrap'>{convertPrice(history.jumlah_uang)}</div>}
                       </span>
 
                       <span className='d-flex'>
                         <b>Keterangan</b>
-                        <div className='word_wrap'>{history.keterangan_pengajuan}</div>
+                        <div className='word_wrap'>{history.keterangan_pengajuan ?? null}</div>
                       </span>
 
                       <span className='d-flex'>
                         <b>Keperluan</b>
-                        {/* <div className='word_wrap'>{history.link_cash_account.nama}</div> */}
+                        {history.link_cash_account && <div className='word_wrap'>{history.link_cash_account.nama}</div>}
                       </span>
                     </div>
                   </Modal.Body>

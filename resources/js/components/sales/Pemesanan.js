@@ -109,7 +109,6 @@ const Pemesanan = ({ location }) => {
   }, []);
 
   useEffect(() => {
-    console.log("HIAIAIA");
     if (dataUser.nama && koordinat && idTripTetap == null && idTrip == null) {
       axios({
         method: "post",
@@ -256,7 +255,7 @@ const Pemesanan = ({ location }) => {
                 const produk = obj;
                 KeranjangDB.updateProduk(produk);
                 getAllProduks();
-              } else if (dataOrderItem.link_item.status == 11) {
+              } else if (dataOrderItem.link_item.status_enum == '-1') {
                 obj["error"] = "Item sudah tidak aktif"
                 const produk = obj;
                 KeranjangDB.updateProduk(produk);

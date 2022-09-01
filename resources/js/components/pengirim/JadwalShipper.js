@@ -251,7 +251,8 @@ const ShippingShipper = () => {
 
   return (
     <main className="page_main shipper-css">
-      <HeaderShipper title="Jadwal Pengiriman" toBack={() => goBack(dataUser.role)} />
+      {dataUser.role != null &&
+        <HeaderShipper title="Jadwal Pengiriman" toBack={() => goBack(dataUser.role)} />}
       {isLoading && <LoadingIndicator />}
       <div className="page_container pt-4">
         {successMessage && <AlertComponent successMsg={successMessage} />}
