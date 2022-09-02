@@ -29,7 +29,7 @@ class CartController extends Controller
   public function addToCart(Request $request)
   {
     $cartItem = \Cart::session(auth()->user()->id.$request->route)->get($request->id);
-    // dd($cartItem);
+
     if ($request->route=="pengadaan") {
       if($cartItem !== null){
         \Cart::session(auth()->user()->id.$request->route)->update(
@@ -66,8 +66,13 @@ class CartController extends Controller
           )
         ]);
       }
+
+      return response()->json([
+        'status' => 'success',
+        'message' => 'Produk berhasil ditambahkan ke keranjang'
+      ]);
   
-      return redirect()->route('products.list')->with('pesanSukses', 'Produk berhasil ditambahkan ke keranjang');
+      // return redirect()->route('products.list')->with('pesanSukses', 'Produk berhasil ditambahkan ke keranjang');
     }elseif ($request->route=="customerOrder") {
       if($cartItem !== null){
         \Cart::session(auth()->user()->id.$request->route)->update(
@@ -125,9 +130,13 @@ class CartController extends Controller
           'price' => $request->harga_satuan,
           'attributes' => ['jumlah' => $request->jumlah,'keterangan' => $request->keterangan,'kode_barang' => $request->kode_barang]
         ]);      
-     }
+      }
 
-      return redirect('/administrasi/stok/opname/')->with('pesanSukses', 'Produk berhasil ditambahkan ke keranjang');
+      return response()->json([
+        'status' => 'success',
+        'message' => 'Produk berhasil ditambahkan ke keranjang'
+      ]);
+      // return redirect('/administrasi/stok/opname/')->with('pesanSukses', 'Produk berhasil ditambahkan ke keranjang');
     }
   }
 
@@ -162,7 +171,12 @@ class CartController extends Controller
 
       if ($request->route=="pengadaan") {
         $cartItems = \Cart::session(auth()->user()->id.$request->route)->getContent();
-        return view('administrasi.stok.pengadaan.cart', compact('cartItems'));
+        return response()->json([
+          'status' => 'success',
+          'message' => 'Produk berhasil dihapus dari keranjang'
+        ]);
+
+        // return view('administrasi.stok.pengadaan.cart', compact('cartItems'));
       }elseif($request->route=="customerOrder") {
         $cartItems = \Cart::session(auth()->user()->id.$request->route)->getContent();
         $customer = Customer::where('id', auth()->user()->id_users)->first();

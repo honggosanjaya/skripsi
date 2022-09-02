@@ -63,7 +63,19 @@ mix
     , 'public/js/supervisor.js'
   );
 mix
-
+  .js(
+    [
+      'resources/js/pengadaan.js',
+    ]
+    , 'public/js/pengadaan.js'
+  );
+mix
+  .js(
+    [
+      'resources/js/opname.js',
+    ]
+    , 'public/js/opname.js'
+  );
 
 mix.js('resources/js/app.js', 'public/js/app.js')
   .postCss('resources/css/app.css', 'public/css/app.css', [
