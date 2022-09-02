@@ -45,25 +45,27 @@
         <tbody>
           @foreach ($items as $item)
             @php
-              $stock25 = (($item->max_stok - $item->min_stok) * 25) / 100 + $item->min_stok;
+              $stock25 = ((($item->max_stok ?? 0) - ($item->min_stok ?? 0)) * 25) / 100 + ($item->min_stok ?? 0);
             @endphp
-            @if ($item->stok < $item->min_stok)
+            @if (($item->stok ?? 0) < ($item->min_stok ?? 0))
               <tr class="bg-dangerr">
-              @elseif($item->stok < $stock25)
+              @elseif(($item->stok ?? 0) < $stock25)
               <tr class="bg-warningg">
               @else
               <tr>
             @endif
             <td class="text-center">{{ $loop->iteration }}</td>
-            <td>{{ $item->kode_barang }}</td>
-            <td>{{ $item->nama }}</td>
+            <td>{{ $item->kode_barang ?? null }}</td>
+            <td>{{ $item->nama ?? null }}</td>
             <td class="text-center">{{ $item->id_category ? $item->linkCategoryItem->nama : null }}</td>
-            <td>{{ $item->satuan }}</td>
-            <td>{{ number_format($item->stok, 0, '', '.') }}</td>
-            <td>{{ number_format($item->min_stok, 0, '', '.') }}</td>
-            <td>{{ number_format($item->max_stok, 0, '', '.') }}</td>
-            <td>{{ number_format($item->harga1_satuan, 0, '', '.') }}</td>
-            <td>{{ $item->status_enum == '1' ? 'Active' : 'Inactive' }}</td>
+            <td>{{ $item->satuan ?? null }}</td>
+            <td>{{ number_format($item->stok ?? 0, 0, '', '.') }}</td>
+            <td>{{ number_format($item->min_stok ?? 0, 0, '', '.') }}</td>
+            <td>{{ number_format($item->max_stok ?? 0, 0, '', '.') }}</td>
+            <td>{{ number_format($item->harga1_satuan ?? 0, 0, '', '.') }}</td>
+            @if ($item->status_enum ?? null)
+              <td>{{ $item->status_enum == '1' ? 'Active' : 'Inactive' }}</td>
+            @endif
             <td>
               <div class="d-flex flex-column">
                 <a href="/administrasi/stok/produk/{{ $item->id }}/edit" class="btn btn-sm btn-warning w-100">
@@ -72,15 +74,17 @@
 
                 <form action="/administrasi/stok/produk/ubahstatus/{{ $item->id }}" method="POST">
                   @csrf
-                  <button type="submit"
-                    class="btn btn-sm mt-2 {{ $item->status_enum === '1' ? 'btn-danger' : 'btn-success' }}">
-                    @if ($item->status_enum === '1')
-                      <span class="iconify" data-icon="material-symbols:cancel-outline"></span>
-                    @else
-                      <span class="iconify" data-icon="akar-icons:double-check"></span>
-                    @endif
-                    {{ $item->status_enum === '1' ? 'Nonaktifkan' : 'Aktifkan' }}
-                  </button>
+                  @if ($item->status_enum ?? null)
+                    <button type="submit"
+                      class="btn btn-sm mt-2 {{ $item->status_enum === '1' ? 'btn-danger' : 'btn-success' }}">
+                      @if ($item->status_enum === '1')
+                        <span class="iconify" data-icon="material-symbols:cancel-outline"></span>
+                      @else
+                        <span class="iconify" data-icon="akar-icons:double-check"></span>
+                      @endif
+                      {{ $item->status_enum === '1' ? 'Nonaktifkan' : 'Aktifkan' }}
+                    </button>
+                  @endif
                 </form>
               </div>
             </td>

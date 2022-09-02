@@ -11,7 +11,7 @@
       <span><b>Alamat</b> {{ $customer->full_alamat ?? null }}</span>
       <span><b>Koordinat</b> {{ $customer->koordinat ?? null }}</span>
       <span><b>Telepon</b> {{ $customer->telepon ?? null }}</span>
-      <span><b>Durasi Kunjungan</b> {{ $customer->durasi_kunjungan . ' hari' }}</span>
+      <span><b>Durasi Kunjungan</b> {{ $customer->durasi_kunjungan ?? null . ' hari' }}</span>
       <span><b>Counter Effective Call</b>
         {{ $customer->counter_to_effective_call ?? null }}</span>
       <span><b>Tipe Retur</b> {{ $customer->tipe_retur ?? null }}</span>
@@ -44,10 +44,10 @@
       </span>
       @endif
 
-      @if ($customer->status_enum)
+      @if ($customer->status_enum ?? null)
         <span><b>Status</b> {{ $customer->status_enum == '1' ? 'Active' : 'Inactive' }}</span>
       @else
-        <span><b>Status</b> </span>
+        <span></span>
       @endif
 
       @if ($customer->foto)
@@ -56,8 +56,6 @@
       @else
         <span><b>Foto Tempat Usaha</b> </span>
       @endif
-
     </div>
-
   </div>
 @endsection

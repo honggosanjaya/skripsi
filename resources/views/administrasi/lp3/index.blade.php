@@ -49,7 +49,7 @@
                     @elseif ($invoice['is_disabled'] == false)
                       <option value="{{ $invoice['id'] }}">{{ $invoice['nomor_invoice'] }}</option>
                     @endif --}}
-                    <option value="{{ $invoice->id }}">{{ $invoice->nomor_invoice }}</option>
+                    <option value="{{ $invoice->id }}">{{ $invoice->nomor_invoice ?? null }}</option>
                   @endforeach
                 </select>
                 @error('id_invoice')
@@ -79,7 +79,7 @@
                 <select class="form-select @error('id_staff_penagih') is-invalid @enderror" id="id_staff_penagih"
                   name="id_staff_penagih" value="{{ old('id_staff_penagih') }}">
                   @foreach ($staffs as $staff)
-                    <option value="{{ $staff->id }}">{{ $staff->nama }}</option>
+                    <option value="{{ $staff->id }}">{{ $staff->nama ?? null }}</option>
                   @endforeach
                 </select>
                 @error('id_staff_penagih')
@@ -130,7 +130,11 @@
                 <td>{{ $history->linkInvoice->nomor_invoice ?? null }}</td>
                 <td>{{ $history->linkStaffPenagih->nama ?? null }}</td>
                 <td>{{ $history->tanggal ?? null }}</td>
-                <td>{{ $history->status_enum == '1' ? 'Sudah Ditagih' : 'Belum Ditagih' }}</td>
+                @if ($history->status_enum ?? null)
+                  <td>{{ $history->status_enum == '1' ? 'Sudah Ditagih' : 'Belum Ditagih' }}</td>
+                @else
+                  <td></td>
+                @endif
               </tr>
             @endforeach
           </tbody>

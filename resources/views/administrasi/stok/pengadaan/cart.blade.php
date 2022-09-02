@@ -27,11 +27,11 @@
 
           @foreach ($cartItems as $item)
             <tr>
-              <td>{{ $item->attributes->kode_barang }}</td>
-              <td>{{ $item->name }}</td>
-              <td>{{ $item->quantity }}</td>
-              <td>{{ $item->attributes->satuan }}</td>
-              <td>{{ number_format($item->attributes->total_harga, 0, '', '.') }}</td>
+              <td>{{ $item->attributes->kode_barang ?? null }}</td>
+              <td>{{ $item->name ?? null }}</td>
+              <td>{{ $item->quantity ?? null }}</td>
+              <td>{{ $item->attributes->satuan ?? null }}</td>
+              <td>{{ number_format($item->attributes->total_harga ?? 0, 0, '', '.') }}</td>
               {{-- <td> --}}
               {{-- <form action="{{ route('cart.remove') . '?route=pengadaan' }}" method="POST">
                   @csrf --}}
@@ -60,8 +60,8 @@
           <div class="col">
             <div class="mb-3">
               <label for="harga_total" class="form-label">Total Harga</label>
-              <input type="text" class="form-control" id="harga_total" name="harga_total" value="{{ $totalAkhir }}"
-                readonly>
+              <input type="text" class="form-control" id="harga_total" name="harga_total"
+                value="{{ $totalAkhir ?? null }}" readonly>
             </div>
           </div>
           <div class="col">

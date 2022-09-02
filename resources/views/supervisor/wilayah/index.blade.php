@@ -62,9 +62,9 @@
             <tr>
               <th scope="row" class="text-center">
                 {{ ($districts->currentPage() - 1) * $districts->perPage() + $loop->iteration }}</th>
-              <td class="text-capitalize">{{ $district->nama }}</td>
+              <td class="text-capitalize">{{ $district->nama ?? null }}</td>
               <td class="text-center">
-                <a href="/supervisor/wilayah/ubah/{{ $district->id }}" class="btn btn-warning"><span
+                <a href="/supervisor/wilayah/ubah/{{ $district->id ?? null }}" class="btn btn-warning"><span
                     class="iconify fs-5 me-1" data-icon="eva:edit-2-fill"></span>Ubah</a>
               </td>
             </tr>
@@ -74,7 +74,7 @@
     </div>
 
     <div class="d-flex flex-row mt-4">
-      {{ $districts->links() }}
+      {{ $districts->links() ?? null }}
     </div>
   </div>
 @endsection

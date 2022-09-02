@@ -15,9 +15,11 @@
       <span><b>Email</b>{{ $staff->email ?? null }}</span>
       <span><b>Telepon</b>{{ $staff->telepon ?? null }}</span>
       <span><b>Role</b>{{ $staff->linkStaffRole->nama ?? null }}</span>
-      <span><b>Status</b>{{ $staff->status_enum == '1' ? 'Active' : 'Inactive' }}</span>
+      @if ($staff->status_enum ?? null)
+        <span><b>Status</b>{{ $staff->status_enum == '1' ? 'Active' : 'Inactive' }}</span>
+      @endif
       <span><b>Foto Profil</b>
-        @if ($staff->foto_profil)
+        @if ($staff->foto_profil ?? null)
           <img src="{{ asset('storage/staff/' . $staff->foto_profil) }}" class="img-preview img-fluid">
         @else
           Tidak ada foto

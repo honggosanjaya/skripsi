@@ -58,10 +58,10 @@
               <th scope="row" class="text-center">
                 {{ ($categories->currentPage() - 1) * $categories->perPage() + $loop->iteration }}
               </th>
-              <td>{{ $category->nama }}</td>
-              <td>{{ $category->keterangan }}</td>
+              <td>{{ $category->nama ?? null }}</td>
+              <td>{{ $category->keterangan ?? null }}</td>
               <td class="text-center">
-                <a href="/supervisor/category/ubah/{{ $category->id }}" class="btn btn-warning"><span
+                <a href="/supervisor/category/ubah/{{ $category->id ?? null }}" class="btn btn-warning"><span
                     class="iconify fs-5 me-1" data-icon="eva:edit-2-fill"></span>
                   Ubah</a>
               </td>

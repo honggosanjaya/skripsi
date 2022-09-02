@@ -54,13 +54,15 @@
               <th scope="row" class="text-center">
                 {{ ($customers->currentPage() - 1) * $customers->perPage() + $loop->iteration }}</th>
               <td>
-                <a href="/supervisor/datacustomer/{{ $customer->id }}"
-                  class="text-decoration-none">{{ $customer->nama }}</a>
+                <a href="/supervisor/datacustomer/{{ $customer->id ?? null }}"
+                  class="text-decoration-none">{{ $customer->nama ?? null }}</a>
               </td>
-              <td>{{ $customer->email }}</td>
-              <td>{{ $customer->full_alamat }}</td>
-              <td>{{ $customer->telepon }}</td>
-              <td class="text-capitalize text-center">{{ $customer->status_enum == 1 ? 'Active' : 'Inactive' }}</td>
+              <td>{{ $customer->email ?? null }}</td>
+              <td>{{ $customer->full_alamat ?? null }}</td>
+              <td>{{ $customer->telepon ?? null }}</td>
+              @if ($customer->status_enum ?? null)
+                <td class="text-capitalize text-center">{{ $customer->status_enum == 1 ? 'Active' : 'Inactive' }}</td>
+              @endif
             </tr>
           @endforeach
         </tbody>

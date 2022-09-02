@@ -43,38 +43,44 @@
               <th scope="row" class="text-center">
                 {{ ($stafs->currentPage() - 1) * $stafs->perPage() + $loop->iteration }}</th>
               <td class="text-center">
-                @if ($staf->foto_profil)
+                @if ($staf->foto_profil ?? null)
                   <img src="{{ asset('storage/staff/' . $staf->foto_profil) }}" class="img-fluid" width="40">
                 @else
                   <img src="{{ asset('images/default_fotoprofil.png') }}" class="img-fluid" width="40">
                 @endif
               </td>
               <td>
-                <a href="/supervisor/datastaf/{{ $staf->id }}" class="text-decoration-none">
+                <a href="/supervisor/datastaf/{{ $staf->id ?? null }}" class="text-decoration-none">
                   {{ $staf->nama ?? null }}
                 </a>
               </td>
               <td>{{ $staf->email ?? null }}</td>
               <td>{{ $staf->telepon ?? null }}</td>
               <td class="text-capitalize">{{ $staf->linkStaffRole->nama ?? null }}</td>
-              <td class="text-capitalize">{{ $staf->status_enum == '1' ? 'Active' : 'Inactive' }}</td>
+              @if ($staf->status_enum ?? null)
+                <td class="text-capitalize">{{ $staf->status_enum == '1' ? 'Active' : 'Inactive' }}</td>
+              @else
+                <td></td>
+              @endif
               <td>
                 <div class="d-flex justify-content-center">
-                  <a href="/supervisor/datastaf/{{ $staf->id }}/edit" class="btn btn-sm btn-warning ms-3 me-1">
+                  <a href="/supervisor/datastaf/{{ $staf->id ?? null }}/edit" class="btn btn-sm btn-warning ms-3 me-1">
                     <span class="iconify fs-5" data-icon="eva:edit-2-fill"></span> Edit
                   </a>
 
-                  <form action="/supervisor/datastaf/ubahstatus/{{ $staf->id }}" method="POST">
+                  <form action="/supervisor/datastaf/ubahstatus/{{ $staf->id ?? null }}" method="POST">
                     @csrf
-                    <button type="submit"
-                      class="btn btn-sm {{ $staf->status_enum === '1' ? 'btn-danger' : 'btn-success' }}">
-                      @if ($staf->status_enum === '1')
-                        <span class="iconify" data-icon="material-symbols:cancel-outline"></span>
-                      @else
-                        <span class="iconify" data-icon="akar-icons:double-check"></span>
-                      @endif
-                      {{ $staf->status_enum === '1' ? 'Nonaktifkan' : 'Aktifkan' }}
-                    </button>
+                    @if ($staf->status_enum ?? null)
+                      <button type="submit"
+                        class="btn btn-sm {{ $staf->status_enum === '1' ? 'btn-danger' : 'btn-success' }}">
+                        @if ($staf->status_enum === '1')
+                          <span class="iconify" data-icon="material-symbols:cancel-outline"></span>
+                        @else
+                          <span class="iconify" data-icon="akar-icons:double-check"></span>
+                        @endif
+                        {{ $staf->status_enum === '1' ? 'Nonaktifkan' : 'Aktifkan' }}
+                      </button>
+                    @endif
                   </form>
                 </div>
               </td>
@@ -82,7 +88,6 @@
           @endforeach
         </tbody>
       </table>
-
       {{ $stafs->links() }}
     </div>
   </div>

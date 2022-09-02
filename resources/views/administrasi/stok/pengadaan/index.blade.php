@@ -40,62 +40,59 @@
                 <td>{{ $product->kode_barang ?? null }}</td>
                 <td>{{ $product->nama ?? null }}</td>
                 <td>{{ $product->satuan ?? null }}</td>
+                <td>{{ number_format($product->max_pengadaan ?? 0, 0, '', '.') }}</td>
 
-                @if ($product->max_pengadaan)
-                  <td>{{ number_format($product->max_pengadaan, 0, '', '.') }}</td>
-                @else
-                  <td></td>
+                @if ($product->id ?? null)
+                  <td>
+                    <form>
+                      <input type="hidden" value="{{ $product->id }}" name="id"
+                        class="input-idcart-{{ $product->id }}">
+                      <input type="hidden" value="{{ $product->kode_barang }}" name="kode_barang"
+                        class="input-kodecart-{{ $product->id }}">
+                      <input type="hidden" value="{{ $product->nama }}" name="nama"
+                        class="input-namacart-{{ $product->id }}">
+                      <input type="hidden" value="{{ $product->satuan }}" name="satuan"
+                        class="input-satuancart-{{ $product->id }}">
+                      <input type="hidden" value="{{ $product->max_pengadaan }}" name="max_pengadaan"
+                        class="input-maxpengadaancart-{{ $product->id }}">
+                      <input type="hidden" value="{{ $product->harga1_satuan }}" name="harga_satuan"
+                        class="input-hargasatuancart-{{ $product->id }}">
+
+                      @if ($cartItem = \Cart::session(auth()->user()->id . 'pengadaan')->get($product->id))
+                        <div class="d-flex justify-content-between">
+                          <div>jumlah</div>
+                          <input data-iditem="{{ $product->id }}" type="number"
+                            class="form-control input-quantitycart-{{ $product->id }}" style="width: 300px"
+                            id="quantity" name="quantity" min="0" value="{{ $cartItem->quantity ?? null }}">
+                        </div>
+                      @else
+                        <div class="d-flex justify-content-between">
+                          <div>jumlah</div>
+                          <input data-iditem="{{ $product->id }}" type="number"
+                            class="form-control input-quantitycart-{{ $product->id }}" style="width: 300px"
+                            id="quantity" name="quantity" min="0">
+                        </div>
+                      @endif
+
+                      @if ($cartItem2 = \Cart::session(auth()->user()->id . 'pengadaan')->get($product->id))
+                        <div class="d-flex justify-content-between">
+                          <div>harga total</div>
+                          <input data-iditem="{{ $product->id }}" type="number"
+                            class="form-control input-totalhargacart-{{ $product->id }}" style="width: 300px"
+                            id="total_harga" name="total_harga" value="{{ $cartItem2->attributes->total_harga ?? null }}"
+                            min='0'>
+                        </div>
+                      @else
+                        <div class="d-flex justify-content-between">
+                          <div>harga total</div>
+                          <input data-iditem="{{ $product->id }}" type="number"
+                            class="form-control input-totalhargacart-{{ $product->id }}" style="width: 300px"
+                            id="total_harga" name="total_harga" min='0'>
+                        </div>
+                      @endif
+                    </form>
+                  </td>
                 @endif
-
-                <td>
-                  <form>
-                    <input type="hidden" value="{{ $product->id }}" name="id"
-                      class="input-idcart-{{ $product->id }}">
-                    <input type="hidden" value="{{ $product->kode_barang }}" name="kode_barang"
-                      class="input-kodecart-{{ $product->id }}">
-                    <input type="hidden" value="{{ $product->nama }}" name="nama"
-                      class="input-namacart-{{ $product->id }}">
-                    <input type="hidden" value="{{ $product->satuan }}" name="satuan"
-                      class="input-satuancart-{{ $product->id }}">
-                    <input type="hidden" value="{{ $product->max_pengadaan }}" name="max_pengadaan"
-                      class="input-maxpengadaancart-{{ $product->id }}">
-                    <input type="hidden" value="{{ $product->harga1_satuan }}" name="harga_satuan"
-                      class="input-hargasatuancart-{{ $product->id }}">
-
-                    @if ($cartItem = \Cart::session(auth()->user()->id . 'pengadaan')->get($product->id) ?? null)
-                      <div class="d-flex justify-content-between">
-                        <div>jumlah</div>
-                        <input data-iditem="{{ $product->id }}" type="number"
-                          class="form-control input-quantitycart-{{ $product->id }}" style="width: 300px" id="quantity"
-                          name="quantity" min="0" value="{{ $cartItem->quantity }}">
-                      </div>
-                    @else
-                      <div class="d-flex justify-content-between">
-                        <div>jumlah</div>
-                        <input data-iditem="{{ $product->id }}" type="number"
-                          class="form-control input-quantitycart-{{ $product->id }}" style="width: 300px" id="quantity"
-                          name="quantity" min="0">
-                      </div>
-                    @endif
-
-                    @if ($cartItem2 = \Cart::session(auth()->user()->id . 'pengadaan')->get($product->id) ?? null)
-                      <div class="d-flex justify-content-between">
-                        <div>harga total</div>
-                        <input data-iditem="{{ $product->id }}" type="number"
-                          class="form-control input-totalhargacart-{{ $product->id }}" style="width: 300px"
-                          id="total_harga" name="total_harga" value="{{ $cartItem2->attributes->total_harga }}"
-                          min='0'>
-                      </div>
-                    @else
-                      <div class="d-flex justify-content-between">
-                        <div>harga total</div>
-                        <input data-iditem="{{ $product->id }}" type="number"
-                          class="form-control input-totalhargacart-{{ $product->id }}" style="width: 300px"
-                          id="total_harga" name="total_harga" min='0'>
-                      </div>
-                    @endif
-                  </form>
-                </td>
               </tr>
             @endforeach
           </tbody>

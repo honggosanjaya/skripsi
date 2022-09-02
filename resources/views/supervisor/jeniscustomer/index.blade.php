@@ -59,23 +59,21 @@
             <tr>
               <th scope="row" class="text-center">
                 {{ ($jenises->currentPage() - 1) * $jenises->perPage() + $loop->iteration }}</th>
-              <td>{{ $jenis->nama }}</td>
-              <td class="text-center">{{ $jenis->diskon }}</td>
-              <td>{{ $jenis->keterangan }}</td>
+              <td>{{ $jenis->nama ?? null }}</td>
+              <td class="text-center">{{ $jenis->diskon ?? null }}</td>
+              <td>{{ $jenis->keterangan ?? null }}</td>
               <td class="text-center">
-                <a href="/supervisor/jenis/ubah/{{ $jenis->id }}" class="btn btn-warning"><span
+                <a href="/supervisor/jenis/ubah/{{ $jenis->id ?? null }}" class="btn btn-warning"><span
                     class="iconify fs-5 me-1" data-icon="eva:edit-2-fill"></span>
                   Ubah</a>
               </td>
-
             </tr>
           @endforeach
         </tbody>
       </table>
     </div>
-
     <div class="d-flex flex-row mt-4">
-      {{ $jenises->links() }}
+      {{ $jenises->links() ?? null }}
     </div>
   </div>
 @endsection

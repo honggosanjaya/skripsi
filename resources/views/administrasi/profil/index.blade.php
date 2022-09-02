@@ -15,17 +15,17 @@
   <div class="px-5 pt-4">
     <div class="row justify-content-center">
       <div class="col-8">
-        @if ($data->foto_profil)
+        @if ($data->foto_profil ?? null)
           <img src="{{ asset('storage/staff/' . $data->foto_profil) }}" class="profil_picture">
         @else
           <img class="profil_picture" src="{{ asset('images/default_fotoprofil.png') }}">
         @endif
 
         <div class="informasi-list mb_big">
-          <span><b>Nama</b>{{ $data->nama }}</span>
-          <span><b>Email</b>{{ $data->email }}</span>
-          <span><b>Role</b>{{ $data->linkStaffRole->nama }}</span>
-          <span><b>No. Telepon</b>{{ $data->telepon }}</span>
+          <span><b>Nama</b>{{ $data->nama ?? null }}</span>
+          <span><b>Email</b>{{ $data->email ?? null }}</span>
+          <span><b>Role</b>{{ $data->linkStaffRole->nama ?? null }}</span>
+          <span><b>No. Telepon</b>{{ $data->telepon ?? null }}</span>
         </div>
 
         <div class="row justify-content-center mt-5">

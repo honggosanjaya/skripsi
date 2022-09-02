@@ -43,12 +43,12 @@
                     <img src="{{ asset('images/default_fototoko.png') }}" class="img-fluid" width="40">
                   @endif
                 </td>
-                <td class="text-center">{{ $customer->nama }}</td>
-                <td class="text-center">{{ $customer->full_alamat }}</td>
-                <td class="text-center"> {{ number_format($customer->limit_pembelian, 0, '', '.') }}</td>
-                <td class="text-center">{{ number_format($customer->pengajuan_limit_pembelian, 0, '', '.') }}</td>
+                <td class="text-center">{{ $customer->nama ?? null }}</td>
+                <td class="text-center">{{ $customer->full_alamat ?? null }}</td>
+                <td class="text-center"> {{ number_format($customer->limit_pembelian ?? 0, 0, '', '.') }}</td>
+                <td class="text-center">{{ number_format($customer->pengajuan_limit_pembelian ?? 0, 0, '', '.') }}</td>
                 <td class="text-center">
-                  <a href="/supervisor/datacustomer/pengajuan/{{ $customer->id }}" class="btn btn-primary"><span
+                  <a href="/supervisor/datacustomer/pengajuan/{{ $customer->id ?? null }}" class="btn btn-primary"><span
                       class="iconify fs-4 me-1" data-icon="fluent:apps-list-detail-24-filled"></span>Detail</a>
                 </td>
               </tr>

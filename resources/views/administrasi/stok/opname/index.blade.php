@@ -54,37 +54,39 @@
               <td>{{ $product->kode_barang ?? null }}</td>
               <td>{{ $product->nama ?? null }}</td>
               <td>{{ $product->satuan ?? null }}</td>
-              <td class="text-center">{{ number_format($product->min_stok, 0, '', '.') }}</td>
-              <td class="text-center">{{ number_format($product->max_stok, 0, '', '.') }}</td>
-              <td class="text-center">{{ number_format($product->stok, 0, '', '.') }}</td>
+              <td class="text-center">{{ number_format($product->min_stok ?? 0, 0, '', '.') }}</td>
+              <td class="text-center">{{ number_format($product->max_stok ?? 0, 0, '', '.') }}</td>
+              <td class="text-center">{{ number_format($product->stok ?? 0, 0, '', '.') }}</td>
               <td class="text-center">
-                {{ number_format($product->stok + ($cartItem->attributes->jumlah ?? 0), 0, '', '.') }}</td>
+                {{ number_format(($product->stok ?? 0) + ($cartItem->attributes->jumlah ?? 0), 0, '', '.') }}</td>
               <td>
 
-                <form>
-                  <input type="hidden" value="{{ $product->id }}" name="id"
-                    class="input-idcart-{{ $product->id }}">
-                  <input type="hidden" value="{{ $product->nama }}" name="nama"
-                    class="input-namacart-{{ $product->id }}">
-                  <input type="hidden" value="{{ $product->stok }}" name="quantity"
-                    class="input-quantitycart-{{ $product->id }}">
-                  <input type="hidden" value="{{ $product->harga1_satuan }}" name="harga_satuan"
-                    class="input-hargasatuancart-{{ $product->id }}">
-                  <input type="hidden" value="{{ $product->kode_barang }}" name="kode_barang"
-                    class="input-kodecart-{{ $product->id }}">
-                  <div class="d-flex justify-content-between">
-                    <div>jumlah</div>
-                    <input type="number" class="form-control input-jumlahcart-{{ $product->id }}" id="quantity"
-                      name="jumlah" style="width: 180px" data-iditem="{{ $product->id }}"
-                      value="{{ $cartItem->attributes->jumlah ?? null }}">
-                  </div>
-                  <div class="d-flex justify-content-between">
-                    <div>keterangan</div>
-                    <input type="text" class="form-control input-keterangancart-{{ $product->id }}" id="keterangan"
-                      name="keterangan" style="width: 180px" data-iditem="{{ $product->id }}"
-                      value="{{ $cartItem->attributes->keterangan ?? null }}">
-                  </div>
-                </form>
+                @if ($product->id ?? null)
+                  <form>
+                    <input type="hidden" value="{{ $product->id }}" name="id"
+                      class="input-idcart-{{ $product->id }}">
+                    <input type="hidden" value="{{ $product->nama }}" name="nama"
+                      class="input-namacart-{{ $product->id }}">
+                    <input type="hidden" value="{{ $product->stok }}" name="quantity"
+                      class="input-quantitycart-{{ $product->id }}">
+                    <input type="hidden" value="{{ $product->harga1_satuan }}" name="harga_satuan"
+                      class="input-hargasatuancart-{{ $product->id }}">
+                    <input type="hidden" value="{{ $product->kode_barang }}" name="kode_barang"
+                      class="input-kodecart-{{ $product->id }}">
+                    <div class="d-flex justify-content-between">
+                      <div>jumlah</div>
+                      <input type="number" class="form-control input-jumlahcart-{{ $product->id }}" id="quantity"
+                        name="jumlah" style="width: 180px" data-iditem="{{ $product->id }}"
+                        value="{{ $cartItem->attributes->jumlah ?? null }}">
+                    </div>
+                    <div class="d-flex justify-content-between">
+                      <div>keterangan</div>
+                      <input type="text" class="form-control input-keterangancart-{{ $product->id }}" id="keterangan"
+                        name="keterangan" style="width: 180px" data-iditem="{{ $product->id }}"
+                        value="{{ $cartItem->attributes->keterangan ?? null }}">
+                    </div>
+                  </form>
+                @endif
               </td>
             </tr>
           @endforeach

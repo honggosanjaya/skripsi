@@ -21,7 +21,7 @@
   @endif
   <div class="px-5 pt-4">
     <form id="form_submit" class="form-submit" method="POST"
-      action="/administrasi/kendaraan/ubahkendaraan/{{ $vehicle->id }}">
+      action="/administrasi/kendaraan/ubahkendaraan/{{ $vehicle->id ?? null }}">
       @csrf
       @method('put')
       <div class="row">
@@ -29,7 +29,7 @@
           <div class="mb-3">
             <label for="nama_kendaraan" class="form-label">Nama Kendaraan <span class='text-danger'>*</span></label>
             <input type="text" class="form-control @error('nama_kendaraan') is-invalid @enderror" id="nama_kendaraan"
-              name="nama_kendaraan" value="{{ old('nama_kendaraan', $vehicle->nama) }}">
+              name="nama_kendaraan" value="{{ old('nama_kendaraan', $vehicle->nama ?? null) }}">
             @error('nama_kendaraan')
               <div class="invalid-feedback">
                 {{ $message }}
@@ -41,7 +41,7 @@
           <div class="mb-3">
             <label for="plat_kendaraan" class="form-label">Plat Nomor Kendaraan <span class='text-danger'>*</span></label>
             <input type="text" class="form-control @error('plat_kendaraan') is-invalid @enderror" id="plat_kendaraan"
-              name="plat_kendaraan" value="{{ old('plat_kendaraan', $vehicle->kode_kendaraan) }}">
+              name="plat_kendaraan" value="{{ old('plat_kendaraan', $vehicle->kode_kendaraan ?? null) }}">
             @error('plat_kendaraan')
               <div class="invalid-feedback">
                 {{ $message }}
@@ -57,7 +57,8 @@
             <label for="kapasitas_harga" class="form-label">Kapasitas Harga (Rp) <span
                 class='text-danger'>*</span></label>
             <input type="number" class="form-control @error('kapasitas_harga') is-invalid @enderror" id="kapasitas_harga"
-              name="kapasitas_harga" value="{{ old('kapasitas_harga', $vehicle->kapasitas_harga) }}" step=".01">
+              name="kapasitas_harga" value="{{ old('kapasitas_harga', $vehicle->kapasitas_harga ?? null) }}"
+              step=".01">
             @error('kapasitas_harga')
               <div class="invalid-feedback">
                 {{ $message }}
@@ -71,7 +72,7 @@
                 class='text-danger'>*</span></label>
             <input type="number" class="form-control @error('kapasitas_volume') is-invalid @enderror"
               id="kapasitas_volume" name="kapasitas_volume"
-              value="{{ old('kapasitas_volume', $vehicle->kapasitas_volume) }}">
+              value="{{ old('kapasitas_volume', $vehicle->kapasitas_volume ?? null) }}">
             @error('kapasitas_volume')
               <div class="invalid-feedback">
                 {{ $message }}
@@ -86,7 +87,7 @@
           <div class="mb-3">
             <label for="tanggal_pajak" class="form-label">Masa Pajak</label>
             <input type="date" class="form-control @error('tanggal_pajak') is-invalid @enderror" id="tanggal_pajak"
-              name="tanggal_pajak" value="{{ old('tanggal_pajak', $vehicle->tanggal_pajak) }}">
+              name="tanggal_pajak" value="{{ old('tanggal_pajak', $vehicle->tanggal_pajak ?? null) }}">
             @error('tanggal_pajak')
               <div class="invalid-feedback">
                 {{ $message }}

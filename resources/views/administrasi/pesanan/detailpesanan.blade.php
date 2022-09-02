@@ -37,59 +37,62 @@
     <div class="container">
       <div class="row mt-3">
         <div class="d-flex flex-row justify-content-between">
-
-          <div>
-            @if ($order->linkOrderTrack->status_enum == '2')
-              <a href="/administrasi/pesanan/detail/{{ $order->id }}/cetak-memo" class="btn btn-primary mx-1"><i
-                  class="bi bi-download px-1"></i>Unduh Memo Persiapan Barang</a>
-            @endif
-            @if ($order->linkOrderTrack->status_enum > '2' && $order->linkOrderTrack->status_enum <= '6')
-              <a href="/administrasi/pesanan/detail/{{ $order->id }}/cetak-sj" class="btn btn-success mx-1"><i
-                  class="bi bi-download px-1"></i>Unduh Surat Jalan</a>
-            @endif
-            @if ($order->linkOrderTrack->status_enum > '1' && $order->linkOrderTrack->status_enum <= '6')
-              {{-- @php
+          @if ($order->linkOrderTrack->status_enum)
+            <div>
+              @if ($order->linkOrderTrack->status_enum == '2')
+                <a href="/administrasi/pesanan/detail/{{ $order->id }}/cetak-memo" class="btn btn-primary mx-1"><i
+                    class="bi bi-download px-1"></i>Unduh Memo Persiapan Barang</a>
+              @endif
+              @if ($order->linkOrderTrack->status_enum > '2' && $order->linkOrderTrack->status_enum <= '6')
+                <a href="/administrasi/pesanan/detail/{{ $order->id }}/cetak-sj" class="btn btn-success mx-1"><i
+                    class="bi bi-download px-1"></i>Unduh Surat Jalan</a>
+              @endif
+              @if ($order->linkOrderTrack->status_enum > '1' && $order->linkOrderTrack->status_enum <= '6')
+                {{-- @php
                 $counter_unduh = $order->linkInvoice->counter_unduh ?? null;
                 $max_unduh = $order->linkInvoice->max_unduh ?? null;
               @endphp --}}
-              @if ($order->linkInvoice->counter_unduh < $order->linkInvoice->max_unduh)
-                <a href="/administrasi/pesanan/detail/{{ $order->id }}/cetak-invoice" class="btn btn_purple mx-1"><i
-                    class="bi bi-download px-1"></i>Unduh Invoice
-                  {{ '(' . $order->linkInvoice->counter_unduh . '/' . $order->linkInvoice->max_unduh . ')' }}</a>
-              @else
-                <button class="btn btn_purple mx-1" disabled><i class="bi bi-download px-1"></i>Unduh Invoice
-                  {{ '(' . $order->linkInvoice->counter_unduh . '/' . $order->linkInvoice->max_unduh . ')' }}</button>
+                @if ($order->linkInvoice->counter_unduh < $order->linkInvoice->max_unduh)
+                  <a href="/administrasi/pesanan/detail/{{ $order->id }}/cetak-invoice" class="btn btn_purple mx-1"><i
+                      class="bi bi-download px-1"></i>Unduh Invoice
+                    {{ '(' . $order->linkInvoice->counter_unduh . '/' . $order->linkInvoice->max_unduh . ')' }}</a>
+                @else
+                  <button class="btn btn_purple mx-1" disabled><i class="bi bi-download px-1"></i>Unduh Invoice
+                    {{ '(' . $order->linkInvoice->counter_unduh . '/' . $order->linkInvoice->max_unduh . ')' }}</button>
+                @endif
+                {{-- <h1>{{ $order->linkInvoice->counter_unduh }} </h1> --}}
               @endif
-              {{-- <h1>{{ $order->linkInvoice->counter_unduh }} </h1> --}}
-            @endif
-          </div>
+            </div>
+          @endif
         </div>
       </div>
 
       <div class="row mt-5">
         <div class="col">
           <div class="informasi-list d-flex flex-column">
-            <span><b>Customer Pemesan</b> {{ $order->linkCustomer->nama }}</span>
+            <span><b>Customer Pemesan</b> {{ $order->linkCustomer->nama ?? null }}</span>
             <span><b>Nomor Invoice</b> {{ $order->linkInvoice->nomor_invoice ?? null }}</span>
-            <span><b>Status Pesanan</b>
-              @if ($order->linkOrderTrack->status_enum == '-1')
-                <p class="text-danger fw-bold d-inline">Order ditolak</p>
-              @elseif ($order->linkOrderTrack->status_enum == '0')
-                <p class="text-success fw-bold d-inline">Diajukan customer</p>
-              @elseif ($order->linkOrderTrack->status_enum == '1')
-                <p class="text-success fw-bold d-inline">Diajukan salesman</p>
-              @elseif ($order->linkOrderTrack->status_enum == '2')
-                <p class="text-success fw-bold d-inline">Dikonfirmasi admin</p>
-              @elseif ($order->linkOrderTrack->status_enum == '3')
-                <p class="text-success fw-bold d-inline">Dalam perjalanan</p>
-              @elseif ($order->linkOrderTrack->status_enum == '4')
-                <p class="text-success fw-bold d-inline">Order telah sampai</p>
-              @elseif ($order->linkOrderTrack->status_enum == '5')
-                <p class="text-success fw-bold d-inline">Pembayaran</p>
-              @elseif ($order->linkOrderTrack->status_enum == '6')
-                <p class="text-success fw-bold d-inline">Order selesai</p>
-              @endif
-            </span>
+            @if ($order->linkOrderTrack->status_enum)
+              <span><b>Status Pesanan</b>
+                @if ($order->linkOrderTrack->status_enum == '-1')
+                  <p class="text-danger fw-bold d-inline">Order ditolak</p>
+                @elseif ($order->linkOrderTrack->status_enum == '0')
+                  <p class="text-success fw-bold d-inline">Diajukan customer</p>
+                @elseif ($order->linkOrderTrack->status_enum == '1')
+                  <p class="text-success fw-bold d-inline">Diajukan salesman</p>
+                @elseif ($order->linkOrderTrack->status_enum == '2')
+                  <p class="text-success fw-bold d-inline">Dikonfirmasi admin</p>
+                @elseif ($order->linkOrderTrack->status_enum == '3')
+                  <p class="text-success fw-bold d-inline">Dalam perjalanan</p>
+                @elseif ($order->linkOrderTrack->status_enum == '4')
+                  <p class="text-success fw-bold d-inline">Order telah sampai</p>
+                @elseif ($order->linkOrderTrack->status_enum == '5')
+                  <p class="text-success fw-bold d-inline">Pembayaran</p>
+                @elseif ($order->linkOrderTrack->status_enum == '6')
+                  <p class="text-success fw-bold d-inline">Order selesai</p>
+                @endif
+              </span>
+            @endif
           </div>
         </div>
         <div class="col">
@@ -133,9 +136,13 @@
               <tr>
                 <td>{{ $item->linkItem->kode_barang ?? null }}</td>
                 <td>{{ $item->linkItem->nama ?? null }}</td>
-                <td>{{ number_format($item->harga_satuan, 0, '', '.') }}</td>
-                <td>{{ $item->kuantitas }}</td>
-                <td>{{ number_format($item->harga_satuan * $item->kuantitas, 0, '', '.') }}</td>
+                <td>{{ number_format($item->harga_satuan ?? 0, 0, '', '.') }}</td>
+                <td>{{ $item->kuantitas ?? null }}</td>
+                @if ($item->harga_satuan && $item->kuantitas)
+                  <td>{{ number_format($item->harga_satuan * $item->kuantitas, 0, '', '.') }}</td>
+                @else
+                  <td></td>
+                @endif
                 @php
                   $ttl += $item->harga_satuan * $item->kuantitas;
                 @endphp
@@ -178,49 +185,49 @@
           <div class="stepper-wrapper d-flex align-items-end">
             <div class="stepper-item-date ">
               <div class="step-name">
-                @if ($order->linkOrderTrack->waktu_order)
+                @if ($order->linkOrderTrack->waktu_order ?? null)
                   {{ date('F j, Y, g:i a', strtotime($order->linkOrderTrack->waktu_order)) }}
                 @endif
               </div>
             </div>
             <div class="stepper-item-date">
               <div class="step-name">
-                @if ($order->linkOrderTrack->waktu_diteruskan)
+                @if ($order->linkOrderTrack->waktu_diteruskan ?? null)
                   {{ date('F j, Y, g:i a', strtotime($order->linkOrderTrack->waktu_diteruskan)) }}
                 @endif
               </div>
             </div>
             <div class="stepper-item-date ">
               <div class="step-name">
-                @if ($order->linkOrderTrack->waktu_dikonfirmasi)
+                @if ($order->linkOrderTrack->waktu_dikonfirmasi ?? null)
                   {{ date('F j, Y, g:i a', strtotime($order->linkOrderTrack->waktu_dikonfirmasi)) }}
                 @endif
               </div>
             </div>
             <div class="stepper-item-date">
               <div class="step-name">
-                @if ($order->linkOrderTrack->waktu_berangkat)
+                @if ($order->linkOrderTrack->waktu_berangkat ?? null)
                   {{ date('F j, Y, g:i a', strtotime($order->linkOrderTrack->waktu_berangkat)) }}
                 @endif
               </div>
             </div>
             <div class="stepper-item-date">
               <div class="step-name">
-                @if ($order->linkOrderTrack->waktu_sampai)
+                @if ($order->linkOrderTrack->waktu_sampai ?? null)
                   {{ date('F j, Y, g:i a', strtotime($order->linkOrderTrack->waktu_sampai)) }}
                 @endif
               </div>
             </div>
             <div class="stepper-item-date">
               <div class="step-name">
-                @if ($pembayaran_terakhir)
+                @if ($pembayaran_terakhir->tanggal ?? null)
                   {{ date('F j, Y', strtotime($pembayaran_terakhir->tanggal)) }}
                 @endif
               </div>
             </div>
           </div>
 
-          <div class="stepper-wrapper status-track" data-status="{{ $order->linkOrderTrack->status_enum }}">
+          <div class="stepper-wrapper status-track" data-status="{{ $order->linkOrderTrack->status_enum ?? null }}">
             <div class="stepper-item s-0">
               <div class="step-counter">1</div>
               <div class="step-name">order</div>

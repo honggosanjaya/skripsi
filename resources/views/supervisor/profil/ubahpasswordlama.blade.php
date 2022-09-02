@@ -24,11 +24,11 @@
           </div>
         @endif
 
-        <form method="POST" action="/supervisor/profil/check/{{ auth()->user()->id }}">
+        <form method="POST" action="/supervisor/profil/check/{{ auth()->user()->id ?? null }}">
           @csrf
           <div class="mb-3">
             <label class="form-label" hidden>User ID</label>
-            <input type="text" class="form-control" value="{{ auth()->user()->id }}" readonly hidden>
+            <input type="text" class="form-control" value="{{ auth()->user()->id ?? null }}" readonly hidden>
           </div>
           <div class="mb-3">
             <label for="passwordLama" class="form-label">Password Lama</label>
