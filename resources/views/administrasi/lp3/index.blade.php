@@ -39,42 +39,6 @@
           <div class="row">
             <div class="col">
               <div class="mb-3">
-                <label for="id_invoice" class="form-label">Invoice yang Ditagih</label>
-                <select class="select-invoice form-select @error('id_invoice') is-invalid @enderror" id="id_invoice"
-                  name="id_invoice" value="{{ old('id_invoice') }}">
-                  <option disabled selected value>Pilih Invoice</option>
-                  @foreach ($invoices as $invoice)
-                    {{-- @if ($invoice['is_disabled'] == true)
-                      <option value="{{ $invoice['id'] }}" disabled>{{ $invoice['nomor_invoice'] }}</option>
-                    @elseif ($invoice['is_disabled'] == false)
-                      <option value="{{ $invoice['id'] }}">{{ $invoice['nomor_invoice'] }}</option>
-                    @endif --}}
-                    <option value="{{ $invoice->id }}">{{ $invoice->nomor_invoice ?? null }}</option>
-                  @endforeach
-                </select>
-                @error('id_invoice')
-                  <div class="invalid-feedback">
-                    {{ $message }}
-                  </div>
-                @enderror
-              </div>
-            </div>
-            <div class="col">
-              <div class="mb-3">
-                <label class="form-label">Nama Customer</label>
-                <input type="text" class="form-control nama-customer" value="pilih invoice dulu" readonly>
-              </div>
-            </div>
-            <div class="col">
-              <div class="mb-3">
-                <label class="form-label">Jumlah Tagihan</label>
-                <input type="text" class="form-control jumlah-tagihan" value="pilih invoice dulu" readonly>
-              </div>
-            </div>
-          </div>
-          <div class="row">
-            <div class="col">
-              <div class="mb-3">
                 <label for="id_staff_penagih" class="form-label">Nama Penagih</label>
                 <select class="form-select @error('id_staff_penagih') is-invalid @enderror" id="id_staff_penagih"
                   name="id_staff_penagih" value="{{ old('id_staff_penagih') }}">
@@ -102,6 +66,48 @@
               </div>
             </div>
           </div>
+
+          <div class="form-group">
+            <div class="form-input">
+              <div class="row">
+
+                <div class="col">
+                  <label for="id_invoice" class="form-label">Invoice yang Ditagih</label>
+                  <select class="select-invoice form-select @error('id_invoice') is-invalid @enderror" id="id_invoice"
+                    name="id_invoice[]" value="{{ old('id_invoice') }}">
+                    <option disabled selected value>Pilih Invoice</option>
+                    @foreach ($invoices as $invoice)
+                      <option value="{{ $invoice->id }}">{{ $invoice->nomor_invoice ?? null }}</option>
+                    @endforeach
+                  </select>
+                  @error('id_invoice')
+                    <div class="invalid-feedback">
+                      {{ $message }}
+                    </div>
+                  @enderror
+                </div>
+
+                <div class="col">
+                  <label class="form-label">Nama Customer</label>
+                  <input type="text" class="form-control nama-customer" value="pilih invoice dulu" readonly>
+                </div>
+
+                <div class="col">
+                  <label class="form-label">Jumlah Tagihan</label>
+                  <input type="text" class="form-control jumlah-tagihan" value="pilih invoice dulu" readonly>
+                </div>
+              </div>
+
+
+              <div class="row justify-content-end mt-4">
+                <div class="col-4 d-flex justify-content-end">
+                  <button class="btn btn-danger remove-form me-3" type="button">-</button>
+                  <button class="btn btn-success add-form" type="button">+</button>
+                </div>
+              </div>
+            </div>
+          </div>
+
           <div class="row justify-content-end mt-4">
             <div class="col-3 d-flex justify-content-end">
               <button type="submit" class="btn btn-primary">Submit</button>

@@ -29,16 +29,14 @@ class LaporanPenagihanController extends Controller
   }
 
   public function storeLp3(Request $request){
-    $rules = [
-      'id_invoice' => ['required'],
-      'id_staff_penagih' => ['required'],
-      'tanggal' => ['required'],
-    ];
-    
-    $validatedData = $request->validate($rules);
-    $validatedData['status_enum'] = '-1';
-    $validatedData['created_at'] = now();
-    LaporanPenagihan::insert($validatedData);
+    foreach($request->id_invoice as $inv){
+      LaporanPenagihan::insert([
+        'id_invoice' => $inv,
+        'id_staff_penagih' => $request->id_staff_penagih,
+        'tanggal' => $request->tanggal,
+        'status_enum' => '-1'
+      ]);
+    }
 
     return redirect('/administrasi/lp3')->with('pesanSukses','Berhasil membuat LP3'); 
   }
