@@ -500,7 +500,7 @@ class OrderController extends Controller
   }
 
   public function cetakInvoice(Order $order){
-    $items = OrderItem::where('id_order','=',$order->id)->get();
+    $orderitems = OrderItem::where('id_order','=',$order->id)->get();
     $administrasi = Staff::select('nama')->where('id','=',auth()->user()->id_users)->first();
     $invoice = Invoice::where('id_order', $order->id)->first();
 
@@ -509,10 +509,12 @@ class OrderController extends Controller
     ]);
 
     $pdf = PDF::loadview('administrasi.pesanan.detail.cetakInvoice',[
-        'order' => $order,
-        'items' => $items,
-        'administrasi' => $administrasi           
-      ]);
+      'order' => $order,
+      'orderitems' => $orderitems,
+      'administrasi' => $administrasi           
+    ]);
+
+    $pdf->setPaper('A4', 'landscape');
 
     return $pdf->stream('invoice-'.$order->linkInvoice->nomor_invoice.'.pdf');  
   }
