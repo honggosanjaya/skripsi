@@ -15,13 +15,18 @@ const Penagihan = () => {
   const [showModal, setShowModal] = useState(false);
   const [successMessage, setSuccessMessage] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+  var todayDate = new Date().toISOString().slice(0, 10);
+  const [tanggal, setTanggal] = useState(todayDate);
 
   const getLp3 = () => {
     axios({
-      method: "get",
+      method: "post",
       url: `${window.location.origin}/api/lapangan/penagihan/${dataUser.id_staff}`,
       headers: {
         Accept: "application/json",
+      },
+      data: {
+        date: tanggal
       },
     })
       .then(response => {
@@ -40,7 +45,7 @@ const Penagihan = () => {
       setIsLoading(true);
       getLp3();
     }
-  }, [dataUser])
+  }, [dataUser, tanggal])
 
   const handleClickLp3 = (idInvoice) => {
     setShowModal(true);
@@ -97,13 +102,25 @@ const Penagihan = () => {
       {successMessage && <AlertComponent successMsg={successMessage} />}
       {isLoading && <LoadingIndicator />}
       <div className="page_container pt-4">
-        <div className="table-responsive">
+        <label>Tanggal</label>
+        <div className="input-group">
+          <input
+            type='date'
+            className="form-control"
+            id="tanggalTrip"
+            value={tanggal}
+            onChange={(e) => setTanggal(e.target.value)}
+          />
+        </div>
+
+        <div className="table-responsive mt-4">
           <table className="table">
             <thead>
               <tr>
                 <th scope="col" className='text-center'>Nama Toko</th>
                 <th scope="col" className='text-center'>Wilayah</th>
                 <th scope="col" className='text-center'>Tanggal</th>
+                <th scope="col" className='text-center'>Status</th>
               </tr>
             </thead>
             <tbody>
@@ -112,6 +129,7 @@ const Penagihan = () => {
                   <td>{data.link_invoice.link_order.link_customer.nama ?? null}</td>
                   <td>{data.link_invoice.link_order.link_customer.link_district.nama ?? null}</td>
                   {data.tanggal && <td>{convertTanggal(data.tanggal)}</td>}
+                  {data.status_enum && <td>{data.status_enum == '1' ? <p className='text-success mb-0'>Sudah Tagih</p> : <p className='text-danger mb-0'>Belum Tagih</p>}</td>}
                 </tr>
               ))}
             </tbody>

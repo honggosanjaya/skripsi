@@ -86,8 +86,8 @@
             <label class="form-label">Metode Pembayaran</label>
             <select class="form-select" name="metode_pembayaran">
               @foreach ($metodes_pembayaran as $key => $val)
-                @if ($order->linkCustomer->metode_pembayaran != null)
-                  @if ($order->linkCustomer->metode_pembayaran == $key)
+                @if ($order->linkInvoice->metode_pembayaran != null)
+                  @if ($order->linkInvoice->metode_pembayaran == $key)
                     <option value="{{ $key }}" selected>{{ $val }}</option>
                   @else
                     <option value="{{ $key }}">{{ $val }}</option>

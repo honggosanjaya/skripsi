@@ -66,7 +66,8 @@ class OrderController extends Controller
         ]);
         OrderItem::insert($data);
         Customer::find($id_customer) -> update([
-          'tipe_retur' => $tipeRetur
+          'tipe_retur' => $tipeRetur,
+          'metode_pembayaran' => $request->metode_pembayaran
         ]);
       }else{
         return response()->json([
@@ -124,7 +125,8 @@ class OrderController extends Controller
           'estimasi_waktu_pengiriman' => $estimasiWaktuPengiriman,
         ]);
         Customer::find($id_customer) -> update([
-          'tipe_retur' => $tipeRetur
+          'tipe_retur' => $tipeRetur,
+          'metode_pembayaran' => $request->metode_pembayaran
         ]);    
       }else{
         return response()->json([
@@ -146,6 +148,7 @@ class OrderController extends Controller
       'nomor_invoice' => $invoice_count,
       'harga_total' => $totalPesanan,
       'counter_unduh' => 0,
+      'metode_pembayaran' => $request->metode_pembayaran,
       'created_at' => now()
     ]);
 
