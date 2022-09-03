@@ -15,8 +15,8 @@
   <div class="pt-4 px-5">
     <h1 class="fw-bold fs-3">Pembagian Wilayah</h1>
     @foreach ($parentCategories as $category)
-      <h2 class="fs-5 fw-bold"># {{ $category->nama }}</h2>
-      @if (count($category->subcategory))
+      <h2 class="fs-5 fw-bold"># {{ $category->nama ?? null }}</h2>
+      @if (count($category->subcategory ?? null))
         @include('supervisor.wilayah.subWilayahTree', ['subcategories' => $category->subcategory])
       @endif
     @endforeach

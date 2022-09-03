@@ -89,5 +89,9 @@ Route::post('/historyinvoice', [OrderController::class, 'getInvoiceAPI']);
 
 Route::get('/administrasi/detailpenagihan/{invoice:id}', [LaporanPenagihanController::class, 'getDetailPenagihanAPI']);
 
-Route::get('/lapangan/penagihan/{staff:id}', [LaporanPenagihanController::class, 'getPenagihanLapanganAPI']);
+Route::post('/lapangan/penagihan/{staff:id}', [LaporanPenagihanController::class, 'getPenagihanLapanganAPI']);
 Route::get('/lapangan/handlepenagihan/{id}', [LaporanPenagihanController::class, 'handlePenagihanLapanganAPI']);
+
+Route::post('/administrasi/stok/pengadaan/cart', [CartController::class, 'addToCart']);
+Route::post('/administrasi/stok/opname/cart', [CartController::class, 'addToCart']);
+Route::post('administrasi/stok/pengadaan/remove', [CartController::class, 'removeCart']);

@@ -1,14 +1,14 @@
 @extends('layouts/main')
 @section('breadcrumbs')
   <ol class="breadcrumb">
-    <li class="breadcrumb-item"><a href="/{{ auth()->user()->linkStaff->linkStaffRole->nama }}">Dashboard</a></li>
+    <li class="breadcrumb-item"><a href="/{{ auth()->user()->linkStaff->linkStaffRole->nama ?? null }}">Dashboard</a></li>
     <li class="breadcrumb-item active" aria-current="page">Penjualan</li>
   </ol>
 @endsection
 
 @section('main_content')
   <div id="report" class="pt-4 px-3 px-sm-5">
-    <form action="/{{ auth()->user()->linkStaff->linkStaffRole->nama }}/report/penjualan" method="get">
+    <form action="/{{ auth()->user()->linkStaff->linkStaffRole->nama ?? null }}/report/penjualan" method="get">
       <div class="row">
         <div class="col-sm-2 col-6">
           <div class="input-group mb-3">
@@ -53,8 +53,8 @@
         <div class="col">
           <div class="mb-3">
             <label class="form-label">Date End</label>
-            <input type="date" name="dateEnd" class="form-control" min="{{ $input['dateStart'] ?? null }}" value="{{ $input['dateEnd'] ?? null }}"
-              id="dateEnd">
+            <input type="date" name="dateEnd" class="form-control" min="{{ $input['dateStart'] ?? null }}"
+              value="{{ $input['dateEnd'] ?? null }}" id="dateEnd">
           </div>
         </div>
       </div>
@@ -81,13 +81,13 @@
         <tbody>
           @foreach ($data as $dt)
             <tr>
-              <th scope="row" class="text-center">{{ $loop->iteration }}</th>
-              <td>{{ $dt->created_at }}</td>
-              <td>{{ $dt->linkInvoice->nomor_invoice }}</td>
-              <td> {{ number_format($dt->linkInvoice->harga_total, 0, '', '.') }}</td>
-              <td>{{ $dt->linkStaff->nama }}</td>
-              <td>{{ $dt->linkCustomer->nama }}</td>
-              <td>{{ $dt->linkCustomer->linkCustomerType->nama }}</td>
+              <th scope="row" class="text-center">{{ $loop->iteration ?? null }}</th>
+              <td>{{ $dt->created_at ?? null }}</td>
+              <td>{{ $dt->linkInvoice->nomor_invoice ?? null }}</td>
+              <td> {{ number_format($dt->linkInvoice->harga_total ?? 0, 0, '', '.') }}</td>
+              <td>{{ $dt->linkStaff->nama ?? null }}</td>
+              <td>{{ $dt->linkCustomer->nama ?? null }}</td>
+              <td>{{ $dt->linkCustomer->linkCustomerType->nama ?? null }}</td>
             </tr>
           @endforeach
         </tbody>

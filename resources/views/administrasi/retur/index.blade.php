@@ -27,15 +27,20 @@
       <tbody>
         @foreach ($returs as $retur)
           <tr>
-            <th scope="row" class="text-center">{{ $retur->no_retur }}</th>
-            <td>{{ date('d M Y', strtotime($retur->created_at)) }}</td>
-            <td>{{ $retur->linkCustomer->nama }}</td>
-            <td>{{ $retur->linkCustomer->alamat_utama . ' ' . $retur->linkCustomer->alamat_nomor }}</td>
-            <td>{{ $retur->linkStaffPengaju->nama }}</td>
-            <td class="text-capitalize">{{ $retur->status_enum == '0' ? 'Diajukan' : 'Dikonfirmasi' }}</td>
+            <th scope="row" class="text-center">{{ $retur->no_retur ?? null }}</th>
+            <td>{{ date('d M Y', strtotime($retur->created_at ?? '-')) }}</td>
+            <td>{{ $retur->linkCustomer->nama ?? null }}</td>
+            <td>{{ ($retur->linkCustomer->alamat_utama ?? null) . ' ' . ($retur->linkCustomer->alamat_nomor ?? null) }}
+            </td>
+            <td>{{ $retur->linkStaffPengaju->nama ?? null }}</td>
+            @if ($retur->status_enum ?? null)
+              <td class="text-capitalize">{{ $retur->status_enum == '0' ? 'Diajukan' : 'Dikonfirmasi' }}</td>
+            @else
+              <td></td>
+            @endif
             <td>
-              <a href="/administrasi/retur/{{ $retur->no_retur }}" class="btn btn-primary"><span class="iconify fs-4 me-1"
-                  data-icon="fluent:apps-list-detail-24-filled"></span>Detail</a>
+              <a href="/administrasi/retur/{{ $retur->no_retur ?? null }}" class="btn btn-primary"><span
+                  class="iconify fs-4 me-1" data-icon="fluent:apps-list-detail-24-filled"></span>Detail</a>
             </td>
           </tr>
         @endforeach

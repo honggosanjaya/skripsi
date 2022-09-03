@@ -237,4 +237,16 @@ class StaffController extends Controller
         ]);
       }
     }
+
+    public function detailStaff(Staff $staff){
+      return view('supervisor.datastaf.detail', [
+        'staff' => $staff,
+      ]);
+    }
+
+    public function detailDatasupervisor(Staff $staff){
+      return view('owner.dataSupervisor.detail', [
+        'staff' => $staff,
+      ]);
+    }
 }

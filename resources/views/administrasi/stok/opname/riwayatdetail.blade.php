@@ -27,10 +27,10 @@
       <tbody>
         @foreach ($order_items as $order_item)
           <tr>
-            <td>{{ $order_item->linkItem->kode_barang }}</td>
-            <td>{{ $order_item->linkItem->nama }}</td>
-            <td>{{ $order_item->kuantitas }}</td>
-            <td>{{ $order_item->keterangan }}</td>
+            <td>{{ $order_item->linkItem->kode_barang ?? null }}</td>
+            <td>{{ $order_item->linkItem->nama ?? null }}</td>
+            <td>{{ $order_item->kuantitas ?? null }}</td>
+            <td>{{ $order_item->keterangan ?? null }}</td>
           </tr>
         @endforeach
       </tbody>

@@ -31,12 +31,12 @@
             <tr>
               {{-- <form action="{{ '/administrasi/stok/opname/update-final?route=opname' }}" method="POST" enctype="multipart/form-data"> --}}
               {{-- @csrf --}}
-              <td>{{ $item->attributes->kode_barang }}</td>
-              <td>{{ $item->name }}</td>
-              <td>{{ $item->quantity }}</td>
-              <td>{{ $item->quantity + $item->attributes->jumlah }}</td>
-              <td>{{ $item->attributes->jumlah }}</td>
-              <td>{{ $item->attributes->keterangan }}</td>
+              <td>{{ $item->attributes->kode_barang ?? null }}</td>
+              <td>{{ $item->name ?? null }}</td>
+              <td>{{ $item->quantity ?? null }}</td>
+              <td>{{ ($item->quantity ?? null) + ($item->attributes->jumlah ?? null) }}</td>
+              <td>{{ $item->attributes->jumlah ?? null }}</td>
+              <td>{{ $item->attributes->keterangan ?? null }}</td>
 
               {{-- <td>
               <input type="hidden" value="{{ $item->id }}" name="id">

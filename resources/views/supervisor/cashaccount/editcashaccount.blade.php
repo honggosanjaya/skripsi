@@ -19,7 +19,7 @@
           <div class="mb-3">
             <label for="nama" class="form-label">Nama Cash Account <span class='text-danger'>*</span></label>
             <input type="text" class="form-control @error('nama') is-invalid @enderror" id="nama" name="nama"
-              value="{{ old('nama', $cashaccount->nama) }}">
+              value="{{ old('nama', $cashaccount->nama ?? null) }}">
             @error('nama')
               <div class="invalid-feedback">
                 {{ $message }}
@@ -30,9 +30,7 @@
         <div class="col-12">
           <div class="mb-3">
             <label for="keterangan" class="form-label">Keterangan <span class='text-danger'>*</span></label>
-            <textarea class="form-control @error('keterangan') is-invalid @enderror" id="keterangan" name="keterangan">{{ $cashaccount->keterangan }}</textarea>
-
-
+            <textarea class="form-control @error('keterangan') is-invalid @enderror" id="keterangan" name="keterangan">{{ $cashaccount->keterangan ?? null }}</textarea>
             @error('keterangan')
               <div class="invalid-feedback">
                 {{ $message }}

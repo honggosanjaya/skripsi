@@ -45,6 +45,7 @@ Route::prefix('owner')->middleware('owner')->group(function() {
   // Route::post('/', [ReportController::class, 'index']);
   Route::get('/profil', [HomeController::class, 'lihatProfil']);
   Route::get('/datasupervisor', [StaffController::class, 'datasupervisor']);
+  Route::get('/datasupervisor/{staff:id}', [StaffController::class, 'detailDatasupervisor']);
   Route::post('/datasupervisor', [StaffController::class, 'store']);
   Route::get('/datasupervisor/create', [StaffController::class, 'createSupervisor']);
   Route::post('/datasupervisor', [StaffController::class, 'store']);
@@ -92,6 +93,7 @@ Route::prefix('supervisor')->middleware('supervisor')->group(function() {
   Route::get('/datacustomer/pengajuan/{customer:id}', [CustomerController::class, 'detailDataPengajuanLimit']);
   Route::post('/datacustomer/pengajuan/setuju/{customer:id}', [CustomerController::class, 'setujuPengajuanLimit']);
   Route::post('/datacustomer/pengajuan/tolak/{customer:id}', [CustomerController::class, 'tolakPengajuanLimit']);
+  Route::get('/datacustomer/{customer:id}', [CustomerController::class, 'detailCustomerSPV']);
 
   Route::get('/jenis', [CustomerTypeController::class, 'index']);
   Route::get('/jenis/cari', [CustomerTypeController::class, 'search']);
@@ -102,6 +104,7 @@ Route::prefix('supervisor')->middleware('supervisor')->group(function() {
 
   Route::resource('/datastaf', StaffController::class)->except(['show', 'destroy']);
   Route::post('/datastaf/ubahstatus/{staf:id}', [StaffController::class, 'editStatusStaf']);
+  Route::get('/datastaf/{staff:id}', [StaffController::class, 'detailStaff']);
 
   Route::get('/report/penjualan', [ReportController::class,'penjualan']);
   Route::get('/report/kinerja', [ReportController::class,'kinerja']);
@@ -177,7 +180,7 @@ Route::prefix('administrasi')->middleware('administrasi')->group(function() {
     Route::get('/pengadaan/cart', [CartController::class, 'cartList'])->name('cart.list');
     Route::post('/pengadaan/cart', [CartController::class, 'addToCart'])->name('cart.store');
     // Route::post('/pengadaan/update-cart', [CartController::class, 'updateCart'])->name('cart.update');
-    // Route::post('/pengadaan/remove', [CartController::class, 'removeCart'])->name('cart.remove');
+    Route::post('/pengadaan/remove', [CartController::class, 'removeCart'])->name('cart.remove');
     // Route::post('/pengadaan/clear', [CartController::class, 'clearAllCart'])->name('cart.clear');
     Route::get('/pengadaan/clear', [CartController::class, 'clearAllCart']);
     Route::post('/pengadaan/tambahpengadaan', [ItemController::class, 'simpanDataPengadaan']);

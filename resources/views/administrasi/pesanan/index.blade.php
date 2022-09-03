@@ -46,39 +46,42 @@
             <td>{{ $order->linkStaff->nama ?? null }}</td>
             <td>{{ $order->linkInvoice->nomor_invoice ?? null }}</td>
             @if ($order->linkInvoice)
-              <td>{{ number_format($order->linkInvoice->harga_total, 0, '', '.') }}</td>
+              <td>{{ number_format($order->linkInvoice->harga_total ?? 0, 0, '', '.') }}</td>
             @else
               <td></td>
             @endif
-            <td class="text-capitalize">
-              <p class="mb-0 badge badge-order-track-{{ $order->linkOrderTrack->status_enum }}">
-                @if ($order->linkOrderTrack->status_enum == '0')
-                  {{ 'Diajukan Customer' }}
-                @elseif ($order->linkOrderTrack->status_enum == '1')
-                  {{ 'Diajukan Salesman' }}
-                @elseif ($order->linkOrderTrack->status_enum == '2')
-                  {{ 'Dikonfirmasi Admin' }}
-                @elseif ($order->linkOrderTrack->status_enum == '3')
-                  {{ 'Dalam Perjalanan' }}
-                @elseif ($order->linkOrderTrack->status_enum == '4')
-                  {{ 'Order Telah Sampai' }}
-                @elseif ($order->linkOrderTrack->status_enum == '5')
-                  {{ 'Pembayaran' }}
-                @elseif ($order->linkOrderTrack->status_enum == '6')
-                  {{ 'Order Selesai' }}
-                @elseif ($order->linkOrderTrack->status_enum == '-1')
-                  {{ 'Order Ditolak' }}
-                @endif
-              </p>
-            </td>
-            <td>{{ date('d M Y', strtotime($order->created_at)) }}</td>
+
+            @if ($order->linkOrderTrack->status_enum ?? null)
+              <td class="text-capitalize">
+                <p class="mb-0 badge badge-order-track-{{ $order->linkOrderTrack->status_enum }}">
+                  @if ($order->linkOrderTrack->status_enum == '0')
+                    {{ 'Diajukan Customer' }}
+                  @elseif ($order->linkOrderTrack->status_enum == '1')
+                    {{ 'Diajukan Salesman' }}
+                  @elseif ($order->linkOrderTrack->status_enum == '2')
+                    {{ 'Dikonfirmasi Admin' }}
+                  @elseif ($order->linkOrderTrack->status_enum == '3')
+                    {{ 'Dalam Perjalanan' }}
+                  @elseif ($order->linkOrderTrack->status_enum == '4')
+                    {{ 'Order Telah Sampai' }}
+                  @elseif ($order->linkOrderTrack->status_enum == '5')
+                    {{ 'Pembayaran' }}
+                  @elseif ($order->linkOrderTrack->status_enum == '6')
+                    {{ 'Order Selesai' }}
+                  @elseif ($order->linkOrderTrack->status_enum == '-1')
+                    {{ 'Order Ditolak' }}
+                  @endif
+                </p>
+              </td>
+            @endif
+
+            <td>{{ date('d M Y', strtotime($order->created_at ?? '-')) }}</td>
             <td>
               <a href="/administrasi/pesanan/detail/{{ $order->id }}" class="btn btn-primary">
                 <span class="iconify fs-4 me-1" data-icon="fluent:apps-list-detail-24-filled"></span> Detail</a>
             </td>
           </tr>
         @endforeach
-
       </tbody>
     </table>
   </div>

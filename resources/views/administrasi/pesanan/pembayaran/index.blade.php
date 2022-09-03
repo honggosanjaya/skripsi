@@ -17,26 +17,26 @@
     <h1 class="fs-4 my-4">Pembayaran Customer</h1>
     <form class="form-submit" method="POST" action="/administrasi/pesanan/detail/{{ $order->id }}/dibayar">
       @csrf
-      <input type="hidden" value="{{ $order->linkInvoice->id }}" name="id_invoice">
+      <input type="hidden" value="{{ $order->linkInvoice->id ?? null }}" name="id_invoice">
 
       <div class="row">
         <div class="col">
           <div class="mb-3">
             <label class="form-label">Invoice</label>
-            <input type="text" class="form-control" value="{{ $order->linkInvoice->nomor_invoice }}" readonly>
+            <input type="text" class="form-control" value="{{ $order->linkInvoice->nomor_invoice ?? null }}" readonly>
           </div>
         </div>
         <div class="col">
           <div class="mb-3">
             <label class="form-label">Nama Customer</label>
-            <input type="text" class="form-control" value="{{ $order->linkCustomer->nama }}" readonly>
+            <input type="text" class="form-control" value="{{ $order->linkCustomer->nama ?? null }}" readonly>
           </div>
         </div>
         <div class="col">
           <div class="mb-3">
             <label class="form-label">Nama Pengirim</label>
-            <input type="text" class="form-control" value="{{ $order->linkOrderTrack->linkStaffPengirim->nama }}"
-              readonly>
+            <input type="text" class="form-control"
+              value="{{ $order->linkOrderTrack->linkStaffPengirim->nama ?? null }}" readonly>
           </div>
         </div>
       </div>
@@ -86,8 +86,8 @@
             <label class="form-label">Metode Pembayaran</label>
             <select class="form-select" name="metode_pembayaran">
               @foreach ($metodes_pembayaran as $key => $val)
-                @if ($order->linkCustomer->metode_pembayaran != null)
-                  @if ($order->linkCustomer->metode_pembayaran == $key)
+                @if ($order->linkInvoice->metode_pembayaran != null)
+                  @if ($order->linkInvoice->metode_pembayaran == $key)
                     <option value="{{ $key }}" selected>{{ $val }}</option>
                   @else
                     <option value="{{ $key }}">{{ $val }}</option>

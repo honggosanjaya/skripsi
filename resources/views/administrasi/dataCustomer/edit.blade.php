@@ -9,14 +9,14 @@
 @section('main_content')
   <div id="data-customer">
     <div class="px-5 pt-4">
-      <form method="POST" id='data-form' action="/administrasi/datacustomer/ubahcustomer/{{ $customer->id }}"
+      <form method="POST" id='data-form' action="/administrasi/datacustomer/ubahcustomer/{{ $customer->id ?? null }}"
         enctype="multipart/form-data">
         @method('put')
         @csrf
         <div class="mb-3">
           <label for="nama" class="form-label">Nama <span class="text-danger">*</span></label>
           <input type="text" class="form-control @error('nama') is-invalid @enderror" id="nama" name="nama"
-            value="{{ old('nama', $customer->nama) }}">
+            value="{{ old('nama', $customer->nama ?? null) }}">
           @error('nama')
             <div class="invalid-feedback">
               {{ $message }}
@@ -74,7 +74,7 @@
             <div class="mb-3">
               <label for="email" class="form-label">Email</label>
               <input type="email" class="form-control @error('email') is-invalid @enderror" id="email"
-                name="email" value="{{ old('email', $customer->email) }}">
+                name="email" value="{{ old('email', $customer->email ?? null) }}">
               @error('email')
                 <div class="invalid-feedback">
                   {{ $message }}
@@ -86,7 +86,7 @@
             <div class="mb-3">
               <label for="telepon" class="form-label">Telepon</label>
               <input type="text" class="form-control @error('telepon') is-invalid @enderror" id="telepon"
-                name="telepon" value="{{ old('telepon', $customer->telepon) }}">
+                name="telepon" value="{{ old('telepon', $customer->telepon ?? null) }}">
               @error('telepon')
                 <div class="invalid-feedback">
                   {{ $message }}
@@ -99,7 +99,7 @@
         <div class="mb-3">
           <label for="alamat_utama" class="form-label">Alamat Utama <span class="text-danger">*</span></label>
           <input type="text" class="form-control @error('alamat_utama') is-invalid @enderror" id="alamat_utama"
-            name="alamat_utama" value="{{ old('alamat_utama', $customer->alamat_utama) }}">
+            name="alamat_utama" value="{{ old('alamat_utama', $customer->alamat_utama ?? null) }}">
           @error('alamat_utama')
             <div class="invalid-feedback">
               {{ $message }}
@@ -110,7 +110,7 @@
         <div class="mb-3">
           <label for="alamat_nomor" class="form-label">Alamat Nomor</label>
           <input type="text" class="form-control @error('alamat_nomor') is-invalid @enderror" id="alamat_nomor"
-            name="alamat_nomor" value="{{ old('alamat_nomor', $customer->alamat_nomor) }}">
+            name="alamat_nomor" value="{{ old('alamat_nomor', $customer->alamat_nomor ?? null) }}">
           @error('alamat_nomor')
             <div class="invalid-feedback">
               {{ $message }}
@@ -121,7 +121,7 @@
         <div class="mb-3">
           <label for="keterangan_alamat" class="form-label">Keterangan Alamat</label>
           <textarea class="form-control @error('keterangan_alamat') is-invalid @enderror" id="keterangan_alamat"
-            name="keterangan_alamat">{{ old('keterangan_alamat', $customer->keterangan_alamat) }}</textarea>
+            name="keterangan_alamat">{{ old('keterangan_alamat', $customer->keterangan_alamat ?? null) }}</textarea>
 
           @error('keterangan_alamat')
             <div class="invalid-feedback">
@@ -179,7 +179,7 @@
             <div class="mb-3">
               <label for="limit_pembelian" class="form-label">Limit Pembelian</label>
               <input type="number" class="form-control" id="limit_pembelian" name="limit_pembelian"
-                value="{{ $customer->limit_pembelian }}" step=".01" readonly>
+                value="{{ $customer->limit_pembelian ?? null }}" step=".01" readonly>
             </div>
           </div>
           <div class="col">
@@ -187,7 +187,7 @@
               <label for="pengajuan_limit_pembelian" class="form-label">Pengajuan Limit Pembelian</label>
               <input type="number" class="form-control @error('pengajuan_limit_pembelian') is-invalid @enderror"
                 id="pengajuan_limit_pembelian" name="pengajuan_limit_pembelian" step=".01"
-                value="{{ old('pengajuan_limit_pembelian', $customer->pengajuan_limit_pembelian) }}">
+                value="{{ old('pengajuan_limit_pembelian', $customer->pengajuan_limit_pembelian ?? null) }}">
               @error('pengajuan_limit_pembelian')
                 <div class="invalid-feedback">
                   {{ $message }}
@@ -199,8 +199,8 @@
 
         <div class="mb-3">
           <label for="foto" class="form-label">Foto</label>
-          <input type="hidden" name="oldImage" value="{{ $customer->foto }}">
-          @if ($customer->foto)
+          <input type="hidden" name="oldImage" value="{{ $customer->foto ?? null }}">
+          @if ($customer->foto ?? null)
             <img src="{{ asset('storage/customer/' . $customer->foto) }}" class="img-preview img-fluid d-block">
           @else
             <img class="img-preview img-fluid">
@@ -221,8 +221,6 @@
                 data-icon="eva:edit-2-fill"></span>Edit Data</button>
           </div>
         </div>
-
-
       </form>
     </div>
   </div>
