@@ -11,6 +11,7 @@ use App\Http\Controllers\OrderController;
 use App\Http\Controllers\ReturController;
 use App\Http\Controllers\Controller;
 use App\Http\Controllers\LaporanPenagihanController;
+use App\Http\Controllers\RencanaTripController;
 use App\Http\Controllers\StaffController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -95,3 +96,5 @@ Route::get('/lapangan/handlepenagihan/{id}', [LaporanPenagihanController::class,
 Route::post('/administrasi/stok/pengadaan/cart', [CartController::class, 'addToCart']);
 Route::post('/administrasi/stok/opname/cart', [CartController::class, 'addToCart']);
 Route::post('administrasi/stok/pengadaan/remove', [CartController::class, 'removeCart']);
+
+Route::post('/getrencanakunjungan/{id}', [RencanaTripController::class, 'datakunjunganAPI']);

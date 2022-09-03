@@ -53,6 +53,12 @@
             <i class="bi bi-cash-coin me-2"></i><span>Reimbursement</span>
           </a>
         </li>
+        <li class="mb-3">
+          <a class="{{ Request::is('administrasi/rencanakunjungan*') ? 'active' : '' }}"
+            href="/administrasi/rencanakunjungan">
+            <i class="bi bi-cash-coin me-2"></i><span>Rencana Kunjungan</span>
+          </a>
+        </li>
       </ul>
     @endcan
 

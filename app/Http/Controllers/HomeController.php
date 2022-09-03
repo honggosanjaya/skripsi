@@ -97,9 +97,14 @@ class HomeController extends Controller
 
         $notifikasi['pajak_kendaraan'] = $pajakVehicles;
 
+        $customers = Customer::all();
+        $staffs = Staff::where('status_enum','1')->where('role', 3)->get();
+
         $request->session()->increment('count');
         return view('administrasi.dashboard',[
           'role' => $role,
+          'customers' => $customers,  
+          'staffs' => $staffs,  
           'data' => [
             'jumlah_item' => $item,
             'jumlah_item_aktif' => $item_aktif,

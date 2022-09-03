@@ -287,8 +287,8 @@ $(".alert_pajak").click(function () {
 var count = $("#laporan-penagihan .form-group").children().length;
 
 $(document).on('change', '#laporan-penagihan .select-invoice', function (e) {
-  e.preventDefault();
   let indicator = $(this);
+
   $.ajax({
     url: window.location.origin + `/api/administrasi/detailpenagihan/${e.target.value}`,
     method: "GET",
@@ -303,6 +303,8 @@ $(document).on('change', '#laporan-penagihan .select-invoice', function (e) {
 
 $(document).on('click', '#laporan-penagihan .add-form', function (e) {
   count++;
+  let value = $(this).parents('#laporan-penagihan .form-input').find('.select-invoice option:selected').val();
+  $('.select-invoice option[value="' + value + '"]').attr("disabled", true);
   $('#laporan-penagihan .form-input').last().clone().appendTo('#laporan-penagihan .form-group');
   $(this).addClass('d-none');
   $('#laporan-penagihan .form-input').find('.remove-form').removeClass('d-none');
@@ -313,10 +315,39 @@ $(document).on('click', '#laporan-penagihan .add-form', function (e) {
 
 $(document).on('click', '#laporan-penagihan .remove-form', function (e) {
   count--;
+  let value = $(this).parents('#laporan-penagihan .form-input').find('.select-invoice option:selected').val();
+  $('.select-invoice option[value="' + value + '"]').removeAttr("disabled");
   $(this).parents('#laporan-penagihan .form-input').remove();
   $('#laporan-penagihan .form-input:last').find('.add-form').removeClass('d-none');
 })
 
 if (count == 1) {
   $('#laporan-penagihan .form-input').find('.remove-form').addClass('d-none');
+}
+
+// Rencana Kunjungan
+var countCust = $("#dashboardAdmin .form-group").children().length;
+
+$(document).on('click', '#dashboardAdmin .add-form', function (e) {
+  countCust++;
+  let value = $(this).parents('#dashboardAdmin .form-input').find('.select-customer option:selected').val();
+  $('.select-customer option[value="' + value + '"]').attr("disabled", true);
+
+  $('#dashboardAdmin .form-input').last().clone().appendTo('#dashboardAdmin .form-group');
+  $(this).addClass('d-none');
+  $('#dashboardAdmin .form-input').find('.remove-form').removeClass('d-none');
+  $('#dashboardAdmin .form-input').last().find('.select-customer').val('');
+})
+
+$(document).on('click', '#dashboardAdmin .remove-form', function (e) {
+  countCust--;
+  let value = $(this).parents('#dashboardAdmin .form-input').find('.select-customer option:selected').val();
+  $('.select-customer option[value="' + value + '"]').removeAttr("disabled");
+
+  $(this).parents('#dashboardAdmin .form-input').remove();
+  $('#dashboardAdmin .form-input:last').find('.add-form').removeClass('d-none');
+})
+
+if (countCust == 1) {
+  $('#dashboardAdmin .form-input').find('.remove-form').addClass('d-none');
 }
