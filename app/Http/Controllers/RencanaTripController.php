@@ -10,12 +10,19 @@ class RencanaTripController extends Controller
 {
 
   public function storeRencana(Request $request){
+    $request->validate([
+      'id_customer' => 'required',
+      'id_staff' => 'required',
+      'tanggal' => 'required'           
+    ]);
+
     foreach($request->id_customer as $id_cust){
       RencanaTrip::insert([
         'id_customer' => $id_cust,
         'id_staff' => $request->id_staff,
         'tanggal' => $request->tanggal,
-        'status_enum' => '-1'
+        'status_enum' => '-1',
+        'created_at' => now()
       ]);
     }
 

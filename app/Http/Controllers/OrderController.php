@@ -904,7 +904,7 @@ class OrderController extends Controller
         'id_staff_penagih' => ['required'],
         'tanggal' => ['required'],
         'jumlah_pembayaran' => ['required'],
-        'metode_pembayaran' => ['required']
+        // 'metode_pembayaran' => ['required']
       ];
       
       $validatedData = $request->validate($rules);
