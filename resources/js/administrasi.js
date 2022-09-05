@@ -12,33 +12,33 @@ $(document).ready(function () {
   });
 });
 
-$(document).on('change', '#pengadaan input[name=total_harga]', function () {
-  let iditem = $(this).data('iditem')
-  $('#pengadaan .submit-cart-' + iditem).removeClass('btn-success')
-  $('#pengadaan .submit-cart-' + iditem).removeAttr('disabled')
-  $('#pengadaan .submit-cart-' + iditem).addClass('btn-primary')
-});
+// $(document).on('change', '#pengadaan input[name=total_harga]', function () {
+//   let iditem = $(this).data('iditem')
+//   $('#pengadaan .submit-cart-' + iditem).removeClass('btn-success')
+//   $('#pengadaan .submit-cart-' + iditem).removeAttr('disabled')
+//   $('#pengadaan .submit-cart-' + iditem).addClass('btn-primary')
+// });
 
-$(document).on('change', '#pengadaan input[name=quantity]', function () {
-  let iditem = $(this).data('iditem')
-  $('#pengadaan .submit-cart-' + iditem).removeClass('btn-success')
-  $('#pengadaan .submit-cart-' + iditem).removeAttr('disabled')
-  $('#pengadaan .submit-cart-' + iditem).addClass('btn-primary')
-});
+// $(document).on('change', '#pengadaan input[name=quantity]', function () {
+//   let iditem = $(this).data('iditem')
+//   $('#pengadaan .submit-cart-' + iditem).removeClass('btn-success')
+//   $('#pengadaan .submit-cart-' + iditem).removeAttr('disabled')
+//   $('#pengadaan .submit-cart-' + iditem).addClass('btn-primary')
+// });
 
-$(document).on('change', '#opname input[name=jumlah]', function () {
-  let iditem = $(this).data('iditem')
-  $('#opname .submit-cart-' + iditem).removeClass('btn-success')
-  $('#opname .submit-cart-' + iditem).removeAttr('disabled')
-  $('#opname .submit-cart-' + iditem).addClass('btn-primary')
-});
+// $(document).on('change', '#opname input[name=jumlah]', function () {
+//   let iditem = $(this).data('iditem')
+//   $('#opname .submit-cart-' + iditem).removeClass('btn-success')
+//   $('#opname .submit-cart-' + iditem).removeAttr('disabled')
+//   $('#opname .submit-cart-' + iditem).addClass('btn-primary')
+// });
 
-$(document).on('change', '#opname input[name=keterangan]', function () {
-  let iditem = $(this).data('iditem')
-  $('#opname .submit-cart-' + iditem).removeClass('btn-success')
-  $('#opname .submit-cart-' + iditem).removeAttr('disabled')
-  $('#opname .submit-cart-' + iditem).addClass('btn-primary')
-});
+// $(document).on('change', '#opname input[name=keterangan]', function () {
+//   let iditem = $(this).data('iditem')
+//   $('#opname .submit-cart-' + iditem).removeClass('btn-success')
+//   $('#opname .submit-cart-' + iditem).removeAttr('disabled')
+//   $('#opname .submit-cart-' + iditem).addClass('btn-primary')
+// });
 
 $(document).on('click', '#retur-admin .button-submit', function () {
   if ($('#retur-admin select[name=tipe_retur]').val() == 1) {
@@ -287,8 +287,8 @@ $(".alert_pajak").click(function () {
 var count = $("#laporan-penagihan .form-group").children().length;
 
 $(document).on('change', '#laporan-penagihan .select-invoice', function (e) {
-  e.preventDefault();
   let indicator = $(this);
+
   $.ajax({
     url: window.location.origin + `/api/administrasi/detailpenagihan/${e.target.value}`,
     method: "GET",
@@ -303,6 +303,9 @@ $(document).on('change', '#laporan-penagihan .select-invoice', function (e) {
 
 $(document).on('click', '#laporan-penagihan .add-form', function (e) {
   count++;
+  let value = $(this).parents('#laporan-penagihan .form-input').find('.select-invoice option:selected').val();
+  // $('.select-invoice option[value="' + value + '"]').attr("disabled", true);
+  $('.select-invoice option[value="' + value + '"]').addClass('disabled-option');
   $('#laporan-penagihan .form-input').last().clone().appendTo('#laporan-penagihan .form-group');
   $(this).addClass('d-none');
   $('#laporan-penagihan .form-input').find('.remove-form').removeClass('d-none');
@@ -313,10 +316,42 @@ $(document).on('click', '#laporan-penagihan .add-form', function (e) {
 
 $(document).on('click', '#laporan-penagihan .remove-form', function (e) {
   count--;
+  let value = $(this).parents('#laporan-penagihan .form-input').find('.select-invoice option:selected').val();
+  // $('.select-invoice option[value="' + value + '"]').removeAttr("disabled");
+  $('.select-invoice option[value="' + value + '"]').removeClass('disabled-option');
   $(this).parents('#laporan-penagihan .form-input').remove();
   $('#laporan-penagihan .form-input:last').find('.add-form').removeClass('d-none');
 })
 
 if (count == 1) {
   $('#laporan-penagihan .form-input').find('.remove-form').addClass('d-none');
+}
+
+// Rencana Kunjungan
+var countCust = $("#dashboardAdmin .form-group").children().length;
+
+$(document).on('click', '#dashboardAdmin .add-form', function (e) {
+  countCust++;
+  let value = $(this).parents('#dashboardAdmin .form-input').find('.select-customer option:selected').val();
+  $('.select-customer option[value="' + value + '"]').attr("readonly", true);
+  $('.select-customer option[value="' + value + '"]').addClass('disabled-option');
+
+  $('#dashboardAdmin .form-input').last().clone().appendTo('#dashboardAdmin .form-group');
+  $(this).addClass('d-none');
+  $('#dashboardAdmin .form-input').find('.remove-form').removeClass('d-none');
+  $('#dashboardAdmin .form-input').last().find('.select-customer').val('');
+})
+
+$(document).on('click', '#dashboardAdmin .remove-form', function (e) {
+  countCust--;
+  let value = $(this).parents('#dashboardAdmin .form-input').find('.select-customer option:selected').val();
+  // $('.select-customer option[value="' + value + '"]').removeAttr("disabled");
+  $('.select-customer option[value="' + value + '"]').removeClass('disabled-option');
+
+  $(this).parents('#dashboardAdmin .form-input').remove();
+  $('#dashboardAdmin .form-input:last').find('.add-form').removeClass('d-none');
+})
+
+if (countCust == 1) {
+  $('#dashboardAdmin .form-input').find('.remove-form').addClass('d-none');
 }

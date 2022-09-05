@@ -15,6 +15,7 @@ use App\Models\Invoice;
 use App\Models\Vehicle;
 use App\Models\Pembayaran;
 use App\Models\History;
+use App\Models\RencanaTrip;
 use Illuminate\Support\Facades\DB;
 use PDF;
 use Illuminate\Support\Facades\Validator;
@@ -229,16 +230,23 @@ class OrderController extends Controller
       $id_trip = $trip->id;
     }
 
-      if (Customer::find($id_customer)->time_to_effective_call==null) {
-        Customer::find($id_customer)->update([
-          'counter_to_effective_call' => $customer->counter_to_effective_call+1
-        ]);
-      }
-      if (Customer::find($id_customer)->koordinat==null) {
-        Customer::find($id_customer)->update(['koordinat' =>  $request->koordinat]);
-      }else{
-        Customer::find($id_customer)->update(['updated_at'=> now()]);
-      }
+    if (Customer::find($id_customer)->time_to_effective_call==null) {
+      Customer::find($id_customer)->update([
+        'counter_to_effective_call' => $customer->counter_to_effective_call+1
+      ]);
+    }
+    if (Customer::find($id_customer)->koordinat==null) {
+      Customer::find($id_customer)->update(['koordinat' =>  $request->koordinat]);
+    }else{
+      Customer::find($id_customer)->update(['updated_at'=> now()]);
+    }
+
+    $date = date("Y-m-d");
+    RencanaTrip::where('id_staff', $id_staff)
+    ->where('id_customer', $id_customer)
+    ->where('tanggal', $date)->update([
+      'status_enum' => '1'
+    ]);
 
     return response()->json([
       'status' => 'success',
@@ -492,7 +500,7 @@ class OrderController extends Controller
   }
 
   public function cetakInvoice(Order $order){
-    $items = OrderItem::where('id_order','=',$order->id)->get();
+    $orderitems = OrderItem::where('id_order','=',$order->id)->get();
     $administrasi = Staff::select('nama')->where('id','=',auth()->user()->id_users)->first();
     $invoice = Invoice::where('id_order', $order->id)->first();
 
@@ -501,10 +509,12 @@ class OrderController extends Controller
     ]);
 
     $pdf = PDF::loadview('administrasi.pesanan.detail.cetakInvoice',[
-        'order' => $order,
-        'items' => $items,
-        'administrasi' => $administrasi           
-      ]);
+      'order' => $order,
+      'orderitems' => $orderitems,
+      'administrasi' => $administrasi           
+    ]);
+
+    $pdf->setPaper('A4', 'landscape');
 
     return $pdf->stream('invoice-'.$order->linkInvoice->nomor_invoice.'.pdf');  
   }
@@ -894,7 +904,7 @@ class OrderController extends Controller
         'id_staff_penagih' => ['required'],
         'tanggal' => ['required'],
         'jumlah_pembayaran' => ['required'],
-        'metode_pembayaran' => ['required']
+        // 'metode_pembayaran' => ['required']
       ];
       
       $validatedData = $request->validate($rules);

@@ -175,3 +175,8 @@
 .bg-warningg {
     background-color: rgb(253, 222, 153) !important;
 }
+
+.disabled-option {
+    color: lightgray;
+    // pointer-events: none !important;
+}

@@ -8,6 +8,7 @@ use App\Models\Customer;
 use App\Models\District;
 use App\Models\ReturType;
 use App\Models\CustomerType;
+use App\Models\RencanaTrip;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
@@ -65,15 +66,12 @@ class CustomerController extends Controller
       if($request->alamat_nomor){
         $rules['alamat_nomor'] = ['string', 'max:255'];
       }
-
       if($request->keterangan_alamat){
         $rules['keterangan_alamat'] = ['string', 'max:255'];
       }
-
       if($request->telepon){
         $rules['telepon'] = ['string', 'max:15'];
       }
-
       if($request->id){
         if (Customer::find($request->id)->email == null && $request->email !== null) {
           $rules['email'] = ['string', 'email', 'max:255', 'unique:users'];
@@ -83,7 +81,6 @@ class CustomerController extends Controller
           $rules['email'] = ['string', 'email', 'max:255', 'unique:users'];
         }
       }
-
       $validator = Validator::make($request->all(), $rules);
       if ($validator->fails()){
         return response()->json([
@@ -152,6 +149,14 @@ class CustomerController extends Controller
           'created_at'=> now()
         ]);
         Customer::find($id_customer)->update(['updated_at'=> now()]);
+
+        $date = date("Y-m-d");
+
+        RencanaTrip::where('id_staff', $request->id_staff)
+        ->where('id_customer', $id_customer)
+        ->where('tanggal', $date)->update([
+          'status_enum' => '1'
+        ]);
       } 
       // else if($status == 2){
       //   Trip::create([

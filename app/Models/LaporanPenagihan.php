@@ -1,7 +1,8 @@
 <?php
 
 namespace App\Models;
-
+use App\Models\Staff;
+use App\Models\Invoice;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
