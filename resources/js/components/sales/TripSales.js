@@ -1,8 +1,7 @@
-import axios from 'axios';
 import React, { useEffect, useState, useContext } from 'react';
+import axios from 'axios';
 import HeaderSales from './HeaderSales';
-import { useParams } from 'react-router-dom'
-import { useHistory } from 'react-router-dom';
+import { useParams, useHistory, Link } from 'react-router-dom'
 import { UserContext } from '../../contexts/UserContext';
 import AlertComponent from '../reuse/AlertComponent';
 import urlAsset from '../../config';
@@ -239,12 +238,24 @@ const TripSales = () => {
     }
   }
 
+  const handletripretur = () => {
+    history.push({
+      pathname: `/lapangan/retur/${id}`,
+      state: { isTrip: true }
+    })
+  }
+
+  const goBack = () => {
+    history.push('/salesman');
+  }
+
   return (
     <main className="page_main">
-      <HeaderSales title="Trip" />
+      <HeaderSales title="Trip" toBack={goBack} />
       <div className="page_container py-4">
         {error && <AlertComponent errorMsg={error} />}
         {isLoading && <LoadingIndicator />}
+        <button className="btn btn-primary" onClick={handletripretur}>Retur</button>
         <form>
           <div className={`${errorValidasi.nama ? '' : 'mb-3'}`}>
             <label className="form-label">Nama Customer <span className='text-danger'>*</span></label>
@@ -354,7 +365,7 @@ const TripSales = () => {
           </div>
         </form>
       </div>
-    </main>
+    </main >
   );
 }
 

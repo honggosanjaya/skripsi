@@ -15,7 +15,7 @@ use App\Models\Retur;
 use App\Models\Customer;
 use App\Models\Invoice;
 use App\Models\Vehicle;
-use App\Models\Status;
+
 use App\Models\History;
 
 class ReportController extends Controller

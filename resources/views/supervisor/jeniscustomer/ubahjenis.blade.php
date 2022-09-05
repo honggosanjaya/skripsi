@@ -10,8 +10,8 @@
 
 @section('main_content')
   <div class="pt-4 px-5">
-    <form id="form_submit" class="form-submit" method="POST" action="/supervisor/jenis/ubahjenis/{{ $customertype->id }}"
-      enctype="multipart/form-data">
+    <form id="form_submit" class="form-submit" method="POST"
+      action="/supervisor/jenis/ubahjenis/{{ $customertype->id ?? null }}" enctype="multipart/form-data">
       @method('put')
       @csrf
       <div class="row">
@@ -19,7 +19,7 @@
           <div class="mb-3">
             <label for="nama" class="form-label">Nama Jenis Customer <span class='text-danger'>*</span></label>
             <input type="text" class="form-control @error('nama') is-invalid @enderror" id="nama" name="nama"
-              value="{{ old('nama', $customertype->nama) }}">
+              value="{{ old('nama', $customertype->nama ?? null) }}">
             @error('nama')
               <div class="invalid-feedback">
                 {{ $message }}
@@ -31,7 +31,7 @@
           <div class="mb-3">
             <label for="diskon" class="form-label">Diskon (0-100) % <span class='text-danger'>*</span></label>
             <input type="number" class="form-control @error('diskon') is-invalid @enderror" id="diskon" name="diskon"
-              value="{{ old('diskon', $customertype->diskon) }}" min="0" max="100" step=".01">
+              value="{{ old('diskon', $customertype->diskon ?? null) }}" min="0" max="100" step=".01">
             @error('diskon')
               <div class="invalid-feedback">
                 {{ $message }}
@@ -44,7 +44,7 @@
         <div class="col">
           <div class="mb-3">
             <label for="keterangan" class="form-label">Keterangan <span class='text-danger'>*</span></label>
-            <textarea class="form-control @error('keterangan') is-invalid @enderror" id="keterangan" name="keterangan">{{ $customertype->keterangan }}</textarea>
+            <textarea class="form-control @error('keterangan') is-invalid @enderror" id="keterangan" name="keterangan">{{ $customertype->keterangan ?? null }}</textarea>
             @error('keterangan')
               <div class="invalid-feedback">
                 {{ $message }}

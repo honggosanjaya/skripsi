@@ -20,11 +20,11 @@ const ListShipping = ({ listShipping, statusShipping, handleShow, keyword, setKe
             <div className='info-2column'>
               <span className='d-flex'>
                 <b>No. Invoice</b>
-                <div className='word_wrap'>{data.link_invoice.nomor_invoice}</div>
+                <div className='word_wrap'>{data.link_invoice.nomor_invoice ?? null}</div>
               </span>
               <span className='d-flex'>
                 <b>Cutomer</b>
-                <div className='word_wrap'>{data.link_customer.nama}</div>
+                <div className='word_wrap'>{data.link_customer.nama ?? null}</div>
               </span>
               {data.link_customer.telepon &&
                 <Fragment>
@@ -35,12 +35,13 @@ const ListShipping = ({ listShipping, statusShipping, handleShow, keyword, setKe
                 </Fragment>}
               <span className='d-flex'>
                 <b>Alamat</b>
-                <div className='text-wrap word_wrap'>{data.link_customer.full_alamat}</div>
+                <div className='text-wrap word_wrap'>{data.link_customer.full_alamat ?? null}</div>
               </span>
-              <span className='d-flex'>
-                <b>Waktu Berangkat</b>
-                <p className='mb-0 word_wrap'>{convertDate(data.link_order_track.waktu_berangkat)}</p>
-              </span>
+              {data.link_order_track.waktu_berangkat != null &&
+                <span className='d-flex'>
+                  <b>Waktu Berangkat</b>
+                  <p className='mb-0 word_wrap'>{convertDate(data.link_order_track.waktu_berangkat)}</p>
+                </span>}
               {(data.link_order_track.waktu_sampai)
                 ?
                 <span className='d-flex'>
@@ -51,11 +52,13 @@ const ListShipping = ({ listShipping, statusShipping, handleShow, keyword, setKe
             <p className='mb-0 detail-pengiriman_link' onClick={() => handleShow(data.id)}>Lihat detail</p>
           </div>
         ))}
-
         {statusShipping == '3' && perluKirim == 0 && <p className='text-center text-danger mb-0'>tidak ada yang perlu dikirim </p>}
 
         {statusShipping != '3' && sudahSampai == 0 && <p className='text-center text-danger mb-0'>tidak ada yang sudah sampai </p>}
       </div>}
+
+      {listShipping.length == 0 && statusShipping == '3' && perluKirim == 0 && <p className='text-center text-danger mb-0'>tidak ada yang perlu dikirim </p>}
+      {listShipping.length == 0 && statusShipping != '3' && sudahSampai == 0 && <p className='text-center text-danger mb-0'>tidak ada yang sudah sampai </p>}
     </Fragment>
   );
 }

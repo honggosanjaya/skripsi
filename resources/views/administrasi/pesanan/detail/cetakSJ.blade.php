@@ -1,7 +1,7 @@
 <html>
 
 <head>
-  <title>Surat Jalan - {{ $date }}</title>
+  <title>Surat Jalan - {{ $date ?? '-' }}</title>
 
   <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
     integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
@@ -54,13 +54,13 @@
         @foreach ($items as $item)
           <tr>
             <td>
-              <p class="mb-0">{{ $item->linkItem->kode_barang }}</p>
+              <p class="mb-0">{{ $item->linkItem->kode_barang ?? null }}</p>
             </td>
             <td>
-              <p class="mb-0 text-capitalize">{{ $item->linkItem->nama }}</p>
+              <p class="mb-0 text-capitalize">{{ $item->linkItem->nama ?? null }}</p>
             </td>
             <td>
-              <p class="mb-0">{{ number_format($item->kuantitas, 0, '', '.') }}</p>
+              <p class="mb-0">{{ number_format($item->kuantitas ?? 0, 0, '', '.') }}</p>
             </td>
             <td style="border:none"></td>
           </tr>
@@ -69,7 +69,7 @@
     </table>
 
     <br>
-    <h6 class=" text-right">Malang, {{ date('d M Y', strtotime($date)) }}</h6>
+    <h6 class=" text-right">Malang, {{ date('d M Y', strtotime($date ?? '-')) }}</h6>
 
     <table class="table table-borderless text-center mt-5">
       <thead>
@@ -86,7 +86,7 @@
           <td style="padding:3%"></td>
         </tr>
         <tr>
-          <td>{{ $order->linkCustomer->nama }}</td>
+          <td>{{ $order->linkCustomer->nama ?? null }}</td>
           <td>{{ $pengirim->nama ?? '' }}</td>
           <td>{{ $mengetahui->nama ?? '' }}</td>
         </tr>

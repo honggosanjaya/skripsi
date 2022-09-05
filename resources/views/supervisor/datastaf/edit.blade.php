@@ -9,15 +9,15 @@
 
 @section('main_content')
   <div class="pt-4 px-5">
-    <form method="POST" action="/supervisor/datastaf/{{ $staf->id }}" enctype="multipart/form-data">
+    <form method="POST" action="/supervisor/datastaf/{{ $staf->id ?? null }}" enctype="multipart/form-data">
       @method('put')
       @csrf
-      <input type="hidden" name="oldGambar" value="{{ $staf->foto_profil }}">
+      <input type="hidden" name="oldGambar" value="{{ $staf->foto_profil ?? null }}">
 
       <div class="mb-3">
         <label for="nama" class="form-label">Nama <span class='text-danger'>*</span></label>
         <input type="text" class="form-control @error('nama') is-invalid @enderror" id="nama" name="nama"
-          value="{{ old('nama', $staf->nama) }}">
+          value="{{ old('nama', $staf->nama ?? null) }}">
         @error('nama')
           <div class="invalid-feedback">
             {{ $message }}
@@ -30,7 +30,7 @@
           <div class="mb-3">
             <label for="email" class="form-label">Email <span class='text-danger'>*</span></label>
             <input type="email" class="form-control @error('email') is-invalid @enderror" id="email" name="email"
-              value="{{ old('email', $staf->email) }}">
+              value="{{ old('email', $staf->email ?? null) }}">
             @error('email')
               <div class="invalid-feedback">
                 {{ $message }}
@@ -42,7 +42,7 @@
           <div class="mb-3">
             <label for="telepon" class="form-label">Telepon <span class='text-danger'>*</span></label>
             <input type="text" class="form-control @error('telepon') is-invalid @enderror" id="telepon"
-              name="telepon" value="{{ old('telepon', $staf->telepon) }}">
+              name="telepon" value="{{ old('telepon', $staf->telepon ?? null) }}">
             @error('telepon')
               <div class="invalid-feedback">
                 {{ $message }}
@@ -85,8 +85,8 @@
 
       <div class="mb-3">
         <label for="foto_profil" class="form-label">Foto Profil</label>
-        <input type="hidden" name="oldImage" value="{{ $staf->foto_profil }}">
-        @if ($staf->foto_profil)
+        <input type="hidden" name="oldImage" value="{{ $staf->foto_profil ?? null }}">
+        @if ($staf->foto_profil ?? null)
           <img src="{{ asset('storage/staff/' . $staf->foto_profil) }}" class="img-preview img-fluid d-block">
         @else
           <p>Belum ada foto profil</p>

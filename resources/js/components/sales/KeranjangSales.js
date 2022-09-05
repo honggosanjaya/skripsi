@@ -29,6 +29,7 @@ const KeranjangSales = ({ location }) => {
   const [dataCustType, setDataCustType] = useState({});
   const [pilihanRetur, setPilihanRetur] = useState([]);
   const [tipeRetur, setTipeRetur] = useState('1');
+  const [metodePembayaran, setMetodePembayaran] = useState('1');
   const [kodeEvent, setKodeEvent] = useState('');
   const [errorKodeEvent, setErrorKodeEvent] = useState(null);
   const [hargaPromo, setHargaPromo] = useState(0);
@@ -42,8 +43,19 @@ const KeranjangSales = ({ location }) => {
   const Swal = require('sweetalert2');
   const { state: idTrip } = location;
   let jmlProdukError = 0;
-
   let toHar = 0;
+
+  let pilihanMetodePembayaran = [
+    {
+      id: 1, nama: 'tunai'
+    },
+    {
+      id: 2, nama: 'giro'
+    },
+    {
+      id: 3, nama: 'dicicil'
+    }
+  ]
 
   const goback = () => {
     history.push({
@@ -256,7 +268,8 @@ const KeranjangSales = ({ location }) => {
             kodeEvent: kodeEvent,
             totalHarga: (totalHarga - (totalHarga * (dataCustType.diskon ?? 0) / 100) - hargaPromo),
             idTrip: idTrip,
-            tipeRetur: parseInt(tipeRetur)
+            tipeRetur: parseInt(tipeRetur),
+            metode_pembayaran: metodePembayaran
           }
         })
           .then(response => {
@@ -458,6 +471,13 @@ const KeranjangSales = ({ location }) => {
             <label className="form-label mt-3">Tipe Retur <span className='text-danger'>*</span></label>
             <select className="form-select mb-3" value={tipeRetur} onChange={(e) => setTipeRetur(e.target.value)}>
               {pilihanRetur.length && pilihanRetur.map((pilihan, index) => (
+                <option value={pilihan.id} key={index}>{pilihan.nama}</option>
+              ))}
+            </select>
+
+            <label className="form-label mt-3">Metode Pembayaran <span className='text-danger'>*</span></label>
+            <select className="form-select mb-3" value={metodePembayaran} onChange={(e) => setMetodePembayaran(e.target.value)}>
+              {pilihanMetodePembayaran.length && pilihanMetodePembayaran.map((pilihan, index) => (
                 <option value={pilihan.id} key={index}>{pilihan.nama}</option>
               ))}
             </select>

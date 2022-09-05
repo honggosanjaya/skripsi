@@ -30,6 +30,7 @@ import ReturContextProvider from '../contexts/ReturContext';
 import HistoryTrip from './sales/HistoryTrip';
 import Reimbursement from './sales/Reimbursement';
 import HistoryInvoice from './sales/HistoryInvoice';
+import Penagihan from './reuse/Penagihan';
 
 
 function App() {
@@ -39,15 +40,12 @@ function App() {
         <UserContextProvider>
           <Switch>
             <Route path="/spa/login" component={LoginReact} />
-
             <Route path="/spa/logout" component={LogoutReact} />
+
+            <Route exact path="/lapangan/penagihan" component={Penagihan} />
 
             <Route path={["/shipper"]}>
               <Route exact path="/shipper" component={DashboardShipper} />
-              <ReturContextProvider>
-                <Route exact path="/shipper/jadwal" component={JadwalShipper} />
-                <Route exact path="/shipper/retur/:idCust" component={ReturShipper} />
-              </ReturContextProvider>
               <Route exact path="/shipper/profil" component={Profil} />
             </Route>
 
@@ -58,6 +56,7 @@ function App() {
                 <Route exact path="/salesman/trip/:id" component={TripSales} />
                 <Route exact path="/salesman/history" component={HistoryTrip} />
                 <Route exact path="/salesman/historyinvoice" component={HistoryInvoice} />
+
                 <HitungStokContextProvider>
                   <Route exact path="/salesman/order/:idCust" component={Pemesanan} />
                   <Route exact path="/salesman/keranjang/:idCust" component={KeranjangSales} />
@@ -66,6 +65,11 @@ function App() {
                 <Route exact path="/salesman/profil" component={Profil} />
               </KeranjangSalesContextProvider>
             </Route>
+
+            <ReturContextProvider>
+              <Route exact path="/lapangan/jadwal" component={JadwalShipper} />
+              <Route exact path="/lapangan/retur/:idCust" component={ReturShipper} />
+            </ReturContextProvider>
 
             <Route exact path="/changepassword" component={ChangePassword} />
 

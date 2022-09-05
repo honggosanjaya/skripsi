@@ -61,10 +61,10 @@
                 <option value="">-- Pilih Item --</option>
                 @foreach ($parentItems as $parentItem)
                   @if (old('link_item') == $parentItem->id)
-                    <option value="{{ $parentItem->id }}" selected>{{ $parentItem->nama }}</option>
+                    <option value="{{ $parentItem->id }}" selected>{{ $parentItem->nama ?? null }}</option>
                     {{-- <option value="{{ $parentItem[1] }}" selected>{{ $parentItem[0] }}</option> --}}
                   @else
-                    <option value="{{ $parentItem->id }}">{{ $parentItem->nama }}</option>
+                    <option value="{{ $parentItem->id }}">{{ $parentItem->nama ?? null }}</option>
                     {{-- <option value="{{ $parentItem[1] }}">{{ $parentItem[0] }}</option> --}}
                   @endif
                 @endforeach

@@ -57,26 +57,28 @@
         <tbody>
           @foreach ($items as $item)
             @php
-              $stock25 = (($item->max_stok - $item->min_stok) * 25) / 100 + $item->min_stok;
+              $stock25 = ((($item->max_stok ?? 0) - ($item->min_stok ?? 0)) * 25) / 100 + ($item->min_stok ?? 0);
             @endphp
-            @if ($item->stok < $item->min_stok)
+            @if (($item->stok ?? 0) < ($item->min_stok ?? 0))
               <tr class="bg-danger">
-              @elseif($item->stok < $stock25)
+              @elseif(($item->stok ?? 0) < $stock25)
               <tr class="bg-warning">
               @else
               <tr>
             @endif
             <th scope="row" class="text-center">
               {{ ($items->currentPage() - 1) * $items->perPage() + $loop->iteration }}</th>
-            <td class="text-center">{{ $item->kode_barang }}</td>
-            <td>{{ $item->nama }}</td>
-            <td class="text-center">{{ number_format($item->stok, 0, '', '.') }}</td>
-            <td class="text-center">{{ $item->satuan }}</td>
-            <td class="text-center">{{ number_format($item->min_stok, 0, '', '.') }}</td>
-            <td class="text-center">{{ number_format($item->max_stok, 0, '', '.') }}</td>
-            <td class="text-center">{{ number_format($item->max_pengadaan, 0, '', '.') }}</td>
-            <td>{{ number_format($item->harga_satuan, 0, '', '.') }}</td>
-            <td class="text-capitalize text-center">{{ $item->status_enum == '1' ? 'Active' : 'Inactive' }}</td>
+            <td class="text-center">{{ $item->kode_barang ?? null }}</td>
+            <td>{{ $item->nama ?? null }}</td>
+            <td class="text-center">{{ number_format($item->stok ?? 0, 0, '', '.') }}</td>
+            <td class="text-center">{{ $item->satuan ?? null }}</td>
+            <td class="text-center">{{ number_format($item->min_stok ?? 0, 0, '', '.') }}</td>
+            <td class="text-center">{{ number_format($item->max_stok ?? 0, 0, '', '.') }}</td>
+            <td class="text-center">{{ number_format($item->max_pengadaan ?? 0, 0, '', '.') }}</td>
+            <td>{{ number_format($item->harga_satuan ?? 0, 0, '', '.') }}</td>
+            @if ($item->status_enum ?? null)
+              <td class="text-capitalize text-center">{{ $item->status_enum == '1' ? 'Active' : 'Inactive' }}</td>
+            @endif
             </tr>
           @endforeach
         </tbody>

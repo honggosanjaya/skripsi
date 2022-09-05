@@ -62,32 +62,34 @@
         <tbody>
           @foreach ($events as $event)
             <tr>
-              <td>{{ $event->kode }}</td>
-              <td>{{ $event->nama }}</td>
-              <td>{{ date('d-m-Y', strtotime($event->date_start)) }}</td>
-              <td>{{ date('d-m-Y', strtotime($event->date_end)) }}</td>
-              <td>{{ $event->linkStaff->nama }}</td>
-              @if ($event->status_enum == '1')
-                @if (strtotime($event->date_start) <= strtotime(date('d-m-Y')))
-                  <td>Active</td>
+              <td>{{ $event->kode ?? null }}</td>
+              <td>{{ $event->nama ?? null }}</td>
+              <td>{{ date('d-m-Y', strtotime($event->date_start ?? '-')) }}</td>
+              <td>{{ date('d-m-Y', strtotime($event->date_end ?? '-')) }}</td>
+              <td>{{ $event->linkStaff->nama ?? null }}</td>
+              @if ($event->status_enum ?? null)
+                @if ($event->status_enum == '1')
+                  @if (strtotime($event->date_start) <= strtotime(date('d-m-Y')))
+                    <td>Active</td>
+                  @else
+                    <td>Belum mulai</td>
+                  @endif
                 @else
-                  <td>Belum mulai</td>
+                  <td>
+                    {{ $event->status_enum == '-1' ? 'Inactive' : ($event->status_enum == '0' ? 'Belum mulai' : 'Deleted') }}
+                  </td>
                 @endif
-              @else
-                <td>
-                  {{ $event->status_enum == '-1' ? 'Inactive' : ($event->status_enum == '0' ? 'Belum mulai' : 'Deleted') }}
-                </td>
               @endif
               <td>
-                @if ($event->gambar)
+                @if ($event->gambar ?? null)
                   <img src="{{ asset('storage/event/' . $event->gambar) }}" class="img-fluid d-block mx-auto"
                     width="50px" height="50px">
                 @endif
               </td>
               <td>
                 <div class="d-flex justify-content-center">
-                  <a href="/supervisor/event/ubah/{{ $event->id }}" class="btn btn-warning"><span class="iconify fs-5"
-                      data-icon="eva:edit-2-fill"></span>Ubah</a>
+                  <a href="/supervisor/event/ubah/{{ $event->id ?? null }}" class="btn btn-warning"><span
+                      class="iconify fs-5" data-icon="eva:edit-2-fill"></span>Ubah</a>
                 </div>
               </td>
             </tr>

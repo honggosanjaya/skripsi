@@ -8,8 +8,8 @@
     @foreach ($notifikasi['pajak_kendaraan'] as $notif)
       <div class="card_notif">
         <p class="mb-0 fw-bold">Peringatan Masa Pajak Kendaraan</p>
-        <p class="mb-0">{{ $notif['nama_vehicle'] }} jatuh tempo pada
-          {{ date('d M Y', strtotime($notif['tanggal_pajak'])) }}</p>
+        <p class="mb-0">{{ $notif['nama_vehicle'] ?? null }} jatuh tempo pada
+          {{ date('d M Y', strtotime($notif['tanggal_pajak'] ?? '-')) }}</p>
       </div>
     @endforeach
   </div>
@@ -17,15 +17,17 @@
   <div class="limit_notif notif m-fadeOut p-3">
     @foreach ($notifikasi['pengajuan_limit'] as $notif)
       <div class="card_notif">
-        <a href="/administrasi/datacustomer/{{ $notif->id }}?route={{ $notif->status_limit_pembelian_enum == 0 ? 'lihatpengajuan' : 'bacapengajuan' }}"
+        <a href="/administrasi/datacustomer/{{ $notif->id ?? null }}?route={{ $notif->status_limit_pembelian_enum == 0 ? 'lihatpengajuan' : 'bacapengajuan' }}"
           class="text-black text-decoration-none">
           <p class="mb-0"><b>Customer:</b> {{ $notif->nama ?? null }}</p>
           {{-- <p class="mb-0"><b>Tanggal Pengajuan:</b> {{ date('d F Y', strtotime($notif->updated_at)) }}</p> --}}
           <p class="mb-0">Pengajuan sebesar Rp.
-            {{ number_format($notif->pengajuan_limit_pembelian, 0, '', '.') }}
-            <span class="text-danger fw-bold">
-              {{ $notif->status_limit_pembelian_enum == 1 ? 'Disetujui' : ($notif->status_limit_pembelian_enum == -1 ? 'Tidak Disetujui' : 'Diajukan') }}
-            </span>
+            {{ number_format($notif->pengajuan_limit_pembelian ?? 0, 0, '', '.') }}
+            @if ($notif->status_limit_pembelian_enum ?? null)
+              <span class="text-danger fw-bold">
+                {{ $notif->status_limit_pembelian_enum == 1 ? 'Disetujui' : ($notif->status_limit_pembelian_enum == -1 ? 'Tidak Disetujui' : 'Diajukan') }}
+              </span>
+            @endif
           </p>
         </a>
       </div>
@@ -35,12 +37,12 @@
   <div class="retur_notif notif m-fadeOut p-3">
     @foreach ($notifikasi['retur'] as $notif)
       <div class="card_notif">
-        <a href="/administrasi/retur/{{ $notif->no_retur }}" class="text-black text-decoration-none">
+        <a href="/administrasi/retur/{{ $notif->no_retur ?? null }}" class="text-black text-decoration-none">
           <div class="d-flex justify-content-between">
             <p class="mb-0">Invoice: {{ $notif->linkInvoice->nomor_invoice ?? null }}</p>
-            <p class="mb-0">{{ date('d F Y', strtotime($notif->created_at)) }}</p>
+            <p class="mb-0">{{ date('d F Y', strtotime($notif->created_at ?? '-')) }}</p>
           </div>
-          <p class="mb-0">Retur dari {{ $notif->linkCustomer->nama }}</p>
+          <p class="mb-0">Retur dari {{ $notif->linkCustomer->nama ?? null }}</p>
         </a>
       </div>
     @endforeach
@@ -50,8 +52,8 @@
     @foreach ($notifikasi['trip'] as $notif)
       <div class="card_notif">
         <p class="mb-0 fw-bold">Peringatan Kunjungan</p>
-        <p class="mb-0">Hari ini waktunya mengunjungi {{ $notif->nama }} </p>
-        <p class="mb-0"><span class="fw-bold">Alamat:</span> {{ $notif->full_alamat }}</p>
+        <p class="mb-0">Hari ini waktunya mengunjungi {{ $notif->nama ?? null }} </p>
+        <p class="mb-0"><span class="fw-bold">Alamat:</span> {{ $notif->full_alamat ?? null }}</p>
       </div>
     @endforeach
   </div>
@@ -78,10 +80,10 @@
       <div class="tab-pane fade show active" id="customer" role="tabpanel" aria-labelledby="customer-tab">
         @foreach ($notifikasi['order_diajukan_customer'] as $notif)
           <div class="card_notif">
-            <a href="/administrasi/pesanan/detail/{{ $notif->id }}" class="text-black text-decoration-none">
+            <a href="/administrasi/pesanan/detail/{{ $notif->id ?? null }}" class="text-black text-decoration-none">
               <div class="d-flex justify-content-between">
                 <p class="mb-0"><b>Tanggal Order:
-                  </b>{{ date('d F Y', strtotime($notif->linkOrderTrack->waktu_order)) }}</p>
+                  </b>{{ date('d F Y', strtotime($notif->linkOrderTrack->waktu_order ?? '-')) }}</p>
               </div>
               @php
                 $total_pesanan = 0;
@@ -89,9 +91,9 @@
                     $total_pesanan = $total_pesanan + $orderitem->harga_satuan * $orderitem->kuantitas;
                 }
               @endphp
-              <p class="mb-0">Pesanan dari {{ $notif->linkCustomer->nama }} sebesar
+              <p class="mb-0">Pesanan dari {{ $notif->linkCustomer->nama ?? null }} sebesar
                 Rp.
-                {{ number_format($total_pesanan, 0, '', '.') }}
+                {{ number_format($total_pesanan ?? 0, 0, '', '.') }}
               </p>
             </a>
           </div>
@@ -101,10 +103,10 @@
       <div class="tab-pane" id="salesman" role="tabpanel" aria-labelledby="salesman-tab">
         @foreach ($notifikasi['order_diajukan_salesman'] as $notif)
           <div class="card_notif">
-            <a href="/administrasi/pesanan/detail/{{ $notif->id }}" class="text-black text-decoration-none">
+            <a href="/administrasi/pesanan/detail/{{ $notif->id ?? null }}" class="text-black text-decoration-none">
               <div class="d-flex justify-content-between">
                 <p class="mb-0">Invoice: {{ $notif->linkInvoice->nomor_invoice ?? null }}</p>
-                <p class="mb-0">{{ date('d F Y', strtotime($notif->linkOrderTrack->waktu_diteruskan)) }}</p>
+                <p class="mb-0">{{ date('d F Y', strtotime($notif->linkOrderTrack->waktu_diteruskan ?? '-')) }}</p>
               </div>
               @php
                 $total_pesanan = 0;
@@ -112,9 +114,9 @@
                     $total_pesanan = $total_pesanan + $orderitem->harga_satuan * $orderitem->kuantitas;
                 }
               @endphp
-              <p class="mb-0">Pesanan dari {{ $notif->linkCustomer->nama }} sebesar
+              <p class="mb-0">Pesanan dari {{ $notif->linkCustomer->nama ?? null }} sebesar
                 Rp.
-                {{ number_format($total_pesanan, 0, '', '.') }}
+                {{ number_format($total_pesanan ?? 0, 0, '', '.') }}
               </p>
             </a>
           </div>
@@ -124,10 +126,10 @@
       <div class="tab-pane" id="selesai" role="tabpanel" aria-labelledby="selesai-tab">
         @foreach ($notifikasi['order_selesai'] as $notif)
           <div class="card_notif">
-            <a href="/administrasi/pesanan/detail/{{ $notif->id }}" class="text-black text-decoration-none">
+            <a href="/administrasi/pesanan/detail/{{ $notif->id ?? null }}" class="text-black text-decoration-none">
               <div class="d-flex justify-content-between">
                 <p class="mb-0">Invoice: {{ $notif->linkInvoice->nomor_invoice ?? null }}</p>
-                <p class="mb-0">{{ date('d F Y', strtotime($notif->linkOrderTrack->waktu_diteruskan)) }}</p>
+                <p class="mb-0">{{ date('d F Y', strtotime($notif->linkOrderTrack->waktu_diteruskan ?? '-')) }}</p>
               </div>
               @php
                 $total_pesanan = 0;
@@ -135,9 +137,9 @@
                     $total_pesanan = $total_pesanan + $orderitem->harga_satuan * $orderitem->kuantitas;
                 }
               @endphp
-              <p class="mb-0">Pesanan dari {{ $notif->linkCustomer->nama }} sebesar
+              <p class="mb-0">Pesanan dari {{ $notif->linkCustomer->nama ?? null }} sebesar
                 Rp.
-                {{ number_format($total_pesanan, 0, '', '.') }}
+                {{ number_format($total_pesanan ?? 0, 0, '', '.') }}
               </p>
             </a>
           </div>
@@ -149,10 +151,12 @@
   <div class="reimbursement_notif notif m-fadeOut p-3">
     @foreach ($notifikasi['reimbursement'] as $notif)
       <div class="card_notif">
-        <a href="/administrasi/reimbursement/pengajuan/{{ $notif->id }}" class="text-black text-decoration-none">
-          <p class="mb-0">Pengajuan dari {{ $notif->linkStaffPengaju->nama }}</p>
-          <p class="mb-0">Diajukan pada {{ date('d F Y', strtotime($notif->created_at)) }}</p>
-          <p class="mb-0">{{ $notif->status == 27 ? 'Menunggu Konfirmasi' : 'Menunggu Pembayaran' }}</p>
+        <a href="/administrasi/reimbursement/pengajuan/{{ $notif->id ?? null }}" class="text-black text-decoration-none">
+          <p class="mb-0">Pengajuan dari {{ $notif->linkStaffPengaju->nama ?? null }}</p>
+          <p class="mb-0">Diajukan pada {{ date('d F Y', strtotime($notif->created_at ?? '-')) }}</p>
+          @if ($notif->status_enum ?? null)
+            <p class="mb-0">{{ $notif->status_enum == '0' ? 'Menunggu Konfirmasi' : 'Menunggu Pembayaran' }}</p>
+          @endif
         </a>
       </div>
     @endforeach
@@ -162,21 +166,21 @@
     <div class="card-main bg-primary">
       <i class="bi bi-box2"></i>
       <h1 class="fs-5 fw-bold">Jumlah Item</h1>
-      <h1 class="counter">{{ $data['jumlah_item'] }}</h1>
-      <small class="d-block">Item aktif sebanyak {{ $data['jumlah_item_aktif'] }}</small>
+      <h1 class="counter">{{ $data['jumlah_item'] ?? null }}</h1>
+      <small class="d-block">Item aktif sebanyak {{ $data['jumlah_item_aktif'] ?? null }}</small>
     </div>
 
     <div class="card-main bg-info">
       <i class="bi bi-box2"></i>
       <h1 class="fs-5 fw-bold">Jumlah Kendaraan</h1>
-      <h1 class="counter">{{ $data['jumlah_kendaraan'] }}</h1>
+      <h1 class="counter">{{ $data['jumlah_kendaraan'] ?? null }}</h1>
     </div>
 
     <div class="card-main bg-success">
       <i class="bi bi-box2"></i>
       <h1 class="fs-5 fw-bold">Jumlah Customer</h1>
-      <h1 class="counter">{{ $data['jumlah_customer'] }}</h1>
-      <small class="d-block">Customer aktif sebanyak {{ $data['jumlah_customer_aktif'] }}</small>
+      <h1 class="counter">{{ $data['jumlah_customer'] ?? null }}</h1>
+      <small class="d-block">Customer aktif sebanyak {{ $data['jumlah_customer_aktif'] ?? null }}</small>
     </div>
 
     <input type="hidden" name="loginPassword" value="{{ session('password') }}">

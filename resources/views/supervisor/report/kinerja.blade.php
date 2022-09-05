@@ -1,13 +1,13 @@
 @extends('layouts/main')
 @section('breadcrumbs')
   <ol class="breadcrumb">
-    <li class="breadcrumb-item"><a href="/{{ auth()->user()->linkStaff->linkStaffRole->nama }}">Dashboard</a></li>
+    <li class="breadcrumb-item"><a href="/{{ auth()->user()->linkStaff->linkStaffRole->nama ?? null }}">Dashboard</a></li>
     <li class="breadcrumb-item active" aria-current="page">Kinerja Salesman</li>
   </ol>
 @endsection
 @section('main_content')
   <div id="report" class="px-3 px-sm-5 pt-4">
-    <form action="/{{ auth()->user()->linkStaff->linkStaffRole->nama }}/report/kinerja" method="get">
+    <form action="/{{ auth()->user()->linkStaff->linkStaffRole->nama ?? null }}/report/kinerja" method="get">
       <div class="row">
         <div class="col-6 col-md-2">
           <div class="input-group mb-3">
@@ -45,8 +45,8 @@
         <div class="col-sm-6">
           <div class="mb-3">
             <label class="form-label">Date End</label>
-            <input type="date" name="dateEnd" class="form-control" min="{{ $input['dateStart'] ?? null }}" value="{{ $input['dateEnd'] ?? null }}"
-              id="dateEnd">
+            <input type="date" name="dateEnd" class="form-control" min="{{ $input['dateStart'] ?? null }}"
+              value="{{ $input['dateEnd'] ?? null }}" id="dateEnd">
           </div>
         </div>
       </div>
@@ -75,13 +75,13 @@
         <tbody>
           @foreach ($staffs as $sales)
             <tr>
-              <th scope="row" class="text-center">{{ $loop->iteration }}</th>
-              <td class="text-center">{{ $sales->id }}</td>
-              <td class="text-center">{{ $sales->nama }}</td>
-              <td class="text-center">{{ $sales->linkTrip->count() }}</td>
-              <td class="text-center">{{ $customer_baru[$sales->id]??null }}</td>
-              <td class="text-center">{{ $sales->linkTripEc->count() }}</td>
-              <td class="text-center"> {{ number_format($sales->linkOrder[0]->total??null, 0, '', '.') }}</td>
+              <th scope="row" class="text-center">{{ $loop->iteration ?? null }}</th>
+              <td class="text-center">{{ $sales->id ?? null }}</td>
+              <td class="text-center">{{ $sales->nama ?? null }}</td>
+              <td class="text-center">{{ $sales->linkTrip->count() ?? null }}</td>
+              <td class="text-center">{{ $customer_baru[$sales->id] ?? null }}</td>
+              <td class="text-center">{{ $sales->linkTripEc->count() ?? null }}</td>
+              <td class="text-center"> {{ number_format($sales->linkOrder[0]->total ?? 0, 0, '', '.') }}</td>
             </tr>
           @endforeach
         </tbody>

@@ -41,9 +41,9 @@ const HitungStok = ({ tipeHarga, historyItem, checkifexist, handleValueChange, h
       {newHistoryItem.length == 0 && <small className="text-danger text-center d-block">Tidak Ada Riwayat Pembelian</small>}
       {newHistoryItem.map((item, index) => (
         <div className={`card_historyItem position-relative p-3`} key={index}>
-          {item.link_item.stok < 10 && item.link_item.stok > 0 && item.link_item.status != 11 && item.link_item.stok > item.link_item.min_stok && <span className="badge badge_stok">Stok Menipis</span>}
+          {item.link_item.stok < 10 && item.link_item.stok > 0 && item.link_item.status_enum != '-1' && item.link_item.stok > item.link_item.min_stok && <span className="badge badge_stok">Stok Menipis</span>}
 
-          {(item.link_item.status == 11 || item.link_item.stok == 0 || item.link_item.stok <= item.link_item.min_stok) &&
+          {(item.link_item.status_enum == '-1' || item.link_item.stok == 0 || item.link_item.stok <= item.link_item.min_stok) &&
             <span className="badge badge_stok">Tidak Tersedia</span>
           }
 
@@ -61,11 +61,11 @@ const HitungStok = ({ tipeHarga, historyItem, checkifexist, handleValueChange, h
                     tipeHarga == 3 && item.link_item.harga3_satuan ? convertPrice(item.link_item.harga3_satuan) :
                       convertPrice(item.link_item.harga1_satuan)
                 }
-                / {item.link_item.satuan}
+                / {item.link_item.satuan ?? null}
               </p>
             </div>
 
-            <p className="mb-0">Max stok : {item.stok_maksimal_customer}</p>
+            <p className="mb-0">Max stok : {item.stok_maksimal_customer ?? null}</p>
             <div className="row">
               <div className="col">
                 <p className="mb-0">Stok left</p>
@@ -112,15 +112,15 @@ const HitungStok = ({ tipeHarga, historyItem, checkifexist, handleValueChange, h
                 </thead>
                 <tbody>
                   <tr>
-                    <td>{item.link_item.stok - (jumlahOrderRealTime[item.link_item.id] ?? 0)} / {item.link_item.satuan}</td>
-                    <td>{item.link_item.stok} / {item.link_item.satuan}</td>
+                    {item.link_item.stok ? <td>{item.link_item.stok - (jumlahOrderRealTime[item.link_item.id] ?? 0)} / {item.link_item.satuan ?? null}</td> : <td></td>}
+                    {item.link_item.stok ? <td>{item.link_item.stok} / {item.link_item.satuan ?? null}</td> : <td></td>}
                   </tr>
                 </tbody>
               </table>
             </div>
           </div>
 
-          {(item.link_item.status != 11 && item.link_item.stok != 0 && item.link_item.stok > item.link_item.min_stok) &&
+          {(item.link_item.status_enum != '-1' && item.link_item.stok != 0 && item.link_item.stok > item.link_item.min_stok) &&
             <div className="d-flex justify-content-between mt-2 w-75 mx-auto">
               <button className="btn btn-sm btn-primary" onClick={() => handleKurangJumlah(item.link_item)}>
                 -

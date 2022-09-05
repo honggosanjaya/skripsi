@@ -39,13 +39,20 @@
         </thead>
         <tbody>
           @foreach ($customers as $customer)
-            <tr onclick="window.location='/administrasi/datacustomer/{{ $customer->id }}';">
+            <tr>
               <th scope="row">{{ $loop->iteration }}</th>
-              <td>{{ $customer->nama }}</td>
-              <td>{{ $customer->full_alamat }}</td>
-              <td>{{ $customer->telepon }}</td>
-              <td>harga {{ $customer->tipe_harga }}</td>
-              <td>{{ $customer->status_enum == 1 ? 'Active' : 'Inactive' }}</td>
+              <td>
+                <a href="/administrasi/datacustomer/{{ $customer->id }}"
+                  class="text-decoration-none">{{ $customer->nama ?? null }}</a>
+              </td>
+              <td>{{ $customer->full_alamat ?? null }}</td>
+              <td>{{ $customer->telepon ?? null }}</td>
+              <td>harga {{ $customer->tipe_harga ?? null }}</td>
+              @if ($customer->status_enum ?? null)
+                <td>{{ $customer->status_enum == 1 ? 'Active' : 'Inactive' }}</td>
+              @else
+                <td></td>
+              @endif
               <td>
                 <div class="d-flex justify-content-center">
                   <a href="/administrasi/datacustomer/ubah/{{ $customer->id }}" class="btn btn-sm btn-warning me-3">

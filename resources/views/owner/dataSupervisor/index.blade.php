@@ -56,28 +56,36 @@
                 {{ ($supervisors->currentPage() - 1) * $supervisors->perPage() + $loop->iteration }}
               </th>
               <td class="text-center">
-                @if ($supervisor->foto_profil)
+                @if ($supervisor->foto_profil ?? null)
                   <img src="{{ asset('storage/staff/' . $supervisor->foto_profil) }}" class="img-fluid" width="40">
                 @else
                   <img src="{{ asset('images/default_fotoprofil.png') }}" class="img-fluid" width="40">
                 @endif
               </td>
-              <td>{{ $supervisor->nama ?? null }}</td>
+              <td>
+                <a href="/owner/datasupervisor/{{ $supervisor->id ?? null }}"
+                  class="text-decoration-none">{{ $supervisor->nama ?? null }}</a>
+              </td>
               <td>{{ $supervisor->email ?? null }}</td>
               <td>{{ $supervisor->telepon ?? null }}</td>
-              <td class="text-center text-capitalize">{{ $supervisor->status_enum == '1' ? 'Active' : 'Inactive' }}</td>
+              @if ($supervisor->status_enum ?? null)
+                <td class="text-center text-capitalize">{{ $supervisor->status_enum == '1' ? 'Active' : 'Inactive' }}
+                </td>
+              @endif
               <td class="text-center">
-                <a href="/owner/datasupervisor/edit/{{ $supervisor->id }}" class="btn btn-sm btn-warning mb-2">
+                <a href="/owner/datasupervisor/edit/{{ $supervisor->id ?? null }}" class="btn btn-sm btn-warning mb-2">
                   <span class="iconify fs-5 me-1" data-icon="eva:edit-2-fill"></span>Edit
                 </a>
 
-                <form action="/owner/datasupervisor/ubahstatus/{{ $supervisor->id }}?route=editstatussupervisor"
+                <form action="/owner/datasupervisor/ubahstatus/{{ $supervisor->id ?? null }}?route=editstatussupervisor"
                   method="POST">
                   @csrf
-                  <button type="submit"
-                    class="btn btn-sm {{ $supervisor->status_enum === '1' ? 'btn-danger' : 'btn-success' }}">
-                    {{ $supervisor->status_enum === '1' ? 'Nonaktifkan' : 'Aktifkan' }}
-                  </button>
+                  @if ($supervisor->status_enum ?? null)
+                    <button type="submit"
+                      class="btn btn-sm {{ $supervisor->status_enum === '1' ? 'btn-danger' : 'btn-success' }}">
+                      {{ $supervisor->status_enum === '1' ? 'Nonaktifkan' : 'Aktifkan' }}
+                    </button>
+                  @endif
                 </form>
               </td>
             </tr>

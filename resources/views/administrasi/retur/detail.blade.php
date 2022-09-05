@@ -17,15 +17,15 @@
 
   <div id="retur-admin">
     <div class="px-5 pt-4">
-      <h1 class="fs-4 fw-bold mb-4">Retur - {{ $retur->no_retur }}</h1>
+      <h1 class="fs-4 fw-bold mb-4">Retur - {{ $retur->no_retur ?? null }}</h1>
 
       <div class="informasi-list mb_big">
-        <span><b>Tanggal Pengajuan</b> {{ date('d M Y', strtotime($retur->created_at)) }}</span>
-        <span><b>Nama Customer</b> {{ $retur->linkCustomer->nama }}</span>
-        <span><b>Alamat Customer</b> {{ $retur->linkCustomer->full_alamat }}</span>
-        <span><b>Wilayah</b> {{ $wilayah[0] }}</span>
-        <span><b>No. Telepon</b> {{ $retur->linkCustomer->telepon }}</span>
-        <span><b>Pengirim</b> {{ $retur->linkStaffPengaju->nama }}</span>
+        <span><b>Tanggal Pengajuan</b> {{ date('d M Y', strtotime($retur->created_at ?? '-')) }}</span>
+        <span><b>Nama Customer</b> {{ $retur->linkCustomer->nama ?? null }}</span>
+        <span><b>Alamat Customer</b> {{ $retur->linkCustomer->full_alamat ?? null }}</span>
+        <span><b>Wilayah</b> {{ $wilayah[0] ?? null }}</span>
+        <span><b>No. Telepon</b> {{ $retur->linkCustomer->telepon ?? null }}</span>
+        <span><b>Pengirim</b> {{ $retur->linkStaffPengaju->nama ?? null }}</span>
         <span><b>Admin</b> {{ $retur->linkStaffPengonfirmasi->nama ?? null }}</span>
         <span><b>No. Invoice</b> {{ $retur->linkInvoice->nomor_invoice ?? null }}</span>
       </div>
@@ -44,17 +44,17 @@
         <tbody>
           @foreach ($items as $item)
             <tr class="text-center">
-              <td>{{ $item->linkItem->kode_barang }}</td>
-              <td class="text-capitalize">{{ $item->linkItem->nama }}</td>
-              <td>{{ $item->kuantitas }}</td>
-              <td>{{ $item->linkItem->satuan }}</td>
-              <td>{{ number_format($item->kuantitas * $item->harga_satuan, 0, '', '.') }}</td>
-              <td>{{ $item->alasan }}</td>
+              <td>{{ $item->linkItem->kode_barang ?? null }}</td>
+              <td class="text-capitalize">{{ $item->linkItem->nama ?? null }}</td>
+              <td>{{ $item->kuantitas ?? null }}</td>
+              <td>{{ $item->linkItem->satuan ?? null }}</td>
+              <td>{{ number_format($item->kuantitas * $item->harga_satuan ?? 0, 0, '', '.') }}</td>
+              <td>{{ $item->alasan ?? null }}</td>
             </tr>
           @endforeach
           <tr>
             <td colspan="4" class="text-center fw-bold">Total Harga</td>
-            <td class="text-center">{{ number_format($total_harga, 0, '', '.') }}</td>
+            <td class="text-center">{{ number_format($total_harga ?? 0, 0, '', '.') }}</td>
           </tr>
         </tbody>
       </table>
@@ -65,12 +65,12 @@
         @csrf
         <h1 class="fs-5 fw-bold">Metode retur : </h1>
         <div class="col-2">
-          <input value="{{ $retur->no_retur }}" name="no_retur" type="text" hidden readonly>
+          <input value="{{ $retur->no_retur ?? null }}" name="no_retur" type="text" hidden readonly>
           <select class="form-select" name="tipe_retur">
             @foreach ($tipeReturs as $tipeRetur)
-              <option value="{{ $tipeRetur->id }}" {{ $retur->status_enum == '1' ? 'disabled' : '' }}
+              <option value="{{ $tipeRetur->id ?? null }}" {{ $retur->status_enum == '1' ? 'disabled' : '' }}
                 {{ $tipeRetur->id === $retur->tipe_retur ? 'selected' : '' }}>
-                {{ $tipeRetur->nama }}
+                {{ $tipeRetur->nama ?? null }}
               </option>
             @endforeach
           </select>
@@ -91,7 +91,7 @@
                 <select class="form-select" name="id_invoice">
                   @if ($invoices->count() > 0)
                     @foreach ($invoices as $invoice)
-                      <option value="{{ $invoice->linkInvoice->id }}"
+                      <option value="{{ $invoice->linkInvoice->id ?? null }}"
                         {{ $invoice->linkInvoice->id === ($retur->linkInvoice->id ?? null) ? 'selected' : '' }}>
                         {{ $invoice->linkInvoice->nomor_invoice . ' - Rp.' . $invoice->linkInvoice->harga_total }}
                       </option>
@@ -110,7 +110,7 @@
 
       <div class="row">
         <div class="d-flex flex-row justify-content-end">
-          <a href="/administrasi/retur/cetak-retur/{{ $retur->no_retur }}" class="btn btn_purple mx-1">
+          <a href="/administrasi/retur/cetak-retur/{{ $retur->no_retur ?? null }}" class="btn btn_purple mx-1">
             <i class="bi bi-download px-1"></i>Unduh Retur Penjualan
           </a>
           @if ($retur->status_enum == '0')

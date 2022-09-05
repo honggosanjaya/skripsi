@@ -5,6 +5,8 @@ namespace App\Models;
 use App\Models\Retur;
 use App\Models\Order;
 use App\Models\Event;
+use App\Models\Pembayaran;
+use App\Models\LaporanPenagihan;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
@@ -26,5 +28,13 @@ class Invoice extends Model
 
     public function linkEvent(){
         return $this->belongsTo(Event::class,'id_event');
+    }
+
+    public function linkLaporanPenagihan(){
+      return $this->hasMany(LaporanPenagihan::class,'id_invoice','id');
+    }
+
+    public function linkPembayaran(){
+      return $this->hasMany(Pembayaran::class,'id_invoice','id');
     }
 }

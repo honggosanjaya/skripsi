@@ -48,8 +48,12 @@ const ShippingShipper = () => {
   ];
   let $imagePreview = null;
 
-  const goBack = () => {
-    history.push('/shipper');
+  const goBack = (role) => {
+    if (role == 'salesman') {
+      history.push('/salesman');
+    } else if (role == 'shipper') {
+      history.push('/shipper');
+    }
   }
 
   useEffect(() => {
@@ -66,6 +70,7 @@ const ShippingShipper = () => {
     let unmounted = false;
     let source = axios.CancelToken.source();
     setIsLoading(true);
+    // console.log('datauser', dataUser);
     if (dataUser.id_staff) {
       axios({
         method: "get",
@@ -202,7 +207,12 @@ const ShippingShipper = () => {
   }
 
   const handlePengajuanRetur = (idCust) => {
-    history.push(`/shipper/retur/${idCust}`);
+    history.push(`/lapangan/retur/${idCust}`);
+
+    // history.push({
+    //   pathname: `/lapangan/retur/${idCust}`,
+    //   state: { isTrip: false }
+    // })
   }
 
   const cariShipping = (e) => {
@@ -241,7 +251,8 @@ const ShippingShipper = () => {
 
   return (
     <main className="page_main shipper-css">
-      <HeaderShipper title="Jadwal Pengiriman" toBack={goBack} />
+      {dataUser.role != null &&
+        <HeaderShipper title="Jadwal Pengiriman" toBack={() => goBack(dataUser.role)} />}
       {isLoading && <LoadingIndicator />}
       <div className="page_container pt-4">
         {successMessage && <AlertComponent successMsg={successMessage} />}

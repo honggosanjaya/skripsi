@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Staff;
 use App\Models\StaffRole;
-use App\Models\Status;
+
 use App\Models\User;
 use App\Models\Trip;
 use Illuminate\Http\Request;
@@ -236,5 +236,17 @@ class StaffController extends Controller
           'status' => 'success'
         ]);
       }
+    }
+
+    public function detailStaff(Staff $staff){
+      return view('supervisor.datastaf.detail', [
+        'staff' => $staff,
+      ]);
+    }
+
+    public function detailDatasupervisor(Staff $staff){
+      return view('owner.dataSupervisor.detail', [
+        'staff' => $staff,
+      ]);
     }
 }

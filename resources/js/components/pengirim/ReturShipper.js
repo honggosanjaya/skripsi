@@ -11,7 +11,7 @@ import { ReturContext } from '../../contexts/ReturContext';
 import { AuthContext } from '../../contexts/AuthContext';
 
 let source;
-const ReturShipper = () => {
+const ReturShipper = ({ location }) => {
   const { idCust } = useParams();
   const { token } = useContext(AuthContext);
   const { idInvoice } = useContext(ReturContext);
@@ -25,6 +25,13 @@ const ReturShipper = () => {
   const Swal = require('sweetalert2');
   const redirect = useHistory();
   const _isMounted = useRef(true);
+
+  const { state: isTrip } = location;
+
+  useEffect(() => {
+    console.log('istrip', isTrip);
+    // console.log('isTripVal', isTrip.isTrip);
+  }, [isTrip])
 
   useEffect(() => {
     source = axios.CancelToken.source();
@@ -229,12 +236,31 @@ const ReturShipper = () => {
 
   const goBack = () => {
     hapusSemuaProduk();
-    redirect.push('/shipper/jadwal');
+    if (isTrip != undefined) {
+      if (isTrip.isTrip == true) {
+        redirect.push(`/salesman/trip/${idCust}`);
+      }
+    } else {
+      redirect.push('/lapangan/jadwal');
+    }
+  }
+
+  let objData = {
+    cartItems: cartItems,
+    id_staff_pengaju: dataUser.id_staff,
+    id_customer: idCust,
   }
 
   const handlePengajuanRetur = () => {
     setIsLoading(true);
     source = axios.CancelToken.source();
+    if (isTrip != undefined) {
+      if (isTrip.isTrip == true) {
+        objData["id_invoice"] = null;
+      }
+    } else {
+      objData["id_invoice"] = idInvoice;
+    }
     axios({
       method: "post",
       url: `${window.location.origin}/api/shipper/retur`,
@@ -242,12 +268,7 @@ const ReturShipper = () => {
         Accept: "application/json",
         Authorization: "Bearer " + token,
       },
-      data: {
-        cartItems: cartItems,
-        id_staff_pengaju: dataUser.id_staff,
-        id_customer: idCust,
-        id_invoice: idInvoice
-      },
+      data: objData,
       cancelToken: source.token,
     })
       .then(response => {
@@ -263,7 +284,13 @@ const ReturShipper = () => {
             icon: 'success',
           }).then((result) => {
             if (result.isConfirmed) {
-              redirect.push('/shipper/jadwal');
+              if (isTrip != undefined) {
+                if (isTrip.isTrip == true) {
+                  redirect.push(`/salesman/trip/${idCust}`);
+                }
+              } else {
+                redirect.push('/lapangan/jadwal');
+              }
             }
           })
         }
@@ -295,10 +322,10 @@ const ReturShipper = () => {
                     <img src={`${urlAsset}/storage/item/${item.link_item.gambar}`} className="item_image me-3" />
                     : <img src={`${urlAsset}/images/default_produk.png`} className="item_image me-3" />}
                   <div>
-                    <h2 className='fs-6 text-capitalize fw-bold'>{item.link_item.nama}</h2>
-                    <p className="mb-0">
+                    <h2 className='fs-6 text-capitalize fw-bold'>{item.link_item.nama ?? null}</h2>
+                    {latestOrderItems[item.id_item][0].harga_satuan && <p className="mb-0">
                       {convertPrice(latestOrderItems[item.id_item][0].harga_satuan)}
-                    </p>
+                    </p>}
                   </div>
                 </div>
 
@@ -334,12 +361,12 @@ const ReturShipper = () => {
                 {item.gambar ? <img src={`${urlAsset}/storage/item/${item.gambar}`} className="img-fluid item_image me-3" />
                   : <img src={`${urlAsset}/images/default_produk.png`} className="img-fluid item_image me-3" />}
                 <div>
-                  <h2 className='fs-6 mb-0 fw-bold'>{item.nama}</h2>
-                  <h5 className='mb-0'>{item.kuantitas} barang</h5>
+                  <h2 className='fs-6 mb-0 fw-bold'>{item.nama ?? null}</h2>
+                  <h5 className='mb-0'>{item.kuantitas ?? null} barang</h5>
                 </div>
               </div>
-              <span className='title'>Harga Satuan</span><span className='desc'>{item.harga_satuan}</span>
-              <span className='title'>Alasan</span><span className='desc'>{item.alasan}</span>
+              <span className='title'>Harga Satuan</span><span className='desc'>{item.harga_satuan ?? null}</span>
+              <span className='title'>Alasan</span><span className='desc'>{item.alasan ?? null}</span>
             </div>
           ))}
           {cartItems.length > 0 &&

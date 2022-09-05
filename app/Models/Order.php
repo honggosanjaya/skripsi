@@ -7,7 +7,7 @@ use App\Models\OrderItem;
 use App\Models\Customer;
 use App\Models\OrderTrack;
 use App\Models\Invoice;
-use App\Models\Status;
+
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
@@ -28,7 +28,7 @@ class Order extends Model
     }
 
     public function linkCustomer(){
-        return $this->belongsTo(Customer::class,'id_customer');
+        return $this->belongsTo(Customer::class,'id_customer')->with(['linkDistrict']);
     }
 
     public function linkOrderTrack(){

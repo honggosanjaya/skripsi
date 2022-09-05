@@ -5,10 +5,10 @@
     <div class="limit_notif notif m-fadeOut p-3">
       @foreach ($customersPengajuanLimit as $customerPengajuanLimit)
         <div class="card_notif">
-          <a href="/supervisor/datacustomer/pengajuan/{{ $customerPengajuanLimit->id }}"
+          <a href="/supervisor/datacustomer/pengajuan/{{ $customerPengajuanLimit->id ?? null }}"
             class="text-black text-decoration-none">
             <p class="mb-0 fw-bold">Pengajuan Limit Pembelian</p>
-            <p class="mb-0">Pengajuan limit pembeian dari {{ $customerPengajuanLimit->nama }} </p>
+            <p class="mb-0">Pengajuan limit pembeian dari {{ $customerPengajuanLimit->nama ?? null }} </p>
           </a>
         </div>
       @endforeach
@@ -20,7 +20,7 @@
           {{-- <a href="/supervisor/datacustomer/pengajuan/{{ $customerPengajuanLimit->id }}"
             class="text-black text-decoration-none"> --}}
           <p class="mb-0 fw-bold">Pengajuan Stok Opname</p>
-          <p class="mb-0">Pengajuan stok opname dari {{ $opname->linkStaff->nama }} </p>
+          <p class="mb-0">Pengajuan stok opname dari {{ $opname->linkStaff->nama ?? null }} </p>
           {{-- </a> --}}
         </div>
       @endforeach
@@ -107,14 +107,15 @@
       <div class="col-12 col-sm-6 col-lg-5">
         <div class="data-list">
           <h1 class="fs-5 fw-bold mb-2">Total Omzet</h1>
-          <span>Rp. {{ number_format($data['omzet']->total, 0, '', '.') }}</span>
+          <span>Rp. {{ number_format($data['omzet']->total ?? 0, 0, '', '.') }}</span>
           <h1 class="fs-5 fw-bold mb-2 mt-4">Total Pengeluaran</h1>
-          <span>Rp. {{ number_format($data['pembelian'] - $data['retur'], 0, '', '.') }}</span>
+          <span>Rp. {{ number_format(($data['pembelian'] ?? 0) - ($data['retur'] ?? 0), 0, '', '.') }}</span>
           <h1 class="fs-5 fw-bold mb-2 mt-4">Total Untung/Rugi</h1>
-          <span>Rp. {{ number_format($data['omzet']->total - $data['pembelian'] + $data['retur'], 0, '', '.') }}</span>
+          <span>Rp.
+            {{ number_format(($data['omzet']->total ?? 0) - ($data['pembelian'] ?? 0) + ($data['retur'] ?? 0), 0, '', '.') }}</span>
           {{-- <button class="btn btn-primary d-block mx-auto mt-4">View Detail</button> --}}
           <h1 class="fs-5 fw-bold mb-2 mt-4">Total Retur</h1>
-          <span>Rp. {{ number_format($data['totalReturInvoice'], 0, '', '.') }}</span>
+          <span>Rp. {{ number_format($data['totalReturInvoice'] ?? 0, 0, '', '.') }}</span>
         </div>
       </div>
 
@@ -124,9 +125,9 @@
           <div class="sales-container">
             @foreach ($data['produk_slow'] as $item)
               <div class="sales row">
-                <h3 class="fs-6 col-4 text-capitalize">{{ $item->linkItem->nama }} </h3>
-                <h3 class="fs-6 col-4">{{ $item->count }} kali trasaksi</h3>
-                <h3 class="fs-6 col-4">{{ $item->total }} item terjual</h3>
+                <h3 class="fs-6 col-4 text-capitalize">{{ $item->linkItem->nama ?? null }} </h3>
+                <h3 class="fs-6 col-4">{{ $item->count ?? null }} kali trasaksi</h3>
+                <h3 class="fs-6 col-4">{{ $item->total ?? null }} item terjual</h3>
               </div>
             @endforeach
           </div>
@@ -138,7 +139,7 @@
           <h1 class="fs-5 fw-bold mb-3">Produk Tidak Terjual</h1>
           <div class="sales-container">
             @foreach ($data['produk_tidak_terjual'] as $item)
-              <h3 class="fs-6 fw-normal">{{ $loop->iteration }}. {{ $item->nama }}</h3>
+              <h3 class="fs-6 fw-normal">{{ $loop->iteration }}. {{ $item->nama ?? null }}</h3>
             @endforeach
           </div>
         </div>

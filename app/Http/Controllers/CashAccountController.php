@@ -152,7 +152,7 @@ class CashAccountController extends Controller
   }
 
   public function adminReimbursementIndex(){
-    $reimbursements = Reimbursement::orderBy("status_enum", "ASC")->paginate(10);
+    $reimbursements = Reimbursement::orderBy("status_enum", "ASC")->get();
     return view('administrasi.reimbursement.index', [
       'reimbursements' => $reimbursements,
     ]);
@@ -160,7 +160,7 @@ class CashAccountController extends Controller
 
 
   public function adminReimbursementPengajuan(){
-    $reimbursements = Reimbursement::where('status_enum', '0')->paginate(10);
+    $reimbursements = Reimbursement::where('status_enum', '0')->get();
     return view('administrasi.reimbursement.pengajuanReimbursement', [
       'reimbursements' => $reimbursements,
       'type' => 'pengajuan'
@@ -168,7 +168,7 @@ class CashAccountController extends Controller
   }
 
   public function adminReimbursementPembayaran(){
-    $reimbursements = Reimbursement::where('status_enum', '1')->paginate(10);
+    $reimbursements = Reimbursement::where('status_enum', '1')->get();
     return view('administrasi.reimbursement.pengajuanReimbursement', [
       'reimbursements' => $reimbursements,
       'type' => 'pembayaran'

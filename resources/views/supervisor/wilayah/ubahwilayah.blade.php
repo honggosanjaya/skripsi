@@ -10,8 +10,8 @@
 
 @section('main_content')
   <div class="pt-4 px-5">
-    <form id="form_submit" class="form-submit" method="POST" action="/supervisor/wilayah/ubahwilayah/{{ $district->id }}"
-      enctype="multipart/form-data">
+    <form id="form_submit" class="form-submit" method="POST"
+      action="/supervisor/wilayah/ubahwilayah/{{ $district->id ?? null }}" enctype="multipart/form-data">
       @method('put')
       @csrf
 
@@ -20,7 +20,7 @@
           <div class="mb-3">
             <label for="nama_wilayah" class="form-label">Nama Wilayah Customer <span class='text-danger'>*</span></label>
             <input type="text" class="form-control @error('nama_wilayah') is-invalid @enderror" id="nama_wilayah"
-              name="nama_wilayah" value="{{ old('nama_wilayah', $district->nama) }}">
+              name="nama_wilayah" value="{{ old('nama_wilayah', $district->nama ?? null) }}">
             @error('nama_wilayah')
               <div class="invalid-feedback">
                 {{ $message }}

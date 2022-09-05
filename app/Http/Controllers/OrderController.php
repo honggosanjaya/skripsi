@@ -13,7 +13,7 @@ use App\Models\Event;
 use App\Models\Customer;
 use App\Models\Invoice;
 use App\Models\Vehicle;
-use App\Models\Status;
+use App\Models\Pembayaran;
 use App\Models\History;
 use Illuminate\Support\Facades\DB;
 use PDF;
@@ -66,7 +66,8 @@ class OrderController extends Controller
         ]);
         OrderItem::insert($data);
         Customer::find($id_customer) -> update([
-          'tipe_retur' => $tipeRetur
+          'tipe_retur' => $tipeRetur,
+          'metode_pembayaran' => $request->metode_pembayaran
         ]);
       }else{
         return response()->json([
@@ -124,7 +125,8 @@ class OrderController extends Controller
           'estimasi_waktu_pengiriman' => $estimasiWaktuPengiriman,
         ]);
         Customer::find($id_customer) -> update([
-          'tipe_retur' => $tipeRetur
+          'tipe_retur' => $tipeRetur,
+          'metode_pembayaran' => $request->metode_pembayaran
         ]);    
       }else{
         return response()->json([
@@ -146,6 +148,7 @@ class OrderController extends Controller
       'nomor_invoice' => $invoice_count,
       'harga_total' => $totalPesanan,
       'counter_unduh' => 0,
+      'metode_pembayaran' => $request->metode_pembayaran,
       'created_at' => now()
     ]);
 
@@ -317,10 +320,30 @@ class OrderController extends Controller
     $items = OrderItem::where('id_order','=',$order->id)->get();
     $inactiveVehicles = Vehicle::where('is_active',false)->get();
     $activeVehicles = Vehicle::where('is_active',true)->get();
+    $invoice = Invoice::where('id_order','=',$order->id)->first();
+
+    $total_bayar = Invoice::where('invoices.id', $invoice->id)
+    ->join('pembayarans','invoices.id','=','pembayarans.id_invoice')
+    ->whereHas('linkOrder', function($q) {
+      $q->whereHas('linkOrderTrack', function($q) {
+        $q->whereIn('status_enum',['4','5','6']);
+      });
+    })
+    ->select('pembayarans.id_invoice', \DB::raw('SUM(pembayarans.jumlah_pembayaran) as total_bayar'))
+    ->groupBy('pembayarans.id_invoice')->get()->sum('total_bayar');
+
+    if($total_bayar==null){
+      $total_bayar = 0;
+    }
     
+     $pembayaran_terakhir = Pembayaran::where('id_invoice',$invoice->id)
+     ->orderBy('id', 'DESC')->first();
+
     return view('administrasi.pesanan.detailpesanan',[
       'order' => $order,
       'items' => $items,
+      'total_bayar' => $total_bayar,
+      'pembayaran_terakhir' => $pembayaran_terakhir,
       'inactiveVehicles' => $inactiveVehicles,
       'activeVehicles' => $activeVehicles
     ]);
@@ -567,7 +590,7 @@ class OrderController extends Controller
               $q->where('status_enum', '3');
             })
             ->orWhereHas('linkOrderTrack',function($q) {
-              $q->where('status_enum','>', '3')->where('status_enum','<=', '5')->whereBetween('waktu_sampai',[now()->subDays(2),now()]);
+              $q->where('status_enum','>', '3')->where('status_enum','<=', '6')->whereBetween('waktu_sampai',[now()->subDays(2),now()]);
             });
     })->orderBy('id','DESC');
 
@@ -691,7 +714,7 @@ class OrderController extends Controller
 
   public function viewPengiriman(order $order){
     $orderItems = OrderItem::where('id_order', $order->id)->get();
-    $stafs = Staff::where('status_enum', '1')->where('role', 4)->get();
+    $stafs = Staff::where('status_enum', '1')->whereIn('role', [3,4])->get();
 
     // $kapasitas_harga = 0;
     // $kapasitas_volume = 0;
@@ -777,9 +800,9 @@ class OrderController extends Controller
       ]);
     }
 
-    if($order->linkOrderTrack->status_enum == '4'){
+    if($order->linkOrderTrack->status_enum == '5'){
       OrderTrack::where('id_order', $order->id)->update([
-        'status_enum' => '5'
+        'status_enum' => '6'
       ]);
       return redirect('/administrasi/pesanan/detail/'.$order->id) -> with('addPesananSuccess', 'Pesanan untuk '.$order->linkCustomer->nama.' telah selesai');
     }
@@ -847,5 +870,58 @@ class OrderController extends Controller
       'data' => $datas,
       'status' => 'success'
     ]);
+  }
+
+  public function inputPembayaran(order $order){
+    $stafs = Staff::where('status_enum', '1')->whereIn('role', [3,4])->get();
+
+    $metodes_pembayaran = [
+      1 => 'tunai',
+      2 => 'giro',
+      3 => 'dicicil',
+    ];
+
+    return view('administrasi.pesanan.pembayaran.index',[
+      'order' => $order,
+      'stafs' => $stafs,
+      'metodes_pembayaran' => $metodes_pembayaran,
+    ]);
+  }
+
+  public function konfirmasiPembayaran(Request $request, order $order){
+     $rules = [
+        'id_invoice' => ['required'],
+        'id_staff_penagih' => ['required'],
+        'tanggal' => ['required'],
+        'jumlah_pembayaran' => ['required'],
+        'metode_pembayaran' => ['required']
+      ];
+      
+      $validatedData = $request->validate($rules);
+      $validatedData['created_at'] = now();
+      Pembayaran::insert($validatedData);
+      $invoice = Invoice::where('id_order','=',$order->id)->first();
+
+      $total_bayar = Invoice::where('invoices.id', $invoice->id)
+      ->join('pembayarans','invoices.id','=','pembayarans.id_invoice')
+      ->whereHas('linkOrder', function($q) {
+        $q->whereHas('linkOrderTrack', function($q) {
+          $q->whereIn('status_enum',['4','5','6']);
+        });
+      })
+      ->select('pembayarans.id_invoice', \DB::raw('SUM(pembayarans.jumlah_pembayaran) as total_bayar'))
+      ->groupBy('pembayarans.id_invoice')->get()->sum('total_bayar');
+      
+      if($total_bayar==null){
+        $total_bayar = 0;
+      }
+      
+      if($total_bayar >= $invoice->harga_total){
+        OrderTrack::where('id_order', $order->id)->update([
+          'status_enum' => '5'
+        ]);
+      }
+      
+      return redirect('/administrasi/pesanan/detail/'.$order->id) -> with('addPesananSuccess', 'Berhasil mengonfirmasi pembayaran untuk '.$order->linkCustomer->nama);
   }
 }

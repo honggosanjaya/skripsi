@@ -16,19 +16,19 @@ const ListCustomer = ({ listCustomer, isOrder }) => {
           <Accordion.Header>
             <div className="row">
               <div className="col-5">
-                <span>{customer.nama} | {customer.link_customer_type && customer.link_customer_type.nama}</span>
+                <span>{customer.nama ?? null} | {customer.link_customer_type && customer.link_customer_type.nama}</span>
               </div>
               <div className="col-4">
-                <span>{customer.full_alamat}</span>
+                <span>{customer.full_alamat ?? null}</span>
               </div>
               <div className="col-3">
-                <span>{customer.link_district.nama}</span>
+                <span>{customer.link_district && customer.link_district.nama}</span>
               </div>
             </div>
           </Accordion.Header>
           <Accordion.Body>
             <p className='mb-2 fw-bold'> Keterangan alamat</p>
-            <p className="mb-2 fs-7">{customer.keterangan_alamat}</p>
+            <p className="mb-2 fs-7">{customer.keterangan_alamat ?? null}</p>
             <div className="action d-flex justify-content-between mt-3">
               <button type="button" className="btn btn-primary" onClick={handleToggleFoto}>
                 <span className="iconify me-1" data-icon="ant-design:picture-outlined"></span>

@@ -61,15 +61,11 @@
             <tr>
               <th scope="row" class="text-center">
                 {{ ($vehicles->currentPage() - 1) * $vehicles->perPage() + $loop->iteration }}</th>
-              <td class="text-uppercase">{{ $vehicle->kode_kendaraan }}</td>
-              <td>{{ $vehicle->nama }}</td>
-              <td>{{ number_format($vehicle->kapasitas_volume, 0, '', '.') }}</td>
-              <td>{{ number_format($vehicle->kapasitas_harga, 0, '', '.') }}</td>
-              @if ($vehicle->tanggal_pajak)
-                <td class="text-center">{{ date('d M Y', strtotime($vehicle->tanggal_pajak)) }}</td>
-              @else
-                <td></td>
-              @endif
+              <td class="text-uppercase">{{ $vehicle->kode_kendaraan ?? null }}</td>
+              <td>{{ $vehicle->nama ?? null }}</td>
+              <td>{{ number_format($vehicle->kapasitas_volume ?? 0, 0, '', '.') }}</td>
+              <td>{{ number_format($vehicle->kapasitas_harga ?? 0, 0, '', '.') }}</td>
+              <td class="text-center">{{ date('d M Y', strtotime($vehicle->tanggal_pajak ?? '-')) }}</td>
               <td class="text-center">
                 <a href="/administrasi/kendaraan/ubah/{{ $vehicle->id }}" class="btn btn-warning"><span
                     class="iconify fs-5 me-1" data-icon="eva:edit-2-fill"></span>Ubah</a>

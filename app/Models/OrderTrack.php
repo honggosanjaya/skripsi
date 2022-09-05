@@ -4,7 +4,7 @@ namespace App\Models;
 
 use App\Models\Order;
 use App\Models\Staff;
-use App\Models\Status;
+
 use App\Models\Vehicle;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;

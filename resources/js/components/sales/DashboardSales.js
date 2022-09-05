@@ -131,6 +131,15 @@ const DashboardSales = () => {
             <Link to="/salesman/historyinvoice" className='btn btn-danger btn-lg w-100 mt-4'>
               <span className="iconify fs-3 me-2" data-icon="fa-solid:file-invoice-dollar"></span> Riwayat Invoice
             </Link>
+
+            <Link to="/lapangan/penagihan" className='btn btn-info btn-lg w-100 mt-4 text-white'>
+              <span className="iconify fs-3 me-2 text-white" data-icon="uil:bill"></span> Penagihan
+            </Link>
+
+            <Link to='/lapangan/jadwal' className='btn btn-primary btn-lg w-100 mt-3'>
+              <span className="iconify me-2" data-icon="fa-solid:shipping-fast"></span>
+              Pengiriman
+            </Link>
           </div>
 
           <Modal show={showModal} onHide={handleCloseModal} centered={true}>

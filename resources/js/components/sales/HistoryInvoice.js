@@ -3,7 +3,6 @@ import axios from 'axios';
 import HeaderSales from './HeaderSales';
 import { UserContext } from '../../contexts/UserContext';
 import { convertPrice } from '../reuse/HelperFunction';
-import Button from 'react-bootstrap/Button';
 import Modal from 'react-bootstrap/Modal';
 
 const HistoryInvoice = () => {
@@ -57,8 +56,6 @@ const HistoryInvoice = () => {
     }, 0);
   }
 
-
-
   const handleClickInvoice = (idInvoice) => {
     setShowModal(true);
     const filteredInvoice = dataInvoices.filter(x =>
@@ -73,15 +70,6 @@ const HistoryInvoice = () => {
   const handleCloseModal = () => {
     setShowModal(false);
   }
-
-  useEffect(() => {
-    console.log('det', dataInvoices);
-  }, [dataInvoices])
-
-
-  useEffect(() => {
-    console.log('datainv', dataInvoices);
-  }, [dataInvoices])
 
 
   return (
@@ -126,9 +114,9 @@ const HistoryInvoice = () => {
                 <tbody>
                   {dataInvoices.map((data) => (
                     <tr key={data.id} onClick={() => handleClickInvoice(data.id)}>
-                      <td className='align-middle'>{data.link_order.link_customer.nama}</td>
-                      <td className='text-center align-middle'>{convertPrice(data.harga_total)}</td>
-                      <td className='text-center align-middle'>{getTotalItem(data.link_order.link_order_item, "kuantitas")}</td>
+                      <td className='align-middle'>{data.link_order.link_customer.nama ?? null}</td>
+                      {data.harga_total ? <td className='text-center align-middle'>{convertPrice(data.harga_total)}</td> : <td></td>}
+                      {data.link_order.link_order_item ? <td className='text-center align-middle'>{getTotalItem(data.link_order.link_order_item, "kuantitas")}</td> : <td></td>}
                     </tr>
                   ))}
                 </tbody>

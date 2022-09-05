@@ -21,7 +21,6 @@ use App\Models\Event;
 use App\Models\Customer;
 use App\Models\Invoice;
 use App\Models\Vehicle;
-use App\Models\Status;
 
 use App\Helpers\Session;
 use App\Models\Reimbursement;
@@ -244,5 +243,38 @@ class Controller extends BaseController
       // }
 
 
+      // STATUS TAMBAHAN DI ORDER TRACK
+      // $all=OrderTrack::get();
+      // foreach ($all as $one) {
+      //   if($one->status_lama == '0'){
+      //     OrderTrack::find($one->id)->update([
+      //       'status_enum' => '0'
+      //     ]);
+      //   }elseif($one->status_lama == '1'){
+      //     OrderTrack::find($one->id)->update([
+      //       'status_enum' => '1'
+      //     ]);
+      //   }elseif($one->status_lama == '2'){
+      //     OrderTrack::find($one->id)->update([
+      //       'status_enum' => '2'
+      //     ]);
+      //   }elseif($one->status_lama == '3'){
+      //     OrderTrack::find($one->id)->update([
+      //       'status_enum' => '3'
+      //     ]);
+      //   }elseif($one->status_lama == '4'){
+      //     OrderTrack::find($one->id)->update([
+      //       'status_enum' => '4'
+      //     ]);
+      //   }elseif($one->status_lama == '5'){
+      //     OrderTrack::find($one->id)->update([
+      //       'status_enum' => '6'
+      //     ]);
+      //   }elseif($one->status_lama == '-1'){
+      //     OrderTrack::find($one->id)->update([
+      //       'status_enum' => '-1'
+      //     ]);
+      //   }
+      // }
     }
 }

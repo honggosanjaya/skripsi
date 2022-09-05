@@ -29,7 +29,7 @@ const Pemesanan = ({ location }) => {
   const [errorMessage, setErrorMessage] = useState(null);
   const [orderId, setOrderId] = useState(null);
   const [errorKodeCustomer, setErrorKodeCustomer] = useState(null);
-  const [koordinat, setKoordinat] = useState(null);
+  const [koordinat, setKoordinat] = useState("0@0");
   const [idTrip, setIdTrip] = useState(null);
   const [show, setShow] = useState(false);
   const [showFilter, setShowFilter] = useState(false);
@@ -255,7 +255,7 @@ const Pemesanan = ({ location }) => {
                 const produk = obj;
                 KeranjangDB.updateProduk(produk);
                 getAllProduks();
-              } else if (dataOrderItem.link_item.status == 11) {
+              } else if (dataOrderItem.link_item.status_enum == '-1') {
                 obj["error"] = "Item sudah tidak aktif"
                 const produk = obj;
                 KeranjangDB.updateProduk(produk);

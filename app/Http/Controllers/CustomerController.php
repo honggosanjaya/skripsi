@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use App\Models\Trip;
 use App\Models\User;
-use App\Models\Status;
 use App\Models\Customer;
 use App\Models\District;
 use App\Models\ReturType;
@@ -138,6 +137,10 @@ class CustomerController extends Controller
       }
 
       if($status == 1){
+        if($request->koordinat == null){
+          $request->koordinat = "0@0";
+        }
+        
         Trip::create([
           'id_customer' => $id_customer,
           'id_staff' => $request->id_staff,
@@ -480,5 +483,11 @@ class CustomerController extends Controller
         'status_limit_pembelian_enum' => '-1'
       ]);
       return redirect('/supervisor/datacustomer') -> with('pesanSukses', 'Berhasil menolak pengajuan' );
+    }
+
+    public function detailCustomerSPV(Customer $customer){
+      return view('supervisor.dataCustomer.detailCustomer', [
+        'customer' => $customer,
+      ]);
     }
 }

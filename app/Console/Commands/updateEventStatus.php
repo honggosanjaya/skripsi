@@ -4,7 +4,6 @@ namespace App\Console\Commands;
 
 use Illuminate\Console\Command;
 use App\Models\Event;
-use App\Models\Status;
 
 class updateEventStatus extends Command
 {

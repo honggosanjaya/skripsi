@@ -281,3 +281,42 @@ $(".alert_pajak").click(function () {
   $(".notif").not(".pajak_notif").addClass("m-fadeOut").removeClass("m-fadeIn");
   $(".alert_notif").not(".alert_pajak").removeClass("active");
 });
+
+
+// PENAGIHAN LP3
+var count = $("#laporan-penagihan .form-group").children().length;
+
+$(document).on('change', '#laporan-penagihan .select-invoice', function (e) {
+  e.preventDefault();
+  let indicator = $(this);
+  $.ajax({
+    url: window.location.origin + `/api/administrasi/detailpenagihan/${e.target.value}`,
+    method: "GET",
+    success: function (data) {
+      if (data.status == 'success') {
+        indicator.parentsUntil('.form-input').find('.nama-customer').val(data.data.customer.nama);
+        indicator.closest('.form-input').find('.jumlah-tagihan').val(data.data.tagihan);
+      }
+    },
+  });
+})
+
+$(document).on('click', '#laporan-penagihan .add-form', function (e) {
+  count++;
+  $('#laporan-penagihan .form-input').last().clone().appendTo('#laporan-penagihan .form-group');
+  $(this).addClass('d-none');
+  $('#laporan-penagihan .form-input').find('.remove-form').removeClass('d-none');
+  $('#laporan-penagihan .form-input').last().find('.select-invoice').val('');
+  $('#laporan-penagihan .form-input').last().find('.nama-customer').val('pilih invoice dulu');
+  $('#laporan-penagihan .form-input').last().find('.jumlah-tagihan').val('pilih invoice dulu');
+})
+
+$(document).on('click', '#laporan-penagihan .remove-form', function (e) {
+  count--;
+  $(this).parents('#laporan-penagihan .form-input').remove();
+  $('#laporan-penagihan .form-input:last').find('.add-form').removeClass('d-none');
+})
+
+if (count == 1) {
+  $('#laporan-penagihan .form-input').find('.remove-form').addClass('d-none');
+}

@@ -10,6 +10,7 @@ use App\Http\Controllers\EventController;
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\ReturController;
 use App\Http\Controllers\Controller;
+use App\Http\Controllers\LaporanPenagihanController;
 use App\Http\Controllers\StaffController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -85,3 +86,12 @@ Route::post('/ajukanReimbursement/foto/{id}', [CashAccountController::class, 'si
 Route::get('/historyReimbursement/{id}', [CashAccountController::class, 'getHistoryReimbursementAPI']);
 
 Route::post('/historyinvoice', [OrderController::class, 'getInvoiceAPI']);
+
+Route::get('/administrasi/detailpenagihan/{invoice:id}', [LaporanPenagihanController::class, 'getDetailPenagihanAPI']);
+
+Route::post('/lapangan/penagihan/{staff:id}', [LaporanPenagihanController::class, 'getPenagihanLapanganAPI']);
+Route::get('/lapangan/handlepenagihan/{id}', [LaporanPenagihanController::class, 'handlePenagihanLapanganAPI']);
+
+Route::post('/administrasi/stok/pengadaan/cart', [CartController::class, 'addToCart']);
+Route::post('/administrasi/stok/opname/cart', [CartController::class, 'addToCart']);
+Route::post('administrasi/stok/pengadaan/remove', [CartController::class, 'removeCart']);

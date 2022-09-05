@@ -32,16 +32,18 @@
           @foreach ($opnames as $opname)
             <tr>
               <th scope="row" class="text-center">{{ $loop->iteration }}</th>
-              <td class="text-center">{{ $opname->linkStaff->nama }}</td>
+              <td class="text-center">{{ $opname->linkStaff->nama ?? null }}</td>
               <td class="text-center">
-                <p class="badge badge-opname-{{ $opname->status }} mb-0">
-                  {{ $opname->status_enum == '-1' ? 'Diajukan' : 'Dikonfirmasi' }}</p>
+                @if ($opname->status_enum ?? null)
+                  <p class="badge badge-opname-{{ $opname->status_enum }} mb-0">
+                    {{ $opname->status_enum == '-1' ? 'Diajukan' : 'Dikonfirmasi' }}</p>
+                @endif
               </td>
               <td class="text-center">
-                {{ date('d F Y', strtotime($opname->created_at)) }}
+                {{ date('d F Y', strtotime($opname->created_at ?? '-')) }}
               </td>
               <td class="text-center">
-                <a href="/supervisor/stokopname/{{ $opname->id }}" class="btn btn-primary"><span
+                <a href="/supervisor/stokopname/{{ $opname->id ?? null }}" class="btn btn-primary"><span
                     class="iconify fs-4 me-1" data-icon="fluent:apps-list-detail-24-filled"></span>Detail</a>
               </td>
             </tr>

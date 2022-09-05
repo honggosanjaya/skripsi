@@ -58,10 +58,10 @@
               <th scope="row" class="text-center">
                 {{ ($cashaccounts->currentPage() - 1) * $cashaccounts->perPage() + $loop->iteration }}
               </th>
-              <td>{{ $cashaccount->nama }}</td>
-              <td>{{ $cashaccount->keterangan }}</td>
+              <td>{{ $cashaccount->nama ?? null }}</td>
+              <td>{{ $cashaccount->keterangan ?? null }}</td>
               <td class="text-center">
-                <a href="/supervisor/cashaccount/ubah/{{ $cashaccount->id }}" class="btn btn-warning"><span
+                <a href="/supervisor/cashaccount/ubah/{{ $cashaccount->id ?? null }}" class="btn btn-warning"><span
                     class="iconify fs-5 me-1" data-icon="eva:edit-2-fill"></span>
                   Ubah</a>
               </td>
