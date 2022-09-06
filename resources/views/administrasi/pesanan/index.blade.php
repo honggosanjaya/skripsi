@@ -21,9 +21,9 @@
 
 
   <div class="px-5 pt-4">
-    <a href="/administrasi/lp3" class="btn btn-primary btn_add-relative">
+    {{-- <a href="/administrasi/lp3" class="btn btn-primary btn_add-relative">
       <span class="iconify fs-4 me-1" data-icon="tabler:report-money"></span> Buat LP3
-    </a>
+    </a> --}}
 
     <table class="table table-hover table-sm mt-4" id="table">
       <thead>

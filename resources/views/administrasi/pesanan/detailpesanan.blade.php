@@ -221,7 +221,8 @@
             <div class="stepper-item-date">
               <div class="step-name">
                 @if ($pembayaran_terakhir->tanggal ?? null)
-                  {{ date('F j, Y', strtotime($pembayaran_terakhir->tanggal)) }}
+                  {{ date('F j, Y, g:i a', strtotime($pembayaran_terakhir->created_at)) }}
+                  {{-- {{ date('F j, Y', strtotime($pembayaran_terakhir->tanggal)) }} --}}
                 @endif
               </div>
             </div>

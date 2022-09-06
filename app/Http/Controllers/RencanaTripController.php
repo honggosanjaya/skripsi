@@ -8,6 +8,17 @@ use Illuminate\Http\Request;
 
 class RencanaTripController extends Controller
 {
+  public function index(){
+    $customers = Customer::all();
+    $staffs = Staff::where('status_enum','1')->where('role', 3)->get();
+    $histories = RencanaTrip::all();
+
+    return view('administrasi.rencanakunjungan.index',[
+      'customers' => $customers,  
+      'staffs' => $staffs,
+      'histories' => $histories  
+    ]);
+  }
 
   public function storeRencana(Request $request){
     $request->validate([
@@ -26,7 +37,7 @@ class RencanaTripController extends Controller
       ]);
     }
 
-    return redirect('/administrasi')->with('pesanSukses','Berhasil membuat rencana kunjungan'); 
+    return redirect('/administrasi/rencanakunjungan')->with('pesanSukses','Berhasil membuat rencana kunjungan'); 
   }
 
   public function datakunjunganAPI(Request $request, $id){
