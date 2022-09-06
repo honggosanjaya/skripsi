@@ -48,3 +48,16 @@ function myFunction(x) {
 var x = window.matchMedia("(max-width: 1000px)")
 myFunction(x)
 x.addListener(myFunction)
+
+
+$(document).ready(function () {
+  $(document).on('click', '.sidebar .menu-group', function (e) {
+    $(this).toggleClass("showMenu");
+  })
+
+  $(document).on('click', '#nav-toggle', function (e) {
+    if ($('#nav-toggle').is(":checked")) {
+      $('.sidebar .menu-group').removeClass("showMenu");
+    }
+  })
+});

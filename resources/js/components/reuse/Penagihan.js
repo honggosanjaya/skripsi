@@ -15,24 +15,29 @@ const Penagihan = () => {
   const [showModal, setShowModal] = useState(false);
   const [successMessage, setSuccessMessage] = useState('');
   const [isLoading, setIsLoading] = useState(false);
-  var todayDate = new Date().toISOString().slice(0, 10);
-  const [tanggal, setTanggal] = useState(todayDate);
+  const [isNoData, setIsNoData] = useState(false);
+  // var todayDate = new Date().toISOString().slice(0, 10);
+  // const [tanggal, setTanggal] = useState(todayDate);
 
   const getLp3 = () => {
     axios({
-      method: "post",
+      // method: "post",
+      method: "get",
       url: `${window.location.origin}/api/lapangan/penagihan/${dataUser.id_staff}`,
       headers: {
         Accept: "application/json",
       },
-      data: {
-        date: tanggal
-      },
+      // data: {
+      //   date: tanggal
+      // },
     })
       .then(response => {
+        console.log('hai', response.data.data);
         setDataTagihan(response.data.data);
+        if (response.data.data.length == 0) {
+          setIsNoData(true);
+        }
         setIsLoading(false);
-        console.log('dataku', response.data.data);
       })
       .catch(error => {
         setIsLoading(false);
@@ -45,7 +50,8 @@ const Penagihan = () => {
       setIsLoading(true);
       getLp3();
     }
-  }, [dataUser, tanggal])
+  }, [dataUser])
+  // }, [dataUser, tanggal])
 
   const handleClickLp3 = (idInvoice) => {
     setShowModal(true);
@@ -102,7 +108,7 @@ const Penagihan = () => {
       {successMessage && <AlertComponent successMsg={successMessage} />}
       {isLoading && <LoadingIndicator />}
       <div className="page_container pt-4">
-        <label>Tanggal</label>
+        {/* <label>Tanggal</label>
         <div className="input-group">
           <input
             type='date'
@@ -111,7 +117,7 @@ const Penagihan = () => {
             value={tanggal}
             onChange={(e) => setTanggal(e.target.value)}
           />
-        </div>
+        </div> */}
 
         <div className="table-responsive mt-4">
           <table className="table">
@@ -135,6 +141,8 @@ const Penagihan = () => {
             </tbody>
           </table>
         </div>
+
+        {isNoData && <p className="mb-0 text-danger text-center">Tidak Ada Data</p>}
 
         {detailTagihan && <Modal show={showModal} onHide={handleCloseModal}>
           <Modal.Header closeButton>
@@ -175,9 +183,9 @@ const Penagihan = () => {
             <Button variant="danger" onClick={handleCloseModal}>
               <span className="iconify fs-3 me-1" data-icon="carbon:close-outline"></span>Tutup
             </Button>
-            <Button variant="success" onClick={() => onSudahTagih(detailTagihan.lp3.id)} disabled={isLoading}>
+            {detailTagihan.lp3 !== null && <Button variant="success" onClick={() => onSudahTagih(detailTagihan.lp3.id)} disabled={isLoading}>
               <span className="iconify fs-3 me-1" data-icon="icon-park-outline:doc-success"></span>Sudah Ditagih
-            </Button>
+            </Button>}
           </Modal.Footer>
         </Modal>}
       </div>

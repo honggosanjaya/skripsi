@@ -68,41 +68,47 @@
           </div>
 
           <div class="form-group">
-            <div class="form-input">
+            <div>
               <div class="row">
-
                 <div class="col">
-                  <label for="id_invoice" class="form-label">Invoice yang Ditagih</label>
-                  <select class="select-invoice form-select @error('id_invoice') is-invalid @enderror" id="id_invoice"
-                    name="id_invoice[]" value="{{ old('id_invoice') }}">
-                    <option disabled selected value>Pilih Invoice</option>
-                    @foreach ($invoices as $invoice)
-                      <option value="{{ $invoice->id }}">{{ $invoice->nomor_invoice ?? null }}</option>
-                    @endforeach
-                  </select>
-                  @error('id_invoice')
-                    <div class="invalid-feedback">
-                      {{ $message }}
-                    </div>
-                  @enderror
+                  <label class="form-label">Invoice yang Ditagih</label>
                 </div>
-
                 <div class="col">
                   <label class="form-label">Nama Customer</label>
-                  <input type="text" class="form-control nama-customer" value="pilih invoice dulu" readonly>
                 </div>
-
                 <div class="col">
                   <label class="form-label">Jumlah Tagihan</label>
-                  <input type="text" class="form-control jumlah-tagihan" value="pilih invoice dulu" readonly>
                 </div>
               </div>
+              <div class="form-input">
+                <div class="row">
+                  <div class="col">
+                    <select class="select-invoice form-select @error('id_invoice') is-invalid @enderror" id="id_invoice"
+                      name="id_invoice[]">
+                      <option disabled selected value>Pilih Invoice</option>
+                      @foreach ($invoices as $invoice)
+                        <option value="{{ $invoice->id }}">{{ $invoice->nomor_invoice ?? null }}</option>
+                      @endforeach
+                    </select>
+                    @error('id_invoice')
+                      <div class="invalid-feedback">
+                        {{ $message }}
+                      </div>
+                    @enderror
+                  </div>
+                  <div class="col">
+                    <input type="text" class="form-control nama-customer" value="pilih invoice dulu" readonly>
+                  </div>
+                  <div class="col">
+                    <input type="text" class="form-control jumlah-tagihan" value="pilih invoice dulu" readonly>
+                  </div>
+                </div>
 
-
-              <div class="row justify-content-end mt-4">
-                <div class="col-4 d-flex justify-content-end">
-                  <button class="btn btn-danger remove-form me-3" type="button">-</button>
-                  <button class="btn btn-success add-form" type="button">+</button>
+                <div class="row justify-content-end my-3">
+                  <div class="col-4 d-flex justify-content-end">
+                    <button class="btn btn-danger remove-form me-3 d-none" type="button">-</button>
+                    <button class="btn btn-success add-form" type="button">+</button>
+                  </div>
                 </div>
               </div>
             </div>
@@ -132,7 +138,7 @@
           <tbody>
             @foreach ($histories as $history)
               <tr>
-                <th scope="row">{{ $loop->iteration }}</th>
+                <th scope="row" class="text-center">{{ $loop->iteration }}</th>
                 <td>{{ $history->linkInvoice->nomor_invoice ?? null }}</td>
                 <td>{{ $history->linkStaffPenagih->nama ?? null }}</td>
                 <td>{{ $history->tanggal ?? null }}</td>

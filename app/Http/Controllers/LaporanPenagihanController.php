@@ -78,30 +78,31 @@ class LaporanPenagihanController extends Controller
     ]);
   }
 
-  public function getPenagihanLapanganAPI(Request $request, Staff $staff){
-    $date = $request->date;
+  // public function getPenagihanLapanganAPI(Request $request, Staff $staff){
+  public function getPenagihanLapanganAPI(Staff $staff){
+    // $date = $request->date;
 
     $Alltagihans = LaporanPenagihan::where('id_staff_penagih',$staff->id)
     ->orderBy('tanggal', 'ASC')
     ->with('linkInvoice')
     ->get();
 
-    $Specifictagihans = LaporanPenagihan::where('id_staff_penagih', $staff->id)
-    ->whereDate('tanggal', '=', $date)
-    ->with('linkInvoice')
-    ->get();
+    // $Specifictagihans = LaporanPenagihan::where('id_staff_penagih', $staff->id)
+    // ->whereDate('tanggal', '=', $date)
+    // ->with('linkInvoice')
+    // ->get();
 
-    if($date == null){
+    // if($date == null){
       return response()->json([
         'data' => $Alltagihans,
         'status' => 'success'
       ]);
-    }else{
-      return response()->json([
-        'data' => $Specifictagihans,
-        'status' => 'success'
-      ]);
-    }
+    // }else{
+    //   return response()->json([
+    //     'data' => $Specifictagihans,
+    //     'status' => 'success'
+    //   ]);
+    // }
   }
 
   public function handlePenagihanLapanganAPI($id){
