@@ -280,6 +280,13 @@ $(".alert_pajak").click(function () {
   $(".alert_notif").not(".alert_pajak").removeClass("active");
 });
 
+$(".alert_jatuhtempo").click(function () {
+  $(this).toggleClass("active");
+  $(".jatuhtempo_notif").toggleClass("m-fadeIn m-fadeOut");
+  $(".notif").not(".jatuhtempo_notif").addClass("m-fadeOut").removeClass("m-fadeIn");
+  $(".alert_notif").not(".alert_jatuhtempo").removeClass("active");
+});
+
 
 // PENAGIHAN LP3
 var count = $("#laporan-penagihan .form-group").children().length;

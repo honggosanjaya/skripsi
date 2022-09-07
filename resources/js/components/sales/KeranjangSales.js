@@ -24,6 +24,7 @@ const KeranjangSales = ({ location }) => {
   const [successMessage, setSuccessMessage] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
   const [estimasiWaktuPengiriman, setEstimasiWaktuPengiriman] = useState('');
+  const [jatuhTempo, setJatuhTempo] = useState('');
   const [keteranganOrderItem, setKeteranganOrderItem] = useState(null);
   const [limitPembelian, setLimitPembelian] = useState(0);
   const [dataCustType, setDataCustType] = useState({});
@@ -264,6 +265,7 @@ const KeranjangSales = ({ location }) => {
             kodePesanan: kodePesanan,
             idStaf: dataUser.id_staff,
             estimasiWaktuPengiriman: estimasiWaktuPengiriman,
+            jatuhTempo: jatuhTempo,
             keterangan: keteranganOrderItem,
             kodeEvent: kodeEvent,
             totalHarga: (totalHarga - (totalHarga * (dataCustType.diskon ?? 0) / 100) - hargaPromo),
@@ -362,14 +364,6 @@ const KeranjangSales = ({ location }) => {
       });
   }
 
-  const handleChangeEstimasiPengiriman = (val) => {
-    if (val >= 0) {
-      setEstimasiWaktuPengiriman(val);
-    } else {
-      setEstimasiWaktuPengiriman(0);
-    }
-  }
-
   return (
     <main className="page_main">
       <HeaderSales title='Keranjang' toBack={goback} />
@@ -442,20 +436,25 @@ const KeranjangSales = ({ location }) => {
             <label className="form-label mt-3">Keterangan Pesanan</label>
             <textarea className="form-control" value={keteranganOrderItem || ''} onChange={(e) => setKeteranganOrderItem(e.target.value)} />
 
-            {/* <input type="text" className="form-control"
-              value={keteranganOrderItem || ''}
-              onChange={(e) => setKeteranganOrderItem(e.target.value)}
-            /> */}
-
             <label className="form-label mt-3">Estimasi Waktu Pengiriman <span className='text-danger'>*</span></label>
             <div className="input-group">
               <input type="number" className="form-control"
                 value={estimasiWaktuPengiriman}
-                onChange={(e) => handleChangeEstimasiPengiriman(e.target.value)}
+                onChange={(e) => setEstimasiWaktuPengiriman(e.target.value)}
+                min='0'
               />
               <div className="border p-2 d-flex justify-content-center align-items-center rounded-end">Hari</div>
             </div>
-            {/* {!estimasiWaktuPengiriman && <small className='text-danger d-block'>Estimasi waktu pengiriman wajib diisi</small>} */}
+
+            <label className="form-label mt-3">Jatuh Tempo<span className='text-danger'>*</span></label>
+            <div className="input-group">
+              <input type="number" className="form-control"
+                value={jatuhTempo}
+                onChange={(e) => setJatuhTempo(e.target.value)}
+                min='0'
+              />
+              <div className="border p-2 d-flex justify-content-center align-items-center rounded-end">Hari</div>
+            </div>
 
             <label className="form-label mt-3">Kode Event</label>
             <div className="input-group">
@@ -537,7 +536,7 @@ const KeranjangSales = ({ location }) => {
                 <p className='mb-0'>Total Pesanan:</p>
                 <h1 className={`mb-0 fs-4 `}>{convertPrice(totalHarga - (totalHarga * (dataCustType.diskon ?? 0) / 100) - hargaPromo)}</h1>
               </div>
-              {(errorProdukDlmKeranjang || estimasiWaktuPengiriman == '') ? <button className='btn btn-success' disabled={true}><span className="iconify me-2" data-icon="uil:invoice"></span> Rincian Pesanan</button> : <button className='btn btn-success' onClick={() => setIsShowRincian(true)}><span className="iconify me-2" data-icon="uil:invoice"></span> Rincian Pesanan</button>}
+              {(errorProdukDlmKeranjang || estimasiWaktuPengiriman == '' || jatuhTempo == '') ? <button className='btn btn-success' disabled={true}><span className="iconify me-2" data-icon="uil:invoice"></span> Rincian Pesanan</button> : <button className='btn btn-success' onClick={() => setIsShowRincian(true)}><span className="iconify me-2" data-icon="uil:invoice"></span> Rincian Pesanan</button>}
             </div>
           </div>
         }

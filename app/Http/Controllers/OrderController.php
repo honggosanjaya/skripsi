@@ -25,6 +25,7 @@ use Illuminate\Support\Facades\Storage;
 class OrderController extends Controller
 {
   public function simpanDataOrderSalesmanAPI(Request $request){
+    $jatuh_tempo = $request->jatuhTempo;
     $totalPesanan = $request->totalHarga;
     $keranjangItems = $request->keranjang;
     $idStaf = $request->idStaf;
@@ -151,6 +152,7 @@ class OrderController extends Controller
       'harga_total' => $totalPesanan,
       'counter_unduh' => 0,
       'metode_pembayaran' => $request->metode_pembayaran,
+      'jatuh_tempo' => $jatuh_tempo,
       'created_at' => now()
     ]);
 
