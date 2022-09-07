@@ -7,6 +7,7 @@ use App\Models\User;
 use App\Models\Customer;
 use App\Models\District;
 use App\Models\ReturType;
+use App\Models\Invoice;
 use App\Models\CustomerType;
 use App\Models\RencanaTrip;
 use Illuminate\Http\Request;
@@ -341,13 +342,18 @@ class CustomerController extends Controller
         ]);
       }
 
+      $invoices = Invoice::whereHas('linkOrder', function($q) use($customer){
+        $q->where('id_customer', $customer->id);
+      })->orderBy('id', 'DESC')->paginate(20);
+
       $data = [
         'customer' => $customer,
         'customer_types' => CustomerType::all(),
         'districts' => District::all(),
         'retur_types' => ReturType::all(),
         "title" => "Data Customer - Detail",
-        'old_data' => $oldData
+        'old_data' => $oldData,
+        "invoices" => $invoices
       ];
 
       return view('administrasi.dataCustomer.detail', $data);
@@ -434,21 +440,8 @@ class CustomerController extends Controller
       return redirect('/administrasi/datacustomer') -> with('pesanSukses', 'Data berhasil diubah' );
     }
 
-    // public function administrasiEditStatusCustomer(Customer $customer){
-    //   $status = $customer->status;
-    //   $nama_status = Status::where('id', $status)->first()->nama; 
-
-    //   if($nama_status === 'active'){
-    //     Customer::where('id', $customer->id)->update(['status' => 4]);
-    //   }else if($nama_status === 'inactive'){
-    //     Customer::where('id', $customer->id)->update(['status' => 3]);
-    //   }
-
-    //   return redirect('/administrasi/datacustomer') -> with('pesanSukses', 'Berhasil ubah status' );
-    // } 
-
     public function dataCustomer(){
-      $customers = Customer::orderBy("status_enum", "ASC")->paginate(10);
+      $customers = Customer::orderBy("status_enum", "ASC")->orderBy('id','DESC')->paginate(10);
       return view('supervisor.datacustomer.dataCustomer', [
         'customers' => $customers,
         "title" => "Seluruh Data Customer"
@@ -491,8 +484,13 @@ class CustomerController extends Controller
     }
 
     public function detailCustomerSPV(Customer $customer){
+      $invoices = Invoice::whereHas('linkOrder', function($q) use($customer){
+        $q->where('id_customer', $customer->id);
+      })->orderBy('id', 'DESC')->paginate(20);
+
       return view('supervisor.dataCustomer.detailCustomer', [
         'customer' => $customer,
+        'invoices' => $invoices
       ]);
     }
 }

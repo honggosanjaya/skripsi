@@ -146,7 +146,7 @@
             </li>
             <li class="mb-3">
               <a class="{{ Request::is('supervisor/stokopname*') ? 'active' : '' }}" href="/supervisor/stokopname">
-                <i class="bi bi-tags me-2"></i><span>Stok Opname</span>
+                <i class="bi bi-boxes me-2"></i><span>Stok Opname</span>
               </a>
             </li>
           </ul>

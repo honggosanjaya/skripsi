@@ -20,6 +20,7 @@ use Illuminate\Support\Facades\DB;
 use PDF;
 use Illuminate\Support\Facades\Validator;
 use Intervention\Image\ImageManagerStatic as Image;
+use Illuminate\Support\Facades\Storage;
 
 class OrderController extends Controller
 {
@@ -514,9 +515,11 @@ class OrderController extends Controller
       'administrasi' => $administrasi           
     ]);
 
-    $pdf->setPaper('A4', 'landscape');
+    $pdf->setPaper('A5', 'landscape');
 
-    return $pdf->stream('invoice-'.$order->linkInvoice->nomor_invoice.'.pdf');  
+    Storage::put('invoice/invoice-'.$order->linkInvoice->nomor_invoice.'.pdf', $pdf->output());
+
+    return $pdf->download('invoice-'.$order->linkInvoice->nomor_invoice.'.pdf');
   }
 
   public function cetakSJ(Order $order){
@@ -884,6 +887,8 @@ class OrderController extends Controller
 
   public function inputPembayaran(order $order){
     $stafs = Staff::where('status_enum', '1')->whereIn('role', [3,4])->get();
+    $invoice = Invoice::where('id_order', $order->id)->first();
+    $histories_pembayaran = Pembayaran::where('id_invoice', $invoice->id)->get();
 
     $metodes_pembayaran = [
       1 => 'tunai',
@@ -895,6 +900,7 @@ class OrderController extends Controller
       'order' => $order,
       'stafs' => $stafs,
       'metodes_pembayaran' => $metodes_pembayaran,
+      'histories' => $histories_pembayaran 
     ]);
   }
 

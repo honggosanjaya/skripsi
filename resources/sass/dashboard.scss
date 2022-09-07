@@ -558,6 +558,26 @@ select[readonly] {
 
 //
 
+.info-list {
+    span b {
+        position: relative;
+        display: inline-block;
+        min-width: 50%;
+        margin-right: 4px;
+        line-height: normal;
+        font-weight: 600;
+        &:after {
+            content: ":";
+            position: absolute;
+            right: 0;
+        }
+    }
+}
+
+.cursor-pointer {
+    cursor: pointer;
+}
+
 .sidebar .nav-links {
     .menu-group span {
         user-select: none;

@@ -104,10 +104,8 @@
         @foreach ($notifikasi['order_diajukan_salesman'] as $notif)
           <div class="card_notif">
             <a href="/administrasi/pesanan/detail/{{ $notif->id ?? null }}" class="text-black text-decoration-none">
-              <div class="d-flex justify-content-between">
-                <p class="mb-0">Invoice: {{ $notif->linkInvoice->nomor_invoice ?? null }}</p>
-                <p class="mb-0">{{ date('d F Y', strtotime($notif->linkOrderTrack->waktu_diteruskan ?? '-')) }}</p>
-              </div>
+              <p class="mb-0">Invoice: {{ $notif->linkInvoice->nomor_invoice ?? null }}</p>
+              <p class="mb-0">{{ date('d F Y', strtotime($notif->linkOrderTrack->waktu_diteruskan ?? '-')) }}</p>
               @php
                 $total_pesanan = 0;
                 foreach ($notif->linkOrderItem as $orderitem) {
