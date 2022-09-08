@@ -70,6 +70,7 @@ textarea {
 
     .sidebar-menu {
         padding: 2rem 0 2rem 1rem;
+        // padding: 2rem 0;
         hr,
         h1 {
             color: #fff;
@@ -616,8 +617,20 @@ select[readonly] {
     }
 
     .showMenu .sub-menu {
+        position: relative;
+        left: -1rem;
+        right: -1rem;
         display: block;
         user-select: none;
+        background-color: #003a7b;
+        // margin-right: 1rem;
+
+        li {
+            position: relative;
+            right: -1rem;
+            background-color: #003a7b;
+            padding: 0.5rem 0;
+        }
     }
 
     .sub-menu {
@@ -627,7 +640,7 @@ select[readonly] {
             color: $secondary-color;
         }
         .active-submenu {
-            color: rgb(255, 247, 136);
+            color: #2e8fcc;
         }
     }
 }

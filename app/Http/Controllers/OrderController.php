@@ -901,6 +901,20 @@ class OrderController extends Controller
     $invoice = Invoice::where('id_order', $order->id)->first();
     $histories_pembayaran = Pembayaran::where('id_invoice', $invoice->id)->get();
 
+    $total_bayar = Invoice::where('invoices.id', $invoice->id)
+    ->join('pembayarans','invoices.id','=','pembayarans.id_invoice')
+    ->whereHas('linkOrder', function($q) {
+      $q->whereHas('linkOrderTrack', function($q) {
+        $q->whereIn('status_enum',['4','5','6']);
+      });
+    })
+    ->select('pembayarans.id_invoice', \DB::raw('SUM(pembayarans.jumlah_pembayaran) as total_bayar'))
+    ->groupBy('pembayarans.id_invoice')->get()->sum('total_bayar');
+
+    if($total_bayar==null){
+      $total_bayar = 0;
+    }
+
     $metodes_pembayaran = [
       1 => 'tunai',
       2 => 'giro',
@@ -911,7 +925,8 @@ class OrderController extends Controller
       'order' => $order,
       'stafs' => $stafs,
       'metodes_pembayaran' => $metodes_pembayaran,
-      'histories' => $histories_pembayaran 
+      'histories' => $histories_pembayaran,
+      'total_bayar' => $total_bayar
     ]);
   }
 

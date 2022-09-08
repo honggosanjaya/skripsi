@@ -118,7 +118,7 @@ class HomeController extends Controller
             $dateJatuhTempo = date_create($tanggalJatuhTempo);
             $diffJatuhTempo = date_diff($today, $dateJatuhTempo);
 
-            if($diffJatuhTempo->format("%R%a")<15){
+            if($diffJatuhTempo->format("%R%a")<4){
               array_push($jatuhTempo, [
                 'id_invoice' => $invoice->id,
                 'id_order' => $invoice->id_order,

@@ -399,6 +399,8 @@ $("#detail-pesanan-admin .btn-close-pdf").click(function () {
   }).then((result) => {
     if (result.isConfirmed) {
       $("#detail-pesanan-admin #myFrame").remove();
+      $('#detail-pesanan-admin .btn-print-pdf').addClass('d-none');
+      $('#detail-pesanan-admin .btn-close-pdf').addClass('d-none');
     } else if (result.isDenied) {
       Swal.fire('Aksi dibatalkan', '', 'info');
     }

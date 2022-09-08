@@ -9,6 +9,7 @@ use App\Models\District;
 use App\Models\ReturType;
 use App\Models\Invoice;
 use App\Models\CustomerType;
+use App\Models\OrderItem;
 use App\Models\RencanaTrip;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
@@ -346,6 +347,28 @@ class CustomerController extends Controller
         $q->where('id_customer', $customer->id);
       })->orderBy('id', 'DESC')->paginate(20);
 
+      $invoicesSampai = Invoice::whereHas('linkOrder',function($q){
+        $q->whereHas('linkOrderTrack', function($q){
+          $q->where('status_enum','4');
+        });
+      })->get();
+      $invoiceJatuhTempo = [];
+      foreach($invoicesSampai as $invoice){
+        if($invoice->jatuh_tempo != null){
+          $waktuSampai = $invoice->linkOrder->linkOrderTrack->waktu_sampai;
+          $tanggalSampai = date("Y-m-d",strtotime($waktuSampai));
+          $tanggalSampai2 = date_create($tanggalSampai);
+
+          $interval = date_add($tanggalSampai2, date_interval_create_from_date_string($invoice->jatuh_tempo . " days"));
+          $tanggalJatuhTempo = date_format($interval,"Y-m-d");
+
+          array_push($invoiceJatuhTempo, [
+            'id_invoice' => $invoice->id,
+            'tanggalJatuhTempo' => $tanggalJatuhTempo
+          ]);
+        }
+      }
+
       $data = [
         'customer' => $customer,
         'customer_types' => CustomerType::all(),
@@ -353,7 +376,8 @@ class CustomerController extends Controller
         'retur_types' => ReturType::all(),
         "title" => "Data Customer - Detail",
         'old_data' => $oldData,
-        "invoices" => $invoices
+        "invoices" => $invoices,
+        "invoiceJatuhTempo" => $invoiceJatuhTempo
       ];
 
       return view('administrasi.dataCustomer.detail', $data);
@@ -488,9 +512,32 @@ class CustomerController extends Controller
         $q->where('id_customer', $customer->id);
       })->orderBy('id', 'DESC')->paginate(20);
 
+      $invoicesSampai = Invoice::whereHas('linkOrder',function($q){
+        $q->whereHas('linkOrderTrack', function($q){
+          $q->where('status_enum','4');
+        });
+      })->get();
+      $invoiceJatuhTempo = [];
+      foreach($invoicesSampai as $invoice){
+        if($invoice->jatuh_tempo != null){
+          $waktuSampai = $invoice->linkOrder->linkOrderTrack->waktu_sampai;
+          $tanggalSampai = date("Y-m-d",strtotime($waktuSampai));
+          $tanggalSampai2 = date_create($tanggalSampai);
+
+          $interval = date_add($tanggalSampai2, date_interval_create_from_date_string($invoice->jatuh_tempo . " days"));
+          $tanggalJatuhTempo = date_format($interval,"Y-m-d");
+
+          array_push($invoiceJatuhTempo, [
+            'id_invoice' => $invoice->id,
+            'tanggalJatuhTempo' => $tanggalJatuhTempo
+          ]);
+        }
+      }
+
       return view('supervisor.dataCustomer.detailCustomer', [
         'customer' => $customer,
-        'invoices' => $invoices
+        'invoices' => $invoices,
+        "invoiceJatuhTempo" => $invoiceJatuhTempo
       ]);
     }
 }

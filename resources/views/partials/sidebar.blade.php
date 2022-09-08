@@ -33,14 +33,15 @@
             <i class="bi bi-chevron-down arrow"></i>
           </div>
           <ul class="sub-menu mt-2">
-            <li class="mb-3">
-              <a class="{{ Request::is('administrasi/datacustomer*') ? 'active' : '' }}"
+            <li>
+              <a class="{{ Request::is('administrasi/datacustomer*') ? 'active-submenu' : '' }}"
                 href="/administrasi/datacustomer">
                 <i class="bi bi-people-fill me-2"></i>Customer
               </a>
             </li>
-            <li class="mb-3">
-              <a class="{{ Request::is('administrasi/kendaraan*') ? 'active' : '' }}" href="/administrasi/kendaraan">
+            <li>
+              <a class="{{ Request::is('administrasi/kendaraan*') ? 'active-submenu' : '' }}"
+                href="/administrasi/kendaraan">
                 <i class="bi bi-truck me-2"></i>Kendaraan
               </a>
             </li>
@@ -57,13 +58,13 @@
             <i class="bi bi-chevron-down arrow"></i>
           </div>
           <ul class="sub-menu mt-2">
-            <li class="mb-3">
-              <a class="{{ Request::is('administrasi/lp3*') ? 'active' : '' }}" href="/administrasi/lp3">
+            <li>
+              <a class="{{ Request::is('administrasi/lp3*') ? 'active-submenu' : '' }}" href="/administrasi/lp3">
                 <i class="bi bi-receipt me-2"></i>LP3
               </a>
             </li>
-            <li class="mb-3">
-              <a class="{{ Request::is('administrasi/rencanakunjungan*') ? 'active' : '' }}"
+            <li>
+              <a class="{{ Request::is('administrasi/rencanakunjungan*') ? 'active-submenu' : '' }}"
                 href="/administrasi/rencanakunjungan">
                 <i class="bi bi-person-workspace me-2"></i>Rencana Kunjungan
               </a>
@@ -109,43 +110,46 @@
             <i class="bi bi-chevron-down arrow"></i>
           </div>
           <ul class="sub-menu mt-2">
-            <li class="mb-3">
-              <a class="{{ Request::is('supervisor/event*') ? 'active' : '' }}" href="/supervisor/event">
+            <li>
+              <a class="{{ Request::is('supervisor/event*') ? 'active-submenu' : '' }}" href="/supervisor/event">
                 <i class="bi bi-calendar3-event me-2"></i>Event
               </a>
             </li>
-            <li class="mb-3">
-              <a class="{{ Request::is('supervisor/datastaf*') ? 'active' : '' }}" href="/supervisor/datastaf">
+            <li>
+              <a class="{{ Request::is('supervisor/datastaf*') ? 'active-submenu' : '' }}" href="/supervisor/datastaf">
                 <i class="bi bi-people-fill me-2"></i>Staf
               </a>
             </li>
-            <li class="mb-3">
-              <a class="{{ Request::is('supervisor/datacustomer*') ? 'active' : '' }}" href="/supervisor/datacustomer">
+            <li>
+              <a class="{{ Request::is('supervisor/datacustomer*') ? 'active-submenu' : '' }}"
+                href="/supervisor/datacustomer">
                 <i class="bi bi-wallet2 me-2"></i><span>Customer</span>
               </a>
             </li>
-            <li class="mb-3">
-              <a class="{{ Request::is('supervisor/wilayah*') ? 'active' : '' }}" href="/supervisor/wilayah">
+            <li>
+              <a class="{{ Request::is('supervisor/wilayah*') ? 'active-submenu' : '' }}" href="/supervisor/wilayah">
                 <i class="bi bi-geo-alt me-2"></i><span>Wilayah</span>
               </a>
             </li>
-            <li class="mb-3">
-              <a class="{{ Request::is('supervisor/jenis*') ? 'active' : '' }}" href="/supervisor/jenis">
+            <li>
+              <a class="{{ Request::is('supervisor/jenis*') ? 'active-submenu' : '' }}" href="/supervisor/jenis">
                 <i class="bi bi-person-check me-2"></i><span>Jenis Customer</span>
               </a>
             </li>
-            <li class="mb-3">
-              <a class="{{ Request::is('supervisor/cashaccount*') ? 'active' : '' }}" href="/supervisor/cashaccount">
+            <li>
+              <a class="{{ Request::is('supervisor/cashaccount*') ? 'active-submenu' : '' }}"
+                href="/supervisor/cashaccount">
                 <i class="bi bi-cash-coin me-2"></i><span>Cash Account</span>
               </a>
             </li>
-            <li class="mb-3">
-              <a class="{{ Request::is('supervisor/category*') ? 'active' : '' }}" href="/supervisor/category">
+            <li>
+              <a class="{{ Request::is('supervisor/category*') ? 'active-submenu' : '' }}" href="/supervisor/category">
                 <i class="bi bi-tags me-2"></i><span>Category Item</span>
               </a>
             </li>
-            <li class="mb-3">
-              <a class="{{ Request::is('supervisor/stokopname*') ? 'active' : '' }}" href="/supervisor/stokopname">
+            <li>
+              <a class="{{ Request::is('supervisor/stokopname*') ? 'active-submenu' : '' }}"
+                href="/supervisor/stokopname">
                 <i class="bi bi-boxes me-2"></i><span>Stok Opname</span>
               </a>
             </li>
@@ -162,14 +166,14 @@
             <i class="bi bi-chevron-down arrow"></i>
           </div>
           <ul class="sub-menu mt-2">
-            <li class="mb-3">
-              <a class="{{ Request::is('supervisor/report/penjualan*') ? 'active' : '' }}"
+            <li>
+              <a class="{{ Request::is('supervisor/report/penjualan*') ? 'active-submenu' : '' }}"
                 href="/supervisor/report/penjualan">
                 <i class="bi bi-cash me-2"></i><span>Penjualan</span>
               </a>
             </li>
-            <li class="mb-3">
-              <a class="{{ Request::is('supervisor/report/kinerja*') ? 'active' : '' }}"
+            <li>
+              <a class="{{ Request::is('supervisor/report/kinerja*') ? 'active-submenu' : '' }}"
                 href="/supervisor/report/kinerja">
                 <i class="bi bi-graph-up me-2"></i><span>Kinerja Salesman</span>
               </a>
