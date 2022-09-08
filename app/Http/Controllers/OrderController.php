@@ -502,14 +502,23 @@ class OrderController extends Controller
     ]);
   }
 
-  public function cetakInvoice(Order $order){
-    $orderitems = OrderItem::where('id_order','=',$order->id)->get();
-    $administrasi = Staff::select('nama')->where('id','=',auth()->user()->id_users)->first();
+
+  public function unduhInvocieBtnAPI(Order $order){
     $invoice = Invoice::where('id_order', $order->id)->first();
 
     Invoice::where('id_order', $order->id)->update([
       'counter_unduh' => $invoice->counter_unduh+1
     ]);
+
+    return response()->json([
+      'status' => 'success',
+      'counter_unduh' => $invoice->counter_unduh+1
+    ]);
+  }
+
+  public function cetakInvoice(Order $order){
+    $orderitems = OrderItem::where('id_order','=',$order->id)->get();
+    $administrasi = Staff::select('nama')->where('id','=',auth()->user()->id_users)->first();
 
     $pdf = PDF::loadview('administrasi.pesanan.detail.cetakInvoice',[
       'order' => $order,
@@ -519,9 +528,9 @@ class OrderController extends Controller
 
     $pdf->setPaper('A5', 'landscape');
 
-    Storage::put('invoice/invoice-'.$order->linkInvoice->nomor_invoice.'.pdf', $pdf->output());
-
-    return $pdf->download('invoice-'.$order->linkInvoice->nomor_invoice.'.pdf');
+    // Storage::put('invoice/invoice-'.$order->linkInvoice->nomor_invoice.'.pdf', $pdf->output());
+    // return $pdf->download('invoice-'.$order->linkInvoice->nomor_invoice.'.pdf');
+    return $pdf->stream('invoice-'.$order->linkInvoice->nomor_invoice.'.pdf');  
   }
 
   public function cetakSJ(Order $order){
