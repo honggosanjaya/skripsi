@@ -63,6 +63,8 @@ class CustomerController extends Controller
         'id_wilayah' => ['required'],
         'alamat_utama' => ['required', 'string', 'max:255'],
         'durasi_kunjungan' => ['required', 'integer'],
+        'jatuh_tempo' => ['required', 'integer'],
+        'metode_pembayaran' => ['required']
       ];
 
       if($request->alamat_nomor){

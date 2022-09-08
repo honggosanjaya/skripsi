@@ -80,6 +80,14 @@ const KeranjangSales = ({ location }) => {
         } else {
           setTipeRetur('1');
         }
+
+        if (response.data.data.jatuh_tempo != null) {
+          setJatuhTempo(response.data.data.jatuh_tempo);
+        }
+
+        if (response.data.data.metode_pembayaran != null) {
+          setMetodePembayaran(response.data.data.metode_pembayaran)
+        }
       })
       .catch(error => {
         setErrorMessage(error.message);

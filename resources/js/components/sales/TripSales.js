@@ -24,7 +24,7 @@ const TripSales = () => {
   const [file, setFile] = useState(null);
   const [prevImage, setPrevImage] = useState(null);
   const [imagePreviewUrl, setImagePreviewUrl] = useState('');
-
+  const [jatuhTempo, setJatuhTempo] = useState(7);
   const [error, setError] = useState(null);
   const [errorValidasi, setErrorValidasi] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
@@ -38,6 +38,7 @@ const TripSales = () => {
   const Swal = require('sweetalert2');
   const jamMasuk = Date.now() / 1000;
   const [shouldDisabled, setShouldDisabled] = useState(false);
+  const [metodePembayaran, setMetodePembayaran] = useState('1');
 
   useEffect(() => {
     navigator.geolocation.getCurrentPosition(function (position) {
@@ -58,6 +59,10 @@ const TripSales = () => {
         setKetAlamat(response.data.data.keterangan_alamat == null ? '' : response.data.data.keterangan_alamat);
         setTelepon(response.data.data.telepon == null ? '' : response.data.data.telepon);
         setDurasiTrip(response.data.data.durasi_kunjungan);
+        setJatuhTempo(response.data.data.jatuh_tempo);
+        if (response.data.data.metode_pembayaran != null) {
+          setMetodePembayaran(response.data.data.metode_pembayaran);
+        }
         setTotalTripEC(response.data.data.counter_to_effective_call);
         setPrevImage(response.data.data.foto);
       })
@@ -114,6 +119,8 @@ const TripSales = () => {
     counter_to_effective_call: totalTripEC,
     jam_masuk: jamMasuk,
     alasan_penolakan: alasanPenolakan,
+    jatuh_tempo: jatuhTempo,
+    metode_pembayaran: metodePembayaran
   }
 
   const kirimCustomer = (e) => {
@@ -255,7 +262,9 @@ const TripSales = () => {
       <div className="page_container py-4">
         {error && <AlertComponent errorMsg={error} />}
         {isLoading && <LoadingIndicator />}
-        <button className="btn btn-primary" onClick={handletripretur}>Retur</button>
+        {id && <button className="btn btn-primary mb-3" onClick={handletripretur}>
+          <span className="iconify fs-4 me-2" data-icon="material-symbols:change-circle-outline-rounded"></span>Retur
+        </button>}
         <form>
           <div className={`${errorValidasi.nama ? '' : 'mb-3'}`}>
             <label className="form-label">Nama Customer <span className='text-danger'>*</span></label>
@@ -328,6 +337,30 @@ const TripSales = () => {
               <input type="number" className="form-control"
                 value={durasiTrip}
                 onChange={(e) => setDurasiTrip(e.target.value)}
+                min='0'
+              />
+              <span className='satuan'>Hari</span>
+            </div>
+          </div>
+
+          <div className="mb-3">
+            <label className="form-label">Metode Pembayaran <span className='text-danger'>*</span></label>
+            <select
+              value={metodePembayaran}
+              onChange={(e) => setMetodePembayaran(e.target.value)}
+              className="form-select">
+              <option value="1">Tunai</option>
+              <option value="2">Giro</option>
+              <option value="3">Dicicil</option>
+            </select>
+          </div>
+
+          <div className="mb-3">
+            <label className="form-label">Jatuh Tempo <span className='text-danger'>*</span></label>
+            <div className="position-relative">
+              <input type="number" className="form-control"
+                value={jatuhTempo}
+                onChange={(e) => setJatuhTempo(e.target.value)}
                 min='0'
               />
               <span className='satuan'>Hari</span>
