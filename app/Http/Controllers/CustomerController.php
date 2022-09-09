@@ -7,7 +7,9 @@ use App\Models\User;
 use App\Models\Customer;
 use App\Models\District;
 use App\Models\ReturType;
+use App\Models\Invoice;
 use App\Models\CustomerType;
+use App\Models\OrderItem;
 use App\Models\RencanaTrip;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
@@ -61,6 +63,8 @@ class CustomerController extends Controller
         'id_wilayah' => ['required'],
         'alamat_utama' => ['required', 'string', 'max:255'],
         'durasi_kunjungan' => ['required', 'integer'],
+        'jatuh_tempo' => ['required', 'integer'],
+        'metode_pembayaran' => ['required']
       ];
 
       if($request->alamat_nomor){
@@ -341,13 +345,41 @@ class CustomerController extends Controller
         ]);
       }
 
+      $invoices = Invoice::whereHas('linkOrder', function($q) use($customer){
+        $q->where('id_customer', $customer->id);
+      })->orderBy('id', 'DESC')->paginate(20);
+
+      $invoicesSampai = Invoice::whereHas('linkOrder',function($q){
+        $q->whereHas('linkOrderTrack', function($q){
+          $q->where('status_enum','4');
+        });
+      })->get();
+      $invoiceJatuhTempo = [];
+      foreach($invoicesSampai as $invoice){
+        if($invoice->jatuh_tempo != null){
+          $waktuSampai = $invoice->linkOrder->linkOrderTrack->waktu_sampai;
+          $tanggalSampai = date("Y-m-d",strtotime($waktuSampai));
+          $tanggalSampai2 = date_create($tanggalSampai);
+
+          $interval = date_add($tanggalSampai2, date_interval_create_from_date_string($invoice->jatuh_tempo . " days"));
+          $tanggalJatuhTempo = date_format($interval,"Y-m-d");
+
+          array_push($invoiceJatuhTempo, [
+            'id_invoice' => $invoice->id,
+            'tanggalJatuhTempo' => $tanggalJatuhTempo
+          ]);
+        }
+      }
+
       $data = [
         'customer' => $customer,
         'customer_types' => CustomerType::all(),
         'districts' => District::all(),
         'retur_types' => ReturType::all(),
         "title" => "Data Customer - Detail",
-        'old_data' => $oldData
+        'old_data' => $oldData,
+        "invoices" => $invoices,
+        "invoiceJatuhTempo" => $invoiceJatuhTempo
       ];
 
       return view('administrasi.dataCustomer.detail', $data);
@@ -434,21 +466,8 @@ class CustomerController extends Controller
       return redirect('/administrasi/datacustomer') -> with('pesanSukses', 'Data berhasil diubah' );
     }
 
-    // public function administrasiEditStatusCustomer(Customer $customer){
-    //   $status = $customer->status;
-    //   $nama_status = Status::where('id', $status)->first()->nama; 
-
-    //   if($nama_status === 'active'){
-    //     Customer::where('id', $customer->id)->update(['status' => 4]);
-    //   }else if($nama_status === 'inactive'){
-    //     Customer::where('id', $customer->id)->update(['status' => 3]);
-    //   }
-
-    //   return redirect('/administrasi/datacustomer') -> with('pesanSukses', 'Berhasil ubah status' );
-    // } 
-
     public function dataCustomer(){
-      $customers = Customer::orderBy("status_enum", "ASC")->paginate(10);
+      $customers = Customer::orderBy("status_enum", "ASC")->orderBy('id','DESC')->paginate(10);
       return view('supervisor.datacustomer.dataCustomer', [
         'customers' => $customers,
         "title" => "Seluruh Data Customer"
@@ -491,8 +510,36 @@ class CustomerController extends Controller
     }
 
     public function detailCustomerSPV(Customer $customer){
+      $invoices = Invoice::whereHas('linkOrder', function($q) use($customer){
+        $q->where('id_customer', $customer->id);
+      })->orderBy('id', 'DESC')->paginate(20);
+
+      $invoicesSampai = Invoice::whereHas('linkOrder',function($q){
+        $q->whereHas('linkOrderTrack', function($q){
+          $q->where('status_enum','4');
+        });
+      })->get();
+      $invoiceJatuhTempo = [];
+      foreach($invoicesSampai as $invoice){
+        if($invoice->jatuh_tempo != null){
+          $waktuSampai = $invoice->linkOrder->linkOrderTrack->waktu_sampai;
+          $tanggalSampai = date("Y-m-d",strtotime($waktuSampai));
+          $tanggalSampai2 = date_create($tanggalSampai);
+
+          $interval = date_add($tanggalSampai2, date_interval_create_from_date_string($invoice->jatuh_tempo . " days"));
+          $tanggalJatuhTempo = date_format($interval,"Y-m-d");
+
+          array_push($invoiceJatuhTempo, [
+            'id_invoice' => $invoice->id,
+            'tanggalJatuhTempo' => $tanggalJatuhTempo
+          ]);
+        }
+      }
+
       return view('supervisor.dataCustomer.detailCustomer', [
         'customer' => $customer,
+        'invoices' => $invoices,
+        "invoiceJatuhTempo" => $invoiceJatuhTempo
       ]);
     }
 }

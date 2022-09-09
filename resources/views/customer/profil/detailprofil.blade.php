@@ -30,7 +30,7 @@
       {{-- <img src="{{ asset('images/default_fotoprofil.png') }}" class="img-fluid d-block mx-auto foto_usaha"> --}}
     @endif
 
-    <div class="info-pesanan mt-3 py-3">
+    <div class="info-list mt-3 py-3">
       <span><b>Nama</b>{{ $data->nama }}</span> <br>
       <span><b>Email</b>{{ $data->email }}</span> <br>
       <span><b>Alamat Lengkap</b>{{ $data->full_alamat }}</span> <br>

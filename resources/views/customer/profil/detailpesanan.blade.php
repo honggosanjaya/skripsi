@@ -93,8 +93,8 @@
                   <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                  <div class="info-pesanan">
-                    <span><b>Tanggal pesan</b>
+                  <div class="info-list">
+                    <span class="d-flex"><b>Tanggal pesan</b>
                       {{ date('d F Y', strtotime($diajukan->linkOrderTrack->waktu_order)) }}</span>
                     @if ($diajukan->linkOrderTrack->status_enum)
                       @if ($diajukan->linkOrderTrack->status_enum == '0')
@@ -186,7 +186,7 @@
                   <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                  <div class="info-pesanan">
+                  <div class="info-list">
                     <span><b>Tanggal pesan</b>
                       {{ date('d F Y', strtotime($dikonfirmasiAdministrasi->linkOrderTrack->waktu_order)) }}</span>
                     <span><b>Status
@@ -283,7 +283,7 @@
                   <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                  <div class="info-pesanan">
+                  <div class="info-list">
                     <span><b>Tanggal pesan</b>
                       {{ date('d F Y', strtotime($dalamPerjalanan->linkOrderTrack->waktu_order)) }}</span>
                     <span><b>Status pesanan</b>Dalam Perjalanan</span>
@@ -378,20 +378,20 @@
                   <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                  <div class="info-pesanan">
-                    <span><b>Tanggal pesan</b>
+                  <div class="info-list">
+                    <span class="d-flex"><b>Tanggal pesan</b>
                       {{ date('d F Y', strtotime($telahsampai->linkOrderTrack->waktu_order)) }}</span>
-                    <span><b>Status pesanan</b>Order telah Sampai</span>
-                    <span><b>Invoice</b>{{ $telahsampai->linkInvoice->nomor_invoice }}</span>
-                    <span><b>Kode Event</b>{{ $telahsampai->linkInvoice->linkEvent->kode ?? '-' }}</span>
+                    <span class="d-flex"><b>Status pesanan</b>Order telah Sampai</span>
+                    <span class="d-flex"><b>Invoice</b>{{ $telahsampai->linkInvoice->nomor_invoice }}</span>
+                    <span class="d-flex"><b>Kode Event</b>{{ $telahsampai->linkInvoice->linkEvent->kode ?? '-' }}</span>
                     @if ($telahsampai->linkInvoice->linkEvent && $telahsampai->linkInvoice->linkEvent->diskon != null)
-                      <span><b>Diskon</b>{{ $telahsampai->linkInvoice->linkEvent->diskon }}%</span>
+                      <span class="d-flex"><b>Diskon</b>{{ $telahsampai->linkInvoice->linkEvent->diskon }}%</span>
                     @elseif($telahsampai->linkInvoice->linkEvent && $telahsampai->linkInvoice->linkEvent->potongan != null)
-                      <span><b>Potongan</b>Rp.
+                      <span class="d-flex"><b>Potongan</b>Rp.
                         {{ number_format($telahsampai->linkInvoice->linkEvent->potongan, 0, '', '.') }}</span>
                     @endif
                     @if ($telahsampai->linkOrderTrack->estimasi_waktu_pengiriman)
-                      <span><b>Estimasi
+                      <span class="d-flex"><b>Estimasi
                           pengiriman</b>{{ $telahsampai->linkOrderTrack->estimasi_waktu_pengiriman }} hari</span>
                     @endif
                   </div>
@@ -473,7 +473,7 @@
                   <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                  <div class="info-pesanan">
+                  <div class="info-list">
                     <span><b>Tanggal pesan</b>
                       {{ date('d F Y', strtotime($ditolak->linkOrderTrack->waktu_order)) }}</span>
                     <span><b>Status pesanan</b>Order Ditolak</span>

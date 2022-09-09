@@ -68,7 +68,7 @@
               </td>
               <td>{{ $supervisor->email ?? null }}</td>
               <td>{{ $supervisor->telepon ?? null }}</td>
-              @if ($supervisor->status_enum ?? null)
+              @if ($supervisor->status_enum != null)
                 <td class="text-center text-capitalize">{{ $supervisor->status_enum == '1' ? 'Active' : 'Inactive' }}
                 </td>
               @endif
@@ -80,7 +80,7 @@
                 <form action="/owner/datasupervisor/ubahstatus/{{ $supervisor->id ?? null }}?route=editstatussupervisor"
                   method="POST">
                   @csrf
-                  @if ($supervisor->status_enum ?? null)
+                  @if ($supervisor->status_enum != null)
                     <button type="submit"
                       class="btn btn-sm {{ $supervisor->status_enum === '1' ? 'btn-danger' : 'btn-success' }}">
                       {{ $supervisor->status_enum === '1' ? 'Nonaktifkan' : 'Aktifkan' }}

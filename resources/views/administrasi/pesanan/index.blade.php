@@ -51,7 +51,7 @@
               <td></td>
             @endif
 
-            @if ($order->linkOrderTrack->status_enum ?? null)
+            @if ($order->linkOrderTrack->status_enum !== null)
               <td class="text-capitalize">
                 <p class="mb-0 badge badge-order-track-{{ $order->linkOrderTrack->status_enum }}">
                   @if ($order->linkOrderTrack->status_enum == '0')

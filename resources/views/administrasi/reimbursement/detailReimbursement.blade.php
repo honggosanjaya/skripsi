@@ -21,7 +21,7 @@
       <span><b>Jumlah</b>{{ $reimbursement->jumlah_uang ?? null }}</span>
       <span><b>Keterangan Pengajuan</b>{{ $reimbursement->keterangan_pengajuan ?? null }}</span>
       <span><b>Keterangan Konfirmasi</b>{{ $reimbursement->keterangan_konfirmasi ?? null }}</span>
-      @if ($reimbursement->status_enum ?? null)
+      @if ($reimbursement->status_enum != null)
         @if ($reimbursement->status_enum == '0')
           <span><b>Status</b>Diajukan</span>
         @elseif ($reimbursement->status_enum == '1')
@@ -41,7 +41,7 @@
     </div>
 
     <div class="row justify-content-end mt-4">
-      @if ($reimbursement->status_enum ?? null)
+      @if ($reimbursement->status_enum != null)
         <div class="col d-flex justify-content-end">
           @if ($reimbursement->status_enum == '0')
             <form action="/administrasi/reimbursement/pengajuan/tolak/{{ $reimbursement->id }}" method="POST">

@@ -20,10 +20,12 @@ use Illuminate\Support\Facades\DB;
 use PDF;
 use Illuminate\Support\Facades\Validator;
 use Intervention\Image\ImageManagerStatic as Image;
+use Illuminate\Support\Facades\Storage;
 
 class OrderController extends Controller
 {
   public function simpanDataOrderSalesmanAPI(Request $request){
+    $jatuh_tempo = $request->jatuhTempo;
     $totalPesanan = $request->totalHarga;
     $keranjangItems = $request->keranjang;
     $idStaf = $request->idStaf;
@@ -150,6 +152,7 @@ class OrderController extends Controller
       'harga_total' => $totalPesanan,
       'counter_unduh' => 0,
       'metode_pembayaran' => $request->metode_pembayaran,
+      'jatuh_tempo' => $jatuh_tempo,
       'created_at' => now()
     ]);
 
@@ -330,22 +333,28 @@ class OrderController extends Controller
     $activeVehicles = Vehicle::where('is_active',true)->get();
     $invoice = Invoice::where('id_order','=',$order->id)->first();
 
-    $total_bayar = Invoice::where('invoices.id', $invoice->id)
-    ->join('pembayarans','invoices.id','=','pembayarans.id_invoice')
-    ->whereHas('linkOrder', function($q) {
-      $q->whereHas('linkOrderTrack', function($q) {
-        $q->whereIn('status_enum',['4','5','6']);
-      });
-    })
-    ->select('pembayarans.id_invoice', \DB::raw('SUM(pembayarans.jumlah_pembayaran) as total_bayar'))
-    ->groupBy('pembayarans.id_invoice')->get()->sum('total_bayar');
-
-    if($total_bayar==null){
-      $total_bayar = 0;
-    }
+    if($invoice != null){
+      $total_bayar = Invoice::where('invoices.id', $invoice->id)
+      ->join('pembayarans','invoices.id','=','pembayarans.id_invoice')
+      ->whereHas('linkOrder', function($q) {
+        $q->whereHas('linkOrderTrack', function($q) {
+          $q->whereIn('status_enum',['4','5','6']);
+        });
+      })
+      ->select('pembayarans.id_invoice', \DB::raw('SUM(pembayarans.jumlah_pembayaran) as total_bayar'))
+      ->groupBy('pembayarans.id_invoice')->get()->sum('total_bayar');
     
-     $pembayaran_terakhir = Pembayaran::where('id_invoice',$invoice->id)
-     ->orderBy('id', 'DESC')->first();
+      $pembayaran_terakhir = Pembayaran::where('id_invoice',$invoice->id)
+      ->orderBy('id', 'DESC')->first();
+    }
+
+    if($invoice != null && $total_bayar==null || $invoice == null){
+      $total_bayar = 0;
+    } 
+    
+    if($invoice == null){
+      $pembayaran_terakhir = null;
+    }
 
     return view('administrasi.pesanan.detailpesanan',[
       'order' => $order,
@@ -499,14 +508,23 @@ class OrderController extends Controller
     ]);
   }
 
-  public function cetakInvoice(Order $order){
-    $orderitems = OrderItem::where('id_order','=',$order->id)->get();
-    $administrasi = Staff::select('nama')->where('id','=',auth()->user()->id_users)->first();
+
+  public function unduhInvocieBtnAPI(Order $order){
     $invoice = Invoice::where('id_order', $order->id)->first();
 
     Invoice::where('id_order', $order->id)->update([
       'counter_unduh' => $invoice->counter_unduh+1
     ]);
+
+    return response()->json([
+      'status' => 'success',
+      'counter_unduh' => $invoice->counter_unduh+1
+    ]);
+  }
+
+  public function cetakInvoice(Order $order){
+    $orderitems = OrderItem::where('id_order','=',$order->id)->get();
+    $administrasi = Staff::select('nama')->where('id','=',auth()->user()->id_users)->first();
 
     $pdf = PDF::loadview('administrasi.pesanan.detail.cetakInvoice',[
       'order' => $order,
@@ -514,8 +532,10 @@ class OrderController extends Controller
       'administrasi' => $administrasi           
     ]);
 
-    $pdf->setPaper('A4', 'landscape');
+    $pdf->setPaper('A5', 'landscape');
 
+    // Storage::put('invoice/invoice-'.$order->linkInvoice->nomor_invoice.'.pdf', $pdf->output());
+    // return $pdf->download('invoice-'.$order->linkInvoice->nomor_invoice.'.pdf');
     return $pdf->stream('invoice-'.$order->linkInvoice->nomor_invoice.'.pdf');  
   }
 
@@ -884,6 +904,22 @@ class OrderController extends Controller
 
   public function inputPembayaran(order $order){
     $stafs = Staff::where('status_enum', '1')->whereIn('role', [3,4])->get();
+    $invoice = Invoice::where('id_order', $order->id)->first();
+    $histories_pembayaran = Pembayaran::where('id_invoice', $invoice->id)->get();
+
+    $total_bayar = Invoice::where('invoices.id', $invoice->id)
+    ->join('pembayarans','invoices.id','=','pembayarans.id_invoice')
+    ->whereHas('linkOrder', function($q) {
+      $q->whereHas('linkOrderTrack', function($q) {
+        $q->whereIn('status_enum',['4','5','6']);
+      });
+    })
+    ->select('pembayarans.id_invoice', \DB::raw('SUM(pembayarans.jumlah_pembayaran) as total_bayar'))
+    ->groupBy('pembayarans.id_invoice')->get()->sum('total_bayar');
+
+    if($total_bayar==null){
+      $total_bayar = 0;
+    }
 
     $metodes_pembayaran = [
       1 => 'tunai',
@@ -895,6 +931,8 @@ class OrderController extends Controller
       'order' => $order,
       'stafs' => $stafs,
       'metodes_pembayaran' => $metodes_pembayaran,
+      'histories' => $histories_pembayaran,
+      'total_bayar' => $total_bayar
     ]);
   }
 
@@ -911,6 +949,10 @@ class OrderController extends Controller
       $validatedData['created_at'] = now();
       Pembayaran::insert($validatedData);
       $invoice = Invoice::where('id_order','=',$order->id)->first();
+
+      $invoice->update([
+        'metode_pembayaran' => $request->metode_pembayaran
+      ]);
 
       $total_bayar = Invoice::where('invoices.id', $invoice->id)
       ->join('pembayarans','invoices.id','=','pembayarans.id_invoice')

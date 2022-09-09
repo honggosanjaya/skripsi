@@ -99,3 +99,5 @@ Route::post('/administrasi/stok/opname/cart', [CartController::class, 'addToCart
 Route::post('administrasi/stok/pengadaan/remove', [CartController::class, 'removeCart']);
 
 Route::post('/getrencanakunjungan/{id}', [RencanaTripController::class, 'datakunjunganAPI']);
+
+Route::get('/administrasi/unduhinvoice/{order:id}', [OrderController::class, 'unduhInvocieBtnAPI']);

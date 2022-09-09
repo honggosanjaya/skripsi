@@ -33,9 +33,8 @@
       </div>
     @endif
 
-
     <div class="container">
-      <div class="row mt-3">
+      <div class="row mt-3 detail-pesanan-admin_action">
         <div class="d-flex flex-row justify-content-between">
           @if ($order->linkOrderTrack->status_enum)
             <div>
@@ -43,25 +42,30 @@
                 <a href="/administrasi/pesanan/detail/{{ $order->id }}/cetak-memo" class="btn btn-primary mx-1"><i
                     class="bi bi-download px-1"></i>Unduh Memo Persiapan Barang</a>
               @endif
+
               @if ($order->linkOrderTrack->status_enum > '2' && $order->linkOrderTrack->status_enum <= '6')
                 <a href="/administrasi/pesanan/detail/{{ $order->id }}/cetak-sj" class="btn btn-success mx-1"><i
                     class="bi bi-download px-1"></i>Unduh Surat Jalan</a>
               @endif
+
               @if ($order->linkOrderTrack->status_enum > '1' && $order->linkOrderTrack->status_enum <= '6')
-                {{-- @php
-                $counter_unduh = $order->linkInvoice->counter_unduh ?? null;
-                $max_unduh = $order->linkInvoice->max_unduh ?? null;
-              @endphp --}}
                 @if ($order->linkInvoice->counter_unduh < $order->linkInvoice->max_unduh)
-                  <a href="/administrasi/pesanan/detail/{{ $order->id }}/cetak-invoice" class="btn btn_purple mx-1"><i
-                      class="bi bi-download px-1"></i>Unduh Invoice
-                    {{ '(' . $order->linkInvoice->counter_unduh . '/' . $order->linkInvoice->max_unduh . ')' }}</a>
+                  <button class="btn btn_purple mx-1 btn-unduh-invoice" value="{{ $order->id }}">
+                    <i class="bi bi-download px-1"></i>Unduh Invoice
+                    (<span>{{ $order->linkInvoice->counter_unduh }}</span>/{{ $order->linkInvoice->max_unduh }})
+                  </button>
                 @else
                   <button class="btn btn_purple mx-1" disabled><i class="bi bi-download px-1"></i>Unduh Invoice
                     {{ '(' . $order->linkInvoice->counter_unduh . '/' . $order->linkInvoice->max_unduh . ')' }}</button>
                 @endif
-                {{-- <h1>{{ $order->linkInvoice->counter_unduh }} </h1> --}}
               @endif
+
+              <button class="btn btn-primary btn-print-pdf d-none mx-1">
+                <span class="iconify fs-4 me-1" data-icon="fluent:print-16-regular"></span>Print
+              </button>
+              <button class="btn btn-danger btn-close-pdf d-none">
+                <span class="iconify fs-4 me-1" data-icon="ep:circle-close"></span>Tutup Invoice
+              </button>
             </div>
           @endif
         </div>
@@ -98,7 +102,7 @@
         <div class="col">
           <div class="informasi-list d-flex flex-column">
             <span><b>Sales Bersangkutan</b> {{ $order->linkStaff->nama ?? null }}</span>
-            <span><b>Tanggal Pesan</b> {{ date('d M Y', strtotime($order->linkInvoice->created_at ?? '-')) }}</span>
+            <span><b>Tanggal Pesan</b> {{ date('d M Y', strtotime($order->linkInvoice->created_at ?? null)) }}</span>
           </div>
           <div class="mt-3">
             @if ($order->linkOrderTrack->status_enum >= '2' && $order->linkOrderTrack->status_enum <= '6')

@@ -67,19 +67,29 @@
               <td>{{ date('d-m-Y', strtotime($event->date_start ?? '-')) }}</td>
               <td>{{ date('d-m-Y', strtotime($event->date_end ?? '-')) }}</td>
               <td>{{ $event->linkStaff->nama ?? null }}</td>
-              @if ($event->status_enum ?? null)
-                @if ($event->status_enum == '1')
-                  @if (strtotime($event->date_start) <= strtotime(date('d-m-Y')))
-                    <td>Active</td>
-                  @else
-                    <td>Belum mulai</td>
+              @if ($event->status_enum != null)
+                <td>
+                  @if ($event->status_enum == '1')
+                    @if (strtotime($event->date_start) <= strtotime(date('d-m-Y')))
+                      Active
+                    @else
+                      Belum mulai
+                    @endif
+                  @elseif ($event->status_enum == '0')
+                    Belum mulai
+                  @elseif ($event->status_enum == '-1')
+                    Inactive
                   @endif
-                @else
-                  <td>
-                    {{ $event->status_enum == '-1' ? 'Inactive' : ($event->status_enum == '0' ? 'Belum mulai' : 'Deleted') }}
-                  </td>
-                @endif
+                </td>
+              @else
+                <td></td>
               @endif
+
+
+
+
+
+
               <td>
                 @if ($event->gambar ?? null)
                   <img src="{{ asset('storage/event/' . $event->gambar) }}" class="img-fluid d-block mx-auto"

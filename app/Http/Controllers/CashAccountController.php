@@ -38,7 +38,8 @@ class CashAccountController extends Controller
 
       CashAccount::create([
           'nama' => $request->nama_cashaccount,
-          'keterangan' => $request->keterangan
+          'keterangan' => $request->keterangan,
+          'created_at' => now()
       ]); 
       
       return redirect('/supervisor/cashaccount')->with('addCashAccountSuccess','Tambah Cash Account Berhasil');
@@ -55,6 +56,8 @@ class CashAccountController extends Controller
           'nama' => 'required|max:255',
           'keterangan' => 'required'                   
       ]);
+
+      $rules['updated_at'] = now();
 
       CashAccount::Where('id', $cashaccount->id)
           ->update($rules);

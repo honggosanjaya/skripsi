@@ -14,6 +14,7 @@ use App\Models\Retur;
 use App\Models\Reimbursement;
 use App\Models\Pembayaran;
 use App\Models\RencanaTrip;
+use App\Models\Kas;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
@@ -93,5 +94,9 @@ class Staff extends Model
 
     public function linkRencanaTrip(){
       return $this->hasMany(RencanaTrip::class,'id_staff','id');
+    }
+
+    public function linkKas(){
+      return $this->hasMany(Kas::class,'id_staff','id');
     }
 }

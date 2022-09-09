@@ -16,8 +16,8 @@
     }
 
     .logo {
-      width: 90px;
-      height: 90px;
+      width: 70px;
+      height: 70px;
       border-radius: 50%;
       background-color: orangered;
       float: left;
@@ -26,15 +26,16 @@
     .info-perusahaan p {
       font-weight: normal;
       margin: 0;
+      font-size: 0.9rem;
     }
 
     .info-perusahaan h5 {
-      font-size: 1.9rem;
+      font-size: 1.5rem;
       margin: 0;
     }
 
     h6 {
-      font-size: 1.25rem;
+      font-size: 1rem;
     }
 
     p {
@@ -42,7 +43,7 @@
     }
 
     .document-title {
-      font-size: 2.2rem;
+      font-size: 1.5rem;
       margin: 0;
       font-weight: normal;
       text-align: center;
@@ -62,20 +63,20 @@
 
     .td-small {
       /* width: calc(100% / 9); */
-      width: 10%;
-      max-width: 10%;
+      width: 12%;
+      max-width: 12%;
     }
 
     .td-medium {
       /* width: calc(100% / 6); */
-      width: 16.7%;
-      max-width: 16.7%;
+      width: 18%;
+      max-width: 18%;
     }
 
     .td-large {
       /* width: calc(100% / 3); */
-      width: 33.33%;
-      max-width: 33.33%;
+      width: 28%;
+      max-width: 28%;
     }
 
     .margintop {
@@ -107,6 +108,10 @@
     .relative-position {
       position: relative;
     }
+
+    .v-align-top {
+      vertical-align: top
+    }
   </style>
 </head>
 
@@ -133,7 +138,7 @@
 
     <tr>
       <td class="td-large">
-        <h6 class="uppercase-text margin0">{{ $order->linkCustomer->nama ?? null }}</h6>
+        <h6 class="uppercase-text margin0">&nbsp;{{ $order->linkCustomer->nama ?? null }}</h6>
       </td>
     </tr>
 
@@ -144,10 +149,10 @@
       <td class="td-medium">
         <p class="margin0 center-text">Tgl. Faktur</p>
       </td>
-      <td rowspan="4" class="td-large">
-        <p class="margin0">{{ $order->linkCustomer->full_alamat ?? null }}</p>
-        <p class="margin0">{{ $order->linkCustomer->linkDistrict->nama }}</p>
-        <p class="margin0">{{ $order->linkCustomer->telepon }}</p>
+      <td rowspan="4" class="td-large v-align-top">
+        <p class="margin0">&nbsp;{{ $order->linkCustomer->full_alamat ?? null }}</p>
+        <p class="margin0">&nbsp;{{ $order->linkCustomer->linkDistrict->nama }}</p>
+        <p class="margin0">&nbsp;{{ $order->linkCustomer->telepon }}</p>
       </td>
     </tr>
 
@@ -180,19 +185,19 @@
 
     <tr>
       <td class="td-small">
-        <p class="margin0 center-text">Adit</p>
+        <p class="margin0 center-text">{{ $order->linkOrderTrack->linkStaffPengirim->nama ?? null }}</p>
       </td>
       <td class="td-small">
-        <p class="margin0 center-text">Adit</p>
+        <p class="margin0 center-text">{{ $order->linkStaff->nama ?? null }}</p>
       </td>
       <td class="td-small">
         <p class="margin0 center-text">NET 14</p>
       </td>
       <td class="td-medium">
-        <p class="margin0 center-text">26 Agu 2022</p>
+        <p class="margin0 center-text">{{ $order->linkInvoice->jatuh_tempo ?? null }}</p>
       </td>
       <td class="td-medium">
-        <p class="margin0 center-text">PJ22080105</p>
+        <p class="margin0 center-text">{{ $order->linkInvoice->nomor_invoice ?? null }}</p>
       </td>
     </tr>
   </table>
@@ -247,7 +252,7 @@
 
     <tr>
       <td rowspan="3" colspan="3" class="relative-position">
-        <p class="margin0 absolute-top-left">Keterangan :</p>
+        <p class="margin0 absolute-top-left">&nbsp;Keterangan :</p>
       </td>
       <td rowspan="3" colspan="3">
         <p class="margin0 center-text">Diterima Oleh</p>
@@ -256,7 +261,7 @@
         <p class="margin0 center-text border-top">Tgl:</p>
       </td>
       <td colspan="2" align="right">
-        <p class="margin0 font-bold">Total Sub : </p>
+        <p class="margin0 font-bold">Total Sub :&nbsp;</p>
       </td>
       <td align="right" class="font-bold">{{ number_format($subtotal ?? 0, 0, '', '.') }}&nbsp;</td>
     </tr>
@@ -268,7 +273,7 @@
 
     <tr>
       <td colspan="2" align="right">
-        <p class="margin0 font-bold">Diskon % : </p>
+        <p class="margin0 font-bold">Diskon % :&nbsp;</p>
       </td>
       <td align="right" class="font-bold">
         {{ $diskon == null ? number_format($potongan ?? 0, 0, '', '.') : $diskon }}&nbsp;
@@ -277,7 +282,7 @@
 
     <tr>
       <td colspan="2" align="right">
-        <p class="margin0 font-bold">Total Faktur : </p>
+        <p class="margin0 font-bold">Total Faktur :&nbsp;</p>
       </td>
       <td align="right" class="font-bold">{{ number_format($order->linkInvoice->harga_total ?? 0, 0, '', '.') }}&nbsp;
       </td>

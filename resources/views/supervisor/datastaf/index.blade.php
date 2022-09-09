@@ -57,7 +57,7 @@
               <td>{{ $staf->email ?? null }}</td>
               <td>{{ $staf->telepon ?? null }}</td>
               <td class="text-capitalize">{{ $staf->linkStaffRole->nama ?? null }}</td>
-              @if ($staf->status_enum ?? null)
+              @if ($staf->status_enum != null)
                 <td class="text-capitalize">{{ $staf->status_enum == '1' ? 'Active' : 'Inactive' }}</td>
               @else
                 <td></td>
@@ -70,7 +70,7 @@
 
                   <form action="/supervisor/datastaf/ubahstatus/{{ $staf->id ?? null }}" method="POST">
                     @csrf
-                    @if ($staf->status_enum ?? null)
+                    @if ($staf->status_enum != null)
                       <button type="submit"
                         class="btn btn-sm {{ $staf->status_enum === '1' ? 'btn-danger' : 'btn-success' }}">
                         @if ($staf->status_enum === '1')

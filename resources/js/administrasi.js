@@ -280,6 +280,13 @@ $(".alert_pajak").click(function () {
   $(".alert_notif").not(".alert_pajak").removeClass("active");
 });
 
+$(".alert_jatuhtempo").click(function () {
+  $(this).toggleClass("active");
+  $(".jatuhtempo_notif").toggleClass("m-fadeIn m-fadeOut");
+  $(".notif").not(".jatuhtempo_notif").addClass("m-fadeOut").removeClass("m-fadeIn");
+  $(".alert_notif").not(".alert_jatuhtempo").removeClass("active");
+});
+
 
 // PENAGIHAN LP3
 var count = $("#laporan-penagihan .form-group").children().length;
@@ -333,9 +340,7 @@ $(document).on('click', '#perencanaan-kunjungan .add-form', function (e) {
   let value = $(this).parents('#perencanaan-kunjungan .form-input').find('.select-customer option:selected').val();
   $('.select-customer option[value="' + value + '"]').attr("readonly", true);
   $('.select-customer option[value="' + value + '"]').addClass('disabled-option');
-
   $('#perencanaan-kunjungan .form-input').last().clone().appendTo('#perencanaan-kunjungan .form-group');
-  // $(this).addClass('d-none');
   $('#perencanaan-kunjungan .form-input').find('.remove-form').removeClass('d-none');
   $('#perencanaan-kunjungan .form-input').last().find('.select-customer').val('');
   if (countCust == 1) {
@@ -346,12 +351,65 @@ $(document).on('click', '#perencanaan-kunjungan .add-form', function (e) {
 $(document).on('click', '#perencanaan-kunjungan .remove-form', function (e) {
   countCust--;
   let value = $(this).parents('#perencanaan-kunjungan .form-input').find('.select-customer option:selected').val();
-  // $('.select-customer option[value="' + value + '"]').removeAttr("disabled");
   $('.select-customer option[value="' + value + '"]').removeClass('disabled-option');
-
   $(this).parents('#perencanaan-kunjungan .form-input').remove();
-  // $('#perencanaan-kunjungan .form-input:last').find('.add-form').removeClass('d-none');
   if (countCust == 1) {
     $('#perencanaan-kunjungan .form-input').find('.remove-form').addClass('d-none');
   }
 })
+
+
+// PDF
+$("#detail-pesanan-admin .btn-unduh-invoice").click(function () {
+  const idOrder = $('#detail-pesanan-admin .btn-unduh-invoice').val();
+  const thisis = $(this);
+
+  $.ajax({
+    url: window.location.origin + `/api/administrasi/unduhinvoice/${idOrder}`,
+    method: "GET",
+    success: function (data) {
+      if (data.status == 'success') {
+        $(`<div class="position-relative"><iframe id="myFrame"
+        src="http://127.0.0.1:8000/administrasi/pesanan/detail/${idOrder}/cetak-invoice#toolbar=0"
+        style="margin-top:30px;" frameborder="0" width="100%" height="500px">
+      </iframe> <div class="embed-cover"></div></div>`).appendTo("#detail-pesanan-admin .detail-pesanan-admin_action");
+
+        const counter_unduh = data.counter_unduh.toString();
+        thisis.children('span').text(counter_unduh);
+        $('#detail-pesanan-admin .btn-print-pdf').removeClass('d-none');
+        $('#detail-pesanan-admin .btn-close-pdf').removeClass('d-none');
+      }
+    },
+  });
+});
+
+$("#detail-pesanan-admin .btn-print-pdf").click(function () {
+  const myIframe = document.getElementById("myFrame").contentWindow;
+  myIframe.focus();
+  myIframe.print();
+  return false;
+});
+
+$("#detail-pesanan-admin .btn-close-pdf").click(function () {
+  Swal.fire({
+    title: 'Apakah anda yakin untuk enutup invoice ?',
+    showDenyButton: true,
+    confirmButtonText: 'Ya',
+    denyButtonText: 'Tidak',
+  }).then((result) => {
+    if (result.isConfirmed) {
+      $("#detail-pesanan-admin #myFrame").remove();
+      $('#detail-pesanan-admin .btn-print-pdf').addClass('d-none');
+      $('#detail-pesanan-admin .btn-close-pdf').addClass('d-none');
+    } else if (result.isDenied) {
+      Swal.fire('Aksi dibatalkan', '', 'info');
+    }
+  })
+});
+
+
+
+
+
+
+

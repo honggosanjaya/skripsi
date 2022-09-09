@@ -130,7 +130,7 @@
                 <td>{{ $history->linkCustomer->nama ?? null }}</td>
                 <td>{{ $history->linkStaff->nama ?? null }}</td>
                 <td>{{ $history->tanggal ?? null }}</td>
-                @if ($history->status_enum ?? null)
+                @if ($history->status_enum != null)
                   <td>{{ $history->status_enum == '1' ? 'Sudah Ditagih' : 'Belum Ditagih' }}</td>
                 @else
                   <td></td>

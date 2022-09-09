@@ -7,6 +7,7 @@ use App\Models\Order;
 use App\Models\Retur;
 use App\Models\Item;
 use App\Models\Vehicle;
+use App\Models\Invoice;
 use App\Models\Event;
 use App\Models\History;
 use App\Models\Reimbursement;
@@ -97,6 +98,42 @@ class HomeController extends Controller
 
         $notifikasi['pajak_kendaraan'] = $pajakVehicles;
 
+        $invoices = Invoice::whereHas('linkOrder',function($q){
+          $q->whereHas('linkOrderTrack', function($q){
+            $q->where('status_enum','4');
+          });
+        })->get();
+
+        $jatuhTempo = [];
+
+        foreach($invoices as $invoice){
+          if($invoice->jatuh_tempo != null){
+            $waktuSampai = $invoice->linkOrder->linkOrderTrack->waktu_sampai;
+            $tanggalSampai = date("Y-m-d",strtotime($waktuSampai));
+            $tanggalSampai2 = date_create($tanggalSampai);
+
+            $interval = date_add($tanggalSampai2, date_interval_create_from_date_string($invoice->jatuh_tempo . " days"));
+            $tanggalJatuhTempo = date_format($interval,"Y-m-d");
+
+            $dateJatuhTempo = date_create($tanggalJatuhTempo);
+            $diffJatuhTempo = date_diff($today, $dateJatuhTempo);
+
+            if($diffJatuhTempo->format("%R%a")<4){
+              array_push($jatuhTempo, [
+                'id_invoice' => $invoice->id,
+                'id_order' => $invoice->id_order,
+                'nomor_invoice' => $invoice->nomor_invoice,
+                'harga_total' => $invoice->harga_total,
+                'tanggalJatuhTempo' => $tanggalJatuhTempo,
+                'dateDiff' => $diffJatuhTempo->format("%R%a")
+              ]);
+            }
+          }
+        }
+
+        $notifikasi['jatuh_tempo'] = $jatuhTempo;
+        // dd($jatuhTempo);
+
         $request->session()->increment('count');
         return view('administrasi.dashboard',[
           'role' => $role,
@@ -116,6 +153,7 @@ class HomeController extends Controller
           'jml_pengajuan_limit' => count($notifikasi['pengajuan_limit']),
           'jml_reimbursement' => count($notifikasi['reimbursement']),
           'jml_pajak' => count($pajakVehicles),
+          'jml_jatuhTempo' => count($jatuhTempo)
         ]);
     }
 
