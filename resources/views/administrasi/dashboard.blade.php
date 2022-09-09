@@ -165,7 +165,7 @@
           class="text-black text-decoration-none">
           <p class="mb-0">Pengajuan dari {{ $notif->linkStaffPengaju->nama ?? null }}</p>
           <p class="mb-0">Diajukan pada {{ date('d F Y', strtotime($notif->created_at ?? '-')) }}</p>
-          @if ($notif->status_enum ?? null)
+          @if ($notif->status_enum != null)
             <p class="mb-0">{{ $notif->status_enum == '0' ? 'Menunggu Konfirmasi' : 'Menunggu Pembayaran' }}</p>
           @endif
         </a>

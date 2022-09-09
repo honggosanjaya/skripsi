@@ -102,7 +102,7 @@
         <div class="col">
           <div class="informasi-list d-flex flex-column">
             <span><b>Sales Bersangkutan</b> {{ $order->linkStaff->nama ?? null }}</span>
-            <span><b>Tanggal Pesan</b> {{ date('d M Y', strtotime($order->linkInvoice->created_at ?? '-')) }}</span>
+            <span><b>Tanggal Pesan</b> {{ date('d M Y', strtotime($order->linkInvoice->created_at ?? null)) }}</span>
           </div>
           <div class="mt-3">
             @if ($order->linkOrderTrack->status_enum >= '2' && $order->linkOrderTrack->status_enum <= '6')

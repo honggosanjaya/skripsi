@@ -33,7 +33,7 @@
             <td>{{ ($retur->linkCustomer->alamat_utama ?? null) . ' ' . ($retur->linkCustomer->alamat_nomor ?? null) }}
             </td>
             <td>{{ $retur->linkStaffPengaju->nama ?? null }}</td>
-            @if ($retur->status_enum ?? null)
+            @if ($retur->status_enum != null)
               <td class="text-capitalize">{{ $retur->status_enum == '0' ? 'Diajukan' : 'Dikonfirmasi' }}</td>
             @else
               <td></td>

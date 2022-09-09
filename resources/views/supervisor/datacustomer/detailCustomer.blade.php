@@ -27,7 +27,7 @@
         <span><b>Status Limit
             Pembelian</b>{{ $customer->status_limit_pembelian_enum == '1' ? 'Disetujui' : ($customer->status_limit_pembelian_enum == -1 ? 'Tidak Disetujui' : 'Diajukan') }}</span>
       @endif
-      @if ($customer->status_enum ?? null)
+      @if ($customer->status_enum != null)
         <span><b>Status</b>{{ $customer->status_enum == '1' ? 'Active' : 'Inactive' }}</span>
       @endif
       <span><b>Foto Tempat Usaha</b>
@@ -96,7 +96,7 @@
                 <span class="d-flex"><b>Tanggal pesan</b>
                   {{ date('d F Y', strtotime($invoice->created_at ?? '-')) }}</span>
 
-                @if ($invoice->linkOrder->linkOrderTrack->status_enum ?? null)
+                @if ($invoice->linkOrder->linkOrderTrack->status_enum != null)
                   @if ($invoice->linkOrder->linkOrderTrack->status_enum == '1')
                     <span class="d-flex"><b>Status Pesanan</b>Diajukan Salesman</span>
                   @elseif ($invoice->linkOrder->linkOrderTrack->status_enum == '2')

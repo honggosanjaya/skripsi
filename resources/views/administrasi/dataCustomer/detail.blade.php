@@ -44,7 +44,7 @@
         @endif
       </span>
 
-      @if ($customer->status_enum ?? null)
+      @if ($customer->status_enum != null)
         <span><b>Status</b> {{ $customer->status_enum == '1' ? 'Active' : 'Inactive' }}</span>
       @endif
 
@@ -114,7 +114,7 @@
                 <span class="d-flex"><b>Tanggal pesan</b>
                   {{ date('d F Y', strtotime($invoice->created_at ?? '-')) }}</span>
 
-                @if ($invoice->linkOrder->linkOrderTrack->status_enum ?? null)
+                @if ($invoice->linkOrder->linkOrderTrack->status_enum != null)
                   @if ($invoice->linkOrder->linkOrderTrack->status_enum == '1')
                     <span class="d-flex"><b>Status Pesanan</b>Diajukan Salesman</span>
                   @elseif ($invoice->linkOrder->linkOrderTrack->status_enum == '2')

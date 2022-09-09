@@ -48,7 +48,7 @@
               <td>{{ $customer->full_alamat ?? null }}</td>
               <td>{{ $customer->telepon ?? null }}</td>
               <td>harga {{ $customer->tipe_harga ?? null }}</td>
-              @if ($customer->status_enum ?? null)
+              @if ($customer->status_enum != null)
                 <td>{{ $customer->status_enum == 1 ? 'Active' : 'Inactive' }}</td>
               @else
                 <td></td>

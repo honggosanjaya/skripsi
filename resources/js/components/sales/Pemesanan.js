@@ -29,6 +29,7 @@ const Pemesanan = ({ location }) => {
   const [errorMessage, setErrorMessage] = useState(null);
   const [orderId, setOrderId] = useState(null);
   const [errorKodeCustomer, setErrorKodeCustomer] = useState(null);
+  const [successKodeCustomer, setSuccessKodeCustomer] = useState(null);
   const [koordinat, setKoordinat] = useState("0@0");
   const [idTrip, setIdTrip] = useState(null);
   const [show, setShow] = useState(false);
@@ -47,6 +48,7 @@ const Pemesanan = ({ location }) => {
   const [diskon, setDiskon] = useState(0);
   const [shouldDisabled, setShouldDisabled] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [loadingKode, setLoadingKode] = useState(false);
 
   useEffect(() => {
     if (filterBy) {
@@ -221,6 +223,7 @@ const Pemesanan = ({ location }) => {
   const handleKodeCustomer = (e) => {
     e.preventDefault();
     hapusSemuaProduk();
+    setLoadingKode(true);
     axios({
       method: "get",
       url: `${window.location.origin}/api/kodeCustomer/${kodePesanan}`,
@@ -230,6 +233,7 @@ const Pemesanan = ({ location }) => {
     })
       .then((response) => {
         console.log('handlekode', response.data);
+        setLoadingKode(false);
         if (response.data.status === 'success') {
           setIsHandleKodeCust(true);
           setErrorKodeCustomer(null);
@@ -264,12 +268,14 @@ const Pemesanan = ({ location }) => {
                 const produk = obj;
                 KeranjangDB.updateProduk(produk);
                 getAllProduks();
+                setSuccessKodeCustomer(response.data.message);
               }
             })
           }
           else {
             setErrorKodeCustomer('Kode customer tidak sesusai');
             setIsHandleKodeCust(false);
+            setSuccessKodeCustomer('');
           }
         } else {
           throw Error(response.data.message);
@@ -277,7 +283,9 @@ const Pemesanan = ({ location }) => {
       })
       .catch((error) => {
         setErrorKodeCustomer(error.message);
+        setSuccessKodeCustomer('');
         setIsHandleKodeCust(false);
+        setLoadingKode(false);
       });
   }
 
@@ -472,9 +480,12 @@ const Pemesanan = ({ location }) => {
                 value={kodePesanan}
                 onChange={(e) => setKodePesanan(e.target.value)}
               />
-              <button type="submit" className="btn btn-primary" disabled={kodePesanan !== '' ? false : true}>Proses</button>
+              {loadingKode ? <button type="submit" className="btn btn-primary" disabled={true}>Proses</button>
+                : <button type="submit" className="btn btn-primary" disabled={kodePesanan !== '' ? false : true}>Proses</button>
+              }
             </div>
           </form>
+          {successKodeCustomer && <small className='text-success'>{successKodeCustomer}</small>}
           {errorKodeCustomer && <small className='text-danger'>{errorKodeCustomer}</small>}
         </div>
 

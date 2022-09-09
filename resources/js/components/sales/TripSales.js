@@ -138,6 +138,7 @@ const TripSales = () => {
         formData.append("foto", file);
         objData["status_enum"] = "trip";
         setIsLoading(true);
+        setShouldDisabled(true);
         axios({
           method: "post",
           url: `${window.location.origin}/api/tripCustomer`,
@@ -164,6 +165,7 @@ const TripSales = () => {
           }))
           .then((response) => {
             setError(null);
+            setShouldDisabled(false);
             setIsLoading(false);
             Swal.fire({
               title: 'success',
@@ -177,6 +179,7 @@ const TripSales = () => {
           .catch(error => {
             setError(error.message);
             setIsLoading(false);
+            setShouldDisabled(false);
           });
       }
     })
@@ -194,6 +197,7 @@ const TripSales = () => {
     }).then((result) => {
       if (result.isConfirmed) {
         setIsLoading(true);
+        setShouldDisabled(true);
         let formData = new FormData();
         formData.append("foto", file);
         objData["status_enum"] = "order";
@@ -225,11 +229,13 @@ const TripSales = () => {
           .then((dataCustomer) => {
             setError(null);
             setIsLoading(false);
+            setShouldDisabled(false);
             history.push(`/salesman/order/${dataCustomer.data.data.id}`);
           })
           .catch(error => {
             setError(error.message);
             setIsLoading(false);
+            setShouldDisabled(false);
           });
       }
     })

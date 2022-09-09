@@ -333,22 +333,28 @@ class OrderController extends Controller
     $activeVehicles = Vehicle::where('is_active',true)->get();
     $invoice = Invoice::where('id_order','=',$order->id)->first();
 
-    $total_bayar = Invoice::where('invoices.id', $invoice->id)
-    ->join('pembayarans','invoices.id','=','pembayarans.id_invoice')
-    ->whereHas('linkOrder', function($q) {
-      $q->whereHas('linkOrderTrack', function($q) {
-        $q->whereIn('status_enum',['4','5','6']);
-      });
-    })
-    ->select('pembayarans.id_invoice', \DB::raw('SUM(pembayarans.jumlah_pembayaran) as total_bayar'))
-    ->groupBy('pembayarans.id_invoice')->get()->sum('total_bayar');
-
-    if($total_bayar==null){
-      $total_bayar = 0;
-    }
+    if($invoice != null){
+      $total_bayar = Invoice::where('invoices.id', $invoice->id)
+      ->join('pembayarans','invoices.id','=','pembayarans.id_invoice')
+      ->whereHas('linkOrder', function($q) {
+        $q->whereHas('linkOrderTrack', function($q) {
+          $q->whereIn('status_enum',['4','5','6']);
+        });
+      })
+      ->select('pembayarans.id_invoice', \DB::raw('SUM(pembayarans.jumlah_pembayaran) as total_bayar'))
+      ->groupBy('pembayarans.id_invoice')->get()->sum('total_bayar');
     
-     $pembayaran_terakhir = Pembayaran::where('id_invoice',$invoice->id)
-     ->orderBy('id', 'DESC')->first();
+      $pembayaran_terakhir = Pembayaran::where('id_invoice',$invoice->id)
+      ->orderBy('id', 'DESC')->first();
+    }
+
+    if($invoice != null && $total_bayar==null || $invoice == null){
+      $total_bayar = 0;
+    } 
+    
+    if($invoice == null){
+      $pembayaran_terakhir = null;
+    }
 
     return view('administrasi.pesanan.detailpesanan',[
       'order' => $order,

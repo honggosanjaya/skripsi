@@ -63,7 +63,7 @@
             <td>{{ number_format($item->min_stok ?? 0, 0, '', '.') }}</td>
             <td>{{ number_format($item->max_stok ?? 0, 0, '', '.') }}</td>
             <td>{{ number_format($item->harga1_satuan ?? 0, 0, '', '.') }}</td>
-            @if ($item->status_enum ?? null)
+            @if ($item->status_enum != null)
               <td>{{ $item->status_enum == '1' ? 'Active' : 'Inactive' }}</td>
             @endif
             <td>
@@ -74,7 +74,7 @@
 
                 <form action="/administrasi/stok/produk/ubahstatus/{{ $item->id }}" method="POST">
                   @csrf
-                  @if ($item->status_enum ?? null)
+                  @if ($item->status_enum != null)
                     <button type="submit"
                       class="btn btn-sm mt-2 {{ $item->status_enum === '1' ? 'btn-danger' : 'btn-success' }}">
                       @if ($item->status_enum === '1')
