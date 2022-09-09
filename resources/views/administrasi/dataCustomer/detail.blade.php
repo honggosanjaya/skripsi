@@ -146,6 +146,9 @@
                 <span class="d-flex"><b>Harga Total</b>
                   Rp. {{ number_format($invoice->harga_total ?? 0, 0, '', '.') }}</span>
 
+                <span class="d-flex"><b>Diskon Customer</b>
+                  {{ $customer->linkCustomerType->diskon ?? null }} %</span>
+
                 @foreach ($invoiceJatuhTempo as $inv)
                   @if ($inv['id_invoice'] == $invoice->id)
                     <span class="d-flex"><b>Jatuh Tempo</b>
@@ -162,6 +165,7 @@
                       <th scope="col" class="text-center">Nama Barang</th>
                       <th scope="col" class="text-center">Kuantitas</th>
                       <th scope="col" class="text-center">Satuan</th>
+                      <th scope="col" class="text-center">Harga</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -171,6 +175,24 @@
                         <td>{{ $item->linkItem->nama ?? null }}</td>
                         <td class="text-center">{{ $item->kuantitas ?? null }}</td>
                         <td class="text-center">{{ $item->linkItem->satuan ?? null }}</td>
+
+                        @if ($customer->tipe_harga ?? null)
+                          @if ($customer->tipe_harga == 2 && $item->linkItem->harga2_satuan != null)
+                            <td class="text-center">
+                              {{ number_format($item->linkItem->harga2_satuan * $item->kuantitas ?? 0, 0, '', '.') }}
+                            </td>
+                          @elseif ($customer->tipe_harga == 3 && $item->linkItem->harga3_satuan != null)
+                            <td class="text-center">
+                              {{ number_format($item->linkItem->harga3_satuan * $item->kuantitas ?? 0, 0, '', '.') }}
+                            </td>
+                          @else
+                            <td class="text-center">
+                              {{ number_format($item->linkItem->harga1_satuan * $item->kuantitas ?? 0, 0, '', '.') }}
+                            </td>
+                          @endif
+                        @else
+                          <td></td>
+                        @endif
                       </tr>
                     @endforeach
                   </tbody>

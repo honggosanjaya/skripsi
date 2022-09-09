@@ -87,10 +87,15 @@
             <i class="bi bi-box me-2"></i><span>Stok</span>
           </a>
         </li>
-
         <li class="mb-3">
           <a class="{{ Request::is('administrasi/reimbursement*') ? 'active' : '' }}" href="/administrasi/reimbursement">
             <i class="bi bi-cash-coin me-2"></i><span>Reimbursement</span>
+          </a>
+        </li>
+
+        <li class="mb-3">
+          <a class="{{ Request::is('administrasi/kas*') ? 'active' : '' }}" href="/administrasi/kas">
+            <i class="bi bi-cash-coin me-2"></i><span>Kas</span>
           </a>
         </li>
       </ul>
