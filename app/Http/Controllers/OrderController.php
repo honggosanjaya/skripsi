@@ -944,6 +944,10 @@ class OrderController extends Controller
       Pembayaran::insert($validatedData);
       $invoice = Invoice::where('id_order','=',$order->id)->first();
 
+      $invoice->update([
+        'metode_pembayaran' => $request->metode_pembayaran
+      ]);
+
       $total_bayar = Invoice::where('invoices.id', $invoice->id)
       ->join('pembayarans','invoices.id','=','pembayarans.id_invoice')
       ->whereHas('linkOrder', function($q) {
