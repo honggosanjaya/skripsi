@@ -7,6 +7,7 @@ import { Link } from 'react-router-dom';
 import { AuthContext } from '../../contexts/AuthContext';
 import { UserContext } from '../../contexts/UserContext';
 import Modal from 'react-bootstrap/Modal';
+import Button from 'react-bootstrap/Button';
 import { useHistory } from "react-router";
 
 let source;
@@ -16,14 +17,18 @@ const DashboardSales = () => {
   const [namaCust, setNamaCust] = useState('');
   const [alamatUtama, setAlamatUtama] = useState('');
   const [listCustomer, setListCustomer] = useState([]);
+  const [listRencanaKunjungan, setListRencanaKunjungan] = useState([]);
   const [addButton, setAddButton] = useState('');
   const [dataShow, setDataShow] = useState('inactive');
   const [showModal, setShowModal] = useState(false);
+  const [showModalRencana, setShowModalRencana] = useState(false);
   const [isOrder, setIsOrder] = useState();
   const _isMounted = useRef(true);
   const Swal = require('sweetalert2');
   const history = useHistory();
   const [shouldDisabled, setShouldDisabled] = useState(false);
+  var todayDate = new Date().toISOString().slice(0, 10);
+  const [tanggal, setTanggal] = useState(todayDate);
 
   useEffect(() => {
     source = axios.CancelToken.source();
@@ -52,6 +57,27 @@ const DashboardSales = () => {
     }
     setIsDefaultPassword(false);
   }, [])
+
+  useEffect(() => {
+    axios({
+      method: "post",
+      url: `${window.location.origin}/api/getrencanakunjungan/${dataUser.id_staff}`,
+      headers: {
+        Accept: "application/json",
+        Authorization: "Bearer " + token,
+      },
+      data: {
+        date: tanggal
+      },
+    })
+      .then(response => {
+        console.log('rencana', response.data.data);
+        setListRencanaKunjungan(response.data.data);
+      })
+      .catch(error => {
+        console.log(error.message);
+      });
+  }, [tanggal, dataUser])
 
   const cariCustomer = (e) => {
     e.preventDefault();
@@ -100,8 +126,15 @@ const DashboardSales = () => {
   }
 
   const handleCloseModal = () => setShowModal(false);
+  const handleCloseModalRencana = () => {
+    setShowModalRencana(false);
+    setShowModal(true);
+  }
 
-
+  const handleShowModalRencana = () => {
+    setShowModalRencana(true);
+    setShowModal(false);
+  }
 
   return (
     <main className="page_main">
@@ -147,7 +180,11 @@ const DashboardSales = () => {
               <Modal.Title>Cari Customer</Modal.Title>
             </Modal.Header>
             <Modal.Body>
-              <form onSubmit={cariCustomer}>
+              <Button variant="primary" onClick={handleShowModalRencana}>
+                <span className="iconify fs-3 me-1" data-icon="flat-color-icons:planner"></span>Rencana Kunjungan
+              </Button>
+
+              <form onSubmit={cariCustomer} className="mt-4">
                 <div className="mb-3">
                   <label className="form-label">Nama Customer</label>
                   <input type="text" value={namaCust || ''} onChange={(e) => setNamaCust(e.target.value)} className="form-control" />
@@ -171,6 +208,53 @@ const DashboardSales = () => {
                 className={`btn btn-primary mt-2 ${addButton == 'active' ? 'd-block' : 'd-none'}`}>
                 Masih belum menemukan? <br /> Silahkan tambah baru!
               </Link>
+            </Modal.Body>
+          </Modal>
+
+
+          <Modal show={showModalRencana} onHide={handleCloseModalRencana} centered={true}>
+            <Modal.Header closeButton>
+              <Modal.Title>Rencana Kunjungan</Modal.Title>
+            </Modal.Header>
+            <Modal.Body>
+              {listRencanaKunjungan &&
+                <Fragment>
+                  <label>Tanggal Kunjungan</label>
+                  <div className="input-group">
+                    <input
+                      type='date'
+                      className="form-control"
+                      id="tanggalTrip"
+                      value={tanggal}
+                      onChange={(e) => setTanggal(e.target.value)}
+                    />
+                  </div>
+
+                  <div className="table-responsive mt-4">
+                    <table className="table">
+                      <thead>
+                        <tr>
+                          <th scope="col" className='text-center'>Nama Toko</th>
+                          <th scope="col" className='text-center'>Wilayah</th>
+                          <th scope="col" className='text-center'>Tanggal</th>
+                          <th scope="col" className='text-center'>Status</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {listRencanaKunjungan.map((data) => (
+                          <tr key={data.id}>
+                            <td>{data.link_customer.nama ?? null}</td>
+                            <td>{data.link_customer.link_district.nama ?? null}</td>
+                            <td>{data.tanggal ?? null}</td>
+                            {data.status_enum ? <td className='text-center'>{data.status_enum == '1' ? <p className='text-success'>Sudah Dikunjungi</p> : <p className='text-danger'>Belum Dikunjungi</p>}</td> : <td></td>}
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
+                </Fragment>
+
+              }
             </Modal.Body>
           </Modal>
         </Fragment>

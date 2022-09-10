@@ -38,8 +38,8 @@ class ReportController extends Controller
         $request->dateEnd=$request->dateEnd." 23:59:59";
         $data = 
         Order::whereHas('linkOrderTrack',function($q) use($request){
-            $q->where('status_enum', '4')->orWhere('status_enum', '5')->whereBetween('waktu_sampai',[$request->dateStart,$request->dateEnd]);
-        })->with(['linkInvoice', 'linkStaff', 'linkCustomer.linkCustomerType']);
+            $q->where('status_enum', '4')->orWhere('status_enum', '5')->orWhere('status_enum', '6')->whereBetween('waktu_sampai',[$request->dateStart,$request->dateEnd]);
+        })->with(['linkInvoice', 'linkStaff', 'linkCustomer.linkCustomerType', 'linkInvoice.linkEvent']);
         if($request->salesman??null){
             $data = $data->whereHas('linkStaff',function($q) use($request){
                 $q->where('nama', $request->salesman);
@@ -48,9 +48,29 @@ class ReportController extends Controller
         
         $data = $data->paginate(10);
 
-        // dd($data);
+        $invoicesSampai = Invoice::whereHas('linkOrder',function($q){
+          $q->whereHas('linkOrderTrack', function($q){
+            $q->where('status_enum','4');
+          });
+        })->get();
+        $invoiceJatuhTempo = [];
+        foreach($invoicesSampai as $invoice){
+          if($invoice->jatuh_tempo != null){
+            $waktuSampai = $invoice->linkOrder->linkOrderTrack->waktu_sampai;
+            $tanggalSampai = date("Y-m-d",strtotime($waktuSampai));
+            $tanggalSampai2 = date_create($tanggalSampai);
+  
+            $interval = date_add($tanggalSampai2, date_interval_create_from_date_string($invoice->jatuh_tempo . " days"));
+            $tanggalJatuhTempo = date_format($interval,"Y-m-d");
+  
+            array_push($invoiceJatuhTempo, [
+              'id_invoice' => $invoice->id,
+              'tanggalJatuhTempo' => $tanggalJatuhTempo
+            ]);
+          }
+        }
 
-        return view('supervisor.report.penjualan',compact('data','input'));
+        return view('supervisor.report.penjualan',compact('data','input','invoiceJatuhTempo'));
     }
 
     public function index(Request $request){

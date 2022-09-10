@@ -15,7 +15,7 @@
       <span><b>Email</b>{{ $staff->email ?? null }}</span>
       <span><b>Telepon</b>{{ $staff->telepon ?? null }}</span>
       <span><b>Role</b>{{ $staff->linkStaffRole->nama ?? null }}</span>
-      @if ($staff->status_enum ?? null)
+      @if ($staff->status_enum != null)
         <span><b>Status</b>{{ $staff->status_enum == '1' ? 'Active' : 'Inactive' }}</span>
       @endif
       <span><b>Foto Profil</b>

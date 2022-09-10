@@ -50,7 +50,7 @@
               <td>{{ $reimbursement->linkStaffPengonfirmasi->nama ?? null }}</td>
               <td>{{ $reimbursement->linkCashAccount->nama ?? null }}</td>
               <td>{{ $reimbursement->jumlah_uang ?? null }}</td>
-              @if ($reimbursement->status_enum ?? null)
+              @if ($reimbursement->status_enum != null)
                 <td class="text-capitalize text-center">
                   <p class="mb-0 badge badge-reimbursement-{{ $reimbursement->status_enum }}">
                     @if ($reimbursement->status_enum == '0')

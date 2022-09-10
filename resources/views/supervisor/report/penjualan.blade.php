@@ -65,6 +65,7 @@
         </div>
       </div>
     </form>
+
     <div class="table-responsive mt-4">
       <table class="table table-hover table-sm">
         <thead>
@@ -83,7 +84,12 @@
             <tr>
               <th scope="row" class="text-center">{{ $loop->iteration ?? null }}</th>
               <td>{{ $dt->created_at ?? null }}</td>
-              <td>{{ $dt->linkInvoice->nomor_invoice ?? null }}</td>
+              <td>
+                <a class="text-primary cursor-pointer text-decoration-none" data-bs-toggle="modal"
+                  data-bs-target="#invoice{{ $dt->linkInvoice->id }}">
+                  {{ $dt->linkInvoice->nomor_invoice ?? null }}
+                </a>
+              </td>
               <td> {{ number_format($dt->linkInvoice->harga_total ?? 0, 0, '', '.') }}</td>
               <td>{{ $dt->linkStaff->nama ?? null }}</td>
               <td>{{ $dt->linkCustomer->nama ?? null }}</td>
@@ -93,7 +99,79 @@
         </tbody>
       </table>
     </div>
+
+    @foreach ($data as $dt)
+      <div class="modal fade" id="invoice{{ $dt->linkInvoice->id }}" tabindex="-1" aria-labelledby="exampleModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="exampleModalLabel">Detail Invoice</h5>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+              <div class="info-list">
+                <span class="d-flex"><b>Nomor invoice</b>
+                  {{ $dt->linkInvoice->nomor_invoice ?? null }}</span>
+                <span class="d-flex"><b>Tanggal pesan</b>
+                  {{ date('d F Y', strtotime($dt->linkInvoice->created_at ?? '-')) }}</span>
+                @if ($dt->linkOrderTrack->status_enum != null)
+                  <span class="d-flex"><b>Status Pesanan</b>
+                    {{ $dt->linkOrderTrack->status_enum == '4' ? 'Telah Sampai' : ($dt->linkOrderTrack->status_enum == '5' ? 'Pembayaran' : 'Selesai') }}</span>
+                @endif
+                <span class="d-flex"><b>Event</b>
+                  {{ $dt->linkInvoice->linkEvent->nama ?? null }}</span>
+
+                @if ($dt->linkInvoice->linkEvent != null)
+                  @if ($dt->linkInvoice->linkEvent->potongan != null)
+                    <span class="d-flex"><b>Potongan Event</b>
+                      {{ $dt->linkInvoice->linkEvent->potongan }}</span>
+                  @elseif($dt->linkInvoice->linkEvent->diskon != null)
+                    <span class="d-flex"><b>Diskon Event</b>
+                      {{ $dt->linkInvoice->linkEvent->diskon }} %</span>
+                  @endif
+                @endif
+
+                <span class="d-flex"><b>Harga Total</b>
+                  Rp. {{ number_format($dt->linkInvoice->harga_total ?? 0, 0, '', '.') }}</span>
+
+                @foreach ($invoiceJatuhTempo as $inv)
+                  @if ($inv['id_invoice'] == $dt->linkInvoice->id)
+                    <span class="d-flex"><b>Jatuh Tempo</b>
+                      {{ date('d M Y', strtotime($inv['tanggalJatuhTempo'])) }}</span>
+                  @endif
+                @endforeach
+              </div>
+
+              <div class="table-responsive mt-4">
+                <table class="table table-hover table-sm">
+                  <thead>
+                    <tr>
+                      <th scope="col" class="text-center">No</th>
+                      <th scope="col" class="text-center">Nama Barang</th>
+                      <th scope="col" class="text-center">Kuantitas</th>
+                      <th scope="col" class="text-center">Satuan</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    @foreach ($dt->linkInvoice->linkOrder->linkOrderItem as $item)
+                      <tr>
+                        <td class="text-center">{{ $loop->iteration }}</td>
+                        <td>{{ $item->linkItem->nama ?? null }}</td>
+                        <td class="text-center">{{ $item->kuantitas ?? null }}</td>
+                        <td class="text-center">{{ $item->linkItem->satuan ?? null }}</td>
+                      </tr>
+                    @endforeach
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    @endforeach
   </div>
+
   @push('JS')
     <script src="{{ asset('js/chart.js') }}"></script>
     <script src="{{ mix('js/report.js') }}"></script>

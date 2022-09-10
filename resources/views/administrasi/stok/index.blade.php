@@ -76,7 +76,7 @@
             <td class="text-center">{{ number_format($item->max_stok ?? 0, 0, '', '.') }}</td>
             <td class="text-center">{{ number_format($item->max_pengadaan ?? 0, 0, '', '.') }}</td>
             <td>{{ number_format($item->harga_satuan ?? 0, 0, '', '.') }}</td>
-            @if ($item->status_enum ?? null)
+            @if ($item->status_enum != null)
               <td class="text-capitalize text-center">{{ $item->status_enum == '1' ? 'Active' : 'Inactive' }}</td>
             @endif
             </tr>

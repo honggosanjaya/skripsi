@@ -14,11 +14,53 @@
 
 @section('main_content')
   <div class="px-5 pt-4">
+    <h1 class="fs-4 my-4">Riwayat Pembayaran Customer</h1>
+    <div class="row">
+      <div class="col-6">
+        <div class="informasi-list d-flex flex-column">
+          <span><b>Nama Customer</b> {{ $order->linkCustomer->nama ?? null }}</span>
+          <span><b>Nomor Invoice</b> {{ $order->linkInvoice->nomor_invoice ?? null }}</span>
+          <span><b>Harga Total Invoice</b>
+            Rp. {{ number_format($order->linkInvoice->harga_total ?? 0, 0, '', '.') ?? null }}</span>
+          <span><b>Sisa Tagihan</b>
+            Rp. {{ number_format($order->linkInvoice->harga_total - $total_bayar ?? 0, 0, '', '.') ?? null }}</span>
+        </div>
+      </div>
+    </div>
+    <table class="table table-hover table-sm mt-4" id="table">
+      <thead>
+        <tr>
+          <th scope="col" class="text-center">No</th>
+          <th scope="col" class="text-center">Nama Penagih</th>
+          <th scope="col" class="text-center">Jumlah Pembayaran</th>
+          <th scope="col" class="text-center">Tanggal</th>
+          {{-- <th scope="col" class="text-center">Status</th> --}}
+        </tr>
+      </thead>
+      <tbody>
+        @if (count($histories) == 0)
+          <tr>
+            <td colspan="4" class="text-center text-danger mb-0">Tidak Ada Data</td>
+          </tr>
+        @else
+          @foreach ($histories as $history)
+            <tr>
+              <th scope="row" class="text-center">{{ $loop->iteration }}</th>
+              <td>{{ $history->linkStaffPenagih->nama ?? null }}</td>
+              <td class="text-center">{{ number_format($history->jumlah_pembayaran ?? 0, 0, '', '.') ?? null }}</td>
+              <td class="text-center">{{ date('d M Y', strtotime($history->tanggal ?? '-')) }}</td>
+            </tr>
+          @endforeach
+        @endif
+      </tbody>
+    </table>
+
+    <hr class="my-5">
+
     <h1 class="fs-4 my-4">Pembayaran Customer</h1>
     <form class="form-submit" method="POST" action="/administrasi/pesanan/detail/{{ $order->id }}/dibayar">
       @csrf
       <input type="hidden" value="{{ $order->linkInvoice->id ?? null }}" name="id_invoice">
-
       <div class="row">
         <div class="col">
           <div class="mb-3">
@@ -64,7 +106,6 @@
           </div>
         </div>
       </div>
-
       <div class="row">
         <div class="col">
           <div class="mb-3">
@@ -104,7 +145,6 @@
           </div>
         </div>
       </div>
-
       <div class="row justify-content-end mt-4">
         <div class="col-3 d-flex justify-content-end">
           <button type="submit" class="btn btn-primary">Pesanan Dibayar</button>

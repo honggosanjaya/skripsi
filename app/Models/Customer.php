@@ -10,6 +10,7 @@ use App\Models\CustomerType;
 use App\Models\District;
 use App\Models\Order;
 use App\Models\ReturType;
+use App\Models\RencanaTrip;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
@@ -52,6 +53,10 @@ class Customer extends Model
 
     public function linkOrder(){
         return $this->hasMany(Order::class,'id_customer','id');
+    }
+
+    public function linkRencanaTrip(){
+      return $this->hasMany(RencanaTrip::class,'id_customer','id');
     }
 
     public function linkReturType(){

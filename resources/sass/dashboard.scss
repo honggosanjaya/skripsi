@@ -70,6 +70,7 @@ textarea {
 
     .sidebar-menu {
         padding: 2rem 0 2rem 1rem;
+        // padding: 2rem 0;
         hr,
         h1 {
             color: #fff;
@@ -81,7 +82,7 @@ textarea {
 
         a {
             display: block;
-            color: #c3c1bf;
+            color: #f0f0e7;
             padding: 5px 15px;
             text-decoration: none;
 
@@ -93,6 +94,7 @@ textarea {
                 background-color: $whitesmoke;
                 border-radius: 1.875rem 0 0 1.875rem;
                 padding: 1rem;
+                max-height: 57px;
             }
             &:hover {
                 color: $secondary-color;
@@ -116,12 +118,8 @@ textarea {
             .sidebar-brand h3,
             .sidebar-menu li a span:last-child,
             .sidebar-menu h1,
-            .darkmode-toggle .darkmode-switch {
+            .sidebar-menu .arrow {
                 display: none;
-            }
-
-            .darkmode-toggle {
-                display: block;
             }
         }
     }
@@ -557,4 +555,92 @@ table tbody th {
 select[readonly] {
     pointer-events: none;
     background-color: lightgray;
+}
+
+//
+
+.info-list {
+    span b {
+        position: relative;
+        display: inline-block;
+        min-width: 50%;
+        margin-right: 4px;
+        line-height: normal;
+        font-weight: 600;
+        &:after {
+            content: ":";
+            position: absolute;
+            right: 0;
+        }
+    }
+}
+
+.cursor-pointer {
+    cursor: pointer;
+}
+
+.sidebar .nav-links {
+    .menu-group span {
+        user-select: none;
+    }
+
+    .icon-link {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding-right: 2rem;
+        max-height: 57px;
+        a {
+            cursor: pointer;
+        }
+        &.active {
+            background-color: $whitesmoke;
+            border-radius: 1.875rem 0 0 1.875rem;
+            padding: 1rem 2rem 1rem 0;
+            a,
+            span,
+            i {
+                color: #66615b;
+            }
+        }
+    }
+
+    .showMenu i.arrow {
+        transform: rotate(-180deg);
+        transition: all 0.5s ease;
+    }
+
+    i.arrow {
+        transform: rotate(0deg);
+        transition: all 0.5s ease;
+        color: #c3c1bf;
+    }
+
+    .showMenu .sub-menu {
+        position: relative;
+        left: -1rem;
+        right: -1rem;
+        display: block;
+        user-select: none;
+        background-color: #003a7b;
+        // margin-right: 1rem;
+
+        li {
+            position: relative;
+            right: -1rem;
+            background-color: #003a7b;
+            padding: 0.5rem 0;
+        }
+    }
+
+    .sub-menu {
+        // background: #3f84bd;
+        display: none;
+        a:hover {
+            color: $secondary-color;
+        }
+        .active-submenu {
+            color: #2e8fcc;
+        }
+    }
 }

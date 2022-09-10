@@ -14,6 +14,18 @@
     @endforeach
   </div>
 
+  <div class="jatuhtempo_notif notif m-fadeOut p-3">
+    @foreach ($notifikasi['jatuh_tempo'] as $notif)
+      <div class="card_notif">
+        <a href="/administrasi/pesanan/detail/{{ $notif['id_order'] }}" class="text-black text-decoration-none">
+          <p class="mb-0 fw-bold">Peringatan Jatuh Tempo</p>
+          <p class="mb-0">{{ $notif['nomor_invoice'] ?? null }} jatuh tempo pada
+            {{ date('d M Y', strtotime($notif['tanggalJatuhTempo'] ?? '-')) }}</p>
+        </a>
+      </div>
+    @endforeach
+  </div>
+
   <div class="limit_notif notif m-fadeOut p-3">
     @foreach ($notifikasi['pengajuan_limit'] as $notif)
       <div class="card_notif">
@@ -104,10 +116,8 @@
         @foreach ($notifikasi['order_diajukan_salesman'] as $notif)
           <div class="card_notif">
             <a href="/administrasi/pesanan/detail/{{ $notif->id ?? null }}" class="text-black text-decoration-none">
-              <div class="d-flex justify-content-between">
-                <p class="mb-0">Invoice: {{ $notif->linkInvoice->nomor_invoice ?? null }}</p>
-                <p class="mb-0">{{ date('d F Y', strtotime($notif->linkOrderTrack->waktu_diteruskan ?? '-')) }}</p>
-              </div>
+              <p class="mb-0">Invoice: {{ $notif->linkInvoice->nomor_invoice ?? null }}</p>
+              <p class="mb-0">{{ date('d F Y', strtotime($notif->linkOrderTrack->waktu_diteruskan ?? '-')) }}</p>
               @php
                 $total_pesanan = 0;
                 foreach ($notif->linkOrderItem as $orderitem) {
@@ -151,10 +161,11 @@
   <div class="reimbursement_notif notif m-fadeOut p-3">
     @foreach ($notifikasi['reimbursement'] as $notif)
       <div class="card_notif">
-        <a href="/administrasi/reimbursement/pengajuan/{{ $notif->id ?? null }}" class="text-black text-decoration-none">
+        <a href="/administrasi/reimbursement/pengajuan/{{ $notif->id ?? null }}"
+          class="text-black text-decoration-none">
           <p class="mb-0">Pengajuan dari {{ $notif->linkStaffPengaju->nama ?? null }}</p>
           <p class="mb-0">Diajukan pada {{ date('d F Y', strtotime($notif->created_at ?? '-')) }}</p>
-          @if ($notif->status_enum ?? null)
+          @if ($notif->status_enum != null)
             <p class="mb-0">{{ $notif->status_enum == '0' ? 'Menunggu Konfirmasi' : 'Menunggu Pembayaran' }}</p>
           @endif
         </a>
@@ -162,29 +173,40 @@
     @endforeach
   </div>
 
-  <div class="card-main_wrapper mt-4" id="dashboardAdmin">
-    <div class="card-main bg-primary">
-      <i class="bi bi-box2"></i>
-      <h1 class="fs-5 fw-bold">Jumlah Item</h1>
-      <h1 class="counter">{{ $data['jumlah_item'] ?? null }}</h1>
-      <small class="d-block">Item aktif sebanyak {{ $data['jumlah_item_aktif'] ?? null }}</small>
-    </div>
+  <div class="px-5 pt-4" id="dashboardAdmin">
+    @if (session()->has('pesanSukses'))
+      <div id="hideMeAfter3Seconds">
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+          {{ session('pesanSukses') }}
+          <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+      </div>
+    @endif
 
-    <div class="card-main bg-info">
-      <i class="bi bi-box2"></i>
-      <h1 class="fs-5 fw-bold">Jumlah Kendaraan</h1>
-      <h1 class="counter">{{ $data['jumlah_kendaraan'] ?? null }}</h1>
-    </div>
+    <div class="card-main_wrapper mt-4">
+      <div class="card-main bg-primary">
+        <i class="bi bi-box2"></i>
+        <h1 class="fs-5 fw-bold">Jumlah Item</h1>
+        <h1 class="counter">{{ $data['jumlah_item'] ?? null }}</h1>
+        <small class="d-block">Item aktif sebanyak {{ $data['jumlah_item_aktif'] ?? null }}</small>
+      </div>
 
-    <div class="card-main bg-success">
-      <i class="bi bi-box2"></i>
-      <h1 class="fs-5 fw-bold">Jumlah Customer</h1>
-      <h1 class="counter">{{ $data['jumlah_customer'] ?? null }}</h1>
-      <small class="d-block">Customer aktif sebanyak {{ $data['jumlah_customer_aktif'] ?? null }}</small>
-    </div>
+      <div class="card-main bg-info">
+        <i class="bi bi-box2"></i>
+        <h1 class="fs-5 fw-bold">Jumlah Kendaraan</h1>
+        <h1 class="counter">{{ $data['jumlah_kendaraan'] ?? null }}</h1>
+      </div>
 
-    <input type="hidden" name="loginPassword" value="{{ session('password') }}">
-    <input type="hidden" name="countt" value="{{ session('count') }}">
+      <div class="card-main bg-success">
+        <i class="bi bi-box2"></i>
+        <h1 class="fs-5 fw-bold">Jumlah Customer</h1>
+        <h1 class="counter">{{ $data['jumlah_customer'] ?? null }}</h1>
+        <small class="d-block">Customer aktif sebanyak {{ $data['jumlah_customer_aktif'] ?? null }}</small>
+      </div>
+
+      <input type="hidden" name="loginPassword" value="{{ session('password') }}">
+      <input type="hidden" name="countt" value="{{ session('count') }}">
+    </div>
   </div>
 
   @push('JS')

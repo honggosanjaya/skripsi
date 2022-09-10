@@ -19,4 +19,8 @@ class CashAccount extends Model
     public function linkReimbursement(){
         return $this->hasMany(Reimbursement::class,'id_cash_account','id');
     }
+
+    public function linkKas(){
+      return $this->hasMany(Kas::class,'id_cash_account','id');
+    }
 }
