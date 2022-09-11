@@ -20,6 +20,7 @@ use App\Http\Controllers\CategoryItemController;
 use App\Http\Controllers\KasController;
 use App\Http\Controllers\LaporanPenagihanController;
 use App\Http\Controllers\RencanaTripController;
+use App\Http\Controllers\TargetController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -129,6 +130,10 @@ Route::prefix('supervisor')->middleware('supervisor')->group(function() {
   Route::get('/stokopname/{order:id}', [OrderController::class, 'detailPengajuanOpname']);
   Route::post('/stokopname/setuju/{order:id}', [OrderController::class, 'konfirmasiPengajuanOpname']);
   Route::post('/stokopname/tolak/{order:id}', [OrderController::class, 'tolakPengajuanOpname']);
+
+  Route::get('/target', [TargetController::class, 'index']);
+  Route::get('/target/tambah', [TargetController::class, 'tambahTarget']);
+  Route::post('/target/tambah', [TargetController::class, 'storeTarget']);
 });
 
 

@@ -6,11 +6,44 @@ import { getTime } from "../reuse/HelperFunction";
 
 const HistoryTrip = () => {
   const { dataUser } = useContext(UserContext);
-
+  const [dataTarget, setDataTarget] = useState(null);
   var todayDate = new Date().toISOString().slice(0, 10);
 
   const [tanggal, setTanggal] = useState(todayDate);
   const [dataKunjungans, setDataKunjungans] = useState(null);
+  const [dataEC, setDataEC] = useState([]);
+  const [dataTargetKunjungan, setDataTargetKunjungan] = useState([]);
+  const [dataTargetEC, setDataTargetEC] = useState([]);
+
+  useEffect(() => {
+    axios({
+      method: "get",
+      url: `${window.location.origin}/api/salesman/target`,
+      headers: {
+        Accept: "application/json",
+      },
+    })
+      .then(response => {
+        console.log('data target', response.data.data);
+        setDataTarget(response.data.data);
+      })
+      .catch(error => {
+        console.log(error.message);
+      });
+  }, [])
+
+  useEffect(() => {
+    if (dataKunjungans) {
+      setDataEC(dataKunjungans.filter((item) => { return item.status_enum == '2' }));
+    }
+  }, [dataKunjungans])
+
+  useEffect(() => {
+    if (dataTarget) {
+      setDataTargetKunjungan(dataTarget.filter((item) => { return item.jenis_target == '3' }));
+      setDataTargetEC(dataTarget.filter((item) => { return item.jenis_target == '4' }));
+    }
+  }, [dataTarget])
 
   useEffect(() => {
     if (dataUser.id_staff) {
@@ -25,7 +58,7 @@ const HistoryTrip = () => {
         },
       })
         .then(response => {
-          console.log('dataku', response.data.data);
+          console.log('data kunjungan', response.data.data);
           setDataKunjungans(response.data.data);
         })
         .catch(error => {
@@ -51,9 +84,15 @@ const HistoryTrip = () => {
           />
         </div>
 
-        {dataKunjungans &&
+        {dataKunjungans && dataTarget &&
           <Fragment>
-            <h6 className="my-4">Jumlah Kunjungan : {dataKunjungans.length}</h6>
+            <h6 className='mt-4'>Jumlah Kunjungan : {dataKunjungans.length} / {dataTargetKunjungan[0].value}
+              <span className='text-success'> ({(dataKunjungans.length / dataTargetKunjungan[0].value * 100 > 100 ? 100 : dataKunjungans.length / dataTargetKunjungan[0].value * 100)} % terpenuhi)</span>
+            </h6>
+
+            <h6 className='mb-4'>Jumlah Effective Call : {dataEC.length} / {dataTargetEC[0].value}
+              <span className='text-success'> ({(dataEC.length / dataTargetEC[0].value * 100 > 100 ? 100 : dataEC.length / dataTargetEC[0].value * 100)} % terpenuhi)</span>
+            </h6>
 
             <div className="table-responsive">
               <table className="table">

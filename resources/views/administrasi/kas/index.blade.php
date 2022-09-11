@@ -33,11 +33,11 @@
             <th scope="col" class="text-center">Cash Account</th>
             <th scope="col" class="text-center">Nama</th>
             <th scope="col" class="text-center">Kontak</th>
+            <th scope="col" class="text-center">Keterangan 1</th>
+            <th scope="col" class="text-center">Keterangan 2</th>
             <th scope="col" class="text-center">Debet</th>
             <th scope="col" class="text-center">Kredit</th>
             <th scope="col" class="text-center">Saldo</th>
-            <th scope="col" class="text-center">Keterangan 1</th>
-            <th scope="col" class="text-center">Keterangan 2</th>
             <th scope="col" class="text-center">No. Bukti</th>
           </tr>
         </thead>
