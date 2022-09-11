@@ -13,6 +13,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Controllers\LaporanPenagihanController;
 use App\Http\Controllers\RencanaTripController;
 use App\Http\Controllers\StaffController;
+use App\Http\Controllers\TargetController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -101,3 +102,5 @@ Route::post('administrasi/stok/pengadaan/remove', [CartController::class, 'remov
 Route::post('/getrencanakunjungan/{id}', [RencanaTripController::class, 'datakunjunganAPI']);
 
 Route::get('/administrasi/unduhinvoice/{order:id}', [OrderController::class, 'unduhInvocieBtnAPI']);
+
+Route::get('/salesman/target', [TargetController::class, 'getTargetAPI']);
