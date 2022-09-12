@@ -17,6 +17,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Controllers\Api\LoginController;
 use App\Http\Controllers\CashAccountController;
 use App\Http\Controllers\CategoryItemController;
+use App\Http\Controllers\EmailController;
 use App\Http\Controllers\KasController;
 use App\Http\Controllers\LaporanPenagihanController;
 use App\Http\Controllers\RencanaTripController;
@@ -257,6 +258,9 @@ Route::prefix('customer')->middleware('customer')->group(function() {
   Route::post('/profil/gantipassword/{user:id}', [AuthController::class, 'gantiPassword']);
   Route::post('/historyorder/hapus/{order:id}', [OrderController::class, 'hapusKodeCustomer']);
 });
+
+// ============ EMAIL ==============
+Route::get('/kirimemail', [EmailController::class, 'index']);
 
 // Route::prefix('salesman')->middleware('salesman')->group(function() {
 //   Route::get('/', [HomeController::class, 'indexSalesman']);
