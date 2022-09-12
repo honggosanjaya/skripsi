@@ -259,9 +259,6 @@ Route::prefix('customer')->middleware('customer')->group(function() {
   Route::post('/historyorder/hapus/{order:id}', [OrderController::class, 'hapusKodeCustomer']);
 });
 
-// ============ EMAIL ==============
-Route::get('/kirimemail', [EmailController::class, 'index']);
-
 // Route::prefix('salesman')->middleware('salesman')->group(function() {
 //   Route::get('/', [HomeController::class, 'indexSalesman']);
 // });
