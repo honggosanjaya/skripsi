@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\CashAccount;
+use App\Models\Kas;
 use App\Models\Reimbursement;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
@@ -228,28 +229,60 @@ class CashAccountController extends Controller
   
   public function adminReimbursementPengajuanDetail(Reimbursement $reimbursement){
     $reimbursement = Reimbursement::find($reimbursement->id);
+    $listskas = CashAccount::where('account', '<=', '100')->get();
+
     return view('administrasi.reimbursement.detailReimbursement', [
       'reimbursement' => $reimbursement,
+      'listskas' => $listskas
     ]);
   }
 
-  public function setujuReimbursement(Reimbursement $reimbursement){
+  public function setujuReimbursement(Request $request, Reimbursement $reimbursement){
+    $request->validate([
+      'keterangan_konfirmasi' => 'required'            
+    ]);
+
     Reimbursement::find($reimbursement->id)->update([
+      'keterangan_konfirmasi' => $request->keterangan_konfirmasi,
       'id_staff_pengonfirmasi' => auth()->user()->id_users,
       'status_enum' => '1'
     ]);
     return redirect('/administrasi/reimbursement') -> with('pesanSukses', 'Berhasil menyetujui pengajuan' );
   }
 
-  public function tolakReimbursement(Reimbursement $reimbursement){
+  public function tolakReimbursement(Request $request, Reimbursement $reimbursement){
+    $request->validate([
+      'keterangan_konfirmasi' => 'required'            
+    ]);
+
     Reimbursement::find($reimbursement->id)->update([
+      'keterangan_konfirmasi' => $request->keterangan_konfirmasi,
       'id_staff_pengonfirmasi' => auth()->user()->id_users,
       'status_enum' => '-1'
     ]);
     return redirect('/administrasi/reimbursement') -> with('pesanSukses', 'Berhasil menolak pengajuan' );
   }
 
-  public function bayarReimbursement(Reimbursement $reimbursement){
+  public function bayarReimbursement(Request $request, Reimbursement $reimbursement){
+    $request->validate([
+      'kas' => 'required'            
+    ]);
+
+    $cashaccount = CashAccount::find($request->kas);
+
+    Kas::create([
+      'id_staff' => auth()->user()->id_users,
+      'id_cash_account' => $cashaccount->id,
+      'tanggal' => date("Y-m-d"),
+      // 'no_bukti' => ,
+      'debit_kredit' => '-1',
+      'keterangan_1' => 'reimbursement',
+      'keterangan_2' => $reimbursement->keterangan_pengajuan,
+      'uang' => $reimbursement->jumlah_uang,
+      'kas' => $cashaccount->account,
+      'created_at' => now()
+    ]); 
+
     Reimbursement::find($reimbursement->id)->update([
       'status_enum' => '2'
     ]);

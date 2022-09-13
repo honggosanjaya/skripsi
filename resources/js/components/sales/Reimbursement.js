@@ -24,7 +24,6 @@ const Reimbursement = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [historyReimbursement, setHistoryReimbursement] = useState([]);
   const [activeModal, setActiveModal] = useState(null);
-  const [show, setShow] = useState(false);
 
   const Swal = require('sweetalert2');
   let $imagePreview = null;
@@ -301,7 +300,8 @@ const Reimbursement = () => {
                 accept="image/png, image/jpeg"
                 onChange={handleImageChange} />
 
-              <button type="submit" className="btn btn-primary w-100 mt-4" disabled={isLoading}>Submit</button>
+              {jumlahUang && file && keteranganPengajuan ? <button type="submit" className="btn btn-primary w-100 mt-4" disabled={isLoading}>Submit</button>
+                : <button type="button" className="btn btn-primary w-100 mt-4" disabled={true}>Submit</button>}
             </form>
           </div>
         }
