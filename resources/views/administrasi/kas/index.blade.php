@@ -49,7 +49,8 @@
               <td>{{ $kas['original']->linkCashAccount->nama ?? null }}</td>
               <td>{{ $kas['original']->linkStaff->nama ?? null }}</td>
               <td>{{ $kas['original']->kontak ?? null }}</td>
-
+              <td>{{ $kas['original']->keterangan_1 ?? null }}</td>
+              <td>{{ $kas['original']->keterangan_2 ?? null }}</td>
               @if ($kas['original']->debit_kredit != null)
                 @if ($kas['original']->debit_kredit == '1')
                   <td class="text-end">{{ $kas['original']->uang ?? null }}</td>
@@ -62,10 +63,7 @@
                 <td class="text-end"></td>
                 <td class="text-end"></td>
               @endif
-
               <td class="text-end">{{ $kas['totalKas'] }}</td>
-              <td>{{ $kas['original']->keterangan_1 ?? null }}</td>
-              <td>{{ $kas['original']->keterangan_2 ?? null }}</td>
               <td>{{ $kas['original']->no_bukti ?? null }}</td>
             </tr>
           @endforeach

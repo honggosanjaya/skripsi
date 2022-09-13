@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\CashAccount;
 use Illuminate\Http\Request;
 use App\Models\Order;
 use App\Models\OrderTrack;
@@ -15,6 +16,7 @@ use App\Models\Invoice;
 use App\Models\Vehicle;
 use App\Models\Pembayaran;
 use App\Models\History;
+use App\Models\Kas;
 use App\Models\RencanaTrip;
 use Illuminate\Support\Facades\DB;
 use PDF;
@@ -971,6 +973,21 @@ class OrderController extends Controller
       if($total_bayar >= $invoice->harga_total){
         OrderTrack::where('id_order', $order->id)->update([
           'status_enum' => '5'
+        ]);
+      }
+
+      $cashaccount = CashAccount::where('default', '2')->first();
+      if($cashaccount != null){
+        Kas::insert([
+          'id_staff' => auth()->user()->id_users,
+          'tanggal' => date("Y-m-d"),
+          'no_bukti' => $invoice->nomor_invoice,
+          'debit_kredit' => '1',
+          'keterangan_1' => 'pembayaran customer',
+          'uang' => $request->jumlah_pembayaran,
+          'id_cash_account' => $cashaccount->id,
+          'kas' => $cashaccount->account,
+          'created_at' => now()
         ]);
       }
       
