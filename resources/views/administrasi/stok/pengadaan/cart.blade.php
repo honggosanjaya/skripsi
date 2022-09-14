@@ -55,7 +55,6 @@
       <form method="POST" id='data-form' action="/administrasi/stok/pengadaan/tambahpengadaan?route=pengadaan"
         enctype="multipart/form-data">
         @csrf
-
         <div class="row">
           <div class="col">
             <div class="mb-3">
@@ -78,14 +77,35 @@
           </div>
         </div>
 
-        <div class="mb-3">
-          <label for="keterangan" class="form-label">Keterangan <span class='text-danger'>*</span></label>
-          <textarea class="form-control @error('keterangan') is-invalid @enderror" id="keterangan" name="keterangan">{{ old('keterangan') }}</textarea>
-          @error('keterangan')
-            <div class="invalid-feedback">
-              {{ $message }}
+        <div class="row">
+          <div class="col">
+            <div class="mb-3">
+              <label for="keterangan" class="form-label">Keterangan <span class='text-danger'>*</span></label>
+              <textarea class="form-control @error('keterangan') is-invalid @enderror" id="keterangan" name="keterangan">{{ old('keterangan') }}</textarea>
+              @error('keterangan')
+                <div class="invalid-feedback">
+                  {{ $message }}
+                </div>
+              @enderror
             </div>
-          @enderror
+          </div>
+          @if ($defaultpengadaan ?? null)
+            <div class="col">
+              <div class="mb-3">
+                <label for="kas" class="form-label">Pilih Kas yang Berkurang <span
+                    class='text-danger'>*</span></label>
+                <select class="form-select" name="kas">
+                  @foreach ($listskas as $kas)
+                    @if (old('kas') == $kas->id)
+                      <option value="{{ $kas->id }}" selected>{{ $kas->nama }}</option>
+                    @else
+                      <option value="{{ $kas->id }}">{{ $kas->nama }}</option>
+                    @endif
+                  @endforeach
+                </select>
+              </div>
+            </div>
+          @endif
         </div>
 
         <div class="row justify-content-end mt-4">

@@ -84,6 +84,7 @@
         <form action="/administrasi/reimbursement/pengajuan/dibayar/{{ $reimbursement->id }}" method="POST">
           @csrf
           <div class="row">
+            <input type="hidden" value="{{ $reimbursement->linkCashAccount->id }}" id="idCashAccount" name="idCashAccount">
             <div class="col-6">
               <div class="mb-3">
                 <label for="kas" class="form-label">Pilih Kas yang Berkurang <span

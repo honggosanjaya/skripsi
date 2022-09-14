@@ -172,6 +172,10 @@ class ItemController extends Controller
       'keterangan' => ['required', 'string', 'max:255'],
     ]);
 
+    if($request->kas != null){
+      $rules['kas'] = ['required'];
+    }
+
     $request->validate($rules);
 
     $uangKas = 0;
@@ -210,7 +214,7 @@ class ItemController extends Controller
         'keterangan_2' => $request->keterangan,
         'uang' => $uangKas,
         'id_cash_account' => $cashaccount->id,
-        'kas' => $cashaccount->account,
+        'kas' => $request->kas,
         'created_at' => now()
       ]);
     }

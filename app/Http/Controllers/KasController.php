@@ -9,12 +9,13 @@ use Illuminate\Http\Request;
 
 class KasController extends Controller
 {
-  public function index(){
+
+  public function bukuKas(CashAccount $cashaccount){
     $saldoKas = [];
-    $allKas = Kas::where('status', null)->orWhere('status', '1')->orderBy('tanggal','DESC')->orderBy('created_at','DESC')->get();
+    $bukuKas = Kas::where('id_cash_account', $cashaccount->id)->where('status', null)->orWhere('status', '1')->orderBy('tanggal','DESC')->orderBy('created_at','DESC')->get();
 
     $totalKas = 0;
-    foreach($allKas as $kas){
+    foreach($bukuKas as $kas){
       if($kas->debit_kredit == '-1'){
         $totalKas = $totalKas - $kas->uang;
       }else if($kas->debit_kredit == '1'){
@@ -26,10 +27,17 @@ class KasController extends Controller
       ]);
     }
 
-    // dd($saldoKas);
+    return view('administrasi.kas.bukukas', [
+      'listsofkas' => $saldoKas,
+      'title' => $cashaccount->nama,
+    ]);
+  }
+
+  public function index(){
+    $bukuKas = CashAccount::where('account', '<', 100)->get();
 
     return view('administrasi.kas.index', [
-      'listsofkas' => $saldoKas,
+      'bukuKas' => $bukuKas
     ]);
   }
 

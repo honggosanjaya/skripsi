@@ -16,7 +16,7 @@ const Reimbursement = () => {
   const [tabActive, setTabActive] = useState('history');
   const [jumlahUang, setJumlahUang] = useState('');
   const [keteranganPengajuan, setKeteranganPengajuan] = useState('');
-  const [cashAccount, setCashAccount] = useState('1');
+  const [cashAccount, setCashAccount] = useState(null);
   const [file, setFile] = useState(null);
   const [imagePreviewUrl, setImagePreviewUrl] = useState('');
   const [showCashAccountOption, setShowCashAccountOption] = useState([]);
@@ -38,6 +38,7 @@ const Reimbursement = () => {
     axios.get(`${window.location.origin}/api/cashAcountOption`).then(response => {
       console.log('cashaccount', response.data);
       setListCashAccount(response.data.cashaccount);
+      setCashAccount(response.data.cashaccount[0].id)
     })
   }, [])
 
@@ -81,7 +82,6 @@ const Reimbursement = () => {
   const clearAllInputField = () => {
     setJumlahUang('');
     setKeteranganPengajuan('');
-    setCashAccount('1');
     setFile(null);
     setImagePreviewUrl('');
   }
@@ -264,14 +264,15 @@ const Reimbursement = () => {
             <h1 className='fw-bold fs-5'>Pengajuan</h1>
             <hr />
             <form onSubmit={handleSubmitReimbursement}>
-              <div className="mb-3">
-                <label className="form-label">Jenis Pengeluaran <span className='text-danger'>*</span></label>
-                <select className="form-select"
-                  value={cashAccount}
-                  onChange={(e) => setCashAccount(e.target.value)}>
-                  {showCashAccountOption}
-                </select>
-              </div>
+              {cashAccount &&
+                <div className="mb-3">
+                  <label className="form-label">Jenis Pengeluaran <span className='text-danger'>*</span></label>
+                  <select className="form-select"
+                    value={cashAccount}
+                    onChange={(e) => setCashAccount(e.target.value)}>
+                    {showCashAccountOption}
+                  </select>
+                </div>}
 
               <div className="mb-3">
                 <label className="form-label">Jumlah Pengeluaran <span className='text-danger'>*</span></label>

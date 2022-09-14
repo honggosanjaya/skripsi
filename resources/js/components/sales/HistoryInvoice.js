@@ -143,9 +143,9 @@ const HistoryInvoice = () => {
                 <tbody>
                   {detailItem.map((data) => (
                     <tr key={data.id}>
-                      <td className='align-middle'>{data.link_item.nama}</td>
-                      <td className='text-center align-middle'>{data.kuantitas}</td>
-                      <td className='text-center align-middle'>{convertPrice(data.harga_satuan)}</td>
+                      <td className='align-middle'>{data.link_item.nama ?? null}</td>
+                      <td className='text-center align-middle'>{data.kuantitas ?? null}</td>
+                      <td className='text-center align-middle'>{convertPrice(data.harga_satuan ?? 0)}</td>
                     </tr>
                   ))}
                 </tbody>

@@ -929,12 +929,17 @@ class OrderController extends Controller
       3 => 'dicicil',
     ];
 
+    $defaultpenjualan = CashAccount::where('default', '2')->first();
+    $listskas = CashAccount::where('account', '<=', '100')->get();
+
     return view('administrasi.pesanan.pembayaran.index',[
       'order' => $order,
       'stafs' => $stafs,
       'metodes_pembayaran' => $metodes_pembayaran,
       'histories' => $histories_pembayaran,
-      'total_bayar' => $total_bayar
+      'total_bayar' => $total_bayar,
+      'defaultpenjualan' => $defaultpenjualan,
+      'listskas' => $listskas
     ]);
   }
 
@@ -946,7 +951,7 @@ class OrderController extends Controller
         'jumlah_pembayaran' => ['required'],
         // 'metode_pembayaran' => ['required']
       ];
-      
+
       $validatedData = $request->validate($rules);
       $validatedData['created_at'] = now();
       Pembayaran::insert($validatedData);
@@ -980,13 +985,13 @@ class OrderController extends Controller
       if($cashaccount != null){
         Kas::insert([
           'id_staff' => auth()->user()->id_users,
-          'tanggal' => date("Y-m-d"),
+          'tanggal' => $request->tanggal,
           'no_bukti' => $invoice->nomor_invoice,
           'debit_kredit' => '1',
           'keterangan_1' => 'pembayaran customer',
           'uang' => $request->jumlah_pembayaran,
           'id_cash_account' => $cashaccount->id,
-          'kas' => $cashaccount->account,
+          'kas' => $request->kas,
           'created_at' => now()
         ]);
       }

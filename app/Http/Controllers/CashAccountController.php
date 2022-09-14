@@ -117,7 +117,7 @@ class CashAccountController extends Controller
 
   public function cashAccountOptionAPI(){
     return response()->json([
-      'cashaccount' => CashAccount::get()
+      'cashaccount' => CashAccount::where('account', '>', 100)->get()
     ]);
   }
 
@@ -265,21 +265,19 @@ class CashAccountController extends Controller
 
   public function bayarReimbursement(Request $request, Reimbursement $reimbursement){
     $request->validate([
+      'idCashAccount' => 'required',
       'kas' => 'required'            
     ]);
 
-    $cashaccount = CashAccount::find($request->kas);
-
     Kas::create([
       'id_staff' => auth()->user()->id_users,
-      'id_cash_account' => $cashaccount->id,
+      'id_cash_account' => $request->idCashAccount,
       'tanggal' => date("Y-m-d"),
-      // 'no_bukti' => ,
       'debit_kredit' => '-1',
       'keterangan_1' => 'reimbursement',
       'keterangan_2' => $reimbursement->keterangan_pengajuan,
       'uang' => $reimbursement->jumlah_uang,
-      'kas' => $cashaccount->account,
+      'kas' => $request->kas,
       'created_at' => now()
     ]); 
 
