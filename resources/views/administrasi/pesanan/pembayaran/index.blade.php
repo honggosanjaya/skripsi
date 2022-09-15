@@ -145,6 +145,26 @@
           </div>
         </div>
       </div>
+      @if ($defaultpenjualan ?? null)
+        <div class="row">
+          <div class="col-6">
+            <div class="mb-3">
+              <label for="kas" class="form-label">Pilih Kas yang Bertambah <span
+                  class='text-danger'>*</span></label>
+              <select class="form-select" name="kas">
+                @foreach ($listskas as $kas)
+                  @if (old('kas') == $kas->id)
+                    <option value="{{ $kas->id }}" selected>{{ $kas->nama }}</option>
+                  @else
+                    <option value="{{ $kas->id }}">{{ $kas->nama }}</option>
+                  @endif
+                @endforeach
+              </select>
+            </div>
+          </div>
+        </div>
+      @endif
+
       <div class="row justify-content-end mt-4">
         <div class="col-3 d-flex justify-content-end">
           <button type="submit" class="btn btn-primary">Pesanan Dibayar</button>

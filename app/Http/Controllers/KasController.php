@@ -9,12 +9,13 @@ use Illuminate\Http\Request;
 
 class KasController extends Controller
 {
-  public function index(){
+
+  public function bukuKas(CashAccount $cashaccount){
     $saldoKas = [];
-    $allKas = Kas::where('status', null)->orWhere('status', '1')->orderBy('tanggal','DESC')->orderBy('created_at','DESC')->get();
+    $bukuKas = Kas::where('kas', $cashaccount->id)->where('status', null)->orWhere('status', '1')->orderBy('tanggal','DESC')->orderBy('created_at','DESC')->get();
 
     $totalKas = 0;
-    foreach($allKas as $kas){
+    foreach($bukuKas as $kas){
       if($kas->debit_kredit == '-1'){
         $totalKas = $totalKas - $kas->uang;
       }else if($kas->debit_kredit == '1'){
@@ -26,14 +27,22 @@ class KasController extends Controller
       ]);
     }
 
-    // dd($saldoKas);
-
-    return view('administrasi.kas.index', [
+    return view('administrasi.kas.bukukas', [
       'listsofkas' => $saldoKas,
+      'title' => $cashaccount->nama,
+      'idCashaccount' => $cashaccount->id
     ]);
   }
 
-  public function createKas (){
+  public function index(){
+    $bukuKas = CashAccount::where('account', '<=', 100)->get();
+
+    return view('administrasi.kas.index', [
+      'bukuKas' => $bukuKas
+    ]);
+  }
+
+  public function createKas (CashAccount $cashaccount){
     $staffs = Staff::where('status_enum','1')->whereIn('role', [3, 4])->get();
     $cash_accounts = CashAccount::all();
 
@@ -42,10 +51,14 @@ class KasController extends Controller
       -1 => 'kredit',
     ];
 
+    $namaCashAccount = CashAccount::find($cashaccount->id)->nama;
+
     return view('administrasi.kas.tambahkas', [
       "debitkredits" => $debitkredits,
       "staffs" => $staffs,
-      "cash_accounts" => $cash_accounts
+      "cash_accounts" => $cash_accounts,
+      'idCashaccount' => $cashaccount->id,
+      'title' => 'Tambah Kas - '. $namaCashAccount
     ]);
   }
 
@@ -60,14 +73,62 @@ class KasController extends Controller
       'kontak' => ['nullable', 'string', 'max:255'],
       'keterangan_1' => ['nullable'],
       'keterangan_2' => ['nullable'],
-      'kas' => ['nullable'],
+      'kas' => ['required'],
     ];
 
     $validatedData = $request->validate($rules);
     $validatedData['created_at'] = now();
 
-    Kas::insert($validatedData);
+    $cashaccount = CashAccount::find($request->id_cash_account);
+
+    if($cashaccount->account <= 100){    
+      Kas::insert($validatedData);
+
+      if($request->debit_kredit == '1'){
+        $debitOrKredit = '-1';
+      } else if($request->debit_kredit == '-1'){
+        $debitOrKredit = '1';
+      }
+
+      Kas::insert([
+        'id_staff' => auth()->user()->id_users,
+        'tanggal' => $request->tanggal,
+        'no_bukti' => $request->no_bukti,
+        'id_cash_account' => $request->kas,
+        'debit_kredit' =>  $debitOrKredit,
+        'uang' => $request->uang,
+        'kontak' => $request->kontak,
+        'keterangan_1' => $request->keterangan_1,
+        'keterangan_2' => $request->keterangan_2,
+        'kas' => $request->id_cash_account,
+        'created_at' => now()
+      ]);
+
+      return redirect('/administrasi/kas/'. $request->kas)->with('pesanSukses','Berhasil Melakukan Pindah Saldo Kas'); 
+    }else{
+      Kas::insert($validatedData);
+      return redirect('/administrasi/kas/'. $request->kas)->with('pesanSukses','Berhasil Menambahkan Kas'); 
+    }   
+  }
+
+  public function pindahSaldoAPI(CashAccount $cashaccount){
+    $account = CashAccount::find($cashaccount->id)->account;
+    $nama = Staff::where('id', auth()->user()->id_users)->first()->nama;
     
-    return redirect('/administrasi/kas')->with('pesanSukses','Berhasil Menambahkan Kas'); 
+    if($account <= 100){
+      return response()->json([
+        'data' => [
+          'nama' => $nama,
+        ],
+        'status' => 'success',
+      ]);
+    }else{
+      return response()->json([
+        'data' => [
+          'nama' => null,
+        ],
+        'status' => 'success',
+      ]);
+    }
   }
 }

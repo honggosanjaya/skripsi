@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\CashAccount;
 use Illuminate\Http\Request;
 use App\Models\Customer;
 
@@ -14,7 +15,9 @@ class CartController extends Controller
     
     if ($request->route=="pengadaan") {
       $cartItems = \Cart::session(auth()->user()->id.$request->route)->getContent();
-      return view('administrasi.stok.pengadaan.cart', compact('cartItems'));
+      $defaultpengadaan = CashAccount::where('default', '1')->first();
+      $listskas = CashAccount::where('account', '<=', '100')->get();
+      return view('administrasi.stok.pengadaan.cart', compact('cartItems','defaultpengadaan', 'listskas'));
     }elseif($request->route=="customerOrder") {
       $cartItems = \Cart::session(auth()->user()->id.$request->route)->getContent();
       $customer = Customer::where('id', auth()->user()->id_users)->first();

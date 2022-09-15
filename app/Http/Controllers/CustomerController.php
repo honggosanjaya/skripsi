@@ -18,6 +18,9 @@ use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\File;
 use Intervention\Image\ImageManagerStatic as Image;
 
+use App\Mail\ConfirmationEmail;
+use Illuminate\Support\Facades\Mail;
+
 class CustomerController extends Controller
 {
     public function cariCustomerApi(Request $request){
@@ -327,6 +330,14 @@ class CustomerController extends Controller
           'tabel' => 'customers',
         ]);
         Customer::find($customer)->update(['password'=>Hash::make(12345678)]);
+
+        $details = [
+          'title' => 'Lebih Dekat Dengan UD Surya dan UD Mandiri',
+          'body' => 'Anda hanya perlu mengonfirmasi email anda agar kita saling terhubung. Proses ini sangat singkat dan tidak rumit. Anda dapat melakukannya dengan sangat cepat.',
+          'customer' => Customer::find($customer)
+        ];
+
+        Mail::to($request->email)->send(new ConfirmationEmail($details));       
       }
 
       return redirect('/administrasi/datacustomer') -> with('pesanSukses', 'Data berhasil ditambahkan' );

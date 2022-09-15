@@ -49,6 +49,8 @@
             <th scope="col" class="text-center">No</th>
             <th scope="col" class="text-center">Nama Cash Account</th>
             <th scope="col" class="text-center">Keterangan</th>
+            <th scope="col" class="text-center">Account</th>
+            <th scope="col" class="text-center">Default</th>
             <th scope="col" class="text-center">Aksi</th>
           </tr>
         </thead>
@@ -60,6 +62,12 @@
               </th>
               <td>{{ $cashaccount->nama ?? null }}</td>
               <td>{{ $cashaccount->keterangan ?? null }}</td>
+              <td>{{ $cashaccount->account ?? null }}</td>
+              @if ($cashaccount->default ?? null)
+                <td>{{ $cashaccount->default == '1' ? 'pengadaan' : 'penjualan' }}</td>
+              @else
+                <td></td>
+              @endif
               <td class="text-center">
                 <a href="/supervisor/cashaccount/ubah/{{ $cashaccount->id ?? null }}" class="btn btn-warning"><span
                     class="iconify fs-5 me-1" data-icon="eva:edit-2-fill"></span>

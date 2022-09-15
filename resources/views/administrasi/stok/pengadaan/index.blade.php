@@ -11,6 +11,16 @@
   @push('CSS')
     <link href=" {{ mix('css/administrasi.css') }}" rel="stylesheet">
   @endpush
+
+  @if (session()->has('pesanSukses'))
+    <div id="hideMeAfter3Seconds">
+      <div class="alert alert-success alert-dismissible fade show" role="alert">
+        {{ session('pesanSukses') }}
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+      </div>
+    </div>
+  @endif
+
   <div id="pengadaan">
     {{-- <h1>count: {{ $counter }} {{ $pageWasRefreshed == 1 ? 'true' : 'false' }}</h1> --}}
 
