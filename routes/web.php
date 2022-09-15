@@ -234,7 +234,7 @@ Route::prefix('administrasi')->middleware('administrasi')->group(function() {
   Route::post('/rencanakunjungan/create', [RencanaTripController::class, 'storeRencana']);
 
   Route::get('/kas', [KasController::class, 'index']);
-  Route::get('/kas/create', [KasController::class, 'createKas']);
+  Route::get('/kas/create/{cashaccount:id}', [KasController::class, 'createKas']);
   Route::post('/kas/store', [KasController::class, 'storeKas']);
   Route::get('/kas/{cashaccount:id}', [KasController::class, 'bukuKas']);
 });

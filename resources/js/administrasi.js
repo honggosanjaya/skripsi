@@ -408,8 +408,20 @@ $("#detail-pesanan-admin .btn-close-pdf").click(function () {
 });
 
 
-
-
-
-
-
+$(document).on('change', '#tambahkas #id_cash_account', function (e) {
+  $.ajax({
+    url: window.location.origin + `/api/administrasi/pindahsaldo/${e.target.value}`,
+    method: "GET",
+    success: function (data) {
+      if (data.data.nama != null) {
+        $('#tambahkas #id_staff').addClass('d-none');
+        $('#changeTheName').attr('value', data.data.nama);
+        $('#changeTheName').attr('type', 'text');
+      } else {
+        $('#tambahkas #id_staff').removeClass('d-none');
+        $('#changeTheName').attr('value', '');
+        $('#changeTheName').attr('type', 'hidden');
+      }
+    },
+  });
+});

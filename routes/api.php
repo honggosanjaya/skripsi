@@ -10,6 +10,7 @@ use App\Http\Controllers\EventController;
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\ReturController;
 use App\Http\Controllers\Controller;
+use App\Http\Controllers\KasController;
 use App\Http\Controllers\LaporanPenagihanController;
 use App\Http\Controllers\RencanaTripController;
 use App\Http\Controllers\StaffController;
@@ -104,3 +105,7 @@ Route::post('/getrencanakunjungan/{id}', [RencanaTripController::class, 'datakun
 Route::get('/administrasi/unduhinvoice/{order:id}', [OrderController::class, 'unduhInvocieBtnAPI']);
 
 Route::get('/salesman/target', [TargetController::class, 'getTargetAPI']);
+
+Route::get('/administrasi/pindahsaldo/{cashaccount:id}', [KasController::class, 'pindahSaldoAPI']);
+
+

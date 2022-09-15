@@ -8,14 +8,17 @@
 @endsection
 
 @section('main_content')
-  <div class="pt-4 px-5">
+  <div class="pt-4 px-5" id="tambahkas">
+    <h1 class="fs-5 mb-4">{{ $title }}</h1>
     <form method="POST" id='data-form' action="/administrasi/kas/store" enctype="multipart/form-data">
       @csrf
+      <input type="hidden" value="{{ $idCashaccount }}" id="kas" name="kas">
       <div class="row">
         <div class="col">
           <div class="mb-3">
             <label for="id_staff" class="form-label">Nama <span class='text-danger'>*</span></label>
-            <select class="form-select" name="id_staff">
+            <input type="hidden" value="" id="changeTheName" class="form-control" disabled />
+            <select class="form-select" name="id_staff" id="id_staff">
               @foreach ($staffs as $staff)
                 @if (old('id_staff') == $staff->id)
                   <option value="{{ $staff->id }}" selected>{{ $staff->nama }}</option>
@@ -57,7 +60,8 @@
         <div class="col">
           <div class="mb-3">
             <label for="id_cash_account" class="form-label">Cash Account <span class='text-danger'>*</span></label>
-            <select class="form-select" name="id_cash_account">
+            <select class="form-select" name="id_cash_account" id="id_cash_account">
+              <option disabled selected value>Pilih Cash Account</option>
               @foreach ($cash_accounts as $account)
                 @if (old('id_cash_account') == $account->id)
                   <option value="{{ $account->id }}" selected>{{ $account->nama }}</option>
@@ -147,4 +151,8 @@
       </div>
     </form>
   </div>
+
+  @push('JS')
+    <script src="{{ mix('js/administrasi.js') }}"></script>
+  @endpush
 @endsection

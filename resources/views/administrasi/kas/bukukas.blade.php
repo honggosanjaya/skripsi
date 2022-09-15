@@ -23,7 +23,7 @@
   <div class="px-5 pt-4" id="sistem-kas">
     <h1 class="fs-5">Buku Kas - {{ $title }}</h1>
 
-    <a href="/administrasi/kas/create" class="btn btn-primary my-3">
+    <a href="/administrasi/kas/create/{{ $idCashaccount }}" class="btn btn-primary my-3">
       <span class="iconify fs-3 me-2" data-icon="dashicons:database-add"></span> Tambah Kas
     </a>
 
