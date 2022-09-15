@@ -105,7 +105,3 @@ Route::post('/getrencanakunjungan/{id}', [RencanaTripController::class, 'datakun
 Route::get('/administrasi/unduhinvoice/{order:id}', [OrderController::class, 'unduhInvocieBtnAPI']);
 
 Route::get('/salesman/target', [TargetController::class, 'getTargetAPI']);
-
-Route::get('/administrasi/pindahsaldo/{cashaccount:id}', [KasController::class, 'pindahSaldoAPI']);
-
-

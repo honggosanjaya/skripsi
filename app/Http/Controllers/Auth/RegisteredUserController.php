@@ -17,11 +17,26 @@ use Illuminate\Support\Facades\Mail;
 
 class RegisteredUserController extends Controller
 {
-    /**
-     * Display the registration view.
-     *
-     * @return \Illuminate\View\View
-     */
+  public function confirmEmail($id){
+    User::where('id_users', $id)->update([
+      'email_verified_at' => now()
+    ]);
+
+    $usertype = User::where('id_users', $id)->first()->tabel;
+
+    if($usertype == 'staffs'){
+      $role = Staff::where('id', $id)->first()->linkStaffRole->nama;
+    } else{
+      $role = 'customer';
+    }
+
+    return view('email.confirmemail',[
+      'usertype' => $usertype,
+      'role' => $role
+    ]);
+  }
+
+
     public function create()
     {
         if (session('role') == 'owner') {
@@ -35,14 +50,6 @@ class RegisteredUserController extends Controller
         return view('auth.register',compact('roles'));
     }
 
-    /**
-     * Handle an incoming registration request.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\RedirectResponse
-     *
-     * @throws \Illuminate\Validation\ValidationException
-     */
     public function store(Request $request)
     {
         $request->validate([
@@ -101,6 +108,7 @@ class RegisteredUserController extends Controller
         $details = [
           'title' => 'Konfirmasi Owner UD Surya dan UD Mandiri',
           'body' => 'Anda hanya perlu mengonfirmasi email anda. Proses ini sangat singkat dan tidak rumit. Anda dapat melakukannya dengan sangat cepat.',
+          'user' => Staff::find($staff)
         ];
 
         Mail::to($request->email)->send(new ConfirmationEmail($details));  
