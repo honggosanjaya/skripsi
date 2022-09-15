@@ -329,10 +329,11 @@ const ShippingShipper = () => {
 
           </Modal.Body>
           <Modal.Footer>
-            {isFromGalery && <Button variant="success" onClick={handleSubmitBuktiPengiriman} disabled={imagePreviewUrl == '' ? true : false}>
+            {isFromGalery && <Button variant="success" onClick={handleSubmitBuktiPengiriman} disabled={(imagePreviewUrl == '' || isLoading) ? true : false}>
               <span className="iconify fs-3 me-1" data-icon="material-symbols:download-done"></span> Kirim
             </Button>}
-            {isTakePhoto && <Button variant="success" onClick={handleSubmitBuktiPengiriman} disabled={dataUri == '' ? true : false}>
+
+            {isTakePhoto && <Button variant="success" onClick={handleSubmitBuktiPengiriman} disabled={(dataUri == '' || isLoading) ? true : false}>
               <span className="iconify fs-3 me-1" data-icon="material-symbols:download-done"></span>Kirim
             </Button>}
           </Modal.Footer>
