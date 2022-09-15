@@ -84,14 +84,14 @@ const HistoryTrip = () => {
           />
         </div>
 
-        {dataKunjungans && dataTarget &&
+        {dataKunjungans && dataTarget && dataTargetKunjungan && dataTargetEC &&
           <Fragment>
             <h6 className='mt-4'>Jumlah Kunjungan : {dataKunjungans.length} / {dataTargetKunjungan[0].value}
-              <span className='text-success'> ({(dataKunjungans.length / dataTargetKunjungan[0].value * 100 > 100 ? 100 : dataKunjungans.length / dataTargetKunjungan[0].value * 100)} % terpenuhi)</span>
+              <span className='text-primary'> ({dataKunjungans.length / dataTargetKunjungan[0].value * 100} % terpenuhi)</span>
             </h6>
 
             <h6 className='mb-4'>Jumlah Effective Call : {dataEC.length} / {dataTargetEC[0].value}
-              <span className='text-success'> ({(dataEC.length / dataTargetEC[0].value * 100 > 100 ? 100 : dataEC.length / dataTargetEC[0].value * 100)} % terpenuhi)</span>
+              <span className='text-primary'> ({dataEC.length / dataTargetEC[0].value * 100} % terpenuhi)</span>
             </h6>
 
             <div className="table-responsive">

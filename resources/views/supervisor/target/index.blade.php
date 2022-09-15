@@ -31,7 +31,7 @@
         <thead>
           <tr>
             <th scope="col" class="text-center">No</th>
-            <th scope="col" class="text-center">Jenis Target</th>
+            <th scope="col" class="text-center">Jenis Target / Hari</th>
             <th scope="col" class="text-center">Nilai Target</th>
           </tr>
         </thead>
@@ -41,7 +41,6 @@
               <td colspan="3" class="text-danger text-center">Tidak Ada Data</td>
             </tr>
           @endif
-
 
           @foreach ($targets as $target)
             <tr>
@@ -74,5 +73,9 @@
         </tbody>
       </table>
     </div>
+
+    <h1 class="fs-5">Nb:</h1>
+    <p class="mb-0">1 bulan = 25 hari</p>
+    <p>1 tahun = 300 hari</p>
   </div>
 @endsection

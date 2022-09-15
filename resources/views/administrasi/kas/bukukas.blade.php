@@ -46,7 +46,7 @@
         </thead>
         <tbody>
           @foreach ($listsofkas as $kas)
-            <tr>
+            <tr class="{{ $kas['original']->debit_kredit == '1' ? 'bg-debit' : 'bg-kredit' }}">
               <th scope="row" class="text-center">{{ $loop->iteration }}</th>
               <td>{{ date('d M Y', strtotime($kas['original']->tanggal ?? null)) }}</td>
               <td>{{ $kas['original']->linkCashAccount->nama ?? null }}</td>

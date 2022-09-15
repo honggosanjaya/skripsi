@@ -16,17 +16,14 @@
       <div class="row">
         <div class="col">
           <div class="mb-3">
-            <label for="id_staff" class="form-label">Nama <span class='text-danger'>*</span></label>
-            <input type="hidden" value="" id="changeTheName" class="form-control" disabled />
-            <select class="form-select" name="id_staff" id="id_staff">
-              @foreach ($staffs as $staff)
-                @if (old('id_staff') == $staff->id)
-                  <option value="{{ $staff->id }}" selected>{{ $staff->nama }}</option>
-                @else
-                  <option value="{{ $staff->id }}">{{ $staff->nama }}</option>
-                @endif
-              @endforeach
-            </select>
+            <label for="no_bukti" class="form-label">No. Bukti </label>
+            <input type="text" class="form-control @error('no_bukti') is-invalid @enderror" id="no_bukti"
+              name="no_bukti" value="{{ old('no_bukti') }}">
+            @error('no_bukti')
+              <div class="invalid-feedback">
+                {{ $message }}
+              </div>
+            @enderror
           </div>
         </div>
 
@@ -47,10 +44,10 @@
       <div class="row">
         <div class="col">
           <div class="mb-3">
-            <label for="no_bukti" class="form-label">No. Bukti </label>
-            <input type="text" class="form-control @error('no_bukti') is-invalid @enderror" id="no_bukti"
-              name="no_bukti" value="{{ old('no_bukti') }}">
-            @error('no_bukti')
+            <label for="kontak" class="form-label">Kontak</label>
+            <input type="text" class="form-control @error('kontak') is-invalid @enderror" id="kontak" name="kontak"
+              value="{{ old('kontak') }}">
+            @error('kontak')
               <div class="invalid-feedback">
                 {{ $message }}
               </div>
@@ -98,18 +95,6 @@
                 value="{{ old('uang') }}">
             </div>
             @error('uang')
-              <div class="invalid-feedback">
-                {{ $message }}
-              </div>
-            @enderror
-          </div>
-        </div>
-        <div class="col">
-          <div class="mb-3">
-            <label for="kontak" class="form-label">Kontak</label>
-            <input type="text" class="form-control @error('kontak') is-invalid @enderror" id="kontak" name="kontak"
-              value="{{ old('kontak') }}">
-            @error('kontak')
               <div class="invalid-feedback">
                 {{ $message }}
               </div>
