@@ -12,6 +12,8 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rules;
+use App\Mail\ConfirmationEmail;
+use Illuminate\Support\Facades\Mail;
 
 class RegisteredUserController extends Controller
 {
@@ -96,9 +98,17 @@ class RegisteredUserController extends Controller
 
         // Auth::login($user);
 
+        $details = [
+          'title' => 'Konfirmasi Owner UD Surya dan UD Mandiri',
+          'body' => 'Anda hanya perlu mengonfirmasi email anda. Proses ini sangat singkat dan tidak rumit. Anda dapat melakukannya dengan sangat cepat.',
+        ];
+
+        Mail::to($request->email)->send(new ConfirmationEmail($details));  
+
         if (StaffRole::find($request->role)->nama=='owner') {
             return redirect('/login')->with('success','Registration successfull!');
         }
+        
         return redirect('/register')->with('success','Registration successfull!');
     }
 }

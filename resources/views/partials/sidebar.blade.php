@@ -158,6 +158,11 @@
                 <i class="bi bi-boxes me-2"></i><span>Stok Opname</span>
               </a>
             </li>
+            <li>
+              <a class="{{ Request::is('supervisor/target*') ? 'active-submenu' : '' }}" href="/supervisor/target">
+                <i class="bi bi-bullseye me-2"></i><span>Target</span>
+              </a>
+            </li>
           </ul>
         </li>
 

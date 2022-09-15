@@ -64,7 +64,6 @@ class KasController extends Controller
 
   public function storeKas(Request $request){
     $rules = [
-      'id_staff' => ['required'],
       'tanggal' => ['required'],
       'no_bukti' => ['nullable', 'string', 'max:255', 'unique:kas'],
       'id_cash_account' => ['required'],
@@ -77,6 +76,7 @@ class KasController extends Controller
     ];
 
     $validatedData = $request->validate($rules);
+    $validatedData['id_staff'] = auth()->user()->id_users;
     $validatedData['created_at'] = now();
 
     $cashaccount = CashAccount::find($request->id_cash_account);
