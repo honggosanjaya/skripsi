@@ -20,7 +20,7 @@ const KeluarToko = ({ handleShow, alasanPenolakan, setAlasanPenolakan, handleClo
             onChange={(e) => setAlasanPenolakan(e.target.value)} />
         </Modal.Body>
         <Modal.Footer>
-          <Button variant="secondary" onClick={handleClose}>
+          <Button variant="secondary" onClick={handleClose} disabled={shouldDisabled}>
             Batal
           </Button>
           {alasanPenolakan ? <Button variant="danger" onClick={handleKeluarToko} disabled={shouldDisabled}>

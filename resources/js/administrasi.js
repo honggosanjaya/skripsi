@@ -406,10 +406,3 @@ $("#detail-pesanan-admin .btn-close-pdf").click(function () {
     }
   })
 });
-
-
-
-
-
-
-

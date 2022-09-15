@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\CashAccount;
+use App\Models\Kas;
 use App\Models\Reimbursement;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
@@ -12,63 +13,111 @@ use Intervention\Image\ImageManagerStatic as Image;
 class CashAccountController extends Controller
 {
   public function cashAccountIndex(){
-      $cashaccounts = CashAccount::paginate(10);
+      $cashaccounts = CashAccount::orderBy('account', 'ASC')->paginate(10);
       return view('supervisor.cashaccount.index',[
           'cashaccounts' => $cashaccounts            
       ]);
   }
 
   public function cashAccountSearch(){
-      $cashaccounts =  CashAccount::where(strtolower('nama'),'like','%'.request('cari').'%')->paginate(10);
-     
-      return view('supervisor.cashaccount.index',[
-          'cashaccounts' => $cashaccounts
-      ]);
+    $cashaccounts =  CashAccount::where(strtolower('nama'),'like','%'.request('cari').'%')->paginate(10);
+    
+    return view('supervisor.cashaccount.index',[
+      'cashaccounts' => $cashaccounts
+    ]);
   }
 
   public function cashAccountCreate(){
-      return view('supervisor.cashaccount.addcashaccount');
+    $defaults = [
+      1 => 'pengadaan',
+      2 => 'penjualan',
+    ];
+
+    return view('supervisor.cashaccount.addcashaccount',[
+      'defaults' => $defaults
+    ]);
   }
 
   public function cashAccountStore(Request $request){
-      $request->validate([
-          'nama_cashaccount' => 'required|max:255',
-          'keterangan' => 'required'            
-      ]);
+    $rules = ([
+      'nama' => 'required|max:255',
+      'keterangan' => 'required',
+      'account' => 'required|numeric|unique:cash_accounts',
+      'default' => 'nullable'            
+    ]);
 
-      CashAccount::create([
-          'nama' => $request->nama_cashaccount,
-          'keterangan' => $request->keterangan,
-          'created_at' => now()
-      ]); 
+    $validatedData = $request->validate($rules);
+    $validatedData['created_at'] = now();
+
+    $idCashaccount = CashAccount::insertGetId($validatedData);
+    $cashaccount = CashAccount::find($idCashaccount);
+
+    if ($cashaccount->default == '1') {
+      if (CashAccount::where('default', '1')->count()>1) {
+        $another = CashAccount::where('default', '1')->where('id','!=',$idCashaccount)->first();
+        $another->default = null;
+        $another->save();
+      }
+    } else if ($cashaccount->default == '2'){
+      if (CashAccount::where('default', '2')->count()>1) {
+        $another = CashAccount::where('default', '2')->where('id','!=',$idCashaccount)->first();
+        $another->default = null;
+        $another->save();
+      }
+    }
       
-      return redirect('/supervisor/cashaccount')->with('addCashAccountSuccess','Tambah Cash Account Berhasil');
+    return redirect('/supervisor/cashaccount')->with('addCashAccountSuccess','Tambah Cash Account Berhasil');
   }
 
   public function cashAccountEdit(CashAccount $cashaccount){
-      return view('supervisor.cashaccount.editcashaccount',[
-          'cashaccount' => $cashaccount
-      ]);
+    $defaults = [
+      1 => 'pengadaan',
+      2 => 'penjualan',
+    ];
+
+    return view('supervisor.cashaccount.editcashaccount',[
+      'cashaccount' => $cashaccount,
+      'defaults' => $defaults
+    ]);
   }
 
   public function cashAccountUpdate(Request $request, CashAccount $cashaccount){
-      $rules = $request->validate([
-          'nama' => 'required|max:255',
-          'keterangan' => 'required'                   
-      ]);
+    $validation = ([
+      'nama' => 'required|max:255',
+      'keterangan' => 'required',
+      'default' => 'nullable'    
+    ]);
 
-      $rules['updated_at'] = now();
+    if($request->account != CashAccount::where('id', $cashaccount->id)->first()->account){
+      $validation['account'] = 'required|numeric|unique:cash_accounts';
+    }
 
-      CashAccount::Where('id', $cashaccount->id)
-          ->update($rules);
+    $validatedData = $request->validate($validation);
+    $validatedData['updated_at'] = now();
 
-      return redirect('/supervisor/cashaccount')->with('updateCashAccountSuccess','Update Cash Account Berhasil');        
+    CashAccount::where('id', $cashaccount->id)->update($validatedData);
+
+    if (CashAccount::find($cashaccount->id)->default == '1') {
+      if (CashAccount::where('default', '1')->count()>1) {
+        $another = CashAccount::where('default', '1')->where('id','!=',$cashaccount->id)->first();
+        $another->default = null;
+        $another->save();
+      }
+    } else if (CashAccount::find($cashaccount->id)->default == '2'){
+      if (CashAccount::where('default', '2')->count()>1) {
+        $another = CashAccount::where('default', '2')->where('id','!=',$cashaccount->id)->first();
+        $another->default = null;
+        $another->save();
+      }
+    }
+
+    return redirect('/supervisor/cashaccount')->with('updateCashAccountSuccess','Update Cash Account Berhasil');        
   }
 
 
   public function cashAccountOptionAPI(){
     return response()->json([
-      'cashaccount' => CashAccount::get()
+      'cashaccount' => CashAccount::where('account', '>', 100)->get()
     ]);
   }
 
@@ -180,28 +229,58 @@ class CashAccountController extends Controller
   
   public function adminReimbursementPengajuanDetail(Reimbursement $reimbursement){
     $reimbursement = Reimbursement::find($reimbursement->id);
+    $listskas = CashAccount::where('account', '<=', '100')->get();
+
     return view('administrasi.reimbursement.detailReimbursement', [
       'reimbursement' => $reimbursement,
+      'listskas' => $listskas
     ]);
   }
 
-  public function setujuReimbursement(Reimbursement $reimbursement){
+  public function setujuReimbursement(Request $request, Reimbursement $reimbursement){
+    $request->validate([
+      'keterangan_konfirmasi' => 'required'            
+    ]);
+
     Reimbursement::find($reimbursement->id)->update([
+      'keterangan_konfirmasi' => $request->keterangan_konfirmasi,
       'id_staff_pengonfirmasi' => auth()->user()->id_users,
       'status_enum' => '1'
     ]);
     return redirect('/administrasi/reimbursement') -> with('pesanSukses', 'Berhasil menyetujui pengajuan' );
   }
 
-  public function tolakReimbursement(Reimbursement $reimbursement){
+  public function tolakReimbursement(Request $request, Reimbursement $reimbursement){
+    $request->validate([
+      'keterangan_konfirmasi' => 'required'            
+    ]);
+
     Reimbursement::find($reimbursement->id)->update([
+      'keterangan_konfirmasi' => $request->keterangan_konfirmasi,
       'id_staff_pengonfirmasi' => auth()->user()->id_users,
       'status_enum' => '-1'
     ]);
     return redirect('/administrasi/reimbursement') -> with('pesanSukses', 'Berhasil menolak pengajuan' );
   }
 
-  public function bayarReimbursement(Reimbursement $reimbursement){
+  public function bayarReimbursement(Request $request, Reimbursement $reimbursement){
+    $request->validate([
+      'idCashAccount' => 'required',
+      'kas' => 'required'            
+    ]);
+
+    Kas::create([
+      'id_staff' => auth()->user()->id_users,
+      'id_cash_account' => $request->idCashAccount,
+      'tanggal' => date("Y-m-d"),
+      'debit_kredit' => '-1',
+      'keterangan_1' => 'reimbursement',
+      'keterangan_2' => $reimbursement->keterangan_pengajuan,
+      'uang' => $reimbursement->jumlah_uang,
+      'kas' => $request->kas,
+      'created_at' => now()
+    ]); 
+
     Reimbursement::find($reimbursement->id)->update([
       'status_enum' => '2'
     ]);

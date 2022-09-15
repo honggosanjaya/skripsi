@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\CashAccount;
 use Illuminate\Http\Request;
 use App\Models\Order;
 use App\Models\OrderTrack;
@@ -15,6 +16,7 @@ use App\Models\Invoice;
 use App\Models\Vehicle;
 use App\Models\Pembayaran;
 use App\Models\History;
+use App\Models\Kas;
 use App\Models\RencanaTrip;
 use Illuminate\Support\Facades\DB;
 use PDF;
@@ -927,12 +929,17 @@ class OrderController extends Controller
       3 => 'dicicil',
     ];
 
+    $defaultpenjualan = CashAccount::where('default', '2')->first();
+    $listskas = CashAccount::where('account', '<=', '100')->get();
+
     return view('administrasi.pesanan.pembayaran.index',[
       'order' => $order,
       'stafs' => $stafs,
       'metodes_pembayaran' => $metodes_pembayaran,
       'histories' => $histories_pembayaran,
-      'total_bayar' => $total_bayar
+      'total_bayar' => $total_bayar,
+      'defaultpenjualan' => $defaultpenjualan,
+      'listskas' => $listskas
     ]);
   }
 
@@ -944,7 +951,7 @@ class OrderController extends Controller
         'jumlah_pembayaran' => ['required'],
         // 'metode_pembayaran' => ['required']
       ];
-      
+
       $validatedData = $request->validate($rules);
       $validatedData['created_at'] = now();
       Pembayaran::insert($validatedData);
@@ -971,6 +978,21 @@ class OrderController extends Controller
       if($total_bayar >= $invoice->harga_total){
         OrderTrack::where('id_order', $order->id)->update([
           'status_enum' => '5'
+        ]);
+      }
+
+      $cashaccount = CashAccount::where('default', '2')->first();
+      if($cashaccount != null){
+        Kas::insert([
+          'id_staff' => auth()->user()->id_users,
+          'tanggal' => $request->tanggal,
+          'no_bukti' => $invoice->nomor_invoice,
+          'debit_kredit' => '1',
+          'keterangan_1' => 'pembayaran customer',
+          'uang' => $request->jumlah_pembayaran,
+          'id_cash_account' => $cashaccount->id,
+          'kas' => $request->kas,
+          'created_at' => now()
         ]);
       }
       

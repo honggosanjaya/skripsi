@@ -43,6 +43,7 @@ function App() {
             <Route path="/spa/logout" component={LogoutReact} />
 
             <Route exact path="/lapangan/penagihan" component={Penagihan} />
+            <Route exact path="/changepassword" component={ChangePassword} />
 
             <Route path={["/shipper"]}>
               <Route exact path="/shipper" component={DashboardShipper} />
@@ -70,8 +71,6 @@ function App() {
               <Route exact path="/lapangan/jadwal" component={JadwalShipper} />
               <Route exact path="/lapangan/retur/:idCust" component={ReturShipper} />
             </ReturContextProvider>
-
-            <Route exact path="/changepassword" component={ChangePassword} />
 
             <Route path="*" component={NotFound} />
           </Switch>

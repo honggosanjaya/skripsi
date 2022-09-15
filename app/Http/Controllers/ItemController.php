@@ -2,8 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\CashAccount;
 use App\Models\CategoryItem;
-use App\Models\CustomerType;
+use App\Models\Kas;
 use App\Models\Item;
 use App\Models\Order;
 use App\Models\OrderItem;
@@ -171,11 +172,18 @@ class ItemController extends Controller
       'keterangan' => ['required', 'string', 'max:255'],
     ]);
 
+    if($request->kas != null){
+      $rules['kas'] = ['required'];
+    }
+
     $request->validate($rules);
+
+    $uangKas = 0;
 
     $data = [];
     $pengadaan_count="PGD-". explode("-",Pengadaan::orderBy("id", "DESC")->first()->no_pengadaan ?? 'PGD-0')[1] + 1 ."-".date_format(now(),"YmdHis");
     foreach($cartItems as $item){
+      $uangKas = $uangKas + $item->attributes->total_harga;
       array_push($data,[
         'id_item' => $item->id,
         'id_staff' => auth()->user()->id_users,
@@ -193,6 +201,23 @@ class ItemController extends Controller
 
     Pengadaan::insert($data);
     \Cart::session(auth()->user()->id.$request->route)->clear();
+
+
+    $cashaccount = CashAccount::where('default', '1')->first();
+    if($cashaccount != null){
+      Kas::insert([
+        'id_staff' => auth()->user()->id_users,
+        'tanggal' => date("Y-m-d"),
+        'no_bukti' => $pengadaan_count,
+        'debit_kredit' => '-1',
+        'keterangan_1' => 'pengadaan',
+        'keterangan_2' => $request->keterangan,
+        'uang' => $uangKas,
+        'id_cash_account' => $cashaccount->id,
+        'kas' => $request->kas,
+        'created_at' => now()
+      ]);
+    }
 
     return redirect()->route('products.list')->with('pesanSukses', 'Produk berhasil ditambahkan ke database');
   }
