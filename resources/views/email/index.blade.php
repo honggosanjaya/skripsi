@@ -20,7 +20,6 @@
 
     .confirm-button {
       padding: 1rem;
-      background-color: #1864ab;
       color: #fff;
       text-decoration: none;
       display: block;
@@ -29,6 +28,7 @@
       margin-right: auto;
       border-radius: 0.5rem;
       text-align: center;
+      background-color: salmon;
     }
   </style>
 </head>
@@ -36,12 +36,14 @@
 <body>
   <div class="container">
     <div class="email-box">
-      <h2>Halo {{ $details['customer']->nama }}</h2>
+      <h2>Halo {{ $details['user']->nama }}</h2>
       <h1>{{ $details['title'] }}</h1>
       <p>{{ $details['body'] }}</p>
     </div>
 
-    <a href="https://www.google.com/" class="confirm-button">Tekan Untuk Mengonfirmasi Email Anda</a>
+    <a href="http://127.0.0.1:8000/confirmemail/{{ $details['user']->id }}" class="confirm-button">
+      Tekan Untuk Mengonfirmasi Email Anda
+    </a>
   </div>
 </body>
 

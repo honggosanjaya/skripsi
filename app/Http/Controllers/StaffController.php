@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use App\Models\Staff;
 use App\Models\StaffRole;
-
 use App\Models\User;
 use App\Models\Trip;
 use Illuminate\Http\Request;
@@ -12,6 +11,8 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Validation\Rules;
 use Intervention\Image\ImageManagerStatic as Image;
+use App\Mail\ConfirmationEmail;
+use Illuminate\Support\Facades\Mail;
 
 class StaffController extends Controller
 {
@@ -105,6 +106,14 @@ class StaffController extends Controller
         'password' => $validatedData['password'],
         'tabel' => 'staffs',
       ]);
+
+      $details = [
+        'title' => 'Konfirmasi Supervisor Marketing',
+        'body' => 'Anda hanya perlu mengonfirmasi email anda. Proses ini sangat singkat dan tidak rumit. Anda dapat melakukannya dengan sangat cepat.',
+        'user' => Staff::find($staff)
+      ];
+      
+      Mail::to($request->email)->send(new ConfirmationEmail($details));  
 
       event(new Registered($user));
 

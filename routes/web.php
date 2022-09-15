@@ -15,6 +15,7 @@ use App\Http\Controllers\VehicleController;
 use App\Http\Controllers\ReturController;
 use App\Http\Controllers\Controller;
 use App\Http\Controllers\Api\LoginController;
+use App\Http\Controllers\Auth\RegisteredUserController;
 use App\Http\Controllers\CashAccountController;
 use App\Http\Controllers\CategoryItemController;
 use App\Http\Controllers\EmailController;
@@ -40,6 +41,8 @@ Route::get('/', function () {
 });
 Route::get('/test',[Controller::class, 'test']);
 
+Route::get('/confirmemail/{id}',[RegisteredUserController::class, 'confirmEmail']);
+
 // ============ OWNER ==============
 Route::prefix('owner')->middleware('owner')->group(function() {
   Route::get('/report/penjualan', [ReportController::class,'penjualan']);
@@ -49,9 +52,9 @@ Route::prefix('owner')->middleware('owner')->group(function() {
   // Route::post('/', [ReportController::class, 'index']);
   Route::get('/profil', [HomeController::class, 'lihatProfil']);
   Route::get('/datasupervisor', [StaffController::class, 'datasupervisor']);
+  Route::get('/datasupervisor/create', [StaffController::class, 'createSupervisor']);
   Route::get('/datasupervisor/{staff:id}', [StaffController::class, 'detailDatasupervisor']);
   Route::post('/datasupervisor', [StaffController::class, 'store']);
-  Route::get('/datasupervisor/create', [StaffController::class, 'createSupervisor']);
   Route::post('/datasupervisor', [StaffController::class, 'store']);
   Route::get('/datasupervisor/edit/{staff:id}', [StaffController::class, 'editSupervisor']);
   Route::put('/datasupervisor/{id}/edit', [StaffController::class, 'update']);
