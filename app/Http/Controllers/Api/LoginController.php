@@ -34,6 +34,17 @@ class LoginController extends Controller
           'message' => 'email atau password anda salah'
         ], 401);
       }
+
+      // uncomment untuk user yg blm konfirmasi email agar tdk bisa login
+      // if($user != null){
+      //   if($user->email_verified_at == null){
+      //     return response() -> json([
+      //       'status' => 'error',
+      //       'message' => 'Anda Belum Mengonfirmasi Email'
+      //     ], 401);
+      //   }
+      // }
+
       if ($user->linkStaff->status_enum=='-1'){
         return response() -> json([
           'status' => 'error',
