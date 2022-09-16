@@ -121,7 +121,7 @@ class CustomerController extends Controller
             'user' => Customer::find($id_customer)
           ];
           
-          Mail::to($request->email)->send(new ConfirmationEmail($details));  
+          // Mail::to($request->email)->send(new ConfirmationEmail($details));  
 
           Customer::find($id_customer)->update(['password'=>Hash::make(12345678)]);
         }
@@ -141,7 +141,7 @@ class CustomerController extends Controller
             'user' => Customer::find($id_customer)
           ];
           
-          Mail::to($request->email)->send(new ConfirmationEmail($details));  
+          // Mail::to($request->email)->send(new ConfirmationEmail($details));  
 
           Customer::find($id_customer)->update(['password'=>Hash::make(12345678)]);
         }
@@ -355,7 +355,7 @@ class CustomerController extends Controller
           'user' => Customer::find($customer)
         ];
 
-        Mail::to($request->email)->send(new ConfirmationEmail($details));       
+        // Mail::to($request->email)->send(new ConfirmationEmail($details));       
       }
 
       return redirect('/administrasi/datacustomer') -> with('pesanSukses', 'Data berhasil ditambahkan' );
@@ -490,7 +490,7 @@ class CustomerController extends Controller
           'user' => Customer::find($customer->id)
         ];
         
-        Mail::to($request->email)->send(new ConfirmationEmail($details));  
+        // Mail::to($request->email)->send(new ConfirmationEmail($details));  
       }
 
       if ($request->koordinat=='on') {
