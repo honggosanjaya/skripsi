@@ -111,7 +111,7 @@ class RegisteredUserController extends Controller
           'user' => Staff::find($staff)
         ];
 
-        Mail::to($request->email)->send(new ConfirmationEmail($details));  
+        // Mail::to($request->email)->send(new ConfirmationEmail($details));  
 
         if (StaffRole::find($request->role)->nama=='owner') {
             return redirect('/login')->with('success','Registration successfull!');
