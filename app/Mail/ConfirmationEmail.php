@@ -27,7 +27,7 @@ class ConfirmationEmail extends Mailable
      * @return $this
      */
     public function build(){
-      return $this->from('udmandiri@gmail.com')
+      return $this->from('suralaya.company@gmail.com')
             ->view('email.index');
     }
 }

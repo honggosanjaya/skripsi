@@ -7,7 +7,7 @@
   <meta http-equiv="X-UA-Compatible" content="ie=edge">
   <style>
     .email-box {
-      background-color: #1864ab;
+      background-color: #5372ef;
       padding: 1.5rem;
       border-radius: 1.5rem 1.5rem 0 0;
     }
@@ -28,7 +28,7 @@
       margin-right: auto;
       border-radius: 0.5rem;
       text-align: center;
-      background-color: salmon;
+      background-color: #5372ef;
     }
   </style>
 </head>
@@ -41,7 +41,7 @@
       <p>{{ $details['body'] }}</p>
     </div>
 
-    <a href="http://127.0.0.1:8000/confirmemail/{{ $details['user']->id }}" class="confirm-button">
+    <a href="https://salesman-dev.suralaya.web.id/confirmemail/{{ $details['user']->id }}" class="confirm-button">
       Tekan Untuk Mengonfirmasi Email Anda
     </a>
   </div>
