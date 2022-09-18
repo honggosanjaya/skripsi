@@ -12,6 +12,11 @@ use Illuminate\Support\Facades\Auth;
 
 class LoginController extends Controller
 {
+  // public function __construct()
+  // {
+  //   $this->middleware(['auth', 'verified']);
+  // }
+
     public function index(Request $request)
     {
       $validator = Validator::make($request->all(), [
@@ -36,14 +41,14 @@ class LoginController extends Controller
       }
 
       // uncomment untuk user yg blm konfirmasi email agar tdk bisa login
-      // if($user != null){
-      //   if($user->email_verified_at == null){
-      //     return response() -> json([
-      //       'status' => 'error',
-      //       'message' => 'Anda Belum Mengonfirmasi Email'
-      //     ], 401);
-      //   }
-      // }
+      if($user != null){
+        if($user->email_verified_at == null){
+          return response() -> json([
+            'status' => 'error',
+            'message' => 'Anda Belum Mengonfirmasi Email'
+          ], 401);
+        }
+      }
 
       if ($user->linkStaff->status_enum=='-1'){
         return response() -> json([

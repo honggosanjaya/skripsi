@@ -73,19 +73,19 @@ class AuthenticatedSessionController extends Controller
             return redirect()->intended('/supervisor');
         }
         if($request->session()->get('role')=='salesman'){
-            Auth::guard('web')->logout();
+            // Auth::guard('web')->logout();
 
-            $request->session()->invalidate();
+            // $request->session()->invalidate();
 
-            $request->session()->regenerateToken();
+            // $request->session()->regenerateToken();
             return redirect()->intended('/spa/login');
         }
         if($request->session()->get('role')=='shipper'){
-            Auth::guard('web')->logout();
+            // Auth::guard('web')->logout();
 
-            $request->session()->invalidate();
+            // $request->session()->invalidate();
 
-            $request->session()->regenerateToken();
+            // $request->session()->regenerateToken();
             return redirect()->intended('/spa/login');
         }
         if($request->session()->get('role')=='administrasi'){
