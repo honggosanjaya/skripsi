@@ -23,7 +23,8 @@
       <hr class="my-4" />
       <h1 class="mb-3 fs-6">Administrasi</h1>
       <ul class="p-0 nav-links">
-        <li class="mb-3 menu-group">
+        <li
+          class="mb-3 menu-group {{ Request::is('administrasi/kendaraan*') || Request::is('administrasi/datacustomer*') ? 'showMenu' : '' }}">
           <div
             class="icon-link {{ Request::is('administrasi/kendaraan*') || Request::is('administrasi/datacustomer*') ? 'active' : '' }}">
             <a>
@@ -48,7 +49,8 @@
           </ul>
         </li>
 
-        <li class="mb-3 menu-group">
+        <li
+          class="mb-3 menu-group {{ Request::is('administrasi/lp3*') || Request::is('administrasi/rencanakunjungan*') ? 'showMenu' : '' }}">
           <div
             class="icon-link {{ Request::is('administrasi/lp3*') || Request::is('administrasi/rencanakunjungan*') ? 'active' : '' }}">
             <a>

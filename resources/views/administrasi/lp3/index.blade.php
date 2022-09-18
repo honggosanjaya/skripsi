@@ -67,6 +67,22 @@
             </div>
           </div>
 
+          <div class="row mb-3">
+            <div class="col-6">
+              <label class="form-label">Kunjungi Berdasar Wilayah</label>
+              <select class="form-select select-district" id="id_district" name="id_district">
+                <option disabled selected value>
+                  Pilih Wilayah
+                </option>
+                @foreach ($districts as $district)
+                  <option value="{{ $district->id }}">
+                    {{ $district->nama ?? null }}
+                  </option>
+                @endforeach
+              </select>
+            </div>
+          </div>
+
           <div class="form-group">
             <div>
               <div class="row">
