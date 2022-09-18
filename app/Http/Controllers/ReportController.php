@@ -19,6 +19,11 @@ use App\Models\History;
 
 class ReportController extends Controller
 {
+  public function __construct()
+  {
+    $this->middleware(['auth', 'verified']);
+  }
+
     public function penjualan(Request $request){
       if (!$request->dateStart??null) {
         request()->request->add(['dateStart'=>date('Y-m-01')]);  
