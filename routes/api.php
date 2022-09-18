@@ -10,6 +10,7 @@ use App\Http\Controllers\EventController;
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\ReturController;
 use App\Http\Controllers\Controller;
+use App\Http\Controllers\DistrictController;
 use App\Http\Controllers\KasController;
 use App\Http\Controllers\LaporanPenagihanController;
 use App\Http\Controllers\RencanaTripController;
@@ -103,5 +104,6 @@ Route::post('administrasi/stok/pengadaan/remove', [CartController::class, 'remov
 Route::post('/getrencanakunjungan/{id}', [RencanaTripController::class, 'datakunjunganAPI']);
 
 Route::get('/administrasi/unduhinvoice/{order:id}', [OrderController::class, 'unduhInvocieBtnAPI']);
+Route::get('/administrasi/selectdistict/{district:id}', [DistrictController::class, 'getCustByDistrictAPI']);
 
 Route::get('/salesman/target', [TargetController::class, 'getTargetAPI']);

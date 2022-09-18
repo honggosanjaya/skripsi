@@ -6,6 +6,7 @@ use App\Models\LaporanPenagihan;
 use App\Models\Staff;
 use App\Models\Order;
 use App\Models\Customer;
+use App\Models\District;
 use Illuminate\Http\Request;
 
 class LaporanPenagihanController extends Controller
@@ -20,11 +21,13 @@ class LaporanPenagihanController extends Controller
     
     $staffs = Staff::where('status_enum','1')->whereIn('role', [3, 4])->get();
     $histories = LaporanPenagihan::all();
+    $districts = District::all();
 
     return view('administrasi.lp3.index',[
       'invoices' => $invoices,  
       'staffs' => $staffs,   
-      'histories' => $histories          
+      'histories' => $histories,
+      'districts' => $districts          
     ]);
   }
 

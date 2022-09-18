@@ -84,7 +84,7 @@ const HistoryTrip = () => {
           />
         </div>
 
-        {dataKunjungans && dataTarget && dataTargetKunjungan && dataTargetEC &&
+        {dataKunjungans && dataTarget && dataTargetKunjungan[0] && dataTargetEC[0] &&
           <Fragment>
             <h6 className='mt-4'>Jumlah Kunjungan : {dataKunjungans.length} / {dataTargetKunjungan[0].value}
               <span className='text-primary'> ({dataKunjungans.length / dataTargetKunjungan[0].value * 100} % terpenuhi)</span>
