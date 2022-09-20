@@ -59,7 +59,9 @@ const TripSales = () => {
         setKetAlamat(response.data.data.keterangan_alamat == null ? '' : response.data.data.keterangan_alamat);
         setTelepon(response.data.data.telepon == null ? '' : response.data.data.telepon);
         setDurasiTrip(response.data.data.durasi_kunjungan);
-        setJatuhTempo(response.data.data.jatuh_tempo);
+        if (response.data.data.jatuh_tempo != null) {
+          setJatuhTempo(response.data.data.jatuh_tempo);
+        }
         if (response.data.data.metode_pembayaran != null) {
           setMetodePembayaran(response.data.data.metode_pembayaran);
         }

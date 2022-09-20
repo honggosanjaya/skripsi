@@ -225,10 +225,15 @@ class StaffController extends Controller
 
     public function getHistoryTripApi(Request $request, $id){
       $alltrip = Trip::where('id_staff', $id)->with(['linkCustomer', 'linkCustomer.linkDistrict'])->get();
-      $date = $request->date;
-      $dateTrip = Trip::where('id_staff', $id)->whereDate('created_at', '=', $date)->with(['linkCustomer', 'linkCustomer.linkDistrict'])->get();
 
-      if($date == null){
+      $dateStart = $request->date." 00:00:00";
+      $dateEnd = $request->date." 23:59:59";
+
+      $dateTrip = Trip::whereBetween('waktu_masuk', [$dateStart, $dateEnd])
+      ->where('id_staff', $id)
+      ->with(['linkCustomer', 'linkCustomer.linkDistrict'])->get();
+
+      if(!$request->date ?? null){
         return response()->json([
           'data' => $alltrip,
           'status' => 'success'

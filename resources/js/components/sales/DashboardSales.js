@@ -31,6 +31,13 @@ const DashboardSales = () => {
   const [tanggal, setTanggal] = useState(todayDate);
 
   useEffect(() => {
+    const modal = document.querySelector('.swal2-popup.swal2-icon-success');
+    if (modal) {
+      modal.classList.add('reset-left');
+    }
+  }, [])
+
+  useEffect(() => {
     source = axios.CancelToken.source();
     return () => {
       _isMounted.current = false;
