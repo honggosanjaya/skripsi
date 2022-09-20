@@ -161,6 +161,7 @@ class OrderController extends Controller
     Trip::find($request->idTrip)->update([
       'waktu_keluar' => now(),
       'updated_at' => now(),
+      'status_enum' => '2',
       'alasan_penolakan' => $request->alasan_penolakan
     ]);
     
@@ -221,7 +222,7 @@ class OrderController extends Controller
       'koordinat' => $request->koordinat,
       'waktu_masuk' => date('Y-m-d H:i:s', $request->jam_masuk),
       'waktu_keluar' => null,
-      'status_enum' => '2',
+      'status_enum' => '1',
       'created_at'=> now()
     ];
     if($trip == null){
