@@ -30,6 +30,13 @@ const DashboardShipper = () => {
     setIsDefaultPassword(false);
   }, [])
 
+  useEffect(() => {
+    const modal = document.querySelector('.swal2-popup');
+    if (modal) {
+      modal.classList.add('reset-left');
+    }
+  }, [])
+
   return (
     <main className="page_main" id="listShipper">
       {dataUser.role == 'shipper' ?

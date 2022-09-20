@@ -14,7 +14,7 @@ const KeluarToko = ({ handleShow, alasanPenolakan, setAlasanPenolakan, handleClo
           <Modal.Title>Keluar Toko</Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          <label className="form-label">Alasan Penolakan <span class="text-danger">*</span></label>
+          <label className="form-label">Alasan Penolakan <span className="text-danger">*</span></label>
           <textarea className="form-control"
             value={alasanPenolakan || ''}
             onChange={(e) => setAlasanPenolakan(e.target.value)} />

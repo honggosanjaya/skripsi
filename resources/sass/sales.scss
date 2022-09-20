@@ -64,6 +64,12 @@ textarea {
     max-height: 80px;
 }
 
+.modal-open {
+    .button_bottom {
+        left: -17px;
+    }
+}
+
 .button_bottom.big {
     max-height: 120px;
 }
@@ -161,10 +167,19 @@ label {
 }
 
 // ==== MODAL =======
+.reset-left {
+    left: 0 !important;
+}
+
+.modal-body {
+    max-height: 80vh;
+    overflow-y: auto;
+}
+
 .modal-dialog {
     width: 100%;
     max-width: 375px;
-
+    overflow-y: initial !important;
     .modal-title {
         font-size: 1.2rem !important;
         text-align: center;
@@ -409,10 +424,15 @@ label {
 }
 
 // ========= SWEET ALERT ===========
+.swal2-shown {
+    .swal2-popup {
+        left: calc(-17px / 2);
+    }
+}
 .swal2-popup {
+    width: 100%;
     max-width: 375px !important;
     position: relative;
-    left: -10px;
 }
 .swal2-title {
     font-size: 1.2rem !important;
