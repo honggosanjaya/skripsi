@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 use App\Models\Staff;
 use App\Models\Customer;
+use App\Models\District;
 use App\Models\RencanaTrip;
 use Illuminate\Http\Request;
 
@@ -12,11 +13,13 @@ class RencanaTripController extends Controller
     $customers = Customer::all();
     $staffs = Staff::where('status_enum','1')->where('role', 3)->get();
     $histories = RencanaTrip::all();
+    $districts = District::all();
 
     return view('administrasi.rencanakunjungan.index',[
       'customers' => $customers,  
       'staffs' => $staffs,
-      'histories' => $histories  
+      'histories' => $histories,
+      'districts' => $districts
     ]);
   }
 

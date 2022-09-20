@@ -636,11 +636,14 @@ select[readonly] {
     .sub-menu {
         // background: #3f84bd;
         display: none;
+        a {
+            color: lightblue;
+        }
         a:hover {
             color: $secondary-color;
         }
         .active-submenu {
-            color: #2e8fcc;
+            color: #fff;
         }
     }
 }

@@ -43,6 +43,8 @@ Route::get('/test',[Controller::class, 'test']);
 
 Route::get('/confirmemail/{id}',[RegisteredUserController::class, 'confirmEmail']);
 
+Auth::routes(['verify'=>true]);
+
 // ============ OWNER ==============
 Route::prefix('owner')->middleware('owner')->group(function() {
   Route::get('/report/penjualan', [ReportController::class,'penjualan']);

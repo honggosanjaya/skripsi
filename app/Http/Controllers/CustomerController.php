@@ -11,8 +11,10 @@ use App\Models\Invoice;
 use App\Models\CustomerType;
 use App\Models\OrderItem;
 use App\Models\RencanaTrip;
+use Illuminate\Auth\Events\Registered;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Validation\Rules;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\File;
@@ -108,41 +110,42 @@ class CustomerController extends Controller
         $customer = Customer::insertGetId($data+['koordinat' =>  $request->koordinat]);
         $id_customer = $customer;
         if ($request->email!=null) {
-          User::create([
+          $user = User::create([
             'id_users' =>  $id_customer,
             'email' => $request->email,
             'password' => Hash::make(12345678),
             'tabel' => 'customers',
           ]);
 
-          $details = [
-            'title' => 'Konfirmasi Customer UD Surya dan UD Mandiri',
-            'body' => 'Anda hanya perlu mengonfirmasi email anda. Proses ini sangat singkat dan tidak rumit. Anda dapat melakukannya dengan sangat cepat.',
-            'user' => Customer::find($id_customer)
-          ];
+          // $details = [
+          //   'title' => 'Konfirmasi Customer UD Surya dan UD Mandiri',
+          //   'body' => 'Anda hanya perlu mengonfirmasi email anda. Proses ini sangat singkat dan tidak rumit. Anda dapat melakukannya dengan sangat cepat.',
+          //   'user' => Customer::find($id_customer)
+          // ];
           
           // Mail::to($request->email)->send(new ConfirmationEmail($details));  
-
+          event(new Registered($user));
           Customer::find($id_customer)->update(['password'=>Hash::make(12345678)]);
         }
       } else {
         $id_customer = $request->id;
         if ($request->email!=null && Customer::find($id_customer)->email==null) {
-          User::create([
+          $user = User::create([
             'id_users' =>  $id_customer,
             'email' => $request->email,
             'password' => Hash::make(12345678),
             'tabel' => 'customers',
           ]);
 
-          $details = [
-            'title' => 'Konfirmasi Customer UD Surya dan UD Mandiri',
-            'body' => 'Anda hanya perlu mengonfirmasi email anda. Proses ini sangat singkat dan tidak rumit. Anda dapat melakukannya dengan sangat cepat.',
-            'user' => Customer::find($id_customer)
-          ];
+          
+          // $details = [
+          //   'title' => 'Konfirmasi Customer UD Surya dan UD Mandiri',
+          //   'body' => 'Anda hanya perlu mengonfirmasi email anda. Proses ini sangat singkat dan tidak rumit. Anda dapat melakukannya dengan sangat cepat.',
+          //   'user' => Customer::find($id_customer)
+          // ];
           
           // Mail::to($request->email)->send(new ConfirmationEmail($details));  
-
+          event(new Registered($user));
           Customer::find($id_customer)->update(['password'=>Hash::make(12345678)]);
         }
         if (Customer::find($id_customer)->koordinat==null) {
@@ -341,19 +344,20 @@ class CustomerController extends Controller
       $id=$customer;
 
       if ($request->email){
-        User::create([
+        $user = User::create([
           'id_users' =>  $id,
           'email' => $request->email,
           'password' => Hash::make(12345678),
           'tabel' => 'customers',
         ]);
+        event(new Registered($user));
         Customer::find($customer)->update(['password'=>Hash::make(12345678)]);
 
-        $details = [
-          'title' => 'Konfirmasi Customer UD Surya dan UD Mandiri',
-          'body' => 'Anda hanya perlu mengonfirmasi email anda. Proses ini sangat singkat dan tidak rumit. Anda dapat melakukannya dengan sangat cepat.',
-          'user' => Customer::find($customer)
-        ];
+        // $details = [
+        //   'title' => 'Konfirmasi Customer UD Surya dan UD Mandiri',
+        //   'body' => 'Anda hanya perlu mengonfirmasi email anda. Proses ini sangat singkat dan tidak rumit. Anda dapat melakukannya dengan sangat cepat.',
+        //   'user' => Customer::find($customer)
+        // ];
 
         // Mail::to($request->email)->send(new ConfirmationEmail($details));       
       }
@@ -477,18 +481,19 @@ class CustomerController extends Controller
       }
 
       if ($request->email!=null && $customer->email==null){
-        User::create([
+        $user = User::create([
           'id_users' =>  $customer->id,
           'email' => $request->email,
           'password' => Hash::make(12345678),
           'tabel' => 'customers',
         ]);
+        event(new Registered($user));
 
-        $details = [
-          'title' => 'Konfirmasi Customer UD Surya dan UD Mandiri',
-          'body' => 'Anda hanya perlu mengonfirmasi email anda. Proses ini sangat singkat dan tidak rumit. Anda dapat melakukannya dengan sangat cepat.',
-          'user' => Customer::find($customer->id)
-        ];
+        // $details = [
+        //   'title' => 'Konfirmasi Customer UD Surya dan UD Mandiri',
+        //   'body' => 'Anda hanya perlu mengonfirmasi email anda. Proses ini sangat singkat dan tidak rumit. Anda dapat melakukannya dengan sangat cepat.',
+        //   'user' => Customer::find($customer->id)
+        // ];
         
         // Mail::to($request->email)->send(new ConfirmationEmail($details));  
       }

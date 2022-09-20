@@ -105,13 +105,13 @@ class RegisteredUserController extends Controller
 
         // Auth::login($user);
 
-        $details = [
-          'title' => 'Konfirmasi Owner UD Surya dan UD Mandiri',
-          'body' => 'Anda hanya perlu mengonfirmasi email anda. Proses ini sangat singkat dan tidak rumit. Anda dapat melakukannya dengan sangat cepat.',
-          'user' => Staff::find($staff)
-        ];
+        // $details = [
+        //   'title' => 'Konfirmasi Owner UD Surya dan UD Mandiri',
+        //   'body' => 'Anda hanya perlu mengonfirmasi email anda. Proses ini sangat singkat dan tidak rumit. Anda dapat melakukannya dengan sangat cepat.',
+        //   'user' => Staff::find($staff)
+        // ];
 
-        // Mail::to($request->email)->send(new ConfirmationEmail($details));  
+        // Mail::to($request->email)->send(new ConfirmationEmail($details)); 
 
         if (StaffRole::find($request->role)->nama=='owner') {
             return redirect('/login')->with('success','Registration successfull!');

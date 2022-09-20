@@ -64,56 +64,50 @@ class StaffController extends Controller
     }
 
     public function store(Request $request){
-      $rules = ([
+      $request->validate([
         'nama' => ['required', 'string', 'max:255'],
-        'email' => ['string', 'email', 'max:255', 'unique:users'],
-        'telepon' => ['required','string', 'max:15'],
-        'foto_profil' => ['image','file','max:1024'],
+        'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
+        'telepon' => ['required', 'min:3', 'max:15'],
+        'foto_profil' => 'max:1024',
         'role' => ['required'],
-        'status_enum' => ['required'],
       ]);
 
-      $validatedData = $request->validate($rules);
-
-      $validatedData['password'] = Hash::make(12345678);
-      $validatedData['role'] = $request->role;
-      $validatedData['status_enum'] = $request->status_enum;
-      $validatedData['created_at'] = now();
-
-      if ($request->foto_profil) {
-        $nama_staff = str_replace(" ", "-", $validatedData['nama']);
+      if($request->file('foto_profil')){
         $file= $request->file('foto_profil');
-        $file_name = 'STF-'. $nama_staff.'-' .date_format(now(),"YmdHis").'.'.  $file->getClientOriginalExtension();
+        $nama_staff = str_replace(" ", "-", $request->nama);
+        $filename = 'STF-' . $nama_staff . '-' .date_format(now(),"YmdHis"). '.' . $file->getClientOriginalExtension();
         Image::make($request->file('foto_profil'))->resize(350, null, function ($constraint) {
           $constraint->aspectRatio();
-        })->save(public_path('storage/staff/') . $file_name);
-        $validatedData['foto_profil'] = $file_name;
-      }    
+        })->save(public_path('storage/staff/') . $filename);
+        $request->foto_profil= $filename;
+      }
 
-      $staff=Staff::insertGetId($validatedData);
+      $staff= Staff::insertGetId([
+        'nama' => $request->nama,
+        'email' => $request->email,
+        'password' => Hash::make($request->password),
+        'telepon' => $request->telepon,
+        'role' => $request->role,
+        'status_enum' => '1',
+        'foto_profil'=> $request->foto_profil,
+        'created_at'=>now()
+      ]);
 
       if (Staff::with('linkStaffRole')->find($staff)->linkStaffRole->nama=="supervisor") {
         if (Staff::where('role',2)->where('status_enum','1')->count()>1) {
-          $inactive=Staff::find($staff);
-          $inactive->status_enum='-1';
-          $inactive->save();
+            //jika spv sudah ada dan masih aktif maka status yang baru di non aktifkan
+            $inactive=Staff::find($staff);
+            $inactive->status_enum='-1';
+            $inactive->save();
         }
       }
 
       $user = User::create([
         'id_users' => $staff,
         'email' => $request->email,
-        'password' => $validatedData['password'],
+        'password' => Hash::make('12345678'),
         'tabel' => 'staffs',
-      ]);
-
-      $details = [
-        'title' => 'Konfirmasi Supervisor Marketing',
-        'body' => 'Anda hanya perlu mengonfirmasi email anda. Proses ini sangat singkat dan tidak rumit. Anda dapat melakukannya dengan sangat cepat.',
-        'user' => Staff::find($staff)
-      ];
-      
-      // Mail::to($request->email)->send(new ConfirmationEmail($details));  
+    ]);
 
       event(new Registered($user));
 
@@ -231,10 +225,15 @@ class StaffController extends Controller
 
     public function getHistoryTripApi(Request $request, $id){
       $alltrip = Trip::where('id_staff', $id)->with(['linkCustomer', 'linkCustomer.linkDistrict'])->get();
-      $date = $request->date;
-      $dateTrip = Trip::where('id_staff', $id)->whereDate('created_at', '=', $date)->with(['linkCustomer', 'linkCustomer.linkDistrict'])->get();
 
-      if($date == null){
+      $dateStart = $request->date." 00:00:00";
+      $dateEnd = $request->date." 23:59:59";
+
+      $dateTrip = Trip::whereBetween('waktu_masuk', [$dateStart, $dateEnd])
+      ->where('id_staff', $id)
+      ->with(['linkCustomer', 'linkCustomer.linkDistrict'])->get();
+
+      if(!$request->date ?? null){
         return response()->json([
           'data' => $alltrip,
           'status' => 'success'

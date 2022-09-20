@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\District;
+use App\Models\Customer;
 use Illuminate\Http\Request;
 
 class DistrictController extends Controller
@@ -125,5 +126,22 @@ class DistrictController extends Controller
       $parentCategories = District::where('id_parent',null)->get();
       // dd($parentCategories);
       return view('supervisor.wilayah.wilayahTree', compact('parentCategories'));
+    }
+
+    public function getCustByDistrictAPI(District $district){
+    $customers =  Customer::where('id_wilayah', $district->id)->get();
+
+    $customersInvoice = Customer::where('id_wilayah', $district->id)
+      ->whereHas('linkOrder', function($q){
+        $q->whereHas('linkOrderTrack', function($q){
+          $q->where('status_enum', '4');
+        });
+      })->with(['linkOrder', 'linkOrder.linkInvoice'])->get();
+
+      return response()->json([
+        'status' => 'success',
+        'customers' => $customers,
+        'customersInvoice' => $customersInvoice
+      ]);
     }
 }
