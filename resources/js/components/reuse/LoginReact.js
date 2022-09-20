@@ -16,6 +16,22 @@ const LoginReact = () => {
   const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
+    axios({
+      method: "get",
+      url: `${window.location.origin}/api/logoutUser`,
+      headers: {
+        Accept: "application/json",
+      }
+    })
+      .then(() => {
+
+      })
+      .catch((error) => {
+        console.log(error.message);
+      });
+  }, [])
+
+  useEffect(() => {
     if (isAuth === 'true' && token !== null && dataUser) {
       if (dataUser.role == 'salesman') {
         history.push('/salesman');

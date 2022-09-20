@@ -47,6 +47,7 @@ Route::group(['middleware' => 'auth:sanctum'], function(){
   Route::post('/pesanan/detail/{order:id}/dikirimkan', [OrderController::class, 'konfirmasiPengiriman']);
 });
 Route::get('/forceLogout', [LoginController::class, 'logoutUnauthorizedSPAApi']);
+Route::get('/logoutUser', [LoginController::class, 'logoutUserAPI']);
 
 // SALESMAN
 Route::post('/cariCustomer', [CustomerController::class, 'cariCustomerApi']);

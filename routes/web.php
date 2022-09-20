@@ -24,6 +24,7 @@ use App\Http\Controllers\LaporanPenagihanController;
 use App\Http\Controllers\RencanaTripController;
 use App\Http\Controllers\TargetController;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Auth;
 
 /*
 |--------------------------------------------------------------------------

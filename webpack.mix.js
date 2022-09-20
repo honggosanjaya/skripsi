@@ -34,9 +34,6 @@ mix
       'resources/js/main.js',
       'resources/js/dashboard.js',
       'resources/js/eventHandle.js',
-      'resources/js/profile.js',
-      'resources/js/product.js',
-      'resources/js/retur.js',
     ]
     , 'public/js/main.js'
   );
