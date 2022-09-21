@@ -359,7 +359,7 @@ const TripSales = () => {
               className="form-select">
               <option value="1">Tunai</option>
               <option value="2">Giro</option>
-              <option value="3">Dicicil</option>
+              <option value="3">Transfer</option>
             </select>
           </div>
 

@@ -55,7 +55,7 @@ const KeranjangSales = ({ location }) => {
       id: 2, nama: 'giro'
     },
     {
-      id: 3, nama: 'dicicil'
+      id: 3, nama: 'transfer'
     }
   ]
 

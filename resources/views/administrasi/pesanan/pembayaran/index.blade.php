@@ -34,13 +34,13 @@
           <th scope="col" class="text-center">Nama Penagih</th>
           <th scope="col" class="text-center">Jumlah Pembayaran</th>
           <th scope="col" class="text-center">Tanggal</th>
-          {{-- <th scope="col" class="text-center">Status</th> --}}
+          <th scope="col" class="text-center">Metode Pembayaran</th>
         </tr>
       </thead>
       <tbody>
         @if (count($histories) == 0)
           <tr>
-            <td colspan="4" class="text-center text-danger mb-0">Tidak Ada Data</td>
+            <td colspan="5" class="text-center text-danger mb-0">Tidak Ada Data</td>
           </tr>
         @else
           @foreach ($histories as $history)
@@ -49,6 +49,11 @@
               <td>{{ $history->linkStaffPenagih->nama ?? null }}</td>
               <td class="text-center">{{ number_format($history->jumlah_pembayaran ?? 0, 0, '', '.') ?? null }}</td>
               <td class="text-center">{{ date('d M Y', strtotime($history->tanggal ?? '-')) }}</td>
+              @if ($history->metode_pembayaran !== null)
+                <td>
+                  {{ $history->metode_pembayaran == '1' ? 'Tunai' : ($history->metode_pembayaran == '2' ? 'Giro' : 'Transfer') }}
+                </td>
+              @endif
             </tr>
           @endforeach
         @endif

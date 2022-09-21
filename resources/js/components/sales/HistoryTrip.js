@@ -84,41 +84,51 @@ const HistoryTrip = () => {
           />
         </div>
 
-        {dataKunjungans && dataTarget && dataTargetKunjungan[0] && dataTargetEC[0] &&
-          <Fragment>
-            <h6 className='mt-4'>Jumlah Kunjungan : {dataKunjungans.length} / {dataTargetKunjungan[0].value}
-              <span className='text-primary'> ({dataKunjungans.length / dataTargetKunjungan[0].value * 100} % terpenuhi)</span>
-            </h6>
+        {dataKunjungans && dataTarget && dataTargetKunjungan[0] &&
+          <h6 className='mt-4'>Jumlah Kunjungan : {dataKunjungans.length} / {dataTargetKunjungan[0].value}
+            <span className='text-primary'> ({dataKunjungans.length / dataTargetKunjungan[0].value * 100} % terpenuhi)</span>
+          </h6>
+        }
 
-            <h6 className='mb-4'>Jumlah Effective Call : {dataEC.length} / {dataTargetEC[0].value}
-              <span className='text-primary'> ({dataEC.length / dataTargetEC[0].value * 100} % terpenuhi)</span>
-            </h6>
+        {dataKunjungans && dataTargetKunjungan.length == 0 &&
+          <h6 className='mt-4'>Jumlah Kunjungan : {dataKunjungans.length}</h6>
+        }
 
-            <div className="table-responsive">
-              <table className="table">
-                <thead>
-                  <tr>
-                    <th scope="col" className='text-center'>Nama Toko</th>
-                    <th scope="col" className='text-center'>Wilayah</th>
-                    <th scope="col" className='text-center'>Jam Masuk</th>
-                    <th scope="col" className='text-center'>Jam Keluar</th>
-                    <th scope="col" className='text-center'>Effective Call</th>
+        {dataKunjungans && dataTarget && dataTargetEC[0] &&
+          <h6 className='mb-4'>Jumlah Effective Call : {dataEC.length} / {dataTargetEC[0].value}
+            <span className='text-primary'> ({dataEC.length / dataTargetEC[0].value * 100} % terpenuhi)</span>
+          </h6>
+        }
+
+        {dataKunjungans && dataTargetEC.length == 0 &&
+          <h6 className='mb-4'>Jumlah Effective Call : {dataEC.length}</h6>
+        }
+
+        {dataKunjungans && dataTarget &&
+          <div className="table-responsive">
+            <table className="table">
+              <thead>
+                <tr>
+                  <th scope="col" className='text-center'>Nama Toko</th>
+                  <th scope="col" className='text-center'>Wilayah</th>
+                  <th scope="col" className='text-center'>Jam Masuk</th>
+                  <th scope="col" className='text-center'>Jam Keluar</th>
+                  <th scope="col" className='text-center'>Effective Call</th>
+                </tr>
+              </thead>
+              <tbody>
+                {dataKunjungans.map((data) => (
+                  <tr key={data.id}>
+                    <td>{data.link_customer.nama ?? null}</td>
+                    <td>{data.link_customer.link_district.nama ?? null}</td>
+                    {data.waktu_masuk ? <td>{getTime(data.waktu_masuk)}</td> : <td></td>}
+                    {data.waktu_keluar ? <td>{getTime(data.waktu_keluar)}</td> : <td></td>}
+                    {data.status_enum ? <td className='text-center'>{data.status_enum == '2' ? 'YA' : 'TIDAK'}</td> : <td></td>}
                   </tr>
-                </thead>
-                <tbody>
-                  {dataKunjungans.map((data) => (
-                    <tr key={data.id}>
-                      <td>{data.link_customer.nama ?? null}</td>
-                      <td>{data.link_customer.link_district.nama ?? null}</td>
-                      {data.waktu_masuk ? <td>{getTime(data.waktu_masuk)}</td> : <td></td>}
-                      {data.waktu_keluar ? <td>{getTime(data.waktu_keluar)}</td> : <td></td>}
-                      {data.status_enum ? <td className='text-center'>{data.status_enum == '2' ? 'YA' : 'TIDAK'}</td> : <td></td>}
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-          </Fragment>
+                ))}
+              </tbody>
+            </table>
+          </div>
         }
       </div>
     </main>

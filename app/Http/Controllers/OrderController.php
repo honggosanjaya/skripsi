@@ -927,7 +927,7 @@ class OrderController extends Controller
     $metodes_pembayaran = [
       1 => 'tunai',
       2 => 'giro',
-      3 => 'dicicil',
+      3 => 'transfer',
     ];
 
     $defaultpenjualan = CashAccount::where('default', '2')->first();
@@ -950,7 +950,7 @@ class OrderController extends Controller
         'id_staff_penagih' => ['required'],
         'tanggal' => ['required'],
         'jumlah_pembayaran' => ['required'],
-        // 'metode_pembayaran' => ['required']
+        'metode_pembayaran' => ['required']
       ];
 
       $validatedData = $request->validate($rules);
@@ -958,9 +958,9 @@ class OrderController extends Controller
       Pembayaran::insert($validatedData);
       $invoice = Invoice::where('id_order','=',$order->id)->first();
 
-      $invoice->update([
-        'metode_pembayaran' => $request->metode_pembayaran
-      ]);
+      // $invoice->update([
+      //   'metode_pembayaran' => $request->metode_pembayaran
+      // ]);
 
       $total_bayar = Invoice::where('invoices.id', $invoice->id)
       ->join('pembayarans','invoices.id','=','pembayarans.id_invoice')
