@@ -34,13 +34,13 @@
               <th scope="row" class="text-center">{{ $loop->iteration }}</th>
               <td class="text-center">{{ $opname->linkStaff->nama ?? null }}</td>
               <td class="text-center">
+                {{ date('d F Y', strtotime($opname->created_at ?? '-')) }}
+              </td>
+              <td class="text-center">
                 @if ($opname->status_enum != null)
                   <p class="badge badge-opname-{{ $opname->status_enum }} mb-0">
                     {{ $opname->status_enum == '-1' ? 'Diajukan' : 'Dikonfirmasi' }}</p>
                 @endif
-              </td>
-              <td class="text-center">
-                {{ date('d F Y', strtotime($opname->created_at ?? '-')) }}
               </td>
               <td class="text-center">
                 <a href="/supervisor/stokopname/{{ $opname->id ?? null }}" class="btn btn-primary"><span

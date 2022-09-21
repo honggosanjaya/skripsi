@@ -850,7 +850,7 @@ class OrderController extends Controller
   }
 
   public function dataPengajuanOpname(){
-    $opnames = Order::where('id_customer', 0)->where('status_enum', '-1')->get();
+    $opnames = Order::where('id_customer', 0)->where('status_enum', '-1')->orderBy('id', 'DESC')->get();
 
     return view('supervisor.opname.pengajuanOpname', [
       'opnames' => $opnames,
@@ -896,6 +896,7 @@ class OrderController extends Controller
     ->whereHas('linkOrder', function($q) use($id_staff) {
         $q->where('id_staff', $id_staff);
       })
+    ->orderBy('id','DESC')
     ->with(['linkOrder'])
     ->get();
 
