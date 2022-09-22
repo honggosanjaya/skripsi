@@ -86,7 +86,9 @@ const HistoryTrip = () => {
 
         {dataKunjungans && dataTarget && dataTargetKunjungan[0] &&
           <h6 className='mt-4'>Jumlah Kunjungan : {dataKunjungans.length} / {dataTargetKunjungan[0].value}
-            <span className='text-primary'> ({dataKunjungans.length / dataTargetKunjungan[0].value * 100} % terpenuhi)</span>
+            <span className='text-primary'>
+              ({Math.round((dataKunjungans.length / dataTargetKunjungan[0].value * 100) * 10) / 10} % terpenuhi)
+            </span>
           </h6>
         }
 
@@ -96,7 +98,9 @@ const HistoryTrip = () => {
 
         {dataKunjungans && dataTarget && dataTargetEC[0] &&
           <h6 className='mb-4'>Jumlah Effective Call : {dataEC.length} / {dataTargetEC[0].value}
-            <span className='text-primary'> ({dataEC.length / dataTargetEC[0].value * 100} % terpenuhi)</span>
+            <span className='text-primary'>
+              ({Math.round((dataEC.length / dataTargetEC[0].value * 100) * 10) / 10} % terpenuhi)
+            </span>
           </h6>
         }
 
