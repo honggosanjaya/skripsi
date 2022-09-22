@@ -117,7 +117,7 @@
             <label class="form-label">Jumlah Pembayaran</label>
             <div class="input-group">
               <span class="input-group-text" id="basic-addon1">Rp.</span>
-              <input type="text" class="form-control @error('jumlah_pembayaran') is-invalid @enderror"
+              <input type="number" class="form-control @error('jumlah_pembayaran') is-invalid @enderror"
                 id="jumlah_pembayaran" name="jumlah_pembayaran" value="{{ old('jumlah_pembayaran') }}">
               @error('jumlah_pembayaran')
                 <div class="invalid-feedback">
@@ -125,7 +125,11 @@
                 </div>
               @enderror
             </div>
+            <small class="text-primary">Jumlah pembayaran maksimal Rp.
+              {{ number_format($order->linkInvoice->harga_total - $total_bayar ?? 0, 0, '', '.') ?? null }}</small>
           </div>
+
+          <input type="hidden" value="{{ $order->linkInvoice->harga_total - $total_bayar }}" name="sisatagihan">
         </div>
         <div class="col">
           <div class="mb-3">

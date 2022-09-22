@@ -946,11 +946,12 @@ class OrderController extends Controller
   }
 
   public function konfirmasiPembayaran(Request $request, order $order){
+    $sisa = (double) $request->sisatagihan;
      $rules = [
         'id_invoice' => ['required'],
         'id_staff_penagih' => ['required'],
         'tanggal' => ['required'],
-        'jumlah_pembayaran' => ['required'],
+        'jumlah_pembayaran' => 'required|numeric|max:'.$sisa,
         'metode_pembayaran' => ['required']
       ];
 
