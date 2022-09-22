@@ -1,0 +1,14 @@
+==== Panduan Migrasi (DATABASE BARU) ====
+1. php artisan migrate
+2. file migrasi dalam folder dropcolumn dipindahkan ke folder migrations
+3. php artisan migrate
+4. file migrasi dalam statusbaruordertrack dipindahkan dalam folder migrations
+5. php artisan migrate
+
+==== Panduan Hosting ====
+1. move public to public_html
+2. change index file
+3. change appserviceprovider
+4. change env + npm run prod
+5. hosting
+6. set db
