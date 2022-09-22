@@ -117,7 +117,6 @@ const ShippingShipper = () => {
     () => {
       const imageSrc = webcamRef.current.getScreenshot();
       setDataUri(imageSrc);
-      console.log(imageSrc);
     },
     [webcamRef]
   );

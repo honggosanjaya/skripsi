@@ -1,4 +1,5 @@
 import React, { useState, useContext, useEffect, Fragment } from 'react';
+import Webcam from "react-webcam";
 import { useHistory } from "react-router";
 import axios from 'axios';
 import HeaderSales from './HeaderSales';
@@ -9,6 +10,14 @@ import LoadingIndicator from '../reuse/LoadingIndicator';
 import urlAsset from '../../config';
 import { convertPrice } from '../reuse/HelperFunction';
 import Modal from 'react-bootstrap/Modal';
+import ImagePreview from '../reuse/ImagePreview';
+import { dataURLtoFile } from "../reuse/HelperFunction";
+
+const FACING_MODE_USER = "user";
+const FACING_MODE_ENVIRONMENT = "environment";
+const videoConstraints = {
+  facingMode: FACING_MODE_ENVIRONMENT
+};
 
 const Reimbursement = () => {
   const history = useHistory();
@@ -24,6 +33,10 @@ const Reimbursement = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [historyReimbursement, setHistoryReimbursement] = useState([]);
   const [activeModal, setActiveModal] = useState(null);
+  const [isTakePhoto, setIsTakePhoto] = useState(false);
+  const [isFromGalery, setISFromGalery] = useState(false);
+  const [dataUri, setDataUri] = useState('');
+  const [facingMode, setFacingMode] = useState(FACING_MODE_USER);
 
   const Swal = require('sweetalert2');
   let $imagePreview = null;
@@ -32,7 +45,6 @@ const Reimbursement = () => {
     { name: 'History', value: 'history' },
     { name: 'Submission', value: 'submission' },
   ];
-
 
   useEffect(() => {
     axios.get(`${window.location.origin}/api/cashAcountOption`).then(response => {
@@ -63,6 +75,23 @@ const Reimbursement = () => {
     }))
   }, [listCashAccount])
 
+  const handleClick = React.useCallback(() => {
+    setFacingMode(
+      prevState =>
+        prevState === FACING_MODE_USER
+          ? FACING_MODE_ENVIRONMENT
+          : FACING_MODE_USER
+    );
+  }, []);
+
+  const webcamRef = React.useRef(null);
+  const capture = React.useCallback(
+    () => {
+      const imageSrc = webcamRef.current.getScreenshot();
+      setDataUri(imageSrc);
+    },
+    [webcamRef]
+  );
 
   const handleImageChange = (e) => {
     e.preventDefault();
@@ -89,7 +118,13 @@ const Reimbursement = () => {
   const handleSubmitReimbursement = (e) => {
     e.preventDefault();
     let formData = new FormData();
-    formData.append("foto", file);
+
+    if (isFromGalery) {
+      formData.append("foto", file);
+    } else if (isTakePhoto) {
+      let convertedFile = dataURLtoFile(dataUri, `${Math.random(10)}.png`);
+      formData.append("foto", convertedFile);
+    }
 
     Swal.fire({
       title: 'Apakah anda yakin?',
@@ -136,6 +171,11 @@ const Reimbursement = () => {
             }).then((result) => {
               if (result.isConfirmed) {
                 clearAllInputField();
+                setFile(null);
+                setImagePreviewUrl('');
+                setDataUri('');
+                setIsTakePhoto(false);
+                setISFromGalery(false);
                 getHistoryReimbursement();
                 setTabActive('history');
               }
@@ -144,6 +184,11 @@ const Reimbursement = () => {
           .catch(error => {
             console.log(error.message);
             setIsLoading(false);
+            setFile(null);
+            setImagePreviewUrl('');
+            setDataUri('');
+            setIsTakePhoto(false);
+            setISFromGalery(false);
           });
       }
     })
@@ -161,6 +206,22 @@ const Reimbursement = () => {
 
   const clickHandler = (e, index) => {
     setActiveModal(index)
+  }
+
+  const openGalerry = () => {
+    setIsTakePhoto(false);
+    setISFromGalery(true);
+  }
+
+  const openCamera = () => {
+    setISFromGalery(false);
+    setIsTakePhoto(true);
+  }
+
+  const takeAgain = () => {
+    setISFromGalery(false);
+    setIsTakePhoto(true);
+    setDataUri('');
   }
 
   return (
@@ -227,37 +288,28 @@ const Reimbursement = () => {
                           }
                         </div>
                       </span>
-
                       {history.status_enum != '0' && <span className='d-flex'>
                         <b>Dikonfirmasi Oleh</b>
                         {history.link_staff_pengonfirmasi && <div className='word_wrap'>{history.link_staff_pengonfirmasi.nama}</div>}
                       </span>}
-
                       <span className='d-flex'>
                         <b>Jumlah</b>
                         {history.jumlah_uang && <div className='word_wrap'>{convertPrice(history.jumlah_uang)}</div>}
                       </span>
-
                       <span className='d-flex'>
                         <b>Keterangan</b>
                         <div className='word_wrap'>{history.keterangan_pengajuan ?? null}</div>
                       </span>
-
                       <span className='d-flex'>
                         <b>Keperluan</b>
                         {history.link_cash_account && <div className='word_wrap'>{history.link_cash_account.nama}</div>}
                       </span>
                     </div>
                   </Modal.Body>
-                  <Modal.Footer>
-
-                  </Modal.Footer>
                 </Modal>
-
               </div>
             ))}
-          </div>
-        }
+          </div>}
 
         {tabActive == 'submission' &&
           <div className="mt-4">
@@ -293,16 +345,67 @@ const Reimbursement = () => {
               </div>
 
               <label className="form-label d-block mt-4">Foto Bukti Pembayaran <span className='text-danger'>*</span></label>
-              {$imagePreview && $imagePreview}
-              <input
-                type="file"
-                name="foto"
-                id="file"
-                accept="image/png, image/jpeg"
-                onChange={handleImageChange} />
 
-              {jumlahUang && file && keteranganPengajuan ? <button type="submit" className="btn btn-primary w-100 mt-4" disabled={isLoading}>Submit</button>
-                : <button type="button" className="btn btn-primary w-100 mt-4" disabled={true}>Submit</button>}
+              <button type='button' className='btn btn-primary mb-3' onClick={openGalerry}>
+                <span className="iconify fs-3 me-1" data-icon="clarity:image-gallery-solid"></span> Galeri
+              </button>
+
+              <button type='button' className='btn btn-secondary ms-3 mb-3' onClick={openCamera}>
+                <span className="iconify fs-3 me-1" data-icon="charm:camera"></span>Kamera
+              </button>
+
+              {isFromGalery && <Fragment>
+                {$imagePreview && $imagePreview}
+                <input
+                  type="file"
+                  name="foto"
+                  id="file"
+                  accept="image/png, image/jpeg"
+                  onChange={handleImageChange} />
+              </Fragment>}
+
+              {isTakePhoto && dataUri
+                ? <Fragment>
+                  <ImagePreview dataUri={dataUri} />
+                  <button onClick={takeAgain} className="d-block mx-auto mt-3 btn btn-warning">
+                    <span className="iconify fs-3 me-1" data-icon="ic:sharp-flip-camera-android"></span>Ulang
+                  </button>
+                </Fragment>
+                : isTakePhoto
+                  ? <Fragment>
+                    <Webcam
+                      audio={false}
+                      height={340}
+                      width={350}
+                      ref={webcamRef}
+                      screenshotFormat="image/png"
+                      videoConstraints={{
+                        ...videoConstraints,
+                        facingMode
+                      }}
+                    />
+
+                    <div className="d-flex justify-content-between">
+                      <button type='button' className='btn btn-warning' onClick={handleClick}>
+                        <span className="iconify fs-3 me-1" data-icon="ic:sharp-flip-camera-android"></span>Switch camera
+                      </button>
+                      <button type="button" className='btn btn-success' onClick={capture}>
+                        <span className="iconify fs-3 me-1" data-icon="charm:camera"></span>Capture
+                      </button>
+                    </div>
+                  </Fragment>
+                  : null
+              }
+
+              {isFromGalery && jumlahUang && keteranganPengajuan &&
+                <button type="submit" className="btn btn-primary w-100 mt-4" disabled={(imagePreviewUrl == '' || isLoading) ? true : false}>
+                  Submit
+                </button>}
+
+              {isTakePhoto && jumlahUang && keteranganPengajuan &&
+                <button type="submit" className="btn btn-primary w-100 mt-4" disabled={(dataUri == '' || isLoading) ? true : false}>
+                  Submit
+                </button>}
             </form>
           </div>
         }
