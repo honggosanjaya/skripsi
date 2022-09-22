@@ -2,7 +2,7 @@ import React, { useState, useContext, useEffect, Fragment } from 'react';
 import Webcam from "react-webcam";
 import { useHistory } from "react-router";
 import axios from 'axios';
-import HeaderSales from './HeaderSales';
+import HeaderShipper from '../pengirim/HeaderShipper';
 import { UserContext } from '../../contexts/UserContext';
 import ButtonGroup from 'react-bootstrap/ButtonGroup';
 import ToggleButton from 'react-bootstrap/ToggleButton';
@@ -74,6 +74,14 @@ const Reimbursement = () => {
       );
     }))
   }, [listCashAccount])
+
+  const goBack = (role) => {
+    if (role == 'salesman') {
+      history.push('/salesman');
+    } else if (role == 'shipper') {
+      history.push('/shipper');
+    }
+  }
 
   const handleClick = React.useCallback(() => {
     setFacingMode(
@@ -226,7 +234,8 @@ const Reimbursement = () => {
 
   return (
     <main className="page_main">
-      <HeaderSales title="Reimbursement" />
+      {dataUser.role != null &&
+        <HeaderShipper title="Reimbursement" toBack={() => goBack(dataUser.role)} />}
       {isLoading && <LoadingIndicator />}
       <div className="page_container pt-4">
         <div className="d-flex justify-content-center">

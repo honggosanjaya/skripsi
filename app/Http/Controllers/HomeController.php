@@ -80,7 +80,7 @@ class HomeController extends Controller
 
         $notifikasi['pengajuan_limit'] = Customer::where('status_limit_pembelian_enum', '!=', null)->get();
 
-        $notifikasi['reimbursement'] = Reimbursement::where('status_enum', '0')->where('status_enum', '1')->get();
+        $notifikasi['reimbursement'] = Reimbursement::whereIn('status_enum', ['0', '1'])->get();
 
         $kendaraans = Vehicle::all();
         $today = date_create(now());
