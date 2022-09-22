@@ -1,7 +1,0 @@
-pindahkan rename status enum
-migrate
-pindahkan add status enum
-migrate
-jalankan Controller.php line 246
-pindahkan drop status lama
-migrate
