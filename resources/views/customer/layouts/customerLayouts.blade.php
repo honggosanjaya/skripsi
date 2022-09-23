@@ -6,7 +6,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link href=" {{ mix('css/bootstrap.css') }}" rel="stylesheet">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.7.2/font/bootstrap-icons.css">
-
+  <link rel="icon" href="{{ asset('images/icon-perusahaan.png') }}">
   <link href=" {{ mix('css/customer.css') }}" rel="stylesheet">
   <title>Customer</title>
 </head>

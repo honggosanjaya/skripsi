@@ -12,7 +12,11 @@ class KasController extends Controller
 
   public function bukuKas(CashAccount $cashaccount){
     $saldoKas = [];
-    $bukuKas = Kas::where('kas', $cashaccount->id)->where('status', null)->orWhere('status', '1')->orderBy('tanggal','DESC')->orderBy('created_at','DESC')->get();
+    $bukuKas = Kas::where('kas', $cashaccount->id)
+              ->where(function ($query) {
+                $query->where('status','0')->orWhereNull('status');                  
+                })
+              ->orderBy('tanggal','DESC')->orderBy('created_at','DESC')->get();
 
     $totalKas = 0;
     foreach($bukuKas as $kas){
@@ -130,5 +134,41 @@ class KasController extends Controller
         'status' => 'success',
       ]);
     }
+  }
+
+  public function pengajuanPenghapusanKas(Kas $kas){
+    $selectedKas = $kas->kas;
+    Kas::find($kas->id)->update([
+      'status' => '0',
+      'updated_at' => now()
+    ]);
+
+    return redirect('/administrasi/kas/'.$selectedKas)->with('pesanSukses', 'Berhasil mengajukan penghapusan kas');
+  }
+
+  public function perubahanKasSpv(){
+    $pengajuansKas = Kas::where('status', '0')->get();
+    
+    return view('supervisor.kas.pengajuanPerubahan', [
+      "pengajuansKas" => $pengajuansKas,
+    ]);
+  }
+
+  public function setujuPerubahanKasSpv(Kas $kas){
+    Kas::find($kas->id)->update([
+      'status' => '1',
+      'updated_at' => now()
+    ]);
+
+    return redirect('/supervisor/perubahankas')->with('pesanSukses', 'Berhasil menyetujui penghapusan kas');
+  }
+
+  public function tolakPerubahanKasSpv(Kas $kas){
+    Kas::find($kas->id)->update([
+      'status' => null,
+      'updated_at' => now()
+    ]);
+
+    return redirect('/supervisor/perubahankas')->with('pesanSukses', 'Berhasil menolak penghapusan kas');
   }
 }

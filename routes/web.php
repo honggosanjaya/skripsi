@@ -141,6 +141,10 @@ Route::prefix('supervisor')->middleware('supervisor')->group(function() {
   Route::get('/target', [TargetController::class, 'index']);
   Route::get('/target/tambah', [TargetController::class, 'tambahTarget']);
   Route::post('/target/tambah', [TargetController::class, 'storeTarget']);
+
+  Route::get('/perubahankas', [KasController::class, 'perubahanKasSpv']);
+  Route::post('/perubahankas/setuju/{kas:id}', [KasController::class, 'setujuPerubahanKasSpv']);
+  Route::post('/perubahankas/tolak/{kas:id}', [KasController::class, 'tolakPerubahanKasSpv']);
 });
 
 
@@ -243,6 +247,7 @@ Route::prefix('administrasi')->middleware('administrasi')->group(function() {
   Route::get('/kas/create/{cashaccount:id}', [KasController::class, 'createKas']);
   Route::post('/kas/store', [KasController::class, 'storeKas']);
   Route::get('/kas/{cashaccount:id}', [KasController::class, 'bukuKas']);
+  Route::post('/kas/pengajuanpenghapusan/{kas:id}', [KasController::class, 'pengajuanPenghapusanKas']);
 });
 
 

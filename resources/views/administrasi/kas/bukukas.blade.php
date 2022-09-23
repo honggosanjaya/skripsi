@@ -42,6 +42,7 @@
             <th scope="col" class="text-center">Kredit</th>
             <th scope="col" class="text-center">Saldo</th>
             <th scope="col" class="text-center">No. Bukti</th>
+            <th scope="col" class="text-center">Pengajuan Penghapusan</th>
           </tr>
         </thead>
         <tbody>
@@ -68,6 +69,18 @@
               @endif
               <td class="text-end">{{ $kas['totalKas'] }}</td>
               <td>{{ $kas['original']->no_bukti ?? null }}</td>
+              <td class="text-center">
+                @if ($kas['original']->status == null)
+                  <form action="/administrasi/kas/pengajuanpenghapusan/{{ $kas['original']->id }}" method="POST">
+                    @csrf
+                    <button type="submit" class="btn btn-danger">
+                      <span class="iconify fs-3 me-2" data-icon="fluent:delete-lines-20-filled"></span>
+                    </button>
+                  </form>
+                @elseif ($kas['original']->status == '0')
+                  <p class="mb-0 badge badge-kas-{{ $kas['original']->status }}">Diajukan</p>
+                @endif
+              </td>
             </tr>
           @endforeach
         </tbody>
