@@ -241,10 +241,11 @@ class OrderController extends Controller
         'counter_to_effective_call' => $customer->counter_to_effective_call+1
       ]);
     }
-    if (Customer::find($id_customer)->koordinat==null) {
-      Customer::find($id_customer)->update(['koordinat' =>  $request->koordinat]);
-    }else{
-      Customer::find($id_customer)->update(['updated_at'=> now()]);
+
+    if($request->koordinat != '0@0'){
+      if (Customer::find($id_customer)->koordinat==null || Customer::find($id_customer)->koordinat=='0@0') {
+        Customer::find($id_customer)->update(['koordinat' =>  $request->koordinat]);
+      }
     }
 
     $date = date("Y-m-d");

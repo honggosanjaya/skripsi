@@ -30,7 +30,7 @@ const Pemesanan = ({ location }) => {
   const [orderId, setOrderId] = useState(null);
   const [errorKodeCustomer, setErrorKodeCustomer] = useState(null);
   const [successKodeCustomer, setSuccessKodeCustomer] = useState(null);
-  const [koordinat, setKoordinat] = useState("0@0");
+  const [koordinat, setKoordinat] = useState(null);
   const [idTrip, setIdTrip] = useState(null);
   const [show, setShow] = useState(false);
   const [showFilter, setShowFilter] = useState(false);
@@ -73,6 +73,12 @@ const Pemesanan = ({ location }) => {
     }
     navigator.geolocation.getCurrentPosition(function (position) {
       setKoordinat(position.coords.latitude + '@' + position.coords.longitude);
+    });
+
+    navigator.permissions.query({ name: 'geolocation' }).then((result) => {
+      if (result.state !== 'granted') {
+        setKoordinat('0@0')
+      }
     });
 
     getAllProduks();
@@ -178,9 +184,9 @@ const Pemesanan = ({ location }) => {
   }
 
   const handleKeluarToko = () => {
-    setIsLoading(true);
-    setShouldDisabled(true);
     if (idTrip) {
+      setIsLoading(true);
+      setShouldDisabled(true);
       axios({
         method: "post",
         url: `${window.location.origin}/api/keluarToko/${idTrip}`,

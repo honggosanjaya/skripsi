@@ -148,8 +148,8 @@ class CustomerController extends Controller
           event(new Registered($user));
           Customer::find($id_customer)->update(['password'=>Hash::make(12345678)]);
         }
-        if (Customer::find($id_customer)->koordinat==null) {
-          $customer = Customer::find($id_customer)->update($data+['koordinat' =>  $request->koordinat]);
+        if (Customer::find($id_customer)->koordinat==null || Customer::find($id_customer)->koordinat=="0@0") {
+          $customer = Customer::find($id_customer)->update($data + ['koordinat' =>  $request->koordinat]);
         }else {
           $customer = Customer::find($id_customer)->update($data);
         }
