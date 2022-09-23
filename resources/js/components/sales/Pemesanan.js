@@ -79,7 +79,7 @@ const Pemesanan = ({ location }) => {
           icon: 'info',
           allowOutsideClick: false,
           allowEscapeKey: false,
-          confirmButtonText: 'Tutup',
+          timer: 7000,
           didOpen: () => {
             Swal.showLoading();
             const b = Swal.getHtmlContainer().querySelector('b')
@@ -89,7 +89,6 @@ const Pemesanan = ({ location }) => {
               }
               b.textContent = seconds;
             }, 1000);
-            setTimeout(() => { Swal.hideLoading() }, 7000);
           },
         }).then((result) => {
           navigator.geolocation.getCurrentPosition(function (position) {
