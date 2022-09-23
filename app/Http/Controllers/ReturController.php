@@ -96,7 +96,7 @@ class ReturController extends Controller
         $invoice->update(["harga_total"=>($invoice->harga_total - $harga_total)]);
         foreach($retur->get() as $r){
           $item=item::find($r->id_item);
-          $item->update(["stok"=>( $item->stok + $r->kuantitas)]);
+          // $item->update(["stok"=>( $item->stok + $r->kuantitas)]);
           $item->update([
             "stok_retur" => ($item->stok_retur + $r->kuantitas)
           ]);
@@ -106,7 +106,7 @@ class ReturController extends Controller
         foreach($retur->get() as $r){
           $item=item::find($r->id_item);
           $item->update([
-            // "stok" => ($item->stok - $r->kuantitas),
+            "stok" => ($item->stok - $r->kuantitas),
             "stok_retur" => ($item->stok_retur + $r->kuantitas)
           ]);
         }

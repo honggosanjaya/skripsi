@@ -65,7 +65,11 @@
               <td>{{ $vehicle->nama ?? null }}</td>
               <td>{{ number_format($vehicle->kapasitas_volume ?? 0, 0, '', '.') }}</td>
               <td>{{ number_format($vehicle->kapasitas_harga ?? 0, 0, '', '.') }}</td>
-              <td class="text-center">{{ date('d M Y', strtotime($vehicle->tanggal_pajak ?? '-')) }}</td>
+              @if ($vehicle->tanggal_pajak != null)
+                <td class="text-center">{{ date('d M Y', strtotime($vehicle->tanggal_pajak ?? '-')) }}</td>
+              @else
+                <td></td>
+              @endif
               <td class="text-center">
                 <a href="/administrasi/kendaraan/ubah/{{ $vehicle->id }}" class="btn btn-warning"><span
                     class="iconify fs-5 me-1" data-icon="eva:edit-2-fill"></span>Ubah</a>

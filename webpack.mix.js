@@ -69,6 +69,13 @@ mix
 mix
   .js(
     [
+      'resources/js/stokretur.js',
+    ]
+    , 'public/js/stokretur.js'
+  );
+mix
+  .js(
+    [
       'resources/js/opname.js',
     ]
     , 'public/js/opname.js'

@@ -213,6 +213,13 @@ Route::prefix('administrasi')->middleware('administrasi')->group(function() {
     // Route::post('/opname/remove', [CartController::class, 'removeCart']);
     Route::get('/opname/clear', [CartController::class, 'clearAllCart']);
     Route::get('/opname/tambahopname', [ItemController::class, 'simpanDataOpname']);
+
+    // Rout untuk stok retur
+    Route::get('/stokretur', [ItemController::class, 'productListStokRetur']);
+    Route::get('/stokretur/cart', [CartController::class, 'cartList']);
+    Route::post('/stokretur/cart', [CartController::class, 'addToCart']);
+    Route::get('/stokretur/clear', [CartController::class, 'clearAllCart']);
+    Route::post('/stokretur/tambahstokretur', [ItemController::class, 'simpanDataStokRetur']);
   });
 
   //Route untuk data customer

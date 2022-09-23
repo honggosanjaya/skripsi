@@ -649,4 +649,63 @@ class ItemController extends Controller
 
       return redirect('/administrasi/stok/produk') -> with('pesanSukses', 'Berhasil ubah status' );
     }
+
+    public function productListStokRetur(Request $request){
+      $products = Item::where('stok_retur', '>', 0)->orderBy("status_enum", "ASC")->get();
+      $counter = $request->session()->increment('counterStokRetur');
+      $pageWasRefreshed = isset($_SERVER['HTTP_CACHE_CONTROL']) && $_SERVER['HTTP_CACHE_CONTROL'] === 'max-age=0';
+
+      if(!$pageWasRefreshed) {
+        if($counter>0){
+          \Cart::session(auth()->user()->id.'stokretur')->clear();
+          session(['counterStokRetur' => 0]);
+        }
+      }
+
+      return view('administrasi.stok.stokretur.index', [
+        "products" => $products,
+      ]);
+    }
+
+    public function simpanDataStokRetur(Request $request){
+      $cartItems = \Cart::session(auth()->user()->id.$request->route)->getContent();
+
+      foreach($cartItems as $item){
+        $stok = Item::find($item->id);
+        if($item->attributes->metode == 'potongan'){
+          $rules = ([
+            'uang' => ['required'],
+          ]);
+          if($request->kas != null){
+            $rules['kas'] = ['required'];
+          }
+          $request->validate($rules);
+          
+          $stok->stok_retur -= $item->quantity;
+          $stok->save();
+
+          $cashaccount = CashAccount::where('default', '1')->first();
+          if($cashaccount != null){
+            Kas::insert([
+              'id_staff' => auth()->user()->id_users,
+              'tanggal' => date("Y-m-d"),
+              'debit_kredit' => '1',
+              'keterangan_1' => 'Stok Retur',
+              'uang' => $request->uang,
+              'id_cash_account' => $cashaccount->id,
+              'kas' => $request->kas,
+              'created_at' => now()
+            ]);
+          }
+        }else{
+          $stok->stok += $item->quantity;
+          $stok->stok_retur -= $item->quantity;
+          $stok->save();
+        }
+      }
+  
+      \Cart::session(auth()->user()->id.$request->route)->clear();
+  
+      return redirect('/administrasi/stok/stokretur')->with('pesanSukses', 'Stok retur tercatat ke database');
+    }
 }
