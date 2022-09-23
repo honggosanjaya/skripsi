@@ -94,7 +94,7 @@
         </li>
         <li class="mb-3">
           <a class="{{ Request::is('administrasi/kas*') ? 'active' : '' }}" href="/administrasi/kas">
-            <i class="bi bi-cash-coin me-2"></i><span>Kas</span>
+            <span class="iconify fs-4 me-2" data-icon="healthicons:register-book-outline"></span><span>Kas</span>
           </a>
         </li>
       </ul>

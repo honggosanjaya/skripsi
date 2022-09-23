@@ -1002,4 +1002,25 @@ class OrderController extends Controller
       
       return redirect('/administrasi/pesanan/detail/'.$order->id) -> with('addPesananSuccess', 'Berhasil mengonfirmasi pembayaran untuk '.$order->linkCustomer->nama);
   }
+
+  public function cetakKeseluruhanMemo(Vehicle $vehicle){
+    $invoices = Invoice::whereHas('linkOrder',function($q) use($vehicle){
+      $q->whereHas('linkOrderTrack', function($q) use($vehicle){
+        $q->where('status_enum','2')->where('id_vehicle', $vehicle->id);
+      });
+    })
+    ->with(['linkOrder', 'linkOrder.linkOrderItem', 'linkOrder.linkOrderItem.linkItem'])
+    ->get();
+
+    $administrasi = Staff::select('nama')->where('id','=',auth()->user()->id_users)->first();
+
+    $pdf = PDF::loadview('administrasi.kendaraan.cetakkeseluruhanmemo',[
+      'vehicle' => $vehicle,
+      'invoices' => $invoices,
+      'date' => date("d-m-Y"),
+      'administrasi' => $administrasi          
+    ]);
+
+    return $pdf->stream('memo-'.$vehicle->kode_kendaraan.'.pdf'); 
+  }
 }
