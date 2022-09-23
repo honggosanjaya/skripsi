@@ -49,6 +49,7 @@ const Pemesanan = ({ location }) => {
   const [shouldDisabled, setShouldDisabled] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [loadingKode, setLoadingKode] = useState(false);
+  const Swal = require('sweetalert2');
 
   useEffect(() => {
     if (filterBy) {
@@ -68,18 +69,66 @@ const Pemesanan = ({ location }) => {
   });
 
   useEffect(() => {
+    navigator.permissions.query({ name: 'geolocation' }).then((result) => {
+      if (result.state === 'prompt') {
+        let timerInterval;
+        let seconds = 7;
+        Swal.fire({
+          title: 'Peringatan Izin Akses Lokasi Perangkat',
+          html: 'Selanjutnya kami akan meminta akses lokasi anda, mohon untuk mengizinkannya. <br><br> Tunggu <b></b> detik untuk menutupnya',
+          icon: 'info',
+          allowOutsideClick: false,
+          allowEscapeKey: false,
+          confirmButtonText: 'Tutup',
+          didOpen: () => {
+            Swal.showLoading();
+            const b = Swal.getHtmlContainer().querySelector('b')
+            timerInterval = setInterval(() => {
+              if (seconds > 0) {
+                seconds -= 1;
+              }
+              b.textContent = seconds;
+            }, 1000);
+            setTimeout(() => { Swal.hideLoading() }, 7000);
+          },
+        }).then((result) => {
+          navigator.geolocation.getCurrentPosition(function (position) {
+            setKoordinat(position.coords.latitude + '@' + position.coords.longitude)
+          });
+        })
+      } else if (result.state === 'granted') {
+        navigator.geolocation.getCurrentPosition(function (position) {
+          setKoordinat(position.coords.latitude + '@' + position.coords.longitude)
+        });
+      } else if (result.state === 'denied') {
+        setKoordinat('0@0');
+        let timerInterval2;
+        let seconds2 = 4;
+        Swal.fire({
+          title: 'Tidak Ada Akses Lokasi Perangkat',
+          html: 'Agar memudahkan kunjungan silahkan buka pengaturan browser anda dan ijinkan aplikasi mengakses lokasi. <br><br> Tunggu <b></b> detik untuk menutupnya',
+          icon: 'info',
+          allowOutsideClick: false,
+          allowEscapeKey: false,
+          confirmButtonText: 'Tutup',
+          didOpen: () => {
+            Swal.showLoading();
+            const b = Swal.getHtmlContainer().querySelector('b')
+            timerInterval2 = setInterval(() => {
+              if (seconds2 > 0) {
+                seconds2 -= 1;
+              }
+              b.textContent = seconds2;
+            }, 1000);
+            setTimeout(() => { Swal.hideLoading() }, 4000);
+          },
+        })
+      }
+    });
+
     if (idTripTetap) {
       setIdTrip(idTripTetap);
     }
-    navigator.geolocation.getCurrentPosition(function (position) {
-      setKoordinat(position.coords.latitude + '@' + position.coords.longitude);
-    });
-
-    navigator.permissions.query({ name: 'geolocation' }).then((result) => {
-      if (result.state !== 'granted') {
-        setKoordinat('0@0')
-      }
-    });
 
     getAllProduks();
 
@@ -117,6 +166,12 @@ const Pemesanan = ({ location }) => {
   }, []);
 
   useEffect(() => {
+    navigator.permissions.query({ name: 'geolocation' }).then((result) => {
+      if (result.state !== 'granted') {
+        setKoordinat('0@0')
+      }
+    });
+
     if (dataUser.nama && koordinat && idTripTetap == null && idTrip == null) {
       axios({
         method: "post",
