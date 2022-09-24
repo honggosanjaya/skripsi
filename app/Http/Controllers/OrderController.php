@@ -161,6 +161,7 @@ class OrderController extends Controller
     Trip::find($request->idTrip)->update([
       'waktu_keluar' => now(),
       'updated_at' => now(),
+      'status_enum' => '2',
       'alasan_penolakan' => $request->alasan_penolakan
     ]);
     
@@ -221,7 +222,7 @@ class OrderController extends Controller
       'koordinat' => $request->koordinat,
       'waktu_masuk' => date('Y-m-d H:i:s', $request->jam_masuk),
       'waktu_keluar' => null,
-      'status_enum' => '2',
+      'status_enum' => '1',
       'created_at'=> now()
     ];
     if($trip == null){
@@ -240,10 +241,11 @@ class OrderController extends Controller
         'counter_to_effective_call' => $customer->counter_to_effective_call+1
       ]);
     }
-    if (Customer::find($id_customer)->koordinat==null) {
-      Customer::find($id_customer)->update(['koordinat' =>  $request->koordinat]);
-    }else{
-      Customer::find($id_customer)->update(['updated_at'=> now()]);
+
+    if($request->koordinat != '0@0'){
+      if (Customer::find($id_customer)->koordinat==null || Customer::find($id_customer)->koordinat=='0@0') {
+        Customer::find($id_customer)->update(['koordinat' =>  $request->koordinat]);
+      }
     }
 
     $date = date("Y-m-d");
@@ -849,7 +851,7 @@ class OrderController extends Controller
   }
 
   public function dataPengajuanOpname(){
-    $opnames = Order::where('id_customer', 0)->where('status_enum', '-1')->get();
+    $opnames = Order::where('id_customer', 0)->where('status_enum', '-1')->orderBy('id', 'DESC')->get();
 
     return view('supervisor.opname.pengajuanOpname', [
       'opnames' => $opnames,
@@ -895,6 +897,7 @@ class OrderController extends Controller
     ->whereHas('linkOrder', function($q) use($id_staff) {
         $q->where('id_staff', $id_staff);
       })
+    ->orderBy('id','DESC')
     ->with(['linkOrder'])
     ->get();
 
@@ -926,7 +929,7 @@ class OrderController extends Controller
     $metodes_pembayaran = [
       1 => 'tunai',
       2 => 'giro',
-      3 => 'dicicil',
+      3 => 'transfer',
     ];
 
     $defaultpenjualan = CashAccount::where('default', '2')->first();
@@ -944,12 +947,13 @@ class OrderController extends Controller
   }
 
   public function konfirmasiPembayaran(Request $request, order $order){
+    $sisa = (double) $request->sisatagihan;
      $rules = [
         'id_invoice' => ['required'],
         'id_staff_penagih' => ['required'],
         'tanggal' => ['required'],
-        'jumlah_pembayaran' => ['required'],
-        // 'metode_pembayaran' => ['required']
+        'jumlah_pembayaran' => 'required|numeric|max:'.$sisa,
+        'metode_pembayaran' => ['required']
       ];
 
       $validatedData = $request->validate($rules);
@@ -957,9 +961,9 @@ class OrderController extends Controller
       Pembayaran::insert($validatedData);
       $invoice = Invoice::where('id_order','=',$order->id)->first();
 
-      $invoice->update([
-        'metode_pembayaran' => $request->metode_pembayaran
-      ]);
+      // $invoice->update([
+      //   'metode_pembayaran' => $request->metode_pembayaran
+      // ]);
 
       $total_bayar = Invoice::where('invoices.id', $invoice->id)
       ->join('pembayarans','invoices.id','=','pembayarans.id_invoice')
@@ -997,5 +1001,26 @@ class OrderController extends Controller
       }
       
       return redirect('/administrasi/pesanan/detail/'.$order->id) -> with('addPesananSuccess', 'Berhasil mengonfirmasi pembayaran untuk '.$order->linkCustomer->nama);
+  }
+
+  public function cetakKeseluruhanMemo(Vehicle $vehicle){
+    $invoices = Invoice::whereHas('linkOrder',function($q) use($vehicle){
+      $q->whereHas('linkOrderTrack', function($q) use($vehicle){
+        $q->where('status_enum','2')->where('id_vehicle', $vehicle->id);
+      });
+    })
+    ->with(['linkOrder', 'linkOrder.linkOrderItem', 'linkOrder.linkOrderItem.linkItem'])
+    ->get();
+
+    $administrasi = Staff::select('nama')->where('id','=',auth()->user()->id_users)->first();
+
+    $pdf = PDF::loadview('administrasi.kendaraan.cetakkeseluruhanmemo',[
+      'vehicle' => $vehicle,
+      'invoices' => $invoices,
+      'date' => date("d-m-Y"),
+      'administrasi' => $administrasi          
+    ]);
+
+    return $pdf->stream('memo-'.$vehicle->kode_kendaraan.'.pdf'); 
   }
 }

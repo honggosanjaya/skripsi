@@ -44,6 +44,7 @@ class AuthenticatedSessionController extends Controller
         $request->session()->put('count', 1);
         $request->session()->put('counterPengadaan', 0);
         $request->session()->put('counterOpname', 0);
+        $request->session()->put('counterStokRetur', 0);
         $request->session()->put('id',User::with('linkStaff.linkStaffRole')->find(auth()->user()->id)->id);
         
         // uncomment untuk user yg blm konfirmasi email agar tdk bisa login

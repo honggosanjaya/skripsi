@@ -50,9 +50,9 @@
             <th scope="col" class="text-center">No</th>
             <th scope="col" class="text-center">Plat Nomor</th>
             <th scope="col" class="text-center">Nama Kendaraan</th>
-            <th scope="col" class="text-center">Kapasitas Volume (cm3)</th>
-            <th scope="col" class="text-center">Kapasitas Harga (Rp)</th>
-            <th scope="col" class="text-center">Tanggal Pajak</th>
+            <th scope="col" class="text-center">Kapasitas<br>Volume (cm3)</th>
+            <th scope="col" class="text-center">Kapasitas<br>Harga (Rp)</th>
+            <th scope="col" class="text-center">Tanggal<br>Pajak</th>
             <th scope="col" class="text-center">Aksi</th>
           </tr>
         </thead>
@@ -65,10 +65,17 @@
               <td>{{ $vehicle->nama ?? null }}</td>
               <td>{{ number_format($vehicle->kapasitas_volume ?? 0, 0, '', '.') }}</td>
               <td>{{ number_format($vehicle->kapasitas_harga ?? 0, 0, '', '.') }}</td>
-              <td class="text-center">{{ date('d M Y', strtotime($vehicle->tanggal_pajak ?? '-')) }}</td>
+              @if ($vehicle->tanggal_pajak != null)
+                <td class="text-center">{{ date('d M Y', strtotime($vehicle->tanggal_pajak ?? '-')) }}</td>
+              @else
+                <td></td>
+              @endif
               <td class="text-center">
                 <a href="/administrasi/kendaraan/ubah/{{ $vehicle->id }}" class="btn btn-warning"><span
                     class="iconify fs-5 me-1" data-icon="eva:edit-2-fill"></span>Ubah</a>
+
+                <a href="/administrasi/kendaraan/{{ $vehicle->id }}" class="btn btn-primary">
+                  <span class="iconify fs-4" data-icon="fluent:apps-list-detail-24-filled"></span> Detail</a>
               </td>
             </tr>
           @endforeach

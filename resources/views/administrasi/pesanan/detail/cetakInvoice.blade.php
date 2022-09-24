@@ -16,10 +16,6 @@
     }
 
     .logo {
-      width: 70px;
-      height: 70px;
-      border-radius: 50%;
-      background-color: orangered;
       float: left;
     }
 
@@ -121,6 +117,7 @@
       <td colspan="3" rowspan="4" class="td-small" align="right">
         <div class="info-perusahaan">
           <div class="logo">
+            <img src="{{ public_path('images/icon-perusahaan.png') }}" width="70" height="70" alt="UD">
           </div>
           <h5>UD. SURYA&nbsp;</h5>
           <p>TOBA E5 / 15 SWJJ - MLG&nbsp;</p>

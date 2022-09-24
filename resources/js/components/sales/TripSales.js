@@ -41,9 +41,61 @@ const TripSales = () => {
   const [metodePembayaran, setMetodePembayaran] = useState('1');
 
   useEffect(() => {
-    navigator.geolocation.getCurrentPosition(function (position) {
-      setKoordinat(position.coords.latitude + '@' + position.coords.longitude)
+    navigator.permissions.query({ name: 'geolocation' }).then((result) => {
+      if (result.state === 'prompt') {
+        let timerInterval;
+        let seconds = 7;
+        Swal.fire({
+          title: 'Peringatan Izin Akses Lokasi Perangkat',
+          html: 'Selanjutnya kami akan meminta akses lokasi anda, mohon untuk mengizinkannya. <br><br> Tunggu <b></b> detik untuk menutupnya',
+          icon: 'info',
+          allowOutsideClick: false,
+          allowEscapeKey: false,
+          timer: 7000,
+          didOpen: () => {
+            Swal.showLoading();
+            const b = Swal.getHtmlContainer().querySelector('b')
+            timerInterval = setInterval(() => {
+              if (seconds > 0) {
+                seconds -= 1;
+              }
+              b.textContent = seconds;
+            }, 1000);
+          },
+        }).then((result) => {
+          navigator.geolocation.getCurrentPosition(function (position) {
+            setKoordinat(position.coords.latitude + '@' + position.coords.longitude)
+          });
+        })
+      } else if (result.state === 'granted') {
+        navigator.geolocation.getCurrentPosition(function (position) {
+          setKoordinat(position.coords.latitude + '@' + position.coords.longitude)
+        });
+      } else if (result.state === 'denied') {
+        let timerInterval2;
+        let seconds2 = 4;
+        Swal.fire({
+          title: 'Tidak Ada Akses Lokasi Perangkat',
+          html: 'Agar memudahkan kunjungan silahkan buka pengaturan browser anda dan ijinkan aplikasi mengakses lokasi. <br><br> Tunggu <b></b> detik untuk menutupnya',
+          icon: 'info',
+          allowOutsideClick: false,
+          allowEscapeKey: false,
+          confirmButtonText: 'Tutup',
+          didOpen: () => {
+            Swal.showLoading();
+            const b = Swal.getHtmlContainer().querySelector('b')
+            timerInterval2 = setInterval(() => {
+              if (seconds2 > 0) {
+                seconds2 -= 1;
+              }
+              b.textContent = seconds2;
+            }, 1000);
+            setTimeout(() => { Swal.hideLoading() }, 4000);
+          },
+        })
+      }
     });
+
     if (id != null) {
       setShouldDisabled(true);
       axios.get(`${window.location.origin}/api/tripCustomer/${id}`).then(response => {
@@ -359,7 +411,7 @@ const TripSales = () => {
               className="form-select">
               <option value="1">Tunai</option>
               <option value="2">Giro</option>
-              <option value="3">Dicicil</option>
+              <option value="3">Transfer</option>
             </select>
           </div>
 

@@ -12,6 +12,8 @@
   <script src="https://code.iconify.design/2/2.0.3/iconify.min.js"></script>
   <!-- Custom CSS -->
   <link href=" {{ mix('css/dashboard.css') }}" rel="stylesheet">
+  <link rel="icon" href="{{ asset('images/icon-perusahaan.png') }}">
+
   @stack('CSS')
 
   <title>Dashboard Manajemen Sales</title>

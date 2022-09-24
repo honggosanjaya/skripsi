@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Models\Vehicle;
+use App\Models\Order;
+use App\Models\Invoice;
 use Illuminate\Http\Request;
 
 class VehicleController extends Controller
@@ -83,5 +85,20 @@ class VehicleController extends Controller
         $vehicle->save();
         
         return redirect('/administrasi/kendaraan')->with('updateKendaraanSuccess','Update Kendaraan Berhasil');
+    }
+
+    public function detail(Vehicle $vehicle){
+      $invoices = Invoice::whereHas('linkOrder',function($q) use($vehicle){
+        $q->whereHas('linkOrderTrack', function($q) use($vehicle){
+          $q->where('status_enum','2')->where('id_vehicle', $vehicle->id);
+        });
+      })
+      ->with(['linkOrder', 'linkOrder.linkOrderItem', 'linkOrder.linkOrderItem.linkItem'])
+      ->get();
+
+      return view ('administrasi.kendaraan.detailkendaraan',[
+        'vehicle' => $vehicle,
+        'invoices' => $invoices
+      ]);
     }
 }

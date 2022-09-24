@@ -24,6 +24,7 @@ use App\Http\Controllers\LaporanPenagihanController;
 use App\Http\Controllers\RencanaTripController;
 use App\Http\Controllers\TargetController;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Auth;
 
 /*
 |--------------------------------------------------------------------------
@@ -140,6 +141,10 @@ Route::prefix('supervisor')->middleware('supervisor')->group(function() {
   Route::get('/target', [TargetController::class, 'index']);
   Route::get('/target/tambah', [TargetController::class, 'tambahTarget']);
   Route::post('/target/tambah', [TargetController::class, 'storeTarget']);
+
+  Route::get('/perubahankas', [KasController::class, 'perubahanKasSpv']);
+  Route::post('/perubahankas/setuju/{kas:id}', [KasController::class, 'setujuPerubahanKasSpv']);
+  Route::post('/perubahankas/tolak/{kas:id}', [KasController::class, 'tolakPerubahanKasSpv']);
 });
 
 
@@ -169,11 +174,13 @@ Route::prefix('administrasi')->middleware('administrasi')->group(function() {
 
   //Route untuk kendaraan
   Route::get('/kendaraan', [VehicleController::class, 'index']);
+  Route::get('/kendaraan/{vehicle:id}', [VehicleController::class, 'detail']);
   Route::get('/kendaraan/cari', [VehicleController::class, 'search']);
   Route::get('/kendaraan/tambah', [VehicleController::class, 'create']);
   Route::post('/kendaraan/tambahkendaraan', [VehicleController::class, 'store']);
   Route::get('/kendaraan/ubah/{vehicle:id}', [VehicleController::class, 'edit']);
   Route::put('/kendaraan/ubahkendaraan/{vehicle:id}', [VehicleController::class, 'update']);
+  Route::get('/kendaraan/{vehicle:id}/cetak-memo', [OrderController::class, 'cetakKeseluruhanMemo']);
 
   Route::prefix('stok')->group(function(){
     Route::get('/', [ItemController::class, 'indexAdministrasi']);
@@ -208,6 +215,13 @@ Route::prefix('administrasi')->middleware('administrasi')->group(function() {
     // Route::post('/opname/remove', [CartController::class, 'removeCart']);
     Route::get('/opname/clear', [CartController::class, 'clearAllCart']);
     Route::get('/opname/tambahopname', [ItemController::class, 'simpanDataOpname']);
+
+    // Rout untuk stok retur
+    Route::get('/stokretur', [ItemController::class, 'productListStokRetur']);
+    Route::get('/stokretur/cart', [CartController::class, 'cartList']);
+    Route::post('/stokretur/cart', [CartController::class, 'addToCart']);
+    Route::get('/stokretur/clear', [CartController::class, 'clearAllCart']);
+    Route::post('/stokretur/tambahstokretur', [ItemController::class, 'simpanDataStokRetur']);
   });
 
   //Route untuk data customer
@@ -242,6 +256,7 @@ Route::prefix('administrasi')->middleware('administrasi')->group(function() {
   Route::get('/kas/create/{cashaccount:id}', [KasController::class, 'createKas']);
   Route::post('/kas/store', [KasController::class, 'storeKas']);
   Route::get('/kas/{cashaccount:id}', [KasController::class, 'bukuKas']);
+  Route::post('/kas/pengajuanpenghapusan/{kas:id}', [KasController::class, 'pengajuanPenghapusanKas']);
 });
 
 

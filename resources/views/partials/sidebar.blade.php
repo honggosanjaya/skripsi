@@ -48,7 +48,6 @@
             </li>
           </ul>
         </li>
-
         <li
           class="mb-3 menu-group {{ Request::is('administrasi/lp3*') || Request::is('administrasi/rencanakunjungan*') ? 'showMenu' : '' }}">
           <div
@@ -73,7 +72,6 @@
             </li>
           </ul>
         </li>
-
         <li class="mb-3">
           <a class="{{ Request::is('administrasi/pesanan*') ? 'active' : '' }}" href="/administrasi/pesanan">
             <i class="bi bi-card-list me-2"></i><span>Pesanan</span>
@@ -94,10 +92,9 @@
             <i class="bi bi-cash-coin me-2"></i><span>Reimbursement</span>
           </a>
         </li>
-
         <li class="mb-3">
           <a class="{{ Request::is('administrasi/kas*') ? 'active' : '' }}" href="/administrasi/kas">
-            <i class="bi bi-cash-coin me-2"></i><span>Kas</span>
+            <span class="iconify fs-4 me-2" data-icon="healthicons:register-book-outline"></span><span>Kas</span>
           </a>
         </li>
       </ul>
@@ -107,9 +104,10 @@
       <hr class="my-4" />
       <h1 class="mb-3 fs-6">Supervisor</h1>
       <ul class="p-0 nav-links">
-        <li class="mb-3 menu-group">
+        <li
+          class="mb-3 menu-group {{ Request::is('supervisor/event*') || Request::is('supervisor/datastaf*') || Request::is('supervisor/datacustomer*') || Request::is('supervisor/wilayah*') || Request::is('supervisor/jenis*') || Request::is('supervisor/cashaccount*') || Request::is('supervisor/category*') || Request::is('supervisor/stokopname*') || Request::is('supervisor/perubahankas*') ? 'showMenu' : '' }}">
           <div
-            class="icon-link {{ Request::is('supervisor/event*') || Request::is('supervisor/datastaf*') || Request::is('supervisor/datacustomer*') || Request::is('supervisor/wilayah*') || Request::is('supervisor/jenis*') || Request::is('supervisor/cashaccount*') || Request::is('supervisor/category*') || Request::is('supervisor/stokopname*') ? 'active' : '' }}">
+            class="icon-link {{ Request::is('supervisor/event*') || Request::is('supervisor/datastaf*') || Request::is('supervisor/datacustomer*') || Request::is('supervisor/wilayah*') || Request::is('supervisor/jenis*') || Request::is('supervisor/cashaccount*') || Request::is('supervisor/category*') || Request::is('supervisor/stokopname*') || Request::is('supervisor/perubahankas*') ? 'active' : '' }}">
             <a>
               <i class="bi bi-file-earmark-bar-graph me-2"></i>
               <span>Data</span>
@@ -165,10 +163,17 @@
                 <i class="bi bi-bullseye me-2"></i><span>Target</span>
               </a>
             </li>
+            <li>
+              <a class="{{ Request::is('supervisor/perubahankas*') ? 'active-submenu' : '' }}"
+                href="/supervisor/perubahankas">
+                <i class="bi bi-calendar3-event me-2"></i>Perubahan Kas
+              </a>
+            </li>
           </ul>
         </li>
 
-        <li class="mb-3 menu-group">
+        <li
+          class="mb-3 menu-group {{ Request::is('supervisor/report/penjualan*') || Request::is('supervisor/report/kinerja*') ? 'showMenu' : '' }}">
           <div
             class="icon-link {{ Request::is('supervisor/report/penjualan*') || Request::is('supervisor/report/kinerja*') ? 'active' : '' }}">
             <a>

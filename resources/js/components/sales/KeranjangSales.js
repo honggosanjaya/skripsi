@@ -39,6 +39,7 @@ const KeranjangSales = ({ location }) => {
   const [minPembelianEvent, setMinPembelianEvent] = useState(null);
   const [errorProdukDlmKeranjang, setErrorProdukDlmKeranjang] = useState(false);
   const [totalHarga, setTotalHarga] = useState(0);
+  const [diskon, setDiskon] = useState(0);
   const [isShowRincian, setIsShowRincian] = useState(false);
   const { kodePesanan, setKodePesanan } = useContext(HitungStokContext);
   const Swal = require('sweetalert2');
@@ -54,7 +55,7 @@ const KeranjangSales = ({ location }) => {
       id: 2, nama: 'giro'
     },
     {
-      id: 3, nama: 'dicicil'
+      id: 3, nama: 'transfer'
     }
   ]
 
@@ -88,6 +89,7 @@ const KeranjangSales = ({ location }) => {
         if (response.data.data.metode_pembayaran != null) {
           setMetodePembayaran(response.data.data.metode_pembayaran)
         }
+        setDiskon(response.data.data.link_customer_type.diskon);
       })
       .catch(error => {
         setErrorMessage(error.message);
@@ -154,7 +156,7 @@ const KeranjangSales = ({ location }) => {
       if (tipeEvent == 'potongan') {
         setHargaPromo(besarEvent);
       } else {
-        setHargaPromo((totalHarga * (besarEvent / 100)));
+        setHargaPromo((totalHarga - (totalHarga * diskon / 100)) * (besarEvent / 100));
       }
     } else if (kodeEvent != '') {
       setErrorKodeEvent('Anda tidak mencapai minimal pembelian');
@@ -340,7 +342,7 @@ const KeranjangSales = ({ location }) => {
               setTipeEvent('potongan');
               setBesarEvent(response.data.data.potongan);
             } else {
-              setHargaPromo((totalHarga * (response.data.data.diskon / 100)));
+              setHargaPromo((totalHarga - (totalHarga * diskon / 100)) * (response.data.data.diskon / 100));
               setTipeEvent('diskon');
               setBesarEvent(response.data.data.diskon);
             }
@@ -350,7 +352,7 @@ const KeranjangSales = ({ location }) => {
               setTipeEvent('potongan');
               setBesarEvent(response.data.data.potongan);
             } else {
-              setHargaPromo((totalHarga * (response.data.data.diskon / 100)));
+              setHargaPromo((totalHarga - (totalHarga * diskon / 100)) * (response.data.data.diskon / 100));
               setTipeEvent('diskon');
               setBesarEvent(response.data.data.diskon);
             }

@@ -47,6 +47,7 @@ Route::group(['middleware' => 'auth:sanctum'], function(){
   Route::post('/pesanan/detail/{order:id}/dikirimkan', [OrderController::class, 'konfirmasiPengiriman']);
 });
 Route::get('/forceLogout', [LoginController::class, 'logoutUnauthorizedSPAApi']);
+Route::get('/logoutUser', [LoginController::class, 'logoutUserAPI']);
 
 // SALESMAN
 Route::post('/cariCustomer', [CustomerController::class, 'cariCustomerApi']);
@@ -97,6 +98,7 @@ Route::get('/administrasi/detailpenagihan/{invoice:id}', [LaporanPenagihanContro
 Route::get('/lapangan/penagihan/{staff:id}', [LaporanPenagihanController::class, 'getPenagihanLapanganAPI']);
 Route::get('/lapangan/handlepenagihan/{id}', [LaporanPenagihanController::class, 'handlePenagihanLapanganAPI']);
 
+Route::post('/administrasi/stok/stokretur/cart', [CartController::class, 'addToCart']);
 Route::post('/administrasi/stok/pengadaan/cart', [CartController::class, 'addToCart']);
 Route::post('/administrasi/stok/opname/cart', [CartController::class, 'addToCart']);
 Route::post('administrasi/stok/pengadaan/remove', [CartController::class, 'removeCart']);

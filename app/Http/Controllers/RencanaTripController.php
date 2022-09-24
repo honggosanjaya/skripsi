@@ -12,7 +12,7 @@ class RencanaTripController extends Controller
   public function index(){
     $customers = Customer::all();
     $staffs = Staff::where('status_enum','1')->where('role', 3)->get();
-    $histories = RencanaTrip::all();
+    $histories = RencanaTrip::orderBy('tanggal', 'DESC')->get();
     $districts = District::all();
 
     return view('administrasi.rencanakunjungan.index',[

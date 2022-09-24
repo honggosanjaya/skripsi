@@ -1,0 +1,7 @@
+==== Panduan Hosting ====
+1. move public to public_html
+2. change index file
+3. change appserviceprovider
+4. change env + npm run prod
+5. hosting
+6. set db

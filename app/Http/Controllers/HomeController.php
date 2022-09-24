@@ -80,7 +80,7 @@ class HomeController extends Controller
 
         $notifikasi['pengajuan_limit'] = Customer::where('status_limit_pembelian_enum', '!=', null)->get();
 
-        $notifikasi['reimbursement'] = Reimbursement::where('status_enum', '0')->where('status_enum', '1')->get();
+        $notifikasi['reimbursement'] = Reimbursement::whereIn('status_enum', ['0', '1'])->get();
 
         $kendaraans = Vehicle::all();
         $today = date_create(now());
@@ -169,7 +169,7 @@ class HomeController extends Controller
 
     public function indexCustomer(Request $request){
       $customer = Customer::where('id', auth()->user()->id_users)->first();
-      $event = Event::where('status_enum', '1')->get();
+      $event = Event::where('status_enum', '1')->orderBy('id', 'DESC')->get();
 
 
       $kode_customers=Order::where('id_customer', auth()->user()->id_users)
@@ -252,27 +252,37 @@ class HomeController extends Controller
     public function lihatPesanan(Customer $customer){
         $diajukans = Order::whereHas('linkOrderTrack', function($q){
             $q->where('status_enum','0')->orWhere('status_enum', '1');
-        })->where('id_customer','=',$customer->id)->with(['linkOrderTrack','linkInvoice','linkOrderItem.linkItem'])
+        })->where('id_customer','=',$customer->id)
+        ->orderBy('id', 'DESC')
+        ->with(['linkOrderTrack','linkInvoice','linkOrderItem.linkItem'])
         ->get();
 
         $dikonfirmasiAdministrasi = Order::whereHas('linkOrderTrack', function($q){
             $q->where('status_enum','2');
-        })->where('id_customer','=',$customer->id)->with(['linkOrderTrack.linkStaffPengonfirmasi','linkInvoice','linkOrderItem.linkItem'])
+        })->where('id_customer','=',$customer->id)
+        ->orderBy('id', 'DESC')
+        ->with(['linkOrderTrack.linkStaffPengonfirmasi','linkInvoice','linkOrderItem.linkItem'])
         ->get();
 
         $dalamPerjalanan = Order::whereHas('linkOrderTrack', function($q){
             $q->where('status_enum','3');
-        })->where('id_customer','=',$customer->id)->with(['linkOrderTrack','linkInvoice','linkOrderItem.linkItem'])
+        })->where('id_customer','=',$customer->id)
+        ->orderBy('id', 'DESC')
+        ->with(['linkOrderTrack','linkInvoice','linkOrderItem.linkItem'])
         ->get();
 
         $telahSampai = Order::whereHas('linkOrderTrack', function($q){
             $q->where('status_enum','4')->orWhere('status_enum','5')->orWhere('status_enum','6');
-        })->where('id_customer','=',$customer->id)->with(['linkOrderTrack','linkInvoice','linkOrderItem.linkItem'])
+        })->where('id_customer','=',$customer->id)
+        ->orderBy('id', 'DESC')
+        ->with(['linkOrderTrack','linkInvoice','linkOrderItem.linkItem'])
         ->get();
 
         $ditolak = Order::whereHas('linkOrderTrack', function($q){
             $q->where('status_enum','-1');
-        })->where('id_customer','=',$customer->id)->with(['linkOrderTrack','linkInvoice','linkOrderItem.linkItem'])
+        })->where('id_customer','=',$customer->id)
+        ->orderBy('id', 'DESC')
+        ->with(['linkOrderTrack','linkInvoice','linkOrderItem.linkItem'])
         ->get();      
              
         return view('customer.profil.detailpesanan',[
