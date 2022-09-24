@@ -18,18 +18,65 @@ class KasController extends Controller
                 })
               ->orderBy('tanggal','DESC')->orderBy('created_at','DESC')->get();
 
-    $totalKas = 0;
-    foreach($bukuKas as $kas){
-      if($kas->debit_kredit == '-1'){
-        $totalKas = $totalKas - $kas->uang;
-      }else if($kas->debit_kredit == '1'){
-        $totalKas = $totalKas + $kas->uang;
+    $saldoDebitKas = Kas::where('kas', $cashaccount->id)
+                      ->where('debit_kredit', '1')
+                      ->where(function ($query) {
+                        $query->where('status','0')->orWhereNull('status');                  
+                        })
+                      ->select(\DB::raw('SUM(uang) as saldo_debit'))
+                      ->get()->sum('saldo_debit');
+
+    $saldoKreditKas = Kas::where('kas', $cashaccount->id)
+                      ->where('debit_kredit', '-1')
+                      ->where(function ($query) {
+                        $query->where('status','0')->orWhereNull('status');                  
+                        })
+                      ->select(\DB::raw('SUM(uang) as saldo_debit'))
+                      ->get()->sum('saldo_debit');
+
+    $saldoAkhirKas = $saldoDebitKas - $saldoKreditKas;                 
+    $totalKas = $saldoAkhirKas;
+
+    $i = 0;
+    foreach ($bukuKas as $kas) {
+      if ($i == 0) {
+        array_push($saldoKas, [
+          'original' => $kas, 
+          'totalKas' => $totalKas
+        ]);
+        if($kas->debit_kredit == '-1'){
+          $totalKas = $totalKas + $kas->uang;
+        }else{
+          $totalKas = $totalKas - $kas->uang;
+        }
+      } else {
+        array_push($saldoKas, [
+          'original' => $kas, 
+          'totalKas' => $totalKas
+        ]);
+        if($kas->debit_kredit == '-1'){
+          $totalKas = $totalKas + $kas->uang;
+        }else{
+            $totalKas = $totalKas - $kas->uang;
+        }
       }
-      array_push($saldoKas, [
-        'original' => $kas, 
-        'totalKas' => $totalKas
-      ]);
+      $i++;
     }
+
+    // dd($saldoKas);
+
+    // $totalKas = 0;
+    // foreach($bukuKas as $kas){
+    //   if($kas->debit_kredit == '-1'){
+    //     $totalKas = $totalKas - $kas->uang;
+    //   }else if($kas->debit_kredit == '1'){
+    //     $totalKas = $totalKas + $kas->uang;
+    //   }
+    //   array_push($saldoKas, [
+    //     'original' => $kas, 
+    //     'totalKas' => $totalKas
+    //   ]);
+    // }
 
     return view('administrasi.kas.bukukas', [
       'listsofkas' => $saldoKas,
