@@ -196,3 +196,12 @@
 .bg-kredit {
     background-color: rgb(248, 193, 90);
 }
+
+.table-panel {
+    // min-height: 100vh;
+    max-height: 100vh;
+    overflow-y: auto;
+    .table {
+        min-height: 100vh;
+    }
+}
