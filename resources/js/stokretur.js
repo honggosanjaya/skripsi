@@ -1,6 +1,7 @@
 function stokretur() {
   let iditem = $(this).data('iditem');
-  if ($(`#stokretur .select-metodecart-${iditem}`).val() && $(`#stokretur .input-quantitycart-${iditem}`).val() > 0) {
+  // if ($(`#stokretur .select-metodecart-${iditem}`).val() && $(`#stokretur .input-quantitycart-${iditem}`).val() > 0) {
+  if ($(`#stokretur .input-quantitycart-${iditem}`).val() > 0) {
     let objData = {
       id: $("#stokretur .input-idcart-" + iditem).val(),
       kode_barang: $('#stokretur .input-kodecart-' + iditem).val(),
@@ -9,7 +10,8 @@ function stokretur() {
       stok: $('#stokretur .input-stokcart-' + iditem).val(),
       stok_retur: $('#stokretur .input-stokreturcart-' + iditem).val(),
       quantity: $('#stokretur .input-quantitycart-' + iditem).val(),
-      metode: $('#stokretur .select-metodecart-' + iditem).val(),
+      // metode: $('#stokretur .select-metodecart-' + iditem).val(),
+      metode: 'tukarguling'
     }
 
     $.ajax({
