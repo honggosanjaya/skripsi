@@ -231,6 +231,8 @@ Route::prefix('administrasi')->middleware('administrasi')->group(function() {
   Route::get('/datacustomer/ubah/{customer:id}', [CustomerController::class, 'administrasiEdit']);
   Route::put('/datacustomer/ubahcustomer/{customer:id}', [CustomerController::class, 'administrasiUpdate']);
   Route::get('/datacustomer/{customer:id}', [CustomerController::class, 'administrasiShow']);
+  Route::get('/datacustomer/{customer:id}/generate-qr', [CustomerController::class, 'generateQRCustomer']);
+  Route::get('/datacustomer/{customer:id}/cetak-qr', [CustomerController::class, 'cetakQRCustomer']);
 
   Route::get('/profil', [HomeController::class, 'lihatProfil']);
   Route::get('/profil/ubahpassword', [HomeController::class, 'lihatPassword']);
@@ -257,6 +259,8 @@ Route::prefix('administrasi')->middleware('administrasi')->group(function() {
   Route::post('/kas/store', [KasController::class, 'storeKas']);
   Route::get('/kas/{cashaccount:id}', [KasController::class, 'bukuKas']);
   Route::post('/kas/pengajuanpenghapusan/{kas:id}', [KasController::class, 'pengajuanPenghapusanKas']);
+  
+  Route::get('/kas/read/{cashaccount:id}', [KasController::class, 'markPengajuanAsReadByAdmin']);
 });
 
 

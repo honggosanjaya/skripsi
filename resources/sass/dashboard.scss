@@ -526,7 +526,8 @@ table tbody th {
 
 .badge-order-track-2,
 .badge-reimbursement-2,
-.badge-opname-1 {
+.badge-opname-1,
+.badge-kas-disetujui {
     background-color: #20c21a;
 }
 
@@ -540,7 +541,7 @@ table tbody th {
 
 .badge-order-track-5,
 .badge-reimbursement-1,
-.badge-kas-0 {
+.badge-kas-diajukan {
     background-color: #1a25c2;
 }
 
@@ -549,7 +550,8 @@ table tbody th {
 }
 
 .badge-order-track--1,
-.badge-reimbursement--1 {
+.badge-reimbursement--1,
+.badge-kas-ditolak {
     background-color: #c21a1a;
 }
 

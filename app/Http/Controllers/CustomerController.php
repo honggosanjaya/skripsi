@@ -19,7 +19,8 @@ use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\File;
 use Intervention\Image\ImageManagerStatic as Image;
-
+use PDF;
+use SimpleSoftwareIO\QrCode\Facades\QrCode;
 use App\Mail\ConfirmationEmail;
 use Illuminate\Support\Facades\Mail;
 
@@ -583,5 +584,39 @@ class CustomerController extends Controller
         'invoices' => $invoices,
         "invoiceJatuhTempo" => $invoiceJatuhTempo
       ]);
+    }
+
+    public function generateQRCustomer(Customer $customer)
+    {
+        return view('administrasi.dataCustomer.qrCode', [
+          "customer" => $customer
+        ]);
+    }
+
+    public function cetakQRCustomer(Customer $customer){  
+      $nama_customer = str_replace(" ", "-", $customer->nama);
+
+      $exists = Storage::disk('local')->exists('/public/customer/QR-CUST-' . $nama_customer . '.svg');
+      if($exists){
+        Storage::delete('/public/customer/QR-CUST-' . $nama_customer . '.svg');
+      }
+
+      $image = \QrCode::format('svg')
+                ->size(300)
+                ->generate(env('APP_URL') . '/salesman/trip/' . $customer->id );
+                // ->generate('https://salesman-dev.suralaya.web.id/salesman/trip/' . $customer->id );
+
+      $output_file = '/public/customer/QR-CUST-' . $nama_customer . '.svg';
+
+      Storage::disk('local')->put($output_file, $image); 
+
+      $pdf = PDF::loadview('administrasi.dataCustomer.cetakQR',[
+          'customer' => $customer,   
+          'nama_customer' => $nama_customer
+      ]);
+
+      $pdf->setPaper('A5');
+  
+      return $pdf->stream('qr-'.$customer->id.'-'.$customer->nama.'.pdf'); 
     }
 }

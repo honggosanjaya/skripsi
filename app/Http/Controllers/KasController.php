@@ -14,69 +14,51 @@ class KasController extends Controller
     $saldoKas = [];
     $bukuKas = Kas::where('kas', $cashaccount->id)
               ->where(function ($query) {
-                $query->where('status','0')->orWhereNull('status');                  
-                })
-              ->orderBy('tanggal','DESC')->orderBy('created_at','DESC')->get();
+                $query->where('status_pengajuan','0')->orWhere('status_pengajuan','-1')->orWhereNull('status_pengajuan');                  
+              })
+              ->orderBy('tanggal','ASC')->orderBy('created_at','ASC')->get();
 
     $saldoDebitKas = Kas::where('kas', $cashaccount->id)
                       ->where('debit_kredit', '1')
                       ->where(function ($query) {
-                        $query->where('status','0')->orWhereNull('status');                  
-                        })
+                        $query->where('status','1')->orWhereNull('status');                   
+                      })
+                      ->where(function ($query) {
+                        $query->where('status_pengajuan','0')->orWhere('status_pengajuan','-1')->orWhereNull('status_pengajuan');                  
+                      })
                       ->select(\DB::raw('SUM(uang) as saldo_debit'))
                       ->get()->sum('saldo_debit');
 
     $saldoKreditKas = Kas::where('kas', $cashaccount->id)
                       ->where('debit_kredit', '-1')
                       ->where(function ($query) {
-                        $query->where('status','0')->orWhereNull('status');                  
-                        })
+                        $query->where('status','1')->orWhereNull('status');                  
+                      })
+                      ->where(function ($query) {
+                        $query->where('status_pengajuan','0')->orWhere('status_pengajuan','-1')->orWhereNull('status_pengajuan');                  
+                      })
                       ->select(\DB::raw('SUM(uang) as saldo_debit'))
                       ->get()->sum('saldo_debit');
 
     $saldoAkhirKas = $saldoDebitKas - $saldoKreditKas;                 
-    $totalKas = $saldoAkhirKas;
+    $totalKas = 0;
 
-    $i = 0;
     foreach ($bukuKas as $kas) {
-      if ($i == 0) {
-        array_push($saldoKas, [
-          'original' => $kas, 
-          'totalKas' => $totalKas
-        ]);
+      if($kas->status != '-1'){
         if($kas->debit_kredit == '-1'){
-          $totalKas = $totalKas + $kas->uang;
-        }else{
           $totalKas = $totalKas - $kas->uang;
-        }
-      } else {
-        array_push($saldoKas, [
-          'original' => $kas, 
-          'totalKas' => $totalKas
-        ]);
-        if($kas->debit_kredit == '-1'){
-          $totalKas = $totalKas + $kas->uang;
         }else{
-            $totalKas = $totalKas - $kas->uang;
+          $totalKas = $totalKas + $kas->uang;
         }
       }
-      $i++;
+
+      array_push($saldoKas, [
+        'original' => $kas, 
+        'totalKas' => $totalKas
+      ]);
     }
 
     // dd($saldoKas);
-
-    // $totalKas = 0;
-    // foreach($bukuKas as $kas){
-    //   if($kas->debit_kredit == '-1'){
-    //     $totalKas = $totalKas - $kas->uang;
-    //   }else if($kas->debit_kredit == '1'){
-    //     $totalKas = $totalKas + $kas->uang;
-    //   }
-    //   array_push($saldoKas, [
-    //     'original' => $kas, 
-    //     'totalKas' => $totalKas
-    //   ]);
-    // }
 
     return view('administrasi.kas.bukukas', [
       'listsofkas' => $saldoKas,
@@ -186,7 +168,7 @@ class KasController extends Controller
   public function pengajuanPenghapusanKas(Kas $kas){
     $selectedKas = $kas->kas;
     Kas::find($kas->id)->update([
-      'status' => '0',
+      'status_pengajuan' => '0',
       'updated_at' => now()
     ]);
 
@@ -194,7 +176,7 @@ class KasController extends Controller
   }
 
   public function perubahanKasSpv(){
-    $pengajuansKas = Kas::where('status', '0')->get();
+    $pengajuansKas = Kas::where('status_pengajuan', '0')->where('status', null)->get();
     
     return view('supervisor.kas.pengajuanPerubahan', [
       "pengajuansKas" => $pengajuansKas,
@@ -203,7 +185,8 @@ class KasController extends Controller
 
   public function setujuPerubahanKasSpv(Kas $kas){
     Kas::find($kas->id)->update([
-      'status' => '1',
+      // 'status_pengajuan' => '1',
+      'status' => '-1',
       'updated_at' => now()
     ]);
 
@@ -212,10 +195,31 @@ class KasController extends Controller
 
   public function tolakPerubahanKasSpv(Kas $kas){
     Kas::find($kas->id)->update([
-      'status' => null,
+      // 'status_pengajuan' => '-1',
+      'status' => '1',
       'updated_at' => now()
     ]);
 
     return redirect('/supervisor/perubahankas')->with('pesanSukses', 'Berhasil menolak penghapusan kas');
+  }
+
+  public function markPengajuanAsReadByAdmin(CashAccount $cashaccount){
+    $allKas = Kas::all();
+
+    foreach($allKas as $kas){
+      if($kas->status == '-1'){
+        Kas::find($kas->id)->update([
+          'status_pengajuan' => '1',
+          'status' => null
+        ]);
+      }elseif($kas->status == '1'){
+        Kas::find($kas->id)->update([
+          'status_pengajuan' => '-1',
+          'status' => null
+        ]);
+      }
+    }
+
+    return redirect('/administrasi/kas/'.$cashaccount->id)->with('pesanSukses', 'Berhasil membaca');
   }
 }

@@ -9,6 +9,7 @@ import { UserContext } from '../../contexts/UserContext';
 import Modal from 'react-bootstrap/Modal';
 import Button from 'react-bootstrap/Button';
 import { useHistory } from "react-router";
+import QrReader from 'react-qr-reader';
 
 let source;
 const DashboardSales = () => {
@@ -22,6 +23,7 @@ const DashboardSales = () => {
   const [dataShow, setDataShow] = useState('inactive');
   const [showModal, setShowModal] = useState(false);
   const [showModalRencana, setShowModalRencana] = useState(false);
+  const [showModalQR, setShowModalQR] = useState(false);
   const [isOrder, setIsOrder] = useState();
   const _isMounted = useRef(true);
   const Swal = require('sweetalert2');
@@ -29,13 +31,20 @@ const DashboardSales = () => {
   const [shouldDisabled, setShouldDisabled] = useState(false);
   var todayDate = new Date().toISOString().slice(0, 10);
   const [tanggal, setTanggal] = useState(todayDate);
+  const [linkQR, setLinkQR] = useState(null);
 
   useEffect(() => {
     const modal = document.querySelector('.swal2-popup.swal2-icon-success');
     if (modal) {
       modal.classList.add('reset-left');
     }
-  }, [])
+  }, []);
+
+  useEffect(() => {
+    if (linkQR) {
+      window.location.href = linkQR;
+    }
+  }, [linkQR]);
 
   useEffect(() => {
     source = axios.CancelToken.source();
@@ -135,13 +144,38 @@ const DashboardSales = () => {
   const handleCloseModal = () => setShowModal(false);
   const handleCloseModalRencana = () => {
     setShowModalRencana(false);
+    setShowModalQR(false);
     setShowModal(true);
   }
 
   const handleShowModalRencana = () => {
     setShowModalRencana(true);
+    setShowModalQR(false);
     setShowModal(false);
   }
+
+  const handleShowModalQR = () => {
+    setShowModalRencana(false);
+    setShowModalQR(true);
+    setShowModal(false);
+  }
+
+  const handleCloseModalQR = () => {
+    console.log('ya');
+    setShowModalRencana(false);
+    setShowModalQR(false);
+    setShowModal(true);
+  }
+
+  const handleScanQR = (data) => {
+    if (data) {
+      setLinkQR(data);
+    }
+  };
+
+  const handleErrorQR = (error) => {
+    console.log(error);
+  };
 
   return (
     <main className="page_main">
@@ -187,9 +221,15 @@ const DashboardSales = () => {
               <Modal.Title>Cari Customer</Modal.Title>
             </Modal.Header>
             <Modal.Body>
-              <Button variant="primary" onClick={handleShowModalRencana}>
-                <span className="iconify fs-3 me-1" data-icon="flat-color-icons:planner"></span>Rencana Kunjungan
-              </Button>
+              <div className="d-flex justify-content-between">
+                <Button variant="primary" onClick={handleShowModalRencana}>
+                  <span className="iconify fs-3 me-1" data-icon="flat-color-icons:planner"></span>Rencana Kunjungan
+                </Button>
+
+                {!isOrder && <Button variant="success" onClick={handleShowModalQR}>
+                  <span className="iconify fs-3 me-1" data-icon="bx:qr-scan"></span>Scan QR
+                </Button>}
+              </div>
 
               <form onSubmit={cariCustomer} className="mt-4">
                 <div className="mb-3">
@@ -262,6 +302,21 @@ const DashboardSales = () => {
                 </Fragment>
 
               }
+            </Modal.Body>
+          </Modal>
+
+          <Modal show={showModalQR} onHide={handleCloseModalQR} centered={true}>
+            <Modal.Header closeButton>
+              <Modal.Title>Scan Kode QR</Modal.Title>
+            </Modal.Header>
+            <Modal.Body>
+              <QrReader
+                delay={300}
+                onError={handleErrorQR}
+                onScan={handleScanQR}
+                style={{ width: '100%' }}
+                facingMode="environment"
+              />
             </Modal.Body>
           </Modal>
         </Fragment>
