@@ -231,6 +231,8 @@ Route::prefix('administrasi')->middleware('administrasi')->group(function() {
   Route::get('/datacustomer/ubah/{customer:id}', [CustomerController::class, 'administrasiEdit']);
   Route::put('/datacustomer/ubahcustomer/{customer:id}', [CustomerController::class, 'administrasiUpdate']);
   Route::get('/datacustomer/{customer:id}', [CustomerController::class, 'administrasiShow']);
+  Route::get('/datacustomer/{customer:id}/generate-qr', [CustomerController::class, 'generateQRCustomer']);
+  Route::get('/datacustomer/{customer:id}/cetak-qr', [CustomerController::class, 'cetakQRCustomer']);
 
   Route::get('/profil', [HomeController::class, 'lihatProfil']);
   Route::get('/profil/ubahpassword', [HomeController::class, 'lihatPassword']);

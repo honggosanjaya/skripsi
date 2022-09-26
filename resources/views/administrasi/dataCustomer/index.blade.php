@@ -53,12 +53,13 @@
               @else
                 <td></td>
               @endif
-              <td>
-                <div class="d-flex justify-content-center">
-                  <a href="/administrasi/datacustomer/ubah/{{ $customer->id }}" class="btn btn-sm btn-warning me-3">
-                    <span class="iconify fs-5 me-1" data-icon="eva:edit-2-fill"></span> Edit
-                  </a>
-                </div>
+              <td width="20%" class="text-center">
+                <a href="/administrasi/datacustomer/ubah/{{ $customer->id }}" class="btn btn-warning">
+                  <span class="iconify fs-5 me-1" data-icon="eva:edit-2-fill"></span> Edit
+                </a>
+                <a href="/administrasi/datacustomer/{{ $customer->id }}/generate-qr" class="btn btn-primary">
+                  <span class="iconify fs-5 me-1" data-icon="bx:qr-scan"></span> QR
+                </a>
               </td>
             </tr>
           @endforeach
