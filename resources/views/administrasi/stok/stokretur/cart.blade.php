@@ -21,7 +21,7 @@
             <th scope="col">Satuan</th>
             <th scope="col">Pengurangan Stok Retur</th>
             <th scope="col">Penambahan Stok</th>
-            <th scope="col">Metode</th>
+            {{-- <th scope="col">Metode</th> --}}
           </tr>
         </thead>
         <tbody>
@@ -30,18 +30,18 @@
               <td>{{ $item->attributes->kode_barang ?? null }}</td>
               <td>{{ $item->name ?? null }}</td>
               <td>{{ $item->attributes->satuan ?? null }}</td>
-              <td>{{ $item->attributes->stok_retur ?? null }} - {{ $item->quantity ?? null }}</td>
+              <td>{{ $item->quantity ?? null }}</td>
               @if ($item->attributes->metode ?? null)
                 @if ($item->attributes->metode == 'tukarguling')
-                  <td>{{ $item->attributes->stok ?? null }} + {{ $item->quantity ?? null }}</td>
+                  <td>{{ $item->quantity ?? null }}</td>
                 @else
-                  <td>{{ $item->attributes->stok ?? null }} + 0</td>
+                  <td>0</td>
                 @endif
               @else
                 <td>{{ $item->attributes->stok ?? null }}</td>
               @endif
 
-              <td>{{ $item->attributes->metode ?? null }}</td>
+              {{-- <td>{{ $item->attributes->metode ?? null }}</td> --}}
             </tr>
           @endforeach
         </tbody>

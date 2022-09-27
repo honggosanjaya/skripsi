@@ -10,7 +10,26 @@ use Illuminate\Http\Request;
 class KasController extends Controller
 {
 
-  public function bukuKas(CashAccount $cashaccount){
+  public function bukuKas(Request $request, CashAccount $cashaccount){
+    $counter = $request->session()->increment('counterAdminVisitKas');
+    if($counter > 1){
+      $allKas = Kas::all();
+
+      foreach($allKas as $kas){
+        if($kas->status == '-1'){
+          Kas::find($kas->id)->update([
+            'status_pengajuan' => '1',
+            'status' => null
+          ]);
+        }elseif($kas->status == '1'){
+          Kas::find($kas->id)->update([
+            'status_pengajuan' => '-1',
+            'status' => null
+          ]);
+        }
+      }
+    }
+
     $saldoKas = [];
     $bukuKas = Kas::where('kas', $cashaccount->id)
               ->where(function ($query) {
@@ -166,12 +185,13 @@ class KasController extends Controller
   }
 
   public function pengajuanPenghapusanKas(Kas $kas){
+    session(['counterAdminVisitKas' => 0]);
     $selectedKas = $kas->kas;
     Kas::find($kas->id)->update([
       'status_pengajuan' => '0',
       'updated_at' => now()
     ]);
-
+ 
     return redirect('/administrasi/kas/'.$selectedKas)->with('pesanSukses', 'Berhasil mengajukan penghapusan kas');
   }
 
@@ -203,23 +223,4 @@ class KasController extends Controller
     return redirect('/supervisor/perubahankas')->with('pesanSukses', 'Berhasil menolak penghapusan kas');
   }
 
-  public function markPengajuanAsReadByAdmin(CashAccount $cashaccount){
-    $allKas = Kas::all();
-
-    foreach($allKas as $kas){
-      if($kas->status == '-1'){
-        Kas::find($kas->id)->update([
-          'status_pengajuan' => '1',
-          'status' => null
-        ]);
-      }elseif($kas->status == '1'){
-        Kas::find($kas->id)->update([
-          'status_pengajuan' => '-1',
-          'status' => null
-        ]);
-      }
-    }
-
-    return redirect('/administrasi/kas/'.$cashaccount->id)->with('pesanSukses', 'Berhasil membaca');
-  }
 }

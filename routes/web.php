@@ -259,8 +259,7 @@ Route::prefix('administrasi')->middleware('administrasi')->group(function() {
   Route::post('/kas/store', [KasController::class, 'storeKas']);
   Route::get('/kas/{cashaccount:id}', [KasController::class, 'bukuKas']);
   Route::post('/kas/pengajuanpenghapusan/{kas:id}', [KasController::class, 'pengajuanPenghapusanKas']);
-  
-  Route::get('/kas/read/{cashaccount:id}', [KasController::class, 'markPengajuanAsReadByAdmin']);
+
 });
 
 

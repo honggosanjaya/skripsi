@@ -84,7 +84,7 @@
                         </div>
                       @endif
 
-                      @if ($cartItem2 = \Cart::session(auth()->user()->id . 'stokretur')->get($product->id))
+                      {{-- @if ($cartItem2 = \Cart::session(auth()->user()->id . 'stokretur')->get($product->id))
                         <div class="d-flex justify-content-between">
                           <div>Metode</div>
                           <select data-iditem="{{ $product->id }}"
@@ -98,12 +98,6 @@
                               <option value="potongan">Potongan</option>
                             @endif
                           </select>
-
-
-                          {{-- <input data-iditem="{{ $product->id }}" type="number"
-                            class="form-control input-totalhargacart-{{ $product->id }}" style="width: 300px"
-                            id="total_harga" name="total_harga" value="{{ $cartItem2->attributes->total_harga ?? null }}"
-                            min='0'> --}}
                         </div>
                       @else
                         <div class="d-flex justify-content-between">
@@ -114,12 +108,8 @@
                             <option value="tukarguling" selected>Tukar Guling</option>
                             <option value="potongan">Potongan</option>
                           </select>
-
-                          {{-- <input data-iditem="{{ $product->id }}" type="number"
-                            class="form-control input-totalhargacart-{{ $product->id }}" style="width: 300px"
-                            id="total_harga" name="total_harga" min='0'> --}}
                         </div>
-                      @endif
+                      @endif --}}
                     </form>
                   </td>
                 @endif
