@@ -69,6 +69,9 @@ Route::prefix('owner')->middleware('owner')->group(function() {
   Route::post('/profil/check/{user:id_users}', [AuthController::class, 'check']);
   Route::get('/profil/ubahpasswordbaru/{user:id}', [AuthController::class, 'passwordBaru']);
   Route::post('/profil/gantipassword/{user:id}', [AuthController::class, 'gantiPassword']);
+
+  Route::get('/panduan/laporanpenjualan', [ReportController::class, 'panduanPelaporanPenjualan']);
+  Route::get('/panduan/laporankinerja', [ReportController::class, 'panduanPelaporanKinerjaSales']);
 });
 
 
@@ -145,6 +148,9 @@ Route::prefix('supervisor')->middleware('supervisor')->group(function() {
   Route::get('/perubahankas', [KasController::class, 'perubahanKasSpv']);
   Route::post('/perubahankas/setuju/{kas:id}', [KasController::class, 'setujuPerubahanKasSpv']);
   Route::post('/perubahankas/tolak/{kas:id}', [KasController::class, 'tolakPerubahanKasSpv']);
+
+  Route::get('/panduan/laporanpenjualan', [ReportController::class, 'panduanPelaporanPenjualan']);
+  Route::get('/panduan/laporankinerja', [ReportController::class, 'panduanPelaporanKinerjaSales']);
 });
 
 

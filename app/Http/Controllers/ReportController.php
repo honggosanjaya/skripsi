@@ -301,4 +301,12 @@ class ReportController extends Controller
 
       return view('supervisor.report.kinerja',compact('staffs','input','customer_baru'));
     }
+
+    public function panduanPelaporanPenjualan(){
+      return view('supervisor.panduan.laporanPenjualan');
+    }
+
+    public function panduanPelaporanKinerjaSales(){
+      return view('supervisor.panduan.laporanKinerjaSales');
+    }
 }

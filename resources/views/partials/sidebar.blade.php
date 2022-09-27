@@ -117,12 +117,12 @@
           <ul class="sub-menu mt-2">
             <li>
               <a class="{{ Request::is('supervisor/event*') ? 'active-submenu' : '' }}" href="/supervisor/event">
-                <i class="bi bi-calendar3-event me-2"></i>Event
+                <i class="bi bi-calendar3-event me-2"></i><span>Event</span>
               </a>
             </li>
             <li>
               <a class="{{ Request::is('supervisor/datastaf*') ? 'active-submenu' : '' }}" href="/supervisor/datastaf">
-                <i class="bi bi-people-fill me-2"></i>Staf
+                <i class="bi bi-people-fill me-2"></i><span>Staf</span>
               </a>
             </li>
             <li>
@@ -166,7 +166,7 @@
             <li>
               <a class="{{ Request::is('supervisor/perubahankas*') ? 'active-submenu' : '' }}"
                 href="/supervisor/perubahankas">
-                <i class="bi bi-calendar3-event me-2"></i>Perubahan Kas
+                <i class="bi bi-calendar3-event me-2"></i><span>Perubahan Kas</span>
               </a>
             </li>
           </ul>
@@ -197,6 +197,33 @@
             </li>
           </ul>
         </li>
+
+        <li
+          class="mb-3 menu-group {{ Request::is('supervisor/panduan/laporanpenjualan*') || Request::is('supervisor/panduan/laporankinerja*') ? 'showMenu' : '' }}">
+          <div
+            class="icon-link {{ Request::is('supervisor/panduan/laporanpenjualan*') || Request::is('supervisor/panduan/laporankinerja*') ? 'active' : '' }}">
+            <a>
+              <span class="iconify fs-4 me-2" data-icon="mdi:television-guide"></span>
+              <span>Panduan</span>
+            </a>
+            <i class="bi bi-chevron-down arrow"></i>
+          </div>
+          <ul class="sub-menu mt-2">
+            <li>
+              <a class="{{ Request::is('supervisor/panduan/laporanpenjualan*') ? 'active-submenu' : '' }}"
+                href="/supervisor/panduan/laporanpenjualan">
+                <span class="iconify fs-4 me-2" data-icon="la:file-invoice-dollar"></span><span>Laporan Penjualan</span>
+              </a>
+            </li>
+            <li>
+              <a class="{{ Request::is('supervisor/panduan/laporankinerja*') ? 'active-submenu' : '' }}"
+                href="/supervisor/panduan/laporankinerja">
+                <span class="iconify fs-4 me-2" data-icon="tabler:report-search"></span><span>Laporan Kinerja
+                </span>
+              </a>
+            </li>
+          </ul>
+        </li>
       </ul>
     @endcan
 
@@ -218,6 +245,33 @@
           <a class="{{ Request::is('owner/datasupervisor*') ? 'active' : '' }}" href="/owner/datasupervisor">
             <i class="bi bi-people-fill me-2"></i><span>Data Supervisor</span>
           </a>
+        </li>
+
+        <li
+          class="mb-3 menu-group {{ Request::is('owner/panduan/laporanpenjualan*') || Request::is('owner/panduan/laporankinerja*') ? 'showMenu' : '' }}">
+          <div
+            class="icon-link {{ Request::is('owner/panduan/laporanpenjualan*') || Request::is('owner/panduan/laporankinerja*') ? 'active' : '' }}">
+            <a>
+              <span class="iconify fs-4 me-2" data-icon="mdi:television-guide"></span>
+              <span>Panduan</span>
+            </a>
+            <i class="bi bi-chevron-down arrow"></i>
+          </div>
+          <ul class="sub-menu mt-2">
+            <li>
+              <a class="{{ Request::is('owner/panduan/laporanpenjualan*') ? 'active-submenu' : '' }}"
+                href="/owner/panduan/laporanpenjualan">
+                <span class="iconify fs-4 me-2" data-icon="la:file-invoice-dollar"></span><span>Laporan Penjualan</span>
+              </a>
+            </li>
+            <li>
+              <a class="{{ Request::is('owner/panduan/laporankinerja*') ? 'active-submenu' : '' }}"
+                href="/owner/panduan/laporankinerja">
+                <span class="iconify fs-4 me-2" data-icon="tabler:report-search"></span><span>Laporan Kinerja
+                </span>
+              </a>
+            </li>
+          </ul>
         </li>
       </ul>
     @endcan
