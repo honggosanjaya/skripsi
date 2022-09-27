@@ -27,10 +27,6 @@
       <span class="iconify fs-3 me-2" data-icon="dashicons:database-add"></span> Tambah Kas
     </a>
 
-    <a href="/administrasi/kas/read/{{ $idCashaccount }}" class="btn btn-danger mt-3 mb-5">
-      <span class="iconify fs-3 me-2" data-icon="dashicons:database-add"></span> Tandai Dibaca
-    </a>
-
     <div class="table-panel">
       <div class="table-responsive mt-3">
         <table class="table table-hover table-sm">
