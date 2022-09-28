@@ -269,7 +269,8 @@ Route::prefix('administrasi')->middleware('administrasi')->group(function() {
   Route::post('/kas/store', [KasController::class, 'storeKas']);
   Route::get('/kas/{cashaccount:id}', [KasController::class, 'bukuKas']);
   Route::post('/kas/pengajuanpenghapusan/{kas:id}', [KasController::class, 'pengajuanPenghapusanKas']);
-
+  Route::get('/kas/print/{cashaccount:id}', [KasController::class, 'cetakKas']);
+  Route::post('/kas/print/{cashaccount:id}/cetak-kas', [KasController::class, 'cetakKasPDF']);
 });
 
 

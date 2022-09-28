@@ -27,6 +27,10 @@
       <span class="iconify fs-3 me-2" data-icon="dashicons:database-add"></span> Tambah Kas
     </a>
 
+    <a href="/administrasi/kas/print/{{ $idCashaccount }}" class="btn btn_purple mt-3 mb-5">
+      <span class="iconify fs-3 me-2" data-icon="ic:round-print"></span> Cetak Kas
+    </a>
+
     <div class="table-panel">
       <div class="table-responsive mt-3">
         <table class="table table-hover table-sm">
