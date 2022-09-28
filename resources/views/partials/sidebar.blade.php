@@ -105,6 +105,37 @@
       <h1 class="mb-3 fs-6">Supervisor</h1>
       <ul class="p-0 nav-links">
         <li
+          class="mb-3 menu-group {{ Request::is('supervisor/report/penjualan*') || Request::is('supervisor/report/kinerja*') || Request::is('supervisor/report/koordinattrip*') ? 'showMenu' : '' }}">
+          <div
+            class="icon-link {{ Request::is('supervisor/report/penjualan*') || Request::is('supervisor/report/kinerja*') || Request::is('supervisor/report/koordinattrip*') ? 'active' : '' }}">
+            <a>
+              <i class="bi bi-newspaper me-2"></i>
+              <span>Report</span>
+            </a>
+            <i class="bi bi-chevron-down arrow"></i>
+          </div>
+          <ul class="sub-menu mt-2">
+            <li>
+              <a class="{{ Request::is('supervisor/report/penjualan*') ? 'active-submenu' : '' }}"
+                href="/supervisor/report/penjualan">
+                <i class="bi bi-cash me-2"></i><span>Penjualan</span>
+              </a>
+            </li>
+            <li>
+              <a class="{{ Request::is('supervisor/report/kinerja*') ? 'active-submenu' : '' }}"
+                href="/supervisor/report/kinerja">
+                <i class="bi bi-graph-up me-2"></i><span>Kinerja Salesman</span>
+              </a>
+            </li>
+            <li>
+              <a class="{{ Request::is('supervisor/report/koordinattrip*') ? 'active-submenu' : '' }}"
+                href="/supervisor/report/koordinattrip">
+                <i class="bi bi-geo-alt me-2"></i><span>Koordinat Trip</span>
+              </a>
+            </li>
+          </ul>
+        </li>
+        <li
           class="mb-3 menu-group {{ Request::is('supervisor/event*') || Request::is('supervisor/datastaf*') || Request::is('supervisor/datacustomer*') || Request::is('supervisor/wilayah*') || Request::is('supervisor/jenis*') || Request::is('supervisor/cashaccount*') || Request::is('supervisor/category*') || Request::is('supervisor/stokopname*') || Request::is('supervisor/perubahankas*') ? 'showMenu' : '' }}">
           <div
             class="icon-link {{ Request::is('supervisor/event*') || Request::is('supervisor/datastaf*') || Request::is('supervisor/datacustomer*') || Request::is('supervisor/wilayah*') || Request::is('supervisor/jenis*') || Request::is('supervisor/cashaccount*') || Request::is('supervisor/category*') || Request::is('supervisor/stokopname*') || Request::is('supervisor/perubahankas*') ? 'active' : '' }}">
@@ -171,33 +202,6 @@
             </li>
           </ul>
         </li>
-
-        <li
-          class="mb-3 menu-group {{ Request::is('supervisor/report/penjualan*') || Request::is('supervisor/report/kinerja*') ? 'showMenu' : '' }}">
-          <div
-            class="icon-link {{ Request::is('supervisor/report/penjualan*') || Request::is('supervisor/report/kinerja*') ? 'active' : '' }}">
-            <a>
-              <i class="bi bi-newspaper me-2"></i>
-              <span>Report</span>
-            </a>
-            <i class="bi bi-chevron-down arrow"></i>
-          </div>
-          <ul class="sub-menu mt-2">
-            <li>
-              <a class="{{ Request::is('supervisor/report/penjualan*') ? 'active-submenu' : '' }}"
-                href="/supervisor/report/penjualan">
-                <i class="bi bi-cash me-2"></i><span>Penjualan</span>
-              </a>
-            </li>
-            <li>
-              <a class="{{ Request::is('supervisor/report/kinerja*') ? 'active-submenu' : '' }}"
-                href="/supervisor/report/kinerja">
-                <i class="bi bi-graph-up me-2"></i><span>Kinerja Salesman</span>
-              </a>
-            </li>
-          </ul>
-        </li>
-
         <li
           class="mb-3 menu-group {{ Request::is('supervisor/panduan/laporanpenjualan*') || Request::is('supervisor/panduan/laporankinerja*') ? 'showMenu' : '' }}">
           <div
@@ -231,16 +235,38 @@
       <hr class="my-4" />
       <h1 class="mb-3 fs-6">Owner</h1>
       <ul class="p-0 nav-links">
-        <li class="mb-3">
-          <a class="{{ Request::is('owner/report/penjualan*') ? 'active' : '' }}" href="/owner/report/penjualan">
-            <i class="bi bi-cash me-2"></i><span>Penjualan</span>
-          </a>
+        <li
+          class="mb-3 menu-group {{ Request::is('owner/report/penjualan*') || Request::is('owner/report/kinerja*') || Request::is('owner/report/koordinattrip*') ? 'showMenu' : '' }}">
+          <div
+            class="icon-link {{ Request::is('owner/report/penjualan*') || Request::is('owner/report/kinerja*') || Request::is('owner/report/koordinattrip*') ? 'active' : '' }}">
+            <a>
+              <i class="bi bi-newspaper me-2"></i>
+              <span>Report</span>
+            </a>
+            <i class="bi bi-chevron-down arrow"></i>
+          </div>
+          <ul class="sub-menu mt-2">
+            <li>
+              <a class="{{ Request::is('owner/report/penjualan*') ? 'active-submenu' : '' }}"
+                href="/owner/report/penjualan">
+                <i class="bi bi-cash me-2"></i><span>Penjualan</span>
+              </a>
+            </li>
+            <li>
+              <a class="{{ Request::is('owner/report/kinerja*') ? 'active-submenu' : '' }}"
+                href="/owner/report/kinerja">
+                <i class="bi bi-graph-up me-2"></i><span>Kinerja Salesman</span>
+              </a>
+            </li>
+            <li>
+              <a class="{{ Request::is('owner/report/koordinattrip*') ? 'active-submenu' : '' }}"
+                href="/owner/report/koordinattrip">
+                <i class="bi bi-geo-alt me-2"></i><span>Koordinat Trip</span>
+              </a>
+            </li>
+          </ul>
         </li>
-        <li class="mb-3">
-          <a class="{{ Request::is('owner/report/kinerja*') ? 'active' : '' }}" href="/owner/report/kinerja">
-            <i class="bi bi-graph-up me-2"></i><span>Kinerja Salesman</span>
-          </a>
-        </li>
+
         <li class="mb-3">
           <a class="{{ Request::is('owner/datasupervisor*') ? 'active' : '' }}" href="/owner/datasupervisor">
             <i class="bi bi-people-fill me-2"></i><span>Data Supervisor</span>

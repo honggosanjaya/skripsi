@@ -14,6 +14,7 @@ use App\Http\Controllers\DistrictController;
 use App\Http\Controllers\KasController;
 use App\Http\Controllers\LaporanPenagihanController;
 use App\Http\Controllers\RencanaTripController;
+use App\Http\Controllers\ReportController;
 use App\Http\Controllers\StaffController;
 use App\Http\Controllers\TargetController;
 use Illuminate\Http\Request;

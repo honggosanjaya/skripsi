@@ -50,6 +50,8 @@ Auth::routes(['verify'=>true]);
 Route::prefix('owner')->middleware('owner')->group(function() {
   Route::get('/report/penjualan', [ReportController::class,'penjualan']);
   Route::get('/report/kinerja', [ReportController::class,'kinerja']);
+  Route::get('/report/koordinattrip', [ReportController::class,'koordinattrip']);
+  Route::get('/report/koordinattrip/{trip:id}', [ReportController::class,'cekKoordinatTrip']);
 
   Route::get('/', [ReportController::class, 'index']);
   // Route::post('/', [ReportController::class, 'index']);
@@ -121,6 +123,8 @@ Route::prefix('supervisor')->middleware('supervisor')->group(function() {
 
   Route::get('/report/penjualan', [ReportController::class,'penjualan']);
   Route::get('/report/kinerja', [ReportController::class,'kinerja']);
+  Route::get('/report/koordinattrip', [ReportController::class,'koordinattrip']);
+  Route::get('/report/koordinattrip/{trip:id}', [ReportController::class,'cekKoordinatTrip']);
 
   Route::get('/cashaccount', [CashAccountController::class, 'cashAccountIndex']);
   Route::get('/cashaccount/cari', [CashAccountController::class, 'cashAccountSearch']);
