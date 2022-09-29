@@ -72,8 +72,7 @@ Route::prefix('owner')->middleware('owner')->group(function() {
   Route::get('/profil/ubahpasswordbaru/{user:id}', [AuthController::class, 'passwordBaru']);
   Route::post('/profil/gantipassword/{user:id}', [AuthController::class, 'gantiPassword']);
 
-  Route::get('/panduan/laporanpenjualan', [ReportController::class, 'panduanPelaporanPenjualan']);
-  Route::get('/panduan/laporankinerja', [ReportController::class, 'panduanPelaporanKinerjaSales']);
+  Route::get('/panduan', [ReportController::class, 'panduanPelaporan']);
 });
 
 
@@ -153,8 +152,7 @@ Route::prefix('supervisor')->middleware('supervisor')->group(function() {
   Route::post('/perubahankas/setuju/{kas:id}', [KasController::class, 'setujuPerubahanKasSpv']);
   Route::post('/perubahankas/tolak/{kas:id}', [KasController::class, 'tolakPerubahanKasSpv']);
 
-  Route::get('/panduan/laporanpenjualan', [ReportController::class, 'panduanPelaporanPenjualan']);
-  Route::get('/panduan/laporankinerja', [ReportController::class, 'panduanPelaporanKinerjaSales']);
+  Route::get('/panduan', [ReportController::class, 'panduanPelaporan']);
 });
 
 

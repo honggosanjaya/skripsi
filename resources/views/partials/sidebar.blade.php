@@ -202,31 +202,10 @@
             </li>
           </ul>
         </li>
-        <li
-          class="mb-3 menu-group {{ Request::is('supervisor/panduan/laporanpenjualan*') || Request::is('supervisor/panduan/laporankinerja*') ? 'showMenu' : '' }}">
-          <div
-            class="icon-link {{ Request::is('supervisor/panduan/laporanpenjualan*') || Request::is('supervisor/panduan/laporankinerja*') ? 'active' : '' }}">
-            <a>
-              <span class="iconify fs-4 me-2" data-icon="mdi:television-guide"></span>
-              <span>Panduan</span>
-            </a>
-            <i class="bi bi-chevron-down arrow"></i>
-          </div>
-          <ul class="sub-menu mt-2">
-            <li>
-              <a class="{{ Request::is('supervisor/panduan/laporanpenjualan*') ? 'active-submenu' : '' }}"
-                href="/supervisor/panduan/laporanpenjualan">
-                <span class="iconify fs-4 me-2" data-icon="la:file-invoice-dollar"></span><span>Laporan Penjualan</span>
-              </a>
-            </li>
-            <li>
-              <a class="{{ Request::is('supervisor/panduan/laporankinerja*') ? 'active-submenu' : '' }}"
-                href="/supervisor/panduan/laporankinerja">
-                <span class="iconify fs-4 me-2" data-icon="tabler:report-search"></span><span>Laporan Kinerja
-                </span>
-              </a>
-            </li>
-          </ul>
+        <li class="mb-3">
+          <a class="{{ Request::is('supervisor/panduan*') ? 'active' : '' }}" href="/supervisor/panduan">
+            <span class="iconify fs-4 me-2" data-icon="mdi:television-guide"></span><span>Panduan</span>
+          </a>
         </li>
       </ul>
     @endcan
@@ -273,31 +252,10 @@
           </a>
         </li>
 
-        <li
-          class="mb-3 menu-group {{ Request::is('owner/panduan/laporanpenjualan*') || Request::is('owner/panduan/laporankinerja*') ? 'showMenu' : '' }}">
-          <div
-            class="icon-link {{ Request::is('owner/panduan/laporanpenjualan*') || Request::is('owner/panduan/laporankinerja*') ? 'active' : '' }}">
-            <a>
-              <span class="iconify fs-4 me-2" data-icon="mdi:television-guide"></span>
-              <span>Panduan</span>
-            </a>
-            <i class="bi bi-chevron-down arrow"></i>
-          </div>
-          <ul class="sub-menu mt-2">
-            <li>
-              <a class="{{ Request::is('owner/panduan/laporanpenjualan*') ? 'active-submenu' : '' }}"
-                href="/owner/panduan/laporanpenjualan">
-                <span class="iconify fs-4 me-2" data-icon="la:file-invoice-dollar"></span><span>Laporan Penjualan</span>
-              </a>
-            </li>
-            <li>
-              <a class="{{ Request::is('owner/panduan/laporankinerja*') ? 'active-submenu' : '' }}"
-                href="/owner/panduan/laporankinerja">
-                <span class="iconify fs-4 me-2" data-icon="tabler:report-search"></span><span>Laporan Kinerja
-                </span>
-              </a>
-            </li>
-          </ul>
+        <li class="mb-3">
+          <a class="{{ Request::is('owner/panduan*') ? 'active' : '' }}" href="/owner/panduan">
+            <span class="iconify fs-4 me-2" data-icon="mdi:television-guide"></span><span>Panduan</span>
+          </a>
         </li>
       </ul>
     @endcan
