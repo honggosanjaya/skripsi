@@ -136,7 +136,9 @@
               <label for="status_enum" class="form-label">Status <span class="text-danger">*</span></label>
               <select class="form-select" name="status_enum">
                 @foreach ($statuses as $key => $val)
-                  @if (old('status_enum') == $key)
+                  @if (old('status_enum') == null)
+                    <option value="{{ $key }}">{{ $val }}</option>
+                  @elseif (old('status_enum') == $key)
                     <option value="{{ $key }}" selected>{{ $val }}</option>
                   @else
                     <option value="{{ $key }}">{{ $val }}</option>

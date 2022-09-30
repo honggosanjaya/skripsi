@@ -45,7 +45,8 @@
       </span>
 
       @if ($customer->status_enum != null)
-        <span><b>Status</b> {{ $customer->status_enum == '1' ? 'Active' : 'Inactive' }}</span>
+        <span><b>Status</b>
+          {{ $customer->status_enum == '1' ? 'Active' : ($customer->status_enum == '0' ? 'Hide' : 'Inactive') }}</span>
       @endif
 
       <span><b>Foto Tempat Usaha</b>
