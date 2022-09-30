@@ -64,11 +64,11 @@ textarea {
     max-height: 80px;
 }
 
-.modal-open {
-    .button_bottom {
-        left: -17px;
-    }
-}
+// .modal-open {
+//     .button_bottom {
+//         left: -17px;
+//     }
+// }
 
 .button_bottom.big {
     max-height: 120px;
@@ -424,11 +424,11 @@ label {
 }
 
 // ========= SWEET ALERT ===========
-.swal2-shown {
-    .swal2-popup {
-        left: calc(-17px / 2);
-    }
-}
+// .swal2-shown {
+//     .swal2-popup {
+//         left: calc(-17px / 2);
+//     }
+// }
 .swal2-popup {
     width: 100%;
     max-width: 375px !important;

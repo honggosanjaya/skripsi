@@ -486,3 +486,13 @@ $("#detail-pesanan-admin .btn-close-pdf").click(function () {
     }
   })
 });
+
+$('#detail_pesanan-admn .change-item-btn').click(function () {
+  $(this).siblings('.nama-item').addClass('d-none');
+  $(this).siblings('.select-alt-item').removeClass('d-none');
+})
+
+$(document).on('change', '#detail_pesanan-admn .select-alt-item', function (e) {
+  $(this).siblings('.change-item-btn').addClass('d-none');
+  $(this).siblings('.ok-item-btn').removeClass('d-none');
+});

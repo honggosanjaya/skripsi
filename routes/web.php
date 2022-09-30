@@ -50,6 +50,8 @@ Auth::routes(['verify'=>true]);
 Route::prefix('owner')->middleware('owner')->group(function() {
   Route::get('/report/penjualan', [ReportController::class,'penjualan']);
   Route::get('/report/kinerja', [ReportController::class,'kinerja']);
+  Route::get('/report/koordinattrip', [ReportController::class,'koordinattrip']);
+  Route::get('/report/koordinattrip/{trip:id}', [ReportController::class,'cekKoordinatTrip']);
 
   Route::get('/', [ReportController::class, 'index']);
   // Route::post('/', [ReportController::class, 'index']);
@@ -69,6 +71,8 @@ Route::prefix('owner')->middleware('owner')->group(function() {
   Route::post('/profil/check/{user:id_users}', [AuthController::class, 'check']);
   Route::get('/profil/ubahpasswordbaru/{user:id}', [AuthController::class, 'passwordBaru']);
   Route::post('/profil/gantipassword/{user:id}', [AuthController::class, 'gantiPassword']);
+
+  Route::get('/panduan', [ReportController::class, 'panduanPelaporan']);
 });
 
 
@@ -118,6 +122,8 @@ Route::prefix('supervisor')->middleware('supervisor')->group(function() {
 
   Route::get('/report/penjualan', [ReportController::class,'penjualan']);
   Route::get('/report/kinerja', [ReportController::class,'kinerja']);
+  Route::get('/report/koordinattrip', [ReportController::class,'koordinattrip']);
+  Route::get('/report/koordinattrip/{trip:id}', [ReportController::class,'cekKoordinatTrip']);
 
   Route::get('/cashaccount', [CashAccountController::class, 'cashAccountIndex']);
   Route::get('/cashaccount/cari', [CashAccountController::class, 'cashAccountSearch']);
@@ -145,6 +151,8 @@ Route::prefix('supervisor')->middleware('supervisor')->group(function() {
   Route::get('/perubahankas', [KasController::class, 'perubahanKasSpv']);
   Route::post('/perubahankas/setuju/{kas:id}', [KasController::class, 'setujuPerubahanKasSpv']);
   Route::post('/perubahankas/tolak/{kas:id}', [KasController::class, 'tolakPerubahanKasSpv']);
+
+  Route::get('/panduan', [ReportController::class, 'panduanPelaporan']);
 });
 
 
@@ -259,7 +267,9 @@ Route::prefix('administrasi')->middleware('administrasi')->group(function() {
   Route::post('/kas/store', [KasController::class, 'storeKas']);
   Route::get('/kas/{cashaccount:id}', [KasController::class, 'bukuKas']);
   Route::post('/kas/pengajuanpenghapusan/{kas:id}', [KasController::class, 'pengajuanPenghapusanKas']);
-
+  Route::get('/kas/print/{cashaccount:id}', [KasController::class, 'cetakKas']);
+  Route::post('/kas/print/{cashaccount:id}/cetak-kas', [KasController::class, 'cetakKasPDF']);
+  Route::post('/changeorderitem/{order_item:id}', [OrderController::class, 'changeOrderItem']);
 });
 
 

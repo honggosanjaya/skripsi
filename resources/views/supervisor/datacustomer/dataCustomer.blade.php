@@ -61,7 +61,8 @@
               <td>{{ $customer->full_alamat ?? null }}</td>
               <td>{{ $customer->telepon ?? null }}</td>
               @if ($customer->status_enum != null)
-                <td class="text-capitalize text-center">{{ $customer->status_enum == 1 ? 'Active' : 'Inactive' }}</td>
+                <td>{{ $customer->status_enum == '1' ? 'Active' : ($customer->status_enum == '0' ? 'Hide' : 'Inactive') }}
+                </td>
               @endif
             </tr>
           @endforeach

@@ -27,7 +27,10 @@ use Illuminate\Support\Facades\Mail;
 class CustomerController extends Controller
 {
     public function cariCustomerApi(Request $request){
-      $customer=Customer::where(strtolower('nama'),'like','%'.$request->nama.'%')->where(strtolower('alamat_utama'),'like','%'.$request->alamat_utama.'%')->with(['linkDistrict','linkCustomerType'])->get();
+      $customer=Customer::where(strtolower('nama'),'like','%'.$request->nama.'%')
+              ->where(strtolower('alamat_utama'),'like','%'.$request->alamat_utama.'%')
+              ->where('status_enum', '1')
+              ->with(['linkDistrict','linkCustomerType'])->get();
       if ($customer->count()>0) {
         return response()->json([
           'data' => $customer,
@@ -286,6 +289,7 @@ class CustomerController extends Controller
 
       $statuses = [
         1 => 'active',
+        0 => 'hide',
         -1 => 'inactive',
       ];
 
@@ -427,6 +431,7 @@ class CustomerController extends Controller
 
       $statuses = [
         1 => 'active',
+        0 => 'hide',
         -1 => 'inactive',
       ];
 

@@ -14,6 +14,7 @@ use App\Http\Controllers\DistrictController;
 use App\Http\Controllers\KasController;
 use App\Http\Controllers\LaporanPenagihanController;
 use App\Http\Controllers\RencanaTripController;
+use App\Http\Controllers\ReportController;
 use App\Http\Controllers\StaffController;
 use App\Http\Controllers\TargetController;
 use Illuminate\Http\Request;
@@ -74,6 +75,7 @@ Route::get('/kodeEvent/{kode}', [EventController::class, 'dataKodeEventAPI']);
 Route::get('/kodeCustomer/{id}', [OrderController::class, 'dataKodeCustomer']);
 // KELUAR
 Route::post('/keluarToko/{id}', [OrderController::class, 'keluarTripOrderApi']);
+Route::get('/belanjalagi/{id}', [OrderController::class, 'belanjaLagiOrderApi']);
 //UBAH PASSWORD
 Route::post('/checkpassword/{staff:id}', [AuthController::class, 'checkPasswordAPI']);
 Route::post('/changepassword/{staff:id}', [AuthController::class, 'changePasswordAPI']);

@@ -6,6 +6,7 @@ use App\Models\CashAccount;
 use App\Models\Kas;
 use App\Models\Staff;
 use Illuminate\Http\Request;
+use PDF;
 
 class KasController extends Controller
 {
@@ -223,4 +224,119 @@ class KasController extends Controller
     return redirect('/supervisor/perubahankas')->with('pesanSukses', 'Berhasil menolak penghapusan kas');
   }
 
+  public function cetakKas(CashAccount $cashaccount){
+    $input=[
+      'dateStart'=>date('Y-m-01'),
+      'dateEnd'=>date('Y-m-t')
+    ];
+ 
+    $namaCashAccount = CashAccount::find($cashaccount->id)->nama;
+    $cashaccounts = CashAccount::all();
+
+    return view('administrasi.kas.cetakkas', [
+      'input' => $input,
+      'cashaccounts' => $cashaccounts,
+      'cashaccount' => $cashaccount,
+      'title' => 'Cetak Kas - '. $namaCashAccount
+    ]);
+  }
+
+  public function cetakKasPDF(Request $request, CashAccount $cashaccount){
+    $namaCashAccount = CashAccount::find($cashaccount->id)->nama;
+    $completeKas = [];
+
+    if($request->id_akun == null){
+      $kas = Kas::where('kas', $cashaccount->id)
+              ->where(function ($query) {
+                $query->where('status_pengajuan','0')->orWhere('status_pengajuan','-1')->orWhereNull('status_pengajuan');                  
+              })
+              ->where(function ($query) {
+                $query->where('status','1')->orWhereNull('status');                  
+              })
+              ->whereBetween('tanggal',[$request->dateStart, $request->dateEnd])
+              ->orderBy('tanggal','ASC')->orderBy('created_at','ASC')
+              ->get();
+      
+              
+      $dateOfFirstKas = Kas::where('kas', $cashaccount->id)
+                        ->where(function ($query) {
+                          $query->where('status_pengajuan','0')->orWhere('status_pengajuan','-1')->orWhereNull('status_pengajuan');                  
+                        })
+                        ->where(function ($query) {
+                          $query->where('status','1')->orWhereNull('status');                  
+                        })
+                        ->orderBy('tanggal','ASC')->orderBy('created_at','ASC')->select('tanggal')->first();
+      
+      if($dateOfFirstKas > $request->dateStart){
+        $oneDateBeforeStart = date('Y-m-d', strtotime($request->dateStart .' -1 day'));
+        $saldoDebitKas = Kas::where('kas', $cashaccount->id)
+                ->where('debit_kredit', '1')
+                ->where(function ($query) {
+                  $query->where('status_pengajuan','0')->orWhere('status_pengajuan','-1')->orWhereNull('status_pengajuan');                  
+                })
+                ->where(function ($query) {
+                  $query->where('status','1')->orWhereNull('status');                  
+                })
+                ->whereBetween('tanggal',[$dateOfFirstKas, $oneDateBeforeStart])
+                ->select(\DB::raw('SUM(uang) as saldo_debit'))
+                ->get()->sum('saldo_debit');
+    
+        $saldoKreditKas = Kas::where('kas', $cashaccount->id)
+                ->where('debit_kredit', '-1')
+                ->where(function ($query) {
+                  $query->where('status_pengajuan','0')->orWhere('status_pengajuan','-1')->orWhereNull('status_pengajuan');                  
+                })
+                ->where(function ($query) {
+                  $query->where('status','1')->orWhereNull('status');                  
+                })
+                ->whereBetween('tanggal',[$dateOfFirstKas, $oneDateBeforeStart])
+                ->select(\DB::raw('SUM(uang) as saldo_kredit'))
+                ->get()->sum('saldo_kredit');
+    
+        $saldoAwalKas = $saldoDebitKas - $saldoKreditKas;   
+      }else{
+        $saldoAwalKas = 0;
+      }
+    }else{
+      $kas = Kas::where('kas', $cashaccount->id)
+      ->where('id_cash_account', $request->id_akun)
+      ->where(function ($query) {
+        $query->where('status_pengajuan','0')->orWhere('status_pengajuan','-1')->orWhereNull('status_pengajuan');                  
+      })
+      ->where(function ($query) {
+        $query->where('status','1')->orWhereNull('status');                  
+      })
+      ->whereBetween('tanggal',[$request->dateStart, $request->dateEnd])
+      ->orderBy('tanggal','ASC')->orderBy('created_at','ASC')
+      ->get();
+
+      $saldoAwalKas = 0;
+    }
+    
+    $totalKas = $saldoAwalKas;
+
+    foreach ($kas as $dt) {
+      if($dt->status != '-1'){
+        if($dt->debit_kredit == '-1'){
+          $totalKas = $totalKas - $dt->uang;
+        }else{
+          $totalKas = $totalKas + $dt->uang;
+        }
+      }
+
+      array_push($completeKas, [
+        'original' => $dt, 
+        'totalKas' => $totalKas
+      ]);
+    }
+
+    $pdf = PDF::loadview('administrasi.kas.cetakKasPDF',[
+        'manykas' => $completeKas,
+        'title' => 'Kas - '. $namaCashAccount     
+    ]);
+
+    $pdf->setPaper('A4', 'landscape');
+
+    return $pdf->stream('kas-'.$namaCashAccount.'.pdf'); 
+  }
 }

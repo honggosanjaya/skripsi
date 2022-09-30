@@ -508,7 +508,6 @@ table tbody th {
     }
 }
 
-// TASK: Warna status dibedakan
 .badge {
     color: #fff;
     padding: 0.35em 0.65em;
@@ -649,4 +648,11 @@ select[readonly] {
             color: #fff;
         }
     }
+}
+
+#map {
+    height: 400px;
+    width: 600px;
+    margin-left: auto;
+    margin-right: auto;
 }

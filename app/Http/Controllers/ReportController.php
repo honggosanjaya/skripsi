@@ -44,11 +44,11 @@ class ReportController extends Controller
               })
               ->orderBy('id', 'DESC')
               ->with(['linkInvoice', 'linkStaff', 'linkCustomer.linkCustomerType', 'linkInvoice.linkEvent']);
-              if($request->salesman??null){
-                $data = $data->whereHas('linkStaff',function($q) use($request){
-                  $q->where('nama', $request->salesman);
-                });
-              }
+      if($request->salesman??null){
+        $data = $data->whereHas('linkStaff',function($q) use($request){
+          $q->where('nama', $request->salesman);
+        });
+      }
       
       $data = $data->paginate(10);
 
@@ -300,5 +300,57 @@ class ReportController extends Controller
       // ->groupBy('id_staff')->pluck('total','id_staff');
 
       return view('supervisor.report.kinerja',compact('staffs','input','customer_baru'));
+    }
+
+    public function panduanPelaporan(){
+      return view('supervisor.panduan.index');
+    }
+
+    public function koordinattrip(Request $request){
+      if (!$request->dateStart??null) {
+        request()->request->add(['dateStart'=>date('Y-m-01')]);  
+        request()->request->add(['dateEnd'=>date('Y-m-t')]);  
+      }
+
+      $input=[
+        'dateStart'=>$request->dateStart ?? null,
+        'dateEnd'=>$request->dateEnd ?? null,
+        'year'=>date('Y', strtotime($request->dateEnd ?? null)),
+        'month'=>date('m', strtotime($request->dateEnd ?? null)),
+        'salesman'=>$request->salesman ?? null,
+      ];
+
+      $request->dateStart=$request->dateStart." 00:00:00";
+      $request->dateEnd=$request->dateEnd." 23:59:59";
+
+      $data = Trip::whereBetween('waktu_masuk',[$request->dateStart,$request->dateEnd])
+              ->orderBy('id', 'DESC')
+              ->with(['linkCustomer', 'linkStaff']);
+
+      if($request->salesman??null){
+        $data = $data->whereHas('linkStaff',function($q) use($request){
+          $q->where('nama', $request->salesman);
+        });
+      }
+
+      $data = $data->paginate(10);
+
+      return view('supervisor.report.koordinattrip',compact('data','input'));
+    }
+
+    public function cekKoordinatTrip(Trip $trip){
+      $koordinatCustomer = Customer::where('id', $trip->id_customer)->first()->koordinat;      
+      $koordinatTrip = $trip->koordinat;
+
+      $customers = Customer::all();
+
+      return view('supervisor.report.cekkoordinattrip', [
+        'trip' => $trip,
+        'datas' => [
+          'koordinatCustomer' => $koordinatCustomer,
+          'koordinatTrip' => $koordinatTrip
+        ],
+        'customers' => $customers
+      ]);
     }
 }
