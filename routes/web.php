@@ -269,6 +269,7 @@ Route::prefix('administrasi')->middleware('administrasi')->group(function() {
   Route::post('/kas/pengajuanpenghapusan/{kas:id}', [KasController::class, 'pengajuanPenghapusanKas']);
   Route::get('/kas/print/{cashaccount:id}', [KasController::class, 'cetakKas']);
   Route::post('/kas/print/{cashaccount:id}/cetak-kas', [KasController::class, 'cetakKasPDF']);
+  Route::post('/changeorderitem/{order_item:id}', [OrderController::class, 'changeOrderItem']);
 });
 
 

@@ -350,6 +350,7 @@ class OrderController extends Controller
     $inactiveVehicles = Vehicle::where('is_active',false)->get();
     $activeVehicles = Vehicle::where('is_active',true)->get();
     $invoice = Invoice::where('id_order','=',$order->id)->first();
+    $completeItems = [];
 
     if($invoice != null){
       $total_bayar = Invoice::where('invoices.id', $invoice->id)
@@ -374,9 +375,22 @@ class OrderController extends Controller
       $pembayaran_terakhir = null;
     }
 
+    foreach($items as $item){
+      $itemSerupa = Item::where('link_item', $item->linkItem->link_item)
+              ->where('harga1_satuan', $item->linkItem->harga1_satuan)
+              ->where('status_enum', '1')
+              ->where('stok', '>=', $item->kuantitas)
+              ->get();
+
+      array_push($completeItems, [
+        'original' => $item, 
+        'itemSerupa' => $itemSerupa
+      ]);
+    }
+
     return view('administrasi.pesanan.detailpesanan',[
       'order' => $order,
-      'items' => $items,
+      'items' => $completeItems,
       'total_bayar' => $total_bayar,
       'pembayaran_terakhir' => $pembayaran_terakhir,
       'inactiveVehicles' => $inactiveVehicles,
@@ -1037,4 +1051,48 @@ class OrderController extends Controller
 
     return $pdf->stream('memo-'.$vehicle->kode_kendaraan.'.pdf'); 
   }
+
+  public function changeOrderItem(Request $request, OrderItem $order_item){
+    // dd($request->id_item_serupa);
+
+    $id_order = OrderItem::where('id', $order_item->id)->first()->id_order;
+
+    OrderItem::where('id', $order_item->id)->update([
+      'id_item' => $request->id_item_serupa,
+      'updated_at' => now()
+    ]);
+  
+    $orderitems = OrderItem::where('id_order', $id_order)->get();
+    // dd($orderitems);
+
+    $sameOrderItem = array();
+    foreach ($orderitems as $item) {
+      $key = $item['id_item'];
+      if (!array_key_exists($key, $sameOrderItem)) {
+        // jika tidak ada yang sama
+        $sameOrderItem[$key] = array(
+          'id' => $item['id'],
+          'id_order' => $item['id_order'],
+          'id_item' => $item['id_item'],
+          'kuantitas' => $item['kuantitas'],
+          'harga_satuan' => $item['harga_satuan'],
+          'keterangan' => $item['keterangan'],
+        );
+      } else {
+        // jika ada yang sama
+        $sameOrderItem[$key]['id'] = $sameOrderItem[$key]['id'] . '+' . $item['id'];
+        $sameOrderItem[$key]['kuantitas'] = $sameOrderItem[$key]['kuantitas'] + $item['kuantitas'];
+
+        OrderItem::where('id', $sameOrderItem[$key]['id'])->update([
+          'kuantitas' => $sameOrderItem[$key]['kuantitas'],
+          'updated_at' => now()
+        ]);
+
+        OrderItem::where('id', $item['id'])->delete();
+      }
+    }
+
+    return redirect('/administrasi/pesanan/detail/'.$order_item->id_order) -> with('addPesananSuccess', 'Berhasil mengubah item' );
+  }
+
 }
