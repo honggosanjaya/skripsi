@@ -290,21 +290,37 @@ const KeranjangSales = ({ location }) => {
               hapusSemuaProduk();
               setIsLoading(false);
               setKodePesanan(null);
+
               Swal.fire({
                 icon: 'success',
                 title: 'Tersimpan!',
                 text: response.data.success_message,
-              })
-              axios({
-                method: "get",
-                url: `${window.location.origin}/api/keluarToko/${idTrip}`,
-                headers: {
-                  Accept: "application/json",
-                },
-              })
-                .then(response => {
+                showCancelButton: true,
+                confirmButtonColor: '#198754',
+                cancelButtonColor: '#7066e0',
+                confirmButtonText: 'Belanja Lagi',
+                cancelButtonText: 'Selesai'
+              }).then((result) => {
+                if (result.isConfirmed) {
+                  axios({
+                    method: "get",
+                    url: `${window.location.origin}/api/belanjalagi/${idTrip}`,
+                    headers: {
+                      Accept: "application/json",
+                    },
+                  })
+                    .then((response) => {
+                      history.push(`/salesman/order/${response.data.data.customer.id}`);
+                    })
+                    .catch(error => {
+                      console.log(error.message);
+                      history.push('/salesman');
+                    });
+                }
+                else {
                   history.push('/salesman');
-                })
+                }
+              })
             } else {
               throw Error(response.data.error_message);
             }

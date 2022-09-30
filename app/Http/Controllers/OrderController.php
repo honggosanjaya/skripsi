@@ -185,6 +185,20 @@ class OrderController extends Controller
     ]);
   }
 
+  public function belanjaLagiOrderApi($id){
+    $idCust = Trip::find($id)->id_customer; 
+    Trip::where('id', $id)->update([
+      'waktu_keluar' => null
+    ]);
+
+    return response()->json([
+      'status' => 'success',
+      'data' => [
+        'customer' => Customer::find($idCust)
+      ]
+    ]);
+  }
+
   public function keluarTripOrderApi(Request $request, $id){
     $idCust = Trip::find($id)->id_customer; 
     Trip::find($id)->update([

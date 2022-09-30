@@ -75,6 +75,7 @@ Route::get('/kodeEvent/{kode}', [EventController::class, 'dataKodeEventAPI']);
 Route::get('/kodeCustomer/{id}', [OrderController::class, 'dataKodeCustomer']);
 // KELUAR
 Route::post('/keluarToko/{id}', [OrderController::class, 'keluarTripOrderApi']);
+Route::get('/belanjalagi/{id}', [OrderController::class, 'belanjaLagiOrderApi']);
 //UBAH PASSWORD
 Route::post('/checkpassword/{staff:id}', [AuthController::class, 'checkPasswordAPI']);
 Route::post('/changepassword/{staff:id}', [AuthController::class, 'changePasswordAPI']);
