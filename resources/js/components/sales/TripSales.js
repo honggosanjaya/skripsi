@@ -1,11 +1,20 @@
-import React, { useEffect, useState, useContext } from 'react';
+import React, { useEffect, useState, useContext, Fragment } from 'react';
 import axios from 'axios';
+import Webcam from "react-webcam";
 import HeaderSales from './HeaderSales';
 import { useParams, useHistory, Link } from 'react-router-dom'
 import { UserContext } from '../../contexts/UserContext';
 import AlertComponent from '../reuse/AlertComponent';
 import urlAsset from '../../config';
 import LoadingIndicator from '../reuse/LoadingIndicator';
+import ImagePreview from '../reuse/ImagePreview';
+import { dataURLtoFile } from "../reuse/HelperFunction";
+
+const FACING_MODE_USER = "user";
+const FACING_MODE_ENVIRONMENT = "environment";
+const videoConstraints = {
+  facingMode: FACING_MODE_ENVIRONMENT
+};
 
 const TripSales = () => {
   const { id } = useParams();
@@ -39,6 +48,10 @@ const TripSales = () => {
   const jamMasuk = Date.now() / 1000;
   const [shouldDisabled, setShouldDisabled] = useState(false);
   const [metodePembayaran, setMetodePembayaran] = useState('1');
+  const [isTakePhoto, setIsTakePhoto] = useState(false);
+  const [isFromGalery, setISFromGalery] = useState(false);
+  const [dataUri, setDataUri] = useState('');
+  const [facingMode, setFacingMode] = useState(FACING_MODE_USER);
 
   useEffect(() => {
     navigator.permissions.query({ name: 'geolocation' }).then((result) => {
@@ -189,7 +202,12 @@ const TripSales = () => {
     }).then((result) => {
       if (result.isConfirmed) {
         let formData = new FormData();
-        formData.append("foto", file);
+        if (isFromGalery) {
+          formData.append("foto", file);
+        } else if (isTakePhoto) {
+          let convertedFile = dataURLtoFile(dataUri, `${Math.random(10)}.png`);
+          formData.append("foto", convertedFile);
+        }
         objData["status_enum"] = "trip";
         setIsLoading(true);
         setShouldDisabled(true);
@@ -227,6 +245,11 @@ const TripSales = () => {
               icon: 'success',
               confirmButtonText: 'Trip Selanjutnya'
             }).then((result) => {
+              setFile(null);
+              setImagePreviewUrl('');
+              setDataUri('');
+              setIsTakePhoto(false);
+              setISFromGalery(false);
               history.push('/salesman');
             })
           })
@@ -234,6 +257,11 @@ const TripSales = () => {
             setError(error.message);
             setIsLoading(false);
             setShouldDisabled(false);
+            setFile(null);
+            setImagePreviewUrl('');
+            setDataUri('');
+            setIsTakePhoto(false);
+            setISFromGalery(false);
           });
       }
     })
@@ -297,11 +325,11 @@ const TripSales = () => {
 
   let $imagePreview = null;
   if (imagePreviewUrl) {
-    $imagePreview = <img src={imagePreviewUrl} className="img-fluid img_prev" />
+    $imagePreview = <img src={imagePreviewUrl} className="img-fluid img_prev mb-3 d-block" />
   } else {
     if (prevImage) {
       let image = prevImage.replace('public', '');
-      $imagePreview = <img src={`${urlAsset}/storage/customer/${image}`} className="img-fluid img_prev" />
+      $imagePreview = <img src={`${urlAsset}/storage/customer/${image}`} className="img-fluid img_prev mb-3 d-block" />
     }
   }
 
@@ -314,6 +342,40 @@ const TripSales = () => {
 
   const goBack = () => {
     history.push('/salesman');
+  }
+
+  const handleClick = React.useCallback(() => {
+    setFacingMode(
+      prevState =>
+        prevState === FACING_MODE_USER
+          ? FACING_MODE_ENVIRONMENT
+          : FACING_MODE_USER
+    );
+  }, []);
+
+  const webcamRef = React.useRef(null);
+  const capture = React.useCallback(
+    () => {
+      const imageSrc = webcamRef.current.getScreenshot();
+      setDataUri(imageSrc);
+    },
+    [webcamRef]
+  );
+
+  const openGalerry = () => {
+    setIsTakePhoto(false);
+    setISFromGalery(true);
+  }
+
+  const openCamera = () => {
+    setISFromGalery(false);
+    setIsTakePhoto(true);
+  }
+
+  const takeAgain = () => {
+    setISFromGalery(false);
+    setIsTakePhoto(true);
+    setDataUri('');
   }
 
   return (
@@ -437,12 +499,59 @@ const TripSales = () => {
           <div className="mb-4">
             <label className="form-label">Foto Tempat Usaha</label>
             {(imagePreviewUrl || prevImage) ? $imagePreview : <p>Belum ada foto</p>}
-            <input
-              type="file"
-              name="foto"
-              id="file"
-              accept="image/png, image/jpeg"
-              onChange={handleImageChange} />
+
+            <div>
+              <button type='button' className='btn btn-primary mb-3' onClick={openGalerry}>
+                <span className="iconify fs-3 me-1" data-icon="clarity:image-gallery-solid"></span> Galeri
+              </button>
+
+              <button type='button' className='btn btn-secondary ms-3 mb-3' onClick={openCamera}>
+                <span className="iconify fs-3 me-1" data-icon="charm:camera"></span>Kamera
+              </button>
+            </div>
+
+            {isFromGalery && <Fragment>
+              {/* {$imagePreview && $imagePreview} */}
+              <input
+                type="file"
+                name="foto"
+                id="file"
+                accept="image/png, image/jpeg"
+                onChange={handleImageChange} />
+            </Fragment>}
+
+            {isTakePhoto && dataUri
+              ? <Fragment>
+                <ImagePreview dataUri={dataUri} />
+                <button onClick={takeAgain} className="d-block mx-auto mt-3 btn btn-warning">
+                  <span className="iconify fs-3 me-1" data-icon="ic:sharp-flip-camera-android"></span>Ulang
+                </button>
+              </Fragment>
+              : isTakePhoto
+                ? <Fragment>
+                  <Webcam
+                    audio={false}
+                    height={340}
+                    width={350}
+                    ref={webcamRef}
+                    screenshotFormat="image/png"
+                    videoConstraints={{
+                      ...videoConstraints,
+                      facingMode
+                    }}
+                  />
+
+                  <div className="d-flex justify-content-between">
+                    <button type='button' className='btn btn-warning' onClick={handleClick}>
+                      <span className="iconify fs-3 me-1" data-icon="ic:sharp-flip-camera-android"></span>Switch camera
+                    </button>
+                    <button type="button" className='btn btn-success' onClick={capture}>
+                      <span className="iconify fs-3 me-1" data-icon="charm:camera"></span>Capture
+                    </button>
+                  </div>
+                </Fragment>
+                : null
+            }
           </div>
 
           <div className="d-flex justify-content-end">
