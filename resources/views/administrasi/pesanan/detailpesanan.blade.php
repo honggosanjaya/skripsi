@@ -142,19 +142,21 @@
                 <td>
                   <form action="/administrasi/changeorderitem/{{ $item['original']->id }}" method="POST">
                     @csrf
-                    <div class="d-flex justify-content-between">
+                    <div class="d-flex justify-content-between align-items-center">
                       <span class="nama-item">{{ $item['original']->linkItem->nama ?? null }}</span>
-                      <select style="width: 170px" class="form-select select-alt-item d-none" name="id_item_serupa">
-                        @foreach ($item['itemSerupa'] as $itm)
-                          @if ($itm->id == $item['original']->linkItem->id)
-                            <option value="{{ $itm->id }}" selected>{{ $itm->nama }}</option>
-                          @else
-                            <option value="{{ $itm->id }}">{{ $itm->nama }}</option>
-                          @endif
-                        @endforeach
-                      </select>
-                      <button type="button" class="btn btn-warning change-item-btn">Ubah</button>
-                      <button type="submit" class="btn btn-success ok-item-btn d-none">OK</button>
+                      @if ($order->linkOrderTrack->status_enum == '1')
+                        <select style="width: 170px" class="form-select select-alt-item d-none" name="id_item_serupa">
+                          @foreach ($item['itemSerupa'] as $itm)
+                            @if ($itm->id == $item['original']->linkItem->id)
+                              <option value="{{ $itm->id }}" selected>{{ $itm->nama }}</option>
+                            @else
+                              <option value="{{ $itm->id }}">{{ $itm->nama }}</option>
+                            @endif
+                          @endforeach
+                        </select>
+                        <button type="button" class="btn btn-warning change-item-btn">Ubah</button>
+                        <button type="submit" class="btn btn-success ok-item-btn d-none">OK</button>
+                      @endif
                     </div>
                   </form>
                 </td>

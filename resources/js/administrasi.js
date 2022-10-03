@@ -488,8 +488,13 @@ $("#detail-pesanan-admin .btn-close-pdf").click(function () {
 });
 
 $('#detail_pesanan-admn .change-item-btn').click(function () {
-  $(this).siblings('.nama-item').addClass('d-none');
-  $(this).siblings('.select-alt-item').removeClass('d-none');
+  $(this).siblings('.nama-item').toggleClass('d-none');
+  $(this).siblings('.select-alt-item').toggleClass('d-none');
+  if ($('.nama-item').hasClass("d-none")) {
+    $(this).text('Batal');
+  } else {
+    $(this).text('Ubah');
+  }
 })
 
 $(document).on('change', '#detail_pesanan-admn .select-alt-item', function (e) {
