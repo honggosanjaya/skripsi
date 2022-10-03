@@ -6,6 +6,7 @@ export const KeranjangSalesContext = createContext();
 const KeranjangSalesContextProvider = (props) => {
 
   const [produks, setProduks] = useState([]);
+  const [isBelanjaLagi, setIsBelanjaLagi] = useState(false);
 
   const getAllProduks = () => {
     const produks = KeranjangDB.getAllProduks();
@@ -22,6 +23,8 @@ const KeranjangSalesContextProvider = (props) => {
     produks,
     setProduks,
     getAllProduks,
+    isBelanjaLagi,
+    setIsBelanjaLagi
   }
 
   return (

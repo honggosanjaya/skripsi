@@ -24,7 +24,7 @@ const Pemesanan = ({ location }) => {
   const { token } = useContext(AuthContext);
   const { dataUser } = useContext(UserContext);
   const history = useHistory();
-  const { produks, getAllProduks } = useContext(KeranjangSalesContext);
+  const { produks, getAllProduks, isBelanjaLagi, setIsBelanjaLagi } = useContext(KeranjangSalesContext);
   const [kataKunci, setKataKunci] = useState('');
   const [errorMessage, setErrorMessage] = useState(null);
   const [orderId, setOrderId] = useState(null);
@@ -222,7 +222,25 @@ const Pemesanan = ({ location }) => {
     </main>
   )
 
-  const handleShow = () => setShow(true);
+  const handleShow = () => {
+    if (isBelanjaLagi == false) {
+      setShow(true)
+    } else {
+      Swal.fire({
+        title: 'Apakah anda yakin?',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Ya, Keluar!'
+      }).then((result) => {
+        if (result.isConfirmed) {
+          handleKeluarToko();
+          setIsBelanjaLagi(false);
+        }
+      })
+    }
+  };
   const handleClose = () => setShow(false);
   const handleShowFilter = () => setShowFilter(true);
   const handleCloseFilter = () => setShowFilter(false);
@@ -249,6 +267,7 @@ const Pemesanan = ({ location }) => {
         },
         data: {
           'alasan_penolakan': alasanPenolakan,
+          'isBelanjaLagi': isBelanjaLagi
         }
       })
         .then((response) => {

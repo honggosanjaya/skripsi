@@ -200,14 +200,23 @@ class OrderController extends Controller
   }
 
   public function keluarTripOrderApi(Request $request, $id){
+    $isBelanjaLagi = $request->isBelanjaLagi;
     $idCust = Trip::find($id)->id_customer; 
-    Trip::find($id)->update([
-      'waktu_keluar' => now(),
-      'updated_at' => now(),
-      'status_enum' => '1',
-      'alasan_penolakan' => $request->alasan_penolakan
-    ]);
-    Customer::where('id', $idCust)->update(['updated_at'=> now()]);
+
+    if($isBelanjaLagi == false){
+      Trip::find($id)->update([
+        'waktu_keluar' => now(),
+        'updated_at' => now(),
+        'status_enum' => '1',
+        'alasan_penolakan' => $request->alasan_penolakan
+      ]);
+    }else if($isBelanjaLagi == true){
+      Trip::find($id)->update([
+        'waktu_keluar' => now(),
+        'updated_at' => now()
+      ]);
+    }
+    // Customer::where('id', $idCust)->update(['updated_at'=> now()]);
 
     return response()->json([
       'status' => 'success',
@@ -1053,46 +1062,12 @@ class OrderController extends Controller
   }
 
   public function changeOrderItem(Request $request, OrderItem $order_item){
-    // dd($request->id_item_serupa);
-
-    $id_order = OrderItem::where('id', $order_item->id)->first()->id_order;
-
     OrderItem::where('id', $order_item->id)->update([
       'id_item' => $request->id_item_serupa,
       'updated_at' => now()
     ]);
   
-    $orderitems = OrderItem::where('id_order', $id_order)->get();
-    // dd($orderitems);
-
-    $sameOrderItem = array();
-    foreach ($orderitems as $item) {
-      $key = $item['id_item'];
-      if (!array_key_exists($key, $sameOrderItem)) {
-        // jika tidak ada yang sama
-        $sameOrderItem[$key] = array(
-          'id' => $item['id'],
-          'id_order' => $item['id_order'],
-          'id_item' => $item['id_item'],
-          'kuantitas' => $item['kuantitas'],
-          'harga_satuan' => $item['harga_satuan'],
-          'keterangan' => $item['keterangan'],
-        );
-      } else {
-        // jika ada yang sama
-        $sameOrderItem[$key]['id'] = $sameOrderItem[$key]['id'] . '+' . $item['id'];
-        $sameOrderItem[$key]['kuantitas'] = $sameOrderItem[$key]['kuantitas'] + $item['kuantitas'];
-
-        OrderItem::where('id', $sameOrderItem[$key]['id'])->update([
-          'kuantitas' => $sameOrderItem[$key]['kuantitas'],
-          'updated_at' => now()
-        ]);
-
-        OrderItem::where('id', $item['id'])->delete();
-      }
-    }
 
     return redirect('/administrasi/pesanan/detail/'.$order_item->id_order) -> with('addPesananSuccess', 'Berhasil mengubah item' );
   }
-
 }
