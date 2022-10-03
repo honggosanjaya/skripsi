@@ -19,7 +19,7 @@ const KeranjangSales = ({ location }) => {
   const history = useHistory();
   const { idCust } = useParams();
   const { token } = useContext(AuthContext);
-  const { produks, setProduks, getAllProduks } = useContext(KeranjangSalesContext);
+  const { produks, setProduks, getAllProduks, setIsBelanjaLagi } = useContext(KeranjangSalesContext);
   const [errorMessage, setErrorMessage] = useState(null);
   const [successMessage, setSuccessMessage] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
@@ -310,6 +310,7 @@ const KeranjangSales = ({ location }) => {
                     },
                   })
                     .then((response) => {
+                      setIsBelanjaLagi(true);
                       history.push(`/salesman/order/${response.data.data.customer.id}`);
                     })
                     .catch(error => {
