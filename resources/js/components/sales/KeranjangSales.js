@@ -115,6 +115,25 @@ const KeranjangSales = ({ location }) => {
     console.log('idTrip', idTrip);
   }, [])
 
+  // useEffect(() => {
+  //   if (dataUser) {
+  //     axios({
+  //       method: "get",
+  //       url: `${window.location.origin}/api/kanvas/${dataUser.id_staff}`,
+  //       headers: {
+  //         Accept: "application/json",
+  //       },
+  //     })
+  //       .then(response => {
+  //         console.log('knvas', response.data.data);
+  //         // setPilihanRetur(response.data.data);
+  //       })
+  //       .catch(error => {
+  //         setErrorMessage(error.message);
+  //       });
+  //   }
+  // }, [dataUser])
+
   useEffect(() => {
     setIsLoading(true);
     axios({

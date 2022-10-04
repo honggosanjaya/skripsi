@@ -792,7 +792,7 @@ class ItemController extends Controller
       $detailsKanvas = [];
 
       foreach($getId as $getid){
-        $kanvas = Kanvas::where('id', $getid)->with(['linkItem'])->first();
+        $kanvas = Kanvas::where('id', $getid)->with(['linkItem','linkStaffPengonfirmasiPembawaan','linkStaffPengonfirmasiPengembalian'])->first();
         array_push($detailsKanvas,[
           $kanvas
         ]);
@@ -845,4 +845,20 @@ class ItemController extends Controller
 
       return redirect('/administrasi/kanvas')->with('pesanSukses', 'Berhasil mengonfirmasi pengembalian kanvas');
     }
+
+    public function getItemKanvasAPI($idStaf){
+      $listkanvas = Kanvas::where('id_staff_yang_membawa',$idStaf)
+      ->select(DB::raw('GROUP_CONCAT(id) as ids'),'nama','id_staff_pengonfirmasi_pembawaan','id_staff_pengonfirmasi_pengembalian','waktu_dibawa','waktu_dikembalikan', DB::raw('COUNT(id_item) as banyak_jenis_item')) 
+      ->groupBy('nama','id_staff_pengonfirmasi_pembawaan','id_staff_pengonfirmasi_pengembalian','waktu_dibawa','waktu_dikembalikan')
+      ->orderBy('id', 'DESC')->get();
+
+      return response()->json([
+        'status' => 'success',
+        'data' => $listkanvas
+      ]); 
+    }
+
+    // public function getKanvasAPI($idStaf){
+
+    // }
 }

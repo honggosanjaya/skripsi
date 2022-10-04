@@ -214,6 +214,11 @@ const DashboardSales = () => {
               <span className="iconify me-2" data-icon="fa-solid:shipping-fast"></span>
               Pengiriman
             </Link>
+
+            <Link to='/salesman/itemkanvas' className='btn btn-success btn-lg w-100 mt-3'>
+              <span className="iconify fs-3 me-2" data-icon="fluent:tray-item-remove-24-filled"></span>
+              Item Kanvas
+            </Link>
           </div>
 
           <Modal show={showModal} onHide={handleCloseModal} centered={true}>
