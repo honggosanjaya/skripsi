@@ -270,6 +270,12 @@ Route::prefix('administrasi')->middleware('administrasi')->group(function() {
   Route::get('/kas/print/{cashaccount:id}', [KasController::class, 'cetakKas']);
   Route::post('/kas/print/{cashaccount:id}/cetak-kas', [KasController::class, 'cetakKasPDF']);
   Route::post('/changeorderitem/{order_item:id}', [OrderController::class, 'changeOrderItem']);
+
+  Route::get('/kanvas', [ItemController::class, 'indexKanvas']);
+  Route::get('/kanvas/create', [ItemController::class, 'createKanvas']);
+  Route::post('/kanvas/store', [ItemController::class, 'storeKanvas']);
+  Route::get('/kanvas/history', [ItemController::class, 'historyKanvas']);
+  Route::post('/kanvas/dikembalikan/{ids}', [ItemController::class, 'pengembalianKanvas']);
 });
 
 

@@ -12,6 +12,7 @@ use App\Models\Pengadaan;
 use App\Models\History;
 use App\Models\Staff;
 use App\Models\Customer;
+use App\Models\Kanvas;
 use Barryvdh\DomPDF\Facade\Pdf as FacadePdf;
 use Barryvdh\DomPDF\PDF as DomPDFPDF;
 use Illuminate\Http\Request;
@@ -707,5 +708,122 @@ class ItemController extends Controller
       \Cart::session(auth()->user()->id.$request->route)->clear();
   
       return redirect('/administrasi/stok/stokretur')->with('pesanSukses', 'Stok retur tercatat ke database');
+    }
+
+    public function indexKanvas(){
+      $listkanvas = Kanvas::whereNull('waktu_dikembalikan')
+                    ->select(DB::raw('GROUP_CONCAT(id) as ids'),'nama','id_staff_pengonfirmasi_pembawaan','id_staff_yang_membawa','waktu_dibawa', DB::raw('COUNT(id_item) as banyak_jenis_item')) 
+                    ->groupBy('nama','id_staff_pengonfirmasi_pembawaan','waktu_dibawa','id_staff_yang_membawa')
+                    ->orderBy('id', 'DESC')
+                    ->get();
+      
+      return view('administrasi.kanvas.index', [
+        'listkanvas' => $listkanvas
+      ]);
+    }
+
+    public function createKanvas(){
+      $staffs = Staff::where('status_enum', '1')->where('role', 3)->get();
+      $items = Item::all();
+
+      return view('administrasi.kanvas.createKanvas', [
+        "staffs" => $staffs,
+        "items" => $items
+      ]);
+    }
+
+    public function storeKanvas(Request $request){
+      $request->validate([
+        'nama' => 'required',
+        'id_staff_yang_membawa' => 'required',
+      ]);
+
+      for($i=0; $i<count($request->id_item); $i++){
+        Kanvas::insert([
+          "nama" => $request->nama,
+          "id_item" => $request->id_item[$i],
+          "stok_awal" => $request->jumlah_item[$i],
+          "sisa_stok" => $request->jumlah_item[$i],
+          "id_staff_pengonfirmasi_pembawaan" => auth()->user()->id_users,
+          "id_staff_yang_membawa" => $request->id_staff_yang_membawa,
+          "waktu_dibawa" => now(),
+          "created_at" => now()
+        ]);
+      }
+      if($request->route=='history'){
+        return redirect('/administrasi/kanvas/history')->with('pesanSukses', 'Berhasil menambahkan kanvas');
+      }else{
+        return redirect('/administrasi/kanvas/create')->with('pesanSukses', 'Berhasil menambahkan kanvas');
+      }
+    }
+
+    public function checkSalesHasKanvasAPI($idSales){
+      $allKanvas = Kanvas::all();
+      $isStaffHasKanvas = false;
+      foreach($allKanvas as $kanvas){
+        if($kanvas->id_staff_yang_membawa == $idSales && $kanvas->waktu_dikembalikan == null){
+          $isStaffHasKanvas = true;
+        }
+      }
+
+      if($isStaffHasKanvas == true){
+        $sales = Staff::find($idSales)->nama;
+        return response()->json([
+          'status' => 'error',
+          'message' => 'Kanvas untuk ' . $sales .' sudah ada'
+        ]); 
+      }else{
+        return response()->json([
+          'status' => 'success',
+          'message' => 'Bisa menambah data'
+        ]); 
+      }
+    }
+
+    public function getDetailKanvas($id){
+      $getId = explode("-", $id);
+      $detailsKanvas = [];
+
+      foreach($getId as $getid){
+        $kanvas = Kanvas::where('id', $getid)->with(['linkItem'])->first();
+        array_push($detailsKanvas,[
+          $kanvas
+        ]);
+      }
+
+      return response()->json([
+        'status' => 'success',
+        'data' => $detailsKanvas
+      ]); 
+    }
+
+    public function historyKanvas(){
+      $listkanvas = Kanvas::whereNotNull('waktu_dikembalikan')
+      ->select(DB::raw('GROUP_CONCAT(id) as ids'),'nama','id_staff_pengonfirmasi_pembawaan','id_staff_yang_membawa','id_staff_pengonfirmasi_pengembalian','waktu_dibawa','waktu_dikembalikan', DB::raw('COUNT(id_item) as banyak_jenis_item')) 
+      ->groupBy('nama','id_staff_pengonfirmasi_pembawaan','waktu_dibawa','id_staff_yang_membawa','waktu_dikembalikan','id_staff_pengonfirmasi_pengembalian')
+      ->orderBy('id', 'DESC')->get();
+
+      $staffs = Staff::where('status_enum', '1')->where('role', 3)->get();
+      $items = Item::all();
+
+      return view('administrasi.kanvas.historyKanvas', [
+        "listkanvas" => $listkanvas,
+        "staffs" => $staffs,
+        "items" => $items
+      ]);
+    }
+
+    public function pengembalianKanvas($ids){
+      $getId = explode("-", $ids);
+
+      foreach($getId as $getid){
+        Kanvas::where('id', $getid)->update([
+          "id_staff_pengonfirmasi_pengembalian" => auth()->user()->id_users,
+          "waktu_dikembalikan" => now(),
+          "updated_at" => now()
+        ]);
+      }
+
+      return redirect('/administrasi/kanvas')->with('pesanSukses', 'Berhasil mengonfirmasi pengembalian kanvas');
     }
 }
