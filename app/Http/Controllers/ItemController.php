@@ -749,6 +749,13 @@ class ItemController extends Controller
           "waktu_dibawa" => now(),
           "created_at" => now()
         ]);
+
+        $stokGudang = Item::where('id', $request->id_item[$i])->first()->stok;
+
+        Item::where('id', $request->id_item[$i])->update([
+          "stok" => $stokGudang - $request->jumlah_item[$i],
+          "updated_at" => now()
+        ]);
       }
       if($request->route=='history'){
         return redirect('/administrasi/kanvas/history')->with('pesanSukses', 'Berhasil menambahkan kanvas');
@@ -799,6 +806,7 @@ class ItemController extends Controller
 
     public function historyKanvas(){
       $listkanvas = Kanvas::whereNotNull('waktu_dikembalikan')
+      ->whereBetween('waktu_dibawa',[now()->subDays(59),now()])
       ->select(DB::raw('GROUP_CONCAT(id) as ids'),'nama','id_staff_pengonfirmasi_pembawaan','id_staff_yang_membawa','id_staff_pengonfirmasi_pengembalian','waktu_dibawa','waktu_dikembalikan', DB::raw('COUNT(id_item) as banyak_jenis_item')) 
       ->groupBy('nama','id_staff_pengonfirmasi_pembawaan','waktu_dibawa','id_staff_yang_membawa','waktu_dikembalikan','id_staff_pengonfirmasi_pengembalian')
       ->orderBy('id', 'DESC')->get();
@@ -820,6 +828,17 @@ class ItemController extends Controller
         Kanvas::where('id', $getid)->update([
           "id_staff_pengonfirmasi_pengembalian" => auth()->user()->id_users,
           "waktu_dikembalikan" => now(),
+          "updated_at" => now()
+        ]);
+
+        $kanvas = Kanvas::where('id', $getid)->first();
+        $sisaStokKanvas = $kanvas->sisa_stok;
+        $idItem = $kanvas->id_item;
+
+        $stokGudang = Item::where('id', $idItem)->first()->stok;
+
+        Item::where('id', $idItem)->update([
+          "stok" => $stokGudang + $sisaStokKanvas,
           "updated_at" => now()
         ]);
       }
