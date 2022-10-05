@@ -501,3 +501,133 @@ $(document).on('change', '#detail_pesanan-admn .select-alt-item', function (e) {
   $(this).siblings('.change-item-btn').addClass('d-none');
   $(this).siblings('.ok-item-btn').removeClass('d-none');
 });
+
+
+// KANVAS
+var countItem = $("#kanvas .form-group").children().length;
+$(document).on('click', '#kanvas .add-form', function (e) {
+  countItem++;
+  $('#kanvas .form-input').last().clone().appendTo('#kanvas .form-group');
+  $('#kanvas .form-input').find('.remove-form').removeClass('d-none');
+  $('#kanvas .remove-all-form').removeClass('d-none');
+  $('#kanvas .form-input').last().find('.select-item').val('');
+  $('#kanvas .form-input').last().find('.jumlah_item').val('');
+  if (countItem == 1) {
+    $('#kanvas .remove-all-form').addClass('d-none');
+    $('#kanvas .form-input').find('.remove-form').addClass('d-none');
+  }
+})
+
+$(document).on('click', '#kanvas .remove-form', function (e) {
+  countItem--;
+  $(this).parents('#kanvas .form-input').remove();
+  if (countItem == 1) {
+    $('#kanvas .remove-all-form').addClass('d-none');
+    $('#kanvas .form-input').find('.remove-form').addClass('d-none');
+  }
+})
+
+$(document).on('click', '#kanvas .remove-all-form', function (e) {
+  Swal.fire({
+    title: 'Apakah anda yakin untuk menghapus seluruh item ?',
+    showDenyButton: true,
+    confirmButtonText: 'Ya',
+    denyButtonText: `Tidak`,
+  }).then((result) => {
+    if (result.isConfirmed) {
+      $('#kanvas .form-input').not(':first').remove();
+      $("#kanvas .select-item").val('').change();
+      $("#kanvas .jumlah_item").val('');
+    } else if (result.isDenied) {
+      Swal.fire('Changes are not saved', '', 'info');
+    }
+  })
+})
+
+$(document).on('click', '#kanvas .detail_trigger', function (e) {
+  let idkanvas = $(this).data('idkanvas');
+  $('#kanvas .table_body').empty();
+  $.ajax({
+    url: window.location.origin + `/api/administrasi/getDetailKanvas/${idkanvas}`,
+    method: "GET",
+    success: function (response) {
+      response.data.map((dt, index) => {
+        let singlerow =
+          `
+        <tr>
+          <td> ${index + 1} </td>
+          <td> ${dt[0].link_item.nama} </td>
+          <td> ${dt[0].stok_awal} </td>
+          <td> ${dt[0].sisa_stok} </td>
+        </tr>                  
+        `
+        $('#kanvas .table_body').append(singlerow);
+      })
+    },
+  });
+})
+
+$(document).ready(function () {
+  $('.select-history-kanvas').select2();
+});
+
+$(document).on('change', '#kanvas .select-history-kanvas', function (e) {
+  const namaKanvas = $("#kanvas .select-history-kanvas option:selected").text();
+  $('.hidden-nama-kanvas').val(namaKanvas);
+
+  $.ajax({
+    url: window.location.origin + `/api/administrasi/getDetailKanvas/${e.target.value}`,
+    method: "GET",
+    success: function (response) {
+      console.log(response.data);
+      $('#kanvas .form-input').not(':first').remove();
+
+      for (let i = 0; i < response.data.length - 1; i++) {
+        $('#kanvas .form-input').last().clone().appendTo('#kanvas .form-group');
+        $('#kanvas .form-input').find('.remove-form').removeClass('d-none');
+        $('#kanvas .remove-all-form').removeClass('d-none');
+        $('#kanvas .form-input').last().find('.select-item').val('');
+        $('#kanvas .form-input').last().find('.jumlah_item').val('');
+      }
+
+      response.data.map((dt, index) => {
+        $('#kanvas .select-item').eq(index).val(dt[0].link_item.id).change();
+        $('#kanvas .jumlah_item').eq(index).val(dt[0].stok_awal);
+      })
+    },
+  });
+})
+
+$(document).on('click', '#kanvas .btn-submit', function () {
+  const idSales = $('#kanvas #id_staff_yang_membawa').val();
+
+  Swal.fire({
+    title: 'Apakah anda yakin untuk menyimpan data ?',
+    showDenyButton: true,
+    confirmButtonText: 'Ya',
+    denyButtonText: `Tidak`,
+  }).then((result) => {
+    if (result.isConfirmed) {
+      $.ajax({
+        url: window.location.origin + `/api/administrasi/checkSalesHasKanvas/${idSales}`,
+        method: "GET",
+        success: function (response) {
+          if (response.status == 'error') {
+            $("#kanvas").prepend(
+              `<div id="hideMeAfter3Seconds">
+                  <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                    ${response.message}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                  </div>
+                </div>`
+            )
+          } else if (response.status == 'success') {
+            $('#form_submit').submit();
+          }
+        },
+      });
+    } else if (result.isDenied) {
+      Swal.fire('Changes are not saved', '', 'info');
+    }
+  })
+});

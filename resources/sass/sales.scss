@@ -784,3 +784,14 @@ ul.info-list {
     display: block;
     margin: 0 auto;
 }
+
+.table-responsive {
+    th,
+    td {
+        vertical-align: middle;
+    }
+}
+
+.text-gray {
+    color: lightgray;
+}

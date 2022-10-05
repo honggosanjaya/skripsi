@@ -4,7 +4,7 @@ namespace App\Models;
 
 use App\Models\History;
 use App\Models\Pengadaan;
-
+use App\Models\Kanvas;
 use App\Models\OrderItem;
 use App\Models\Retur;
 use App\Models\CategoryItem;
@@ -29,6 +29,10 @@ class Item extends Model
 
     public function linkOrderItem(){
         return $this->hasMany(OrderItem::class,'id_item','id');
+    }
+
+    public function linkKanvas(){
+      return $this->hasMany(Kanvas::class,'id_item','id');
     }
 
     public function linkRetur(){

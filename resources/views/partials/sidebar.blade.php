@@ -97,6 +97,11 @@
             <span class="iconify fs-4 me-2" data-icon="healthicons:register-book-outline"></span><span>Kas</span>
           </a>
         </li>
+        <li class="mb-3">
+          <a class="{{ Request::is('administrasi/kanvas*') ? 'active' : '' }}" href="/administrasi/kanvas">
+            <i class="bi bi-box me-2"></i><span>Kanvas</span>
+          </a>
+        </li>
       </ul>
     @endcan
 
