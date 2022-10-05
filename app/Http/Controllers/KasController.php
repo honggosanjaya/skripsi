@@ -88,7 +88,10 @@ class KasController extends Controller
   }
 
   public function index(){
-    $bukuKas = CashAccount::where('account', '<=', 100)->get();
+    $bukuKas = CashAccount::where('account', '<=', 100)
+                ->where(function ($query) {
+                  $query->whereNull('default')->orWhereIn('default', ['1', '2']);                  
+                })->get();
 
     return view('administrasi.kas.index', [
       'bukuKas' => $bukuKas
@@ -97,7 +100,7 @@ class KasController extends Controller
 
   public function createKas (CashAccount $cashaccount){
     $staffs = Staff::where('status_enum','1')->whereIn('role', [3, 4])->get();
-    $cash_accounts = CashAccount::all();
+    $cash_accounts = CashAccount::whereNull('default')->orWhereIn('default', ['1', '2'])->get();
 
     $debitkredits = [
       1 => 'debit',
@@ -231,7 +234,7 @@ class KasController extends Controller
     ];
  
     $namaCashAccount = CashAccount::find($cashaccount->id)->nama;
-    $cashaccounts = CashAccount::all();
+    $cashaccounts = CashAccount::whereNull('default')->orWhereIn('default', ['1', '2'])->get();
 
     return view('administrasi.kas.cetakkas', [
       'input' => $input,

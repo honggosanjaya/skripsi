@@ -1056,7 +1056,10 @@ class OrderController extends Controller
     ];
 
     $defaultpenjualan = CashAccount::where('default', '2')->first();
-    $listskas = CashAccount::where('account', '<=', '100')->get();
+    $listskas = CashAccount::where('account', '<=', '100')
+                ->where(function ($query) {
+                  $query->whereNull('default')->orWhereIn('default', ['1', '2']);                  
+                })->get();
 
     return view('administrasi.pesanan.pembayaran.index',[
       'order' => $order,

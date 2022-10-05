@@ -31,6 +31,7 @@ class CashAccountController extends Controller
     $defaults = [
       1 => 'pengadaan',
       2 => 'penjualan',
+      3 => 'parent'
     ];
 
     return view('supervisor.cashaccount.addcashaccount',[
@@ -41,7 +42,7 @@ class CashAccountController extends Controller
   public function cashAccountStore(Request $request){
     $rules = ([
       'nama' => 'required|max:255',
-      'keterangan' => 'required',
+      'keterangan' => 'nullable',
       'account' => 'required|numeric|unique:cash_accounts',
       'default' => 'nullable'            
     ]);
@@ -73,6 +74,7 @@ class CashAccountController extends Controller
     $defaults = [
       1 => 'pengadaan',
       2 => 'penjualan',
+      3 => 'parent'
     ];
 
     return view('supervisor.cashaccount.editcashaccount',[
@@ -84,7 +86,7 @@ class CashAccountController extends Controller
   public function cashAccountUpdate(Request $request, CashAccount $cashaccount){
     $validation = ([
       'nama' => 'required|max:255',
-      'keterangan' => 'required',
+      'keterangan' => 'nullable',
       'default' => 'nullable'    
     ]);
 
@@ -117,7 +119,10 @@ class CashAccountController extends Controller
 
   public function cashAccountOptionAPI(){
     return response()->json([
-      'cashaccount' => CashAccount::where('account', '>', 100)->get()
+      'cashaccount' => CashAccount::where('account', '>', 100)
+                        ->where(function ($query) {
+                          $query->whereNull('default')->orWhereIn('default', ['1', '2']);                  
+                        })->get()
     ]);
   }
 
@@ -229,7 +234,11 @@ class CashAccountController extends Controller
   
   public function adminReimbursementPengajuanDetail(Reimbursement $reimbursement){
     $reimbursement = Reimbursement::find($reimbursement->id);
-    $listskas = CashAccount::where('account', '<=', '100')->get();
+    $listskas = CashAccount::where('account', '<=', '100')
+                  ->where(function ($query) {
+                    $query->whereNull('default')->orWhereIn('default', ['1', '2']);                  
+                  })->get();
+
 
     return view('administrasi.reimbursement.detailReimbursement', [
       'reimbursement' => $reimbursement,
