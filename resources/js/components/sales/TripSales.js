@@ -28,6 +28,7 @@ const TripSales = () => {
   const [wilayah, setWilayah] = useState('');
   const [ketAlamat, setKetAlamat] = useState('');
   const [telepon, setTelepon] = useState('');
+  const [statusTelepon, setStatusTelepon] = useState('');
   const [durasiTrip, setDurasiTrip] = useState(7);
   const [alasanPenolakan, setAlasanPenolakan] = useState('');
   const [file, setFile] = useState(null);
@@ -182,6 +183,7 @@ const TripSales = () => {
     keterangan_alamat: ketAlamat,
     koordinat: koordinat,
     telepon: telepon,
+    status_telepon: statusTelepon,
     durasi_kunjungan: durasiTrip,
     counter_to_effective_call: totalTripEC,
     jam_masuk: jamMasuk,
@@ -451,6 +453,13 @@ const TripSales = () => {
             <input type="text" className="form-control"
               value={telepon}
               onChange={(e) => setTelepon(e.target.value)} />
+          </div>
+
+          <div className="mb-3">
+            <label className="form-label">Status Telepon</label>
+            <input type="text" className="form-control"
+              value={statusTelepon}
+              onChange={(e) => setStatusTelepon(e.target.value)} />
           </div>
 
           <div className="mb-3">
