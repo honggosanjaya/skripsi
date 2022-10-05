@@ -48,9 +48,16 @@ const Reimbursement = () => {
 
   useEffect(() => {
     axios.get(`${window.location.origin}/api/cashAcountOption`).then(response => {
-      console.log('cashaccount', response.data);
       setListCashAccount(response.data.cashaccount);
-      setCashAccount(response.data.cashaccount[0].id)
+
+      console.log(response.data.cashaccount);
+
+      for (var i = 0; i < response.data.cashaccount.length; i++) {
+        if (response.data.cashaccount[i][3] > 100 && response.data.cashaccount[i][2] != '3') {
+          setCashAccount(response.data.cashaccount[i][1]);
+          break;
+        }
+      }
     })
   }, [])
 
@@ -69,9 +76,11 @@ const Reimbursement = () => {
 
   useEffect(() => {
     setShowCashAccountOption(listCashAccount?.map((data, index) => {
-      return (
-        <option value={data.id} key={index}>{data.nama}</option>
-      );
+      if (data[3] > 100 && data[2] != '3') {
+        return (
+          <option value={data[1]} key={index}>{data[0]}</option>
+        );
+      }
     }))
   }, [listCashAccount])
 

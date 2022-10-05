@@ -118,11 +118,40 @@ class CashAccountController extends Controller
 
 
   public function cashAccountOptionAPI(){
+    $cashaccounts = CashAccount::all();
+    $temp = array();
+    
+    for($i=0; $i<count($cashaccounts); $i++){
+      $get1 = '';
+      $get2 = '';
+      $value = 0;
+      
+      if($cashaccounts[$i]->account_parent == null){
+        $get1 = $cashaccounts[$i]->nama;
+        $value = $cashaccounts[$i]->id;
+        $default = $cashaccounts[$i]->default;
+        $account = $cashaccounts[$i]->account;
+        array_push($temp, [$get1, $value, $default, $account]);
+      }
+  
+      else if($cashaccounts[$i]->account_parent != null){
+        for($j=count($cashaccounts)-1; $j>=0; $j--){
+          if($cashaccounts[$i]->account_parent == $cashaccounts[$j]->account){
+            $get2 = $temp[$j][0] . " - " .$cashaccounts[$i]->nama;
+            $value = $cashaccounts[$i]->id;
+            $default = $cashaccounts[$i]->default;
+            $account = $cashaccounts[$i]->account;
+            array_push($temp, [$get2, $value, $default, $account]);
+          }
+        }
+      }
+    }
+    usort($temp, function($a, $b) {
+        return $a[0] <=> $b[0];
+    });
+
     return response()->json([
-      'cashaccount' => CashAccount::where('account', '>', 100)
-                        ->where(function ($query) {
-                          $query->whereNull('default')->orWhereIn('default', ['1', '2']);                  
-                        })->get()
+      'cashaccount' => $temp
     ]);
   }
 
