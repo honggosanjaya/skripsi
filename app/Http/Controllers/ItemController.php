@@ -765,15 +765,9 @@ class ItemController extends Controller
     }
 
     public function checkSalesHasKanvasAPI($idSales){
-      $allKanvas = Kanvas::all();
-      $isStaffHasKanvas = false;
-      foreach($allKanvas as $kanvas){
-        if($kanvas->id_staff_yang_membawa == $idSales && $kanvas->waktu_dikembalikan == null){
-          $isStaffHasKanvas = true;
-        }
-      }
+      $kanvas = Kanvas::where('id_staff_yang_membawa', $idSales)->whereNull('waktu_dikembalikan')->get();
 
-      if($isStaffHasKanvas == true){
+      if(count($kanvas) > 0){
         $sales = Staff::find($idSales)->nama;
         return response()->json([
           'status' => 'error',
@@ -858,7 +852,28 @@ class ItemController extends Controller
       ]); 
     }
 
-    // public function getKanvasAPI($idStaf){
+    public function getKanvasAPI($idStaf){
+      $activeKanvas = Kanvas::whereNull('waktu_dikembalikan')
+                      ->where('id_staff_yang_membawa', $idStaf)
+                      ->get();
 
-    // }
+      $listIdItems = [];
+      $listItems = [];
+
+      foreach($activeKanvas as $kanvas){
+        array_push($listIdItems, $kanvas->id_item);
+
+        array_push($listItems, [
+          "id_item" => $kanvas->id_item,
+          "nama_item" => $kanvas->linkItem->nama,
+          "sisa_stok" => $kanvas->sisa_stok
+        ]);
+      }
+
+      return response()->json([
+        'status' => 'success',
+        'dataIdItem' => $listIdItems,
+        'dataItem' => $listItems
+      ]); 
+    }
 }

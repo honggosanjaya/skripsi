@@ -19,7 +19,7 @@ const KeranjangSales = ({ location }) => {
   const history = useHistory();
   const { idCust } = useParams();
   const { token } = useContext(AuthContext);
-  const { produks, setProduks, getAllProduks, setIsBelanjaLagi } = useContext(KeranjangSalesContext);
+  const { produks, setProduks, getAllProduks, setIsBelanjaLagi, canOrderKanvas } = useContext(KeranjangSalesContext);
   const [errorMessage, setErrorMessage] = useState(null);
   const [successMessage, setSuccessMessage] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
@@ -42,6 +42,9 @@ const KeranjangSales = ({ location }) => {
   const [diskon, setDiskon] = useState(0);
   const [isShowRincian, setIsShowRincian] = useState(false);
   const { kodePesanan, setKodePesanan } = useContext(HitungStokContext);
+  const [itemKanvas, setItemKanvas] = useState([]);
+  const [idItemKanvas, setIdItemKanvas] = useState([]);
+  const [isOrderKanvas, setIsOrderKanvas] = useState(false);
   const Swal = require('sweetalert2');
   const { state: idTrip } = location;
   let jmlProdukError = 0;
@@ -115,24 +118,31 @@ const KeranjangSales = ({ location }) => {
     console.log('idTrip', idTrip);
   }, [])
 
-  // useEffect(() => {
-  //   if (dataUser) {
-  //     axios({
-  //       method: "get",
-  //       url: `${window.location.origin}/api/kanvas/${dataUser.id_staff}`,
-  //       headers: {
-  //         Accept: "application/json",
-  //       },
-  //     })
-  //       .then(response => {
-  //         console.log('knvas', response.data.data);
-  //         // setPilihanRetur(response.data.data);
-  //       })
-  //       .catch(error => {
-  //         setErrorMessage(error.message);
-  //       });
-  //   }
-  // }, [dataUser])
+  useEffect(() => {
+    if (canOrderKanvas == false) {
+      setIsOrderKanvas(false);
+    }
+  }, [canOrderKanvas])
+
+  useEffect(() => {
+    if (dataUser.id_staff != undefined || dataUser.id_staff != null) {
+      axios({
+        method: "get",
+        url: `${window.location.origin}/api/kanvas/${dataUser.id_staff}`,
+        headers: {
+          Accept: "application/json",
+        },
+      })
+        .then(response => {
+          console.log('itemkanvas', response.data);
+          setIdItemKanvas(response.data.dataIdItem);
+          setItemKanvas(response.data.dataItem);
+        })
+        .catch(error => {
+          setErrorMessage(error.message);
+        });
+    }
+  }, [dataUser])
 
   useEffect(() => {
     setIsLoading(true);
@@ -235,6 +245,17 @@ const KeranjangSales = ({ location }) => {
   }
 
   const tambahJumlahProduk = (item, orderid) => {
+    let inStokKanvas = idItemKanvas.includes(item.id);
+    let sisaStok = 0;
+    let canStokKanvas = false;
+    if (inStokKanvas) {
+      sisaStok = itemKanvas.find(o => o.id_item == item.id).sisa_stok;
+    }
+
+    if (inStokKanvas && sisaStok >= item.jumlah + 1) {
+      canStokKanvas = true;
+    }
+
     const produk = {
       id: item.id,
       orderId: orderid,
@@ -242,13 +263,25 @@ const KeranjangSales = ({ location }) => {
       harga: item.harga,
       jumlah: item.jumlah + 1,
       nama: item.nama,
-      stok: item.stok
+      stok: item.stok,
+      canStokKanvas: canStokKanvas
     };
     KeranjangDB.updateProduk(produk);
     getAllProduks();
   }
 
   const kurangJumlahProduk = (item, orderid) => {
+    let inStokKanvas = idItemKanvas.includes(item.id);
+    let sisaStok = 0;
+    let canStokKanvas = false;
+    if (inStokKanvas) {
+      sisaStok = itemKanvas.find(o => o.id_item == item.id).sisa_stok;
+    }
+
+    if (inStokKanvas && sisaStok >= item.jumlah - 1) {
+      canStokKanvas = true;
+    }
+
     const produk = {
       id: item.id,
       orderId: orderid,
@@ -256,7 +289,8 @@ const KeranjangSales = ({ location }) => {
       harga: item.harga,
       jumlah: item.jumlah - 1,
       nama: item.nama,
-      stok: item.stok
+      stok: item.stok,
+      canStokKanvas: canStokKanvas
     };
     KeranjangDB.updateProduk(produk);
     getAllProduks();
@@ -300,7 +334,8 @@ const KeranjangSales = ({ location }) => {
             totalHarga: (totalHarga - (totalHarga * (dataCustType.diskon ?? 0) / 100) - hargaPromo),
             idTrip: idTrip,
             tipeRetur: parseInt(tipeRetur),
-            metode_pembayaran: metodePembayaran
+            metode_pembayaran: metodePembayaran,
+            stok_kanvas: isOrderKanvas
           }
         })
           .then(response => {
@@ -479,7 +514,15 @@ const KeranjangSales = ({ location }) => {
 
         {!isLoading && !loadingDataUser && produks.length > 0 &&
           <div className="mb-btnBottom">
-            <label className="form-label mt-3">Keterangan Pesanan</label>
+            <div className="form-check form-switch mt-3">
+              {canOrderKanvas ?
+                <input className="form-check-input" type="checkbox" checked={isOrderKanvas} onChange={(e) => setIsOrderKanvas(e.target.checked)} />
+                : <input className="form-check-input" type="checkbox" checked={false} disabled />}
+              {canOrderKanvas ? <label className="form-label">Ambil dari stok kanvas</label>
+                : <label className="form-label text-gray">Ambil dari stok kanvas</label>}
+            </div>
+
+            <label className="form-label">Keterangan Pesanan</label>
             <textarea className="form-control" value={keteranganOrderItem || ''} onChange={(e) => setKeteranganOrderItem(e.target.value)} />
 
             <label className="form-label mt-3">Estimasi Waktu Pengiriman <span className='text-danger'>*</span></label>
@@ -568,6 +611,8 @@ const KeranjangSales = ({ location }) => {
                   <p className='mb-0 fw-bold'>Total Akhir</p>
                   <p className='mb-0'>{totalHarga - (totalHarga * (dataCustType.diskon ?? 0) / 100) - hargaPromo}</p>
                 </div>
+
+                <p className="mb-0 text-center mt-3"><b>Nb:</b>Pesanan ini diambilkan dari stok {isOrderKanvas == true ? 'kanvas' : 'gudang'}</p>
               </Modal.Body>
               <Modal.Footer>
                 <Button variant="success" onClick={checkout}>

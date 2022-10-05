@@ -73,7 +73,7 @@ Route::post('/salesman/buatOrder', [OrderController::class, 'simpanDataOrderSale
 Route::get('/tipeRetur', [ReturController::class, 'getTypeReturAPI']);
 Route::get('/kodeEvent/{kode}', [EventController::class, 'dataKodeEventAPI']);
 Route::get('/kodeCustomer/{id}', [OrderController::class, 'dataKodeCustomer']);
-// Route::get('/kanvas/{id}', [ItemController::class, 'getKanvasAPI']);
+Route::get('/kanvas/{id}', [ItemController::class, 'getKanvasAPI']);
 // KELUAR
 Route::post('/keluarToko/{id}', [OrderController::class, 'keluarTripOrderApi']);
 Route::get('/belanjalagi/{id}', [OrderController::class, 'belanjaLagiOrderApi']);

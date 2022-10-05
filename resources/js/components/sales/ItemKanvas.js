@@ -23,7 +23,6 @@ const ItemKanvas = () => {
         },
       })
         .then(response => {
-          console.log('dataku', response.data);
           setListKanvas(response.data.data);
           setIsLoading(false);
         })
@@ -46,7 +45,6 @@ const ItemKanvas = () => {
         Accept: "application/json"
       },
     }).then(response => {
-      console.log('show', response.data.data);
       setListItemKanvas(response.data.data);
       setIsLoading(false);
     })

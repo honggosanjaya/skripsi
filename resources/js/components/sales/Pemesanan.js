@@ -49,6 +49,8 @@ const Pemesanan = ({ location }) => {
   const [shouldDisabled, setShouldDisabled] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [loadingKode, setLoadingKode] = useState(false);
+  const [itemKanvas, setItemKanvas] = useState([]);
+  const [idItemKanvas, setIdItemKanvas] = useState([]);
   const Swal = require('sweetalert2');
 
   useEffect(() => {
@@ -163,6 +165,26 @@ const Pemesanan = ({ location }) => {
         console.log(error.message);
       });
   }, []);
+
+  useEffect(() => {
+    if (dataUser.id_staff != undefined || dataUser.id_staff != null) {
+      axios({
+        method: "get",
+        url: `${window.location.origin}/api/kanvas/${dataUser.id_staff}`,
+        headers: {
+          Accept: "application/json",
+        },
+      })
+        .then(response => {
+          console.log('itemkanvas', response.data);
+          setIdItemKanvas(response.data.dataIdItem);
+          setItemKanvas(response.data.dataItem);
+        })
+        .catch(error => {
+          setErrorMessage(error.message);
+        });
+    }
+  }, [dataUser])
 
   useEffect(() => {
     navigator.permissions.query({ name: 'geolocation' }).then((result) => {
@@ -323,6 +345,18 @@ const Pemesanan = ({ location }) => {
             setOrderId(dataOrder.id);
             dataOrderItems.map((dataOrderItem) => {
               console.log('data item', dataOrderItem.link_item);
+
+              let inStokKanvas = idItemKanvas.includes(dataOrderItem.id_item);
+              let sisaStok = 0;
+              let canStokKanvas = false;
+              if (inStokKanvas) {
+                sisaStok = itemKanvas.find(o => o.id_item == dataOrderItem.id_item).sisa_stok;
+              }
+
+              if (inStokKanvas && sisaStok >= dataOrderItem.kuantitas) {
+                canStokKanvas = true;
+              }
+
               let obj = {
                 id: dataOrderItem.id_item,
                 orderId: dataOrder.id,
@@ -332,6 +366,7 @@ const Pemesanan = ({ location }) => {
                 gambar: dataOrderItem.link_item.gambar,
                 nama: dataOrderItem.link_item.nama,
                 stok: dataOrderItem.link_item.stok,
+                canStokKanvas: canStokKanvas
               }
               if (dataOrderItem.link_item.stok < dataOrderItem.kuantitas) {
                 obj["error"] = "Stok tidak mencukupi"
@@ -369,6 +404,12 @@ const Pemesanan = ({ location }) => {
   }
 
   const handleTambahJumlah = (item, keep) => {
+    let inStokKanvas = idItemKanvas.includes(item.id);
+    let sisaStok = 0;
+    let canStokKanvas = false;
+    if (inStokKanvas) {
+      sisaStok = itemKanvas.find(o => o.id_item == item.id).sisa_stok;
+    }
     setIsHandleKodeCust(false);
     if (keep == true) {
       setShouldKeepOrder(true);
@@ -377,6 +418,16 @@ const Pemesanan = ({ location }) => {
     const exist = produks.find((x) => x.id === item.id);
 
     if (exist && item.stok > 0) {
+      if (exist.jumlah < item.stok) {
+        if (inStokKanvas && sisaStok >= exist.jumlah + 1) {
+          canStokKanvas = true;
+        }
+      } else {
+        if (inStokKanvas && sisaStok >= exist.jumlah) {
+          canStokKanvas = true;
+        }
+      }
+
       const produk = {
         id: item.id,
         nama: item.nama,
@@ -384,7 +435,8 @@ const Pemesanan = ({ location }) => {
         customer: parseInt(idCust),
         jumlah: exist.jumlah < item.stok ? exist.jumlah + 1 : exist.jumlah,
         gambar: item.gambar,
-        stok: item.stok
+        stok: item.stok,
+        canStokKanvas: canStokKanvas
       };
       checkTipeHarga(produk, item);
       KeranjangDB.updateProduk(produk);
@@ -394,6 +446,10 @@ const Pemesanan = ({ location }) => {
       }
     }
     else if (!exist && item.stok > 0) {
+      if (inStokKanvas && sisaStok >= 1) {
+        canStokKanvas = true;
+      }
+
       const produk = {
         id: item.id,
         nama: item.nama,
@@ -401,7 +457,8 @@ const Pemesanan = ({ location }) => {
         customer: parseInt(idCust),
         jumlah: 1,
         gambar: item.gambar,
-        stok: item.stok
+        stok: item.stok,
+        canStokKanvas: canStokKanvas
       };
       checkTipeHarga(produk, item);
       KeranjangDB.putProduk(produk);
@@ -410,12 +467,22 @@ const Pemesanan = ({ location }) => {
   }
 
   const handleKurangJumlah = (item, keep) => {
+    let inStokKanvas = idItemKanvas.includes(item.id);
+    let sisaStok = 0;
+    let canStokKanvas = false;
+    if (inStokKanvas) {
+      sisaStok = itemKanvas.find(o => o.id_item == item.id).sisa_stok;
+    }
     setIsHandleKodeCust(false);
     if (keep == true) {
       setShouldKeepOrder(true);
     }
     const exist = produks.find((x) => x.id === item.id);
     if (exist && exist.jumlah > 1) {
+      if (inStokKanvas && sisaStok >= exist.jumlah - 1) {
+        canStokKanvas = true;
+      }
+
       const produk = {
         id: item.id,
         nama: item.nama,
@@ -423,7 +490,8 @@ const Pemesanan = ({ location }) => {
         customer: parseInt(idCust),
         jumlah: exist.jumlah - 1,
         gambar: item.gambar,
-        stok: item.stok
+        stok: item.stok,
+        canStokKanvas: canStokKanvas
       };
       checkTipeHarga(produk, item);
       KeranjangDB.updateProduk(produk);
@@ -450,6 +518,12 @@ const Pemesanan = ({ location }) => {
   }
 
   const handleValueChange = (item, newVal, keep) => {
+    let inStokKanvas = idItemKanvas.includes(item.id);
+    let sisaStok = 0;
+    let canStokKanvas = false;
+    if (inStokKanvas) {
+      sisaStok = itemKanvas.find(o => o.id_item == item.id).sisa_stok;
+    }
     setIsHandleKodeCust(false);
     if (keep == true) {
       setShouldKeepOrder(true);
@@ -458,6 +532,16 @@ const Pemesanan = ({ location }) => {
     const exist = produks.find((x) => x.id === item.id);
     if (exist) {
       if (isNaN(newVal) == false) {
+        if (isNaN(parseInt(newVal))) {
+          if (inStokKanvas && sisaStok >= 0) {
+            canStokKanvas = true;
+          }
+        } else {
+          if (inStokKanvas && sisaStok >= parseInt(newVal)) {
+            canStokKanvas = true;
+          }
+        }
+
         const produk = {
           id: item.id,
           nama: item.nama,
@@ -465,7 +549,8 @@ const Pemesanan = ({ location }) => {
           customer: parseInt(idCust),
           jumlah: isNaN(parseInt(newVal)) ? 0 : parseInt(newVal),
           gambar: item.gambar,
-          stok: item.stok
+          stok: item.stok,
+          canStokKanvas: canStokKanvas
         };
         checkTipeHarga(produk, item);
         KeranjangDB.updateProduk(produk);
@@ -473,6 +558,16 @@ const Pemesanan = ({ location }) => {
       }
     } else {
       if (isNaN(newVal) == false) {
+        if (isNaN(parseInt(newVal))) {
+          if (inStokKanvas && sisaStok >= 0) {
+            canStokKanvas = true;
+          }
+        } else {
+          if (inStokKanvas && sisaStok >= parseInt(newVal)) {
+            canStokKanvas = true;
+          }
+        }
+
         const produk = {
           id: item.id,
           nama: item.nama,
@@ -480,7 +575,8 @@ const Pemesanan = ({ location }) => {
           customer: parseInt(idCust),
           gambar: item.gambar,
           jumlah: isNaN(parseInt(newVal)) ? 0 : parseInt(newVal),
-          stok: item.stok
+          stok: item.stok,
+          canStokKanvas: canStokKanvas
         };
         checkTipeHarga(produk, item);
         KeranjangDB.putProduk(produk);

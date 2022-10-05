@@ -18,6 +18,7 @@ use App\Models\Pembayaran;
 use App\Models\History;
 use App\Models\Kas;
 use App\Models\RencanaTrip;
+use App\Models\Kanvas;
 use Illuminate\Support\Facades\DB;
 use PDF;
 use Illuminate\Support\Facades\Validator;
@@ -36,18 +37,67 @@ class OrderController extends Controller
     $id_order = $request->kodePesanan ?? 'belum ada';
     $id_customer = $request->idCustomer;
     $tipeRetur = $request -> tipeRetur;
+    $stok_kanvas = $request->stok_kanvas;
+
+    if($stok_kanvas == true){
+      $listKanvas = Kanvas::where('id_staff_yang_membawa', $idStaf)->whereNull('waktu_dikembalikan')->get();
+
+      foreach($keranjangItems as $item){
+        foreach($listKanvas as $kanvas){
+          if($kanvas->id_item == $item['id']){
+            Kanvas::where('id_staff_yang_membawa', $idStaf)
+                      ->whereNull('waktu_dikembalikan')
+                      ->where('id_item', $kanvas->id_item)
+                      ->update([
+                        "sisa_stok" => $kanvas->sisa_stok - $item['jumlah'],
+                        "updated_at" => now()
+                      ]);
+          }
+        }
+
+
+        $stokMaksimalTerakhir = History::where("id_item", $item['id'])->orderBy("id", "DESC")->first()->stok_maksimal_customer ?? 0;
+
+        $stokSekarang = (History::where("id_item", $item['id'])->orderBy("id", "DESC")->first()->stok_terakhir_customer ?? 0) + $item['jumlah'];
+
+
+        if($stokSekarang > $stokMaksimalTerakhir){
+          History::updateOrCreate(
+            ['id_customer' => $id_customer, 'id_item' => $item['id']],
+            ['stok_maksimal_customer' => $stokSekarang, 'stok_terakhir_customer' => $stokSekarang]
+          );
+        }else{
+          History::updateOrCreate(
+            ['id_customer' => $id_customer, 'id_item' => $item['id']],
+            ['stok_maksimal_customer' => $stokMaksimalTerakhir, 'stok_terakhir_customer' => $stokSekarang]
+          );
+        }
+      }
+    }
     
     $customertype=Customer::with(['linkCustomerType'])->find($id_customer);
 
     if($id_order == "belum ada"){
       $limitPembelian = Customer::find($id_customer)->limit_pembelian;
       if($limitPembelian == null || $limitPembelian>=$totalPesanan){
-        $id_order=Order::insertGetId([
-          'id_customer' => $id_customer,
-          'id_staff' => $idStaf,
-          'status_enum' => '-1',
-          'created_at'=> now(),
-        ]);
+
+        if($stok_kanvas == true){
+          $id_order=Order::insertGetId([
+            'id_customer' => $id_customer,
+            'id_staff' => $idStaf,
+            'status_enum' => '1',
+            'created_at'=> now(),
+            'metode' => '1'
+          ]);
+        }else{
+          $id_order=Order::insertGetId([
+            'id_customer' => $id_customer,
+            'id_staff' => $idStaf,
+            'status_enum' => '-1',
+            'created_at'=> now(),
+            'metode' => '2'
+          ]);
+        }
         
         $data = [];
         foreach($keranjangItems as $item){
@@ -61,14 +111,30 @@ class OrderController extends Controller
           ]);
         }
 
-        OrderTrack::insert([
-          'id_order' => $id_order,
-          'status_enum' => '1',
-          'waktu_order'=> now(),
-          'created_at'=> now(),
-          'waktu_diteruskan' => now(),
-          'estimasi_waktu_pengiriman' => $estimasiWaktuPengiriman,
-        ]);
+        if($stok_kanvas == true){
+          OrderTrack::insert([
+            'id_order' => $id_order,
+            'status_enum' => '4',
+            'waktu_order'=> now(),
+            'waktu_diteruskan' => now(),
+            'waktu_dikonfirmasi' => now(),
+            'waktu_berangkat' => now(),
+            'waktu_sampai' => now(),
+            'created_at'=> now(),
+            'waktu_diteruskan' => now(),
+            'estimasi_waktu_pengiriman' => $estimasiWaktuPengiriman,
+          ]);
+        }else{
+          OrderTrack::insert([
+            'id_order' => $id_order,
+            'status_enum' => '1',
+            'waktu_order'=> now(),
+            'created_at'=> now(),
+            'waktu_diteruskan' => now(),
+            'estimasi_waktu_pengiriman' => $estimasiWaktuPengiriman,
+          ]);
+        }
+
         OrderItem::insert($data);
         Customer::find($id_customer) -> update([
           'tipe_retur' => $tipeRetur,
@@ -120,15 +186,35 @@ class OrderController extends Controller
             }
         }
 
-        Order::where('id', $id_order)->update([
-          'id_staff' => $idStaf,
-        ]);
+        if($stok_kanvas == true){
+          Order::where('id', $id_order)->update([
+            'id_staff' => $idStaf,
+            'status_enum' => '1',
+            'metode' => '1'
+          ]);
 
-        OrderTrack::where('id_order', $id_order)->update([
-          'waktu_diteruskan' => now(),
-          'status_enum' => '1',
-          'estimasi_waktu_pengiriman' => $estimasiWaktuPengiriman,
-        ]);
+          OrderTrack::where('id_order', $id_order)->update([
+            'waktu_diteruskan' => now(),
+            'waktu_dikonfirmasi' => now(),
+            'waktu_berangkat' => now(),
+            'waktu_sampai' => now(),
+            'status_enum' => '4',
+            'estimasi_waktu_pengiriman' => $estimasiWaktuPengiriman,
+          ]);
+
+        }else{
+          Order::where('id', $id_order)->update([
+            'id_staff' => $idStaf,
+            'metode' => '2'
+          ]);
+
+          OrderTrack::where('id_order', $id_order)->update([
+            'waktu_diteruskan' => now(),
+            'status_enum' => '1',
+            'estimasi_waktu_pengiriman' => $estimasiWaktuPengiriman,
+          ]);
+        }
+
         Customer::find($id_customer) -> update([
           'tipe_retur' => $tipeRetur,
           'metode_pembayaran' => $request->metode_pembayaran
