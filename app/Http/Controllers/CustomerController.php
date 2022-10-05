@@ -316,6 +316,7 @@ class CustomerController extends Controller
         'tipe_harga' => ['required', 'integer'],
         'status_enum' => ['required'],
         'foto' => ['image', 'file', 'max:1024'],
+        'status_telepon' => ['nullable', 'string', 'max:255'],
       ];
 
       if($request->email){
@@ -326,6 +327,7 @@ class CustomerController extends Controller
       $validatedData['tipe_retur'] = $request->tipe_retur;
       $validatedData['tipe_harga'] = $request->tipe_harga;
       $validatedData['id_staff'] = auth()->user()->id_users;
+      $validatedData['status_telepon'] = $request->status_telepon;
       // $validatedData['limit_pembelian'] = 200000;
       $validatedData['durasi_kunjungan'] = 7;
       $validatedData['counter_to_effective_call'] = 1;
@@ -459,6 +461,7 @@ class CustomerController extends Controller
         'tipe_harga' => ['required', 'integer'],
         'status_enum' => ['required'],
         'foto' => 'image|file|max:1024',
+        'status_telepon' => ['required', 'string', 'max:255'],
       ];
 
       if($request->email!=null && $request->email !== $customer->email){
@@ -473,6 +476,7 @@ class CustomerController extends Controller
       $validatedData['counter_to_effective_call'] = $customer->counter_to_effective_call;
       $validatedData['pengajuan_limit_pembelian'] = $request->pengajuan_limit_pembelian;
       $validatedData['tipe_harga'] = $request->tipe_harga;
+      $validatedData['status_telepon'] = $request->status_telepon;
 
       if ($request->foto) {
         $file_name = 'CUST-' . $request->nama . '-' .date_format(now(),"YmdHis"). '.' . $request->foto->extension();

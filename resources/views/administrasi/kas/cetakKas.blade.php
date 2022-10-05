@@ -11,8 +11,6 @@
   <div class="pt-4 px-5">
     <h1 class="fs-5 mb-4">{{ $title }}</h1>
 
-
-
     <form id="form_submit" class="form-submit" method="POST"
       action="/administrasi/kas/print/{{ $cashaccount->id }}/cetak-kas">
       @csrf
@@ -38,11 +36,11 @@
           <label for="id_akun" class="form-label">Pilih Account</label>
           <select class="form-select" name="id_akun">
             <option value="{{ null }}">Pilih Semua</option>
-            @foreach ($cashaccounts as $cashaccount)
-              @if (old('id_akun') == $cashaccount->id)
-                <option value="{{ $cashaccount->id }}" selected>{{ $cashaccount->nama }}</option>
-              @else
-                <option value="{{ $cashaccount->id }}">{{ $cashaccount->nama }}</option>
+            @foreach ($cashaccounts as $account)
+              @if (old('id_akun') == $account[1] && $account[2] != '3')
+                <option value="{{ $account[1] }}" selected>{{ $account[0] }}</option>
+              @elseif($account[2] != '3')
+                <option value="{{ $account[1] }}">{{ $account[0] }}</option>
               @endif
             @endforeach
           </select>

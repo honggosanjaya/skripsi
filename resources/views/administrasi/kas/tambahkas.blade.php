@@ -60,10 +60,10 @@
             <select class="form-select" name="id_cash_account" id="id_cash_account">
               <option disabled selected value>Pilih Cash Account</option>
               @foreach ($cash_accounts as $account)
-                @if (old('id_cash_account') == $account->id)
-                  <option value="{{ $account->id }}" selected>{{ $account->nama }}</option>
-                @else
-                  <option value="{{ $account->id }}">{{ $account->nama }}</option>
+                @if (old('id_cash_account') == $account[1] && $account[2] != '3')
+                  <option value="{{ $account[1] }}" selected>{{ $account[0] }}</option>
+                @elseif($account[2] != '3')
+                  <option value="{{ $account[1] }}">{{ $account[0] }}</option>
                 @endif
               @endforeach
             </select>

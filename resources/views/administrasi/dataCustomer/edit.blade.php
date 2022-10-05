@@ -94,6 +94,18 @@
               @enderror
             </div>
           </div>
+          <div class="col">
+            <div class="mb-3">
+              <label for="status_telepon" class="form-label">Status Telepon</label>
+              <input type="text" class="form-control @error('status_telepon') is-invalid @enderror" id="status_telepon"
+                name="status_telepon" value="{{ old('status_telepon', $customer->status_telepon ?? null) }}">
+              @error('status_telepon')
+                <div class="invalid-feedback">
+                  {{ $message }}
+                </div>
+              @enderror
+            </div>
+          </div>
         </div>
 
         <div class="mb-3">

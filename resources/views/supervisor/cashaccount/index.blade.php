@@ -64,7 +64,9 @@
               <td>{{ $cashaccount->keterangan ?? null }}</td>
               <td>{{ $cashaccount->account ?? null }}</td>
               @if ($cashaccount->default ?? null)
-                <td>{{ $cashaccount->default == '1' ? 'pengadaan' : 'penjualan' }}</td>
+                <td>
+                  {{ $cashaccount->default == '1' ? 'pengadaan' : ($cashaccount->default == '2' ? 'penjualan' : 'parent') }}
+                </td>
               @else
                 <td></td>
               @endif

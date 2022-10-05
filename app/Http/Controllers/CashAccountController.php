@@ -31,6 +31,7 @@ class CashAccountController extends Controller
     $defaults = [
       1 => 'pengadaan',
       2 => 'penjualan',
+      3 => 'parent'
     ];
 
     return view('supervisor.cashaccount.addcashaccount',[
@@ -41,7 +42,7 @@ class CashAccountController extends Controller
   public function cashAccountStore(Request $request){
     $rules = ([
       'nama' => 'required|max:255',
-      'keterangan' => 'required',
+      'keterangan' => 'nullable',
       'account' => 'required|numeric|unique:cash_accounts',
       'default' => 'nullable'            
     ]);
@@ -73,6 +74,7 @@ class CashAccountController extends Controller
     $defaults = [
       1 => 'pengadaan',
       2 => 'penjualan',
+      3 => 'parent'
     ];
 
     return view('supervisor.cashaccount.editcashaccount',[
@@ -84,7 +86,7 @@ class CashAccountController extends Controller
   public function cashAccountUpdate(Request $request, CashAccount $cashaccount){
     $validation = ([
       'nama' => 'required|max:255',
-      'keterangan' => 'required',
+      'keterangan' => 'nullable',
       'default' => 'nullable'    
     ]);
 
@@ -116,8 +118,40 @@ class CashAccountController extends Controller
 
 
   public function cashAccountOptionAPI(){
+    $cashaccounts = CashAccount::all();
+    $temp = array();
+    
+    for($i=0; $i<count($cashaccounts); $i++){
+      $get1 = '';
+      $get2 = '';
+      $value = 0;
+      
+      if($cashaccounts[$i]->account_parent == null){
+        $get1 = $cashaccounts[$i]->nama;
+        $value = $cashaccounts[$i]->id;
+        $default = $cashaccounts[$i]->default;
+        $account = $cashaccounts[$i]->account;
+        array_push($temp, [$get1, $value, $default, $account]);
+      }
+  
+      else if($cashaccounts[$i]->account_parent != null){
+        for($j=count($cashaccounts)-1; $j>=0; $j--){
+          if($cashaccounts[$i]->account_parent == $cashaccounts[$j]->account){
+            $get2 = $temp[$j][0] . " - " .$cashaccounts[$i]->nama;
+            $value = $cashaccounts[$i]->id;
+            $default = $cashaccounts[$i]->default;
+            $account = $cashaccounts[$i]->account;
+            array_push($temp, [$get2, $value, $default, $account]);
+          }
+        }
+      }
+    }
+    usort($temp, function($a, $b) {
+        return $a[0] <=> $b[0];
+    });
+
     return response()->json([
-      'cashaccount' => CashAccount::where('account', '>', 100)->get()
+      'cashaccount' => $temp
     ]);
   }
 
@@ -229,7 +263,11 @@ class CashAccountController extends Controller
   
   public function adminReimbursementPengajuanDetail(Reimbursement $reimbursement){
     $reimbursement = Reimbursement::find($reimbursement->id);
-    $listskas = CashAccount::where('account', '<=', '100')->get();
+    $listskas = CashAccount::where('account', '<=', '100')
+                  ->where(function ($query) {
+                    $query->whereNull('default')->orWhereIn('default', ['1', '2']);                  
+                  })->get();
+
 
     return view('administrasi.reimbursement.detailReimbursement', [
       'reimbursement' => $reimbursement,

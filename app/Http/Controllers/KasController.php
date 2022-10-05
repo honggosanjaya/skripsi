@@ -88,7 +88,10 @@ class KasController extends Controller
   }
 
   public function index(){
-    $bukuKas = CashAccount::where('account', '<=', 100)->get();
+    $bukuKas = CashAccount::where('account', '<=', 100)
+                ->where(function ($query) {
+                  $query->whereNull('default')->orWhereIn('default', ['1', '2']);                  
+                })->get();
 
     return view('administrasi.kas.index', [
       'bukuKas' => $bukuKas
@@ -97,19 +100,48 @@ class KasController extends Controller
 
   public function createKas (CashAccount $cashaccount){
     $staffs = Staff::where('status_enum','1')->whereIn('role', [3, 4])->get();
-    $cash_accounts = CashAccount::all();
-
+    $namaCashAccount = CashAccount::find($cashaccount->id)->nama;
     $debitkredits = [
       1 => 'debit',
       -1 => 'kredit',
     ];
 
-    $namaCashAccount = CashAccount::find($cashaccount->id)->nama;
+    $cashaccounts = CashAccount::all();
+    $temp = array();
+    
+    for($i=0; $i<count($cashaccounts); $i++){
+      $get1 = '';
+      $get2 = '';
+      $value = 0;
+      
+      if($cashaccounts[$i]->account_parent == null){
+        $get1 = $cashaccounts[$i]->nama;
+        $value = $cashaccounts[$i]->id;
+        $default = $cashaccounts[$i]->default;
+        array_push($temp, [$get1, $value, $default]);
+      }
+
+      else if($cashaccounts[$i]->account_parent != null){
+        for($j=count($cashaccounts)-1; $j>=0; $j--){
+          if($cashaccounts[$i]->account_parent == $cashaccounts[$j]->account){
+            $get2 = $temp[$j][0] . " - " .$cashaccounts[$i]->nama;
+            $value = $cashaccounts[$i]->id;
+            $default = $cashaccounts[$i]->default;
+            array_push($temp, [$get2, $value, $default]);
+          }
+        }
+      }
+    }
+    usort($temp, function($a, $b) {
+        return $a[0] <=> $b[0];
+    });
+
+    // dd($temp);
 
     return view('administrasi.kas.tambahkas', [
       "debitkredits" => $debitkredits,
       "staffs" => $staffs,
-      "cash_accounts" => $cash_accounts,
+      "cash_accounts" => $temp,
       'idCashaccount' => $cashaccount->id,
       'title' => 'Tambah Kas - '. $namaCashAccount
     ]);
@@ -232,10 +264,38 @@ class KasController extends Controller
  
     $namaCashAccount = CashAccount::find($cashaccount->id)->nama;
     $cashaccounts = CashAccount::all();
+    $temp = array();
+    
+    for($i=0; $i<count($cashaccounts); $i++){
+      $get1 = '';
+      $get2 = '';
+      $value = 0;
+      
+      if($cashaccounts[$i]->account_parent == null){
+        $get1 = $cashaccounts[$i]->nama;
+        $value = $cashaccounts[$i]->id;
+        $default = $cashaccounts[$i]->default;
+        array_push($temp, [$get1, $value, $default]);
+      }
+  
+      else if($cashaccounts[$i]->account_parent != null){
+        for($j=count($cashaccounts)-1; $j>=0; $j--){
+          if($cashaccounts[$i]->account_parent == $cashaccounts[$j]->account){
+            $get2 = $temp[$j][0] . " - " .$cashaccounts[$i]->nama;
+            $value = $cashaccounts[$i]->id;
+            $default = $cashaccounts[$i]->default;
+            array_push($temp, [$get2, $value, $default]);
+          }
+        }
+      }
+    }
+    usort($temp, function($a, $b) {
+        return $a[0] <=> $b[0];
+    });  
 
     return view('administrasi.kas.cetakkas', [
       'input' => $input,
-      'cashaccounts' => $cashaccounts,
+      'cashaccounts' => $temp,
       'cashaccount' => $cashaccount,
       'title' => 'Cetak Kas - '. $namaCashAccount
     ]);

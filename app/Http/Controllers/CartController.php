@@ -17,7 +17,11 @@ class CartController extends Controller
     if ($request->route=="pengadaan" || $request->route=="stokretur") {
       $cartItems = \Cart::session(auth()->user()->id.$request->route)->getContent();
       $defaultpengadaan = CashAccount::where('default', '1')->first();
-      $listskas = CashAccount::where('account', '<=', '100')->get();
+      $listskas = CashAccount::where('account', '<=', '100')
+                  ->where(function ($query) {
+                    $query->whereNull('default')->orWhereIn('default', ['1', '2']);                  
+                  })->get();
+      
       if($request->route=="stokretur"){
         $shouldShowKas = false;
         foreach($cartItems as $item){
