@@ -457,9 +457,12 @@ const TripSales = () => {
 
           <div className="mb-3">
             <label className="form-label">Status Telepon</label>
-            <input type="text" className="form-control"
-              value={statusTelepon}
-              onChange={(e) => setStatusTelepon(e.target.value)} />
+            <div class="input-group mb-3">
+              <input type="text" className="form-control"
+                value={statusTelepon}
+                onChange={(e) => setStatusTelepon(e.target.value)} />
+              <button class="btn btn-outline-primary" type="button" onClick={() => setStatusTelepon('WhatsApp (WA)')}>Nomor WA</button>
+            </div>
           </div>
 
           <div className="mb-3">
