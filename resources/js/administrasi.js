@@ -1,5 +1,5 @@
 import { getJSON } from 'jquery';
-const Swal = require('sweetalert2')
+const Swal = require('sweetalert2');
 
 $(document).ready(function () {
   $('#table').DataTable({
@@ -566,10 +566,6 @@ $(document).on('click', '#kanvas .detail_trigger', function (e) {
     },
   });
 })
-
-$(document).ready(function () {
-  $('.select-history-kanvas').select2();
-});
 
 $(document).on('change', '#kanvas .select-history-kanvas', function (e) {
   const namaKanvas = $("#kanvas .select-history-kanvas option:selected").text();

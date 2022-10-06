@@ -34,8 +34,37 @@ class CashAccountController extends Controller
       3 => 'parent'
     ];
 
+    $cashaccounts = CashAccount::all();
+    $temp = array();
+
+    for($i=0; $i<count($cashaccounts); $i++){
+      $get1 = '';
+      $get2 = '';
+      $value = 0;
+
+      if($cashaccounts[$i]->account_parent == null){
+        $get1 =  $cashaccounts[$i]->nama;
+        $value = $cashaccounts[$i]->account;
+        array_push($temp, [$get1, $value]);
+      }
+
+      else if($cashaccounts[$i]->account_parent != null){
+        for($j=count($cashaccounts)-1; $j>=0; $j--){
+          if($cashaccounts[$i]->account_parent == $cashaccounts[$j]->account){
+            $get2 = $temp[$j][0] . " - " .$cashaccounts[$i]->nama;
+            $value = $cashaccounts[$i]->account;
+            array_push($temp, [$get2, $value]);
+          }
+        }
+      }
+    }
+    usort($temp, function($a, $b) {
+        return $a[0] <=> $b[0];
+    });
+
     return view('supervisor.cashaccount.addcashaccount',[
-      'defaults' => $defaults
+      'defaults' => $defaults,
+      'parent_accounts' => $temp
     ]);
   }
 
@@ -44,7 +73,8 @@ class CashAccountController extends Controller
       'nama' => 'required|max:255',
       'keterangan' => 'nullable',
       'account' => 'required|numeric|unique:cash_accounts',
-      'default' => 'nullable'            
+      'default' => 'nullable',
+      'account_parent' => 'nullable'            
     ]);
 
     $validatedData = $request->validate($rules);
@@ -77,9 +107,38 @@ class CashAccountController extends Controller
       3 => 'parent'
     ];
 
+    $cashaccounts = CashAccount::all();
+    $temp = array();
+
+    for($i=0; $i<count($cashaccounts); $i++){
+      $get1 = '';
+      $get2 = '';
+      $value = 0;
+
+      if($cashaccounts[$i]->account_parent == null){
+        $get1 = $cashaccounts[$i]->nama;
+        $value = $cashaccounts[$i]->account;
+        array_push($temp, [$get1, $value]);
+      }
+
+      else if($cashaccounts[$i]->account_parent != null){
+        for($j=count($cashaccounts)-1; $j>=0; $j--){
+          if($cashaccounts[$i]->account_parent == $cashaccounts[$j]->account){
+            $get2 = $temp[$j][0] . " - " .$cashaccounts[$i]->nama;
+            $value = $cashaccounts[$i]->account;
+            array_push($temp, [$get2, $value]);
+          }
+        }
+      }
+    }
+    usort($temp, function($a, $b) {
+        return $a[0] <=> $b[0];
+    });
+
     return view('supervisor.cashaccount.editcashaccount',[
       'cashaccount' => $cashaccount,
-      'defaults' => $defaults
+      'defaults' => $defaults,
+      'parent_accounts' => $temp
     ]);
   }
 
@@ -87,7 +146,8 @@ class CashAccountController extends Controller
     $validation = ([
       'nama' => 'required|max:255',
       'keterangan' => 'nullable',
-      'default' => 'nullable'    
+      'default' => 'nullable',
+      'account_parent' => 'nullable'    
     ]);
 
     if($request->account != CashAccount::where('id', $cashaccount->id)->first()->account){

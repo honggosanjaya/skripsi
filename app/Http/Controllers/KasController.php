@@ -118,7 +118,8 @@ class KasController extends Controller
         $get1 = $cashaccounts[$i]->nama;
         $value = $cashaccounts[$i]->id;
         $default = $cashaccounts[$i]->default;
-        array_push($temp, [$get1, $value, $default]);
+        $account = $cashaccounts[$i]->account;
+        array_push($temp, [$get1, $value, $default, $account]);
       }
 
       else if($cashaccounts[$i]->account_parent != null){
@@ -127,7 +128,8 @@ class KasController extends Controller
             $get2 = $temp[$j][0] . " - " .$cashaccounts[$i]->nama;
             $value = $cashaccounts[$i]->id;
             $default = $cashaccounts[$i]->default;
-            array_push($temp, [$get2, $value, $default]);
+            $account = $cashaccounts[$i]->account;
+            array_push($temp, [$get2, $value, $default, $account]);
           }
         }
       }
@@ -275,7 +277,8 @@ class KasController extends Controller
         $get1 = $cashaccounts[$i]->nama;
         $value = $cashaccounts[$i]->id;
         $default = $cashaccounts[$i]->default;
-        array_push($temp, [$get1, $value, $default]);
+        $account = $cashaccounts[$i]->account;
+        array_push($temp, [$get1, $value, $default, $account]);
       }
   
       else if($cashaccounts[$i]->account_parent != null){
@@ -284,7 +287,8 @@ class KasController extends Controller
             $get2 = $temp[$j][0] . " - " .$cashaccounts[$i]->nama;
             $value = $cashaccounts[$i]->id;
             $default = $cashaccounts[$i]->default;
-            array_push($temp, [$get2, $value, $default]);
+            $account = $cashaccounts[$i]->account;
+            array_push($temp, [$get2, $value, $default, $account]);
           }
         }
       }

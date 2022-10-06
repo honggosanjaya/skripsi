@@ -876,4 +876,16 @@ class ItemController extends Controller
         'dataItem' => $listItems
       ]); 
     }
+
+    public function getActiveItemKanvasAPI($idStaf){
+      $kanvas = Kanvas::where('id_staff_yang_membawa', $idStaf)
+                ->whereNull('waktu_dikembalikan')
+                ->with(['linkItem'])
+                ->get();
+
+      return response()->json([
+        'status' => 'success',
+        'data' => $kanvas
+      ]); 
+    }
 }
