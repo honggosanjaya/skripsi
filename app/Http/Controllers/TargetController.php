@@ -42,7 +42,8 @@ class TargetController extends Controller
       //   ['value' =>  $validatedData['value']]
       // );
 
-      $targetLama = Target::where('jenis_target', $request->jenis_target)->first();
+      $targetLama = Target::where('jenis_target', $request->jenis_target)
+                    ->whereNull('tanggal_berakhir')->first();
 
       if($targetLama != null){
         $targetLama->tanggal_berakhir = now();
