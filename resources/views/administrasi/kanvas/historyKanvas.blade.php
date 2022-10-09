@@ -1,7 +1,6 @@
 @extends('layouts/main')
 @push('CSS')
   <link href=" {{ mix('css/administrasi.css') }}" rel="stylesheet">
-  <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
 @endpush
 @section('breadcrumbs')
   <ol class="breadcrumb">
@@ -38,7 +37,7 @@
         <div class="col">
           <div class="mb-3">
             <label class="form-label">Nama Kanvas<span class="text-danger">*</span></label>
-            <select class="form-select select-history-kanvas" required>
+            <select class="form-select select-history-kanvas select-two" required>
               <option disabled selected value>Pilih Kanvas</option>
               @foreach ($listkanvas as $kanvas)
                 <option value="{{ str_replace(',', '-', $kanvas->ids) }}">{{ $kanvas->nama ?? null }}</option>
@@ -212,7 +211,11 @@
   </div>
 
   @push('JS')
-    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+    <script>
+      $(document).ready(function() {
+        $('.select-history-kanvas').select2();
+      });
+    </script>
     <script src="{{ mix('js/administrasi.js') }}"></script>
   @endpush
 @endsection

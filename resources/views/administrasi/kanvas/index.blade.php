@@ -45,13 +45,7 @@
         @foreach ($listkanvas as $kanvas)
           <tr>
             <th scope="row" class="text-center">{{ $loop->iteration }}</th>
-            <td>
-              <a class="text-primary cursor-pointer text-decoration-none detail_trigger" data-bs-toggle="modal"
-                data-bs-target="#kanvas{{ str_replace(',', '-', $kanvas->ids) }}"
-                data-idkanvas="{{ str_replace(',', '-', $kanvas->ids) }}">
-                {{ $kanvas->nama ?? null }}
-              </a>
-            </td>
+            <td>{{ $kanvas->nama ?? null }}</td>
             <td>{{ $kanvas->linkStaffPengonfirmasiPembawaan->nama ?? null }}</td>
             <td>{{ $kanvas->linkStaffYangMembawa->nama ?? null }}</td>
             @if ($kanvas->waktu_dibawa ?? null)
@@ -61,12 +55,11 @@
             @endif
             <td class="text-center">{{ $kanvas->banyak_jenis_item ?? null }}</td>
             <td class="text-center">
-              <form action="/administrasi/kanvas/dikembalikan/{{ str_replace(',', '-', $kanvas->ids) }}" method="POST">
-                @csrf
-                <button type="submit" class="btn btn-danger">
-                  Dikembalikan
-                </button>
-              </form>
+              <a class="btn btn-primary detail_trigger" data-bs-toggle="modal"
+                data-bs-target="#kanvas{{ str_replace(',', '-', $kanvas->ids) }}"
+                data-idkanvas="{{ str_replace(',', '-', $kanvas->ids) }}">
+                <span class="iconify fs-4" data-icon="fluent:apps-list-detail-24-filled"></span> Detail
+              </a>
             </td>
           </tr>
         @endforeach
@@ -110,6 +103,18 @@
                   <tbody class="table_body">
                   </tbody>
                 </table>
+              </div>
+
+              <div class="row">
+                <div class="col d-flex justify-content-end">
+                  <form action="/administrasi/kanvas/dikembalikan/{{ str_replace(',', '-', $kanvas->ids) }}"
+                    method="POST">
+                    @csrf
+                    <button type="submit" class="btn btn-danger">
+                      <span class="iconify fs-4" data-icon="fluent:archive-arrow-back-32-regular"></span> Dikembalikan
+                    </button>
+                  </form>
+                </div>
               </div>
             </div>
           </div>

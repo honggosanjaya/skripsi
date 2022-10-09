@@ -34,13 +34,13 @@
       <div class="row">
         <div class="col-6">
           <label for="id_akun" class="form-label">Pilih Account</label>
-          <select class="form-select" name="id_akun">
+          <select class="form-select select-account" name="id_akun">
             <option value="{{ null }}">Pilih Semua</option>
             @foreach ($cashaccounts as $account)
               @if (old('id_akun') == $account[1] && $account[2] != '3')
-                <option value="{{ $account[1] }}" selected>{{ $account[0] }}</option>
+                <option value="{{ $account[1] }}" selected>{{ $account[3] . ' - ' . $account[0] }}</option>
               @elseif($account[2] != '3')
-                <option value="{{ $account[1] }}">{{ $account[0] }}</option>
+                <option value="{{ $account[1] }}">{{ $account[3] . ' - ' . $account[0] }}</option>
               @endif
             @endforeach
           </select>
@@ -57,6 +57,11 @@
   </div>
 
   @push('JS')
+    <script>
+      $(document).ready(function() {
+        $('.select-account').select2();
+      });
+    </script>
     <script src="{{ mix('js/administrasi.js') }}"></script>
   @endpush
 @endsection

@@ -32,6 +32,8 @@ import Reimbursement from './sales/Reimbursement';
 import HistoryInvoice from './sales/HistoryInvoice';
 import Penagihan from './reuse/Penagihan';
 import ItemKanvas from './sales/ItemKanvas';
+import HistoryKanvas from './sales/HistoryKanvas';
+import CatalogItem from './sales/CatalogItem';
 
 
 function App() {
@@ -59,6 +61,8 @@ function App() {
                 <Route exact path="/salesman/history" component={HistoryTrip} />
                 <Route exact path="/salesman/historyinvoice" component={HistoryInvoice} />
                 <Route exact path="/salesman/itemkanvas" component={ItemKanvas} />
+                <Route exact path="/salesman/itemkanvas/history" component={HistoryKanvas} />
+                <Route exact path="/salesman/catalog/:idCust" component={CatalogItem} />
 
                 <HitungStokContextProvider>
                   <Route exact path="/salesman/order/:idCust" component={Pemesanan} />

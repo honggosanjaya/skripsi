@@ -57,13 +57,13 @@
         <div class="col">
           <div class="mb-3">
             <label for="id_cash_account" class="form-label">Cash Account <span class='text-danger'>*</span></label>
-            <select class="form-select" name="id_cash_account" id="id_cash_account">
+            <select class="form-select select-cash-account" name="id_cash_account" id="id_cash_account">
               <option disabled selected value>Pilih Cash Account</option>
               @foreach ($cash_accounts as $account)
                 @if (old('id_cash_account') == $account[1] && $account[2] != '3')
-                  <option value="{{ $account[1] }}" selected>{{ $account[0] }}</option>
+                  <option value="{{ $account[1] }}" selected>{{ $account[3] . ' - ' . $account[0] }}</option>
                 @elseif($account[2] != '3')
-                  <option value="{{ $account[1] }}">{{ $account[0] }}</option>
+                  <option value="{{ $account[1] }}">{{ $account[3] . ' - ' . $account[0] }}</option>
                 @endif
               @endforeach
             </select>
@@ -138,6 +138,11 @@
   </div>
 
   @push('JS')
+    <script>
+      $(document).ready(function() {
+        $('.select-cash-account').select2();
+      });
+    </script>
     <script src="{{ mix('js/administrasi.js') }}"></script>
   @endpush
 @endsection

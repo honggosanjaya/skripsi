@@ -182,12 +182,12 @@ Route::prefix('administrasi')->middleware('administrasi')->group(function() {
 
   //Route untuk kendaraan
   Route::get('/kendaraan', [VehicleController::class, 'index']);
-  Route::get('/kendaraan/{vehicle:id}', [VehicleController::class, 'detail']);
   Route::get('/kendaraan/cari', [VehicleController::class, 'search']);
   Route::get('/kendaraan/tambah', [VehicleController::class, 'create']);
   Route::post('/kendaraan/tambahkendaraan', [VehicleController::class, 'store']);
   Route::get('/kendaraan/ubah/{vehicle:id}', [VehicleController::class, 'edit']);
   Route::put('/kendaraan/ubahkendaraan/{vehicle:id}', [VehicleController::class, 'update']);
+  Route::get('/kendaraan/{vehicle:id}', [VehicleController::class, 'detail']);
   Route::get('/kendaraan/{vehicle:id}/cetak-memo', [OrderController::class, 'cetakKeseluruhanMemo']);
 
   Route::prefix('stok')->group(function(){

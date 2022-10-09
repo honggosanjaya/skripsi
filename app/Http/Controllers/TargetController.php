@@ -8,7 +8,7 @@ use App\Models\Target;
 class TargetController extends Controller
 {
     public function index(){
-      $targets = Target::all();
+      $targets = Target::whereNull('tanggal_berakhir')->get();
       
       return view('supervisor.target.index', [
         'targets' => $targets,
@@ -31,19 +31,33 @@ class TargetController extends Controller
       $rules = ([
         'jenis_target' => ['required'],
         'value' => ['required', 'numeric'],
+        'tanggal_berakhir' => ['nullable']
       ]);
 
       $validatedData = $request->validate($rules);
+      $validatedData['created_at'] = now();
 
-      Target::updateOrCreate(
-        ['jenis_target' => $validatedData['jenis_target']],
-        ['value' =>  $validatedData['value']]
-      );
+      // Target::updateOrCreate(
+      //   ['jenis_target' => $validatedData['jenis_target']],
+      //   ['value' =>  $validatedData['value']]
+      // );
+
+      $targetLama = Target::where('jenis_target', $request->jenis_target)
+                    ->whereNull('tanggal_berakhir')->first();
+
+      if($targetLama != null){
+        $targetLama->tanggal_berakhir = now();
+        $targetLama->updated_at = now();
+        $targetLama->save();
+      }
+
+      Target::insert($validatedData);
+
       return redirect('/supervisor/target') -> with('pesanSukses', 'Target berhasil ditambahkan');
     }
 
     public function getTargetAPI(){
-      $targets = Target::all();
+      $targets = Target::whereNull('tanggal_berakhir')->get();
       return response()->json([
         'status' => 'success',
         'data' => $targets
