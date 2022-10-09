@@ -424,7 +424,6 @@ class ItemController extends Controller
   {
     $rules = ([
       'nama' => ['required', 'string', 'max:255'],
-      'gambar' => 'image|file|max:1024',
       'min_stok' => ['required', 'integer', 'min:0'],
       'max_stok' => ['required', 'integer', 'min:0'],
       'satuan' => ['required', 'string', 'max:30'],
@@ -444,22 +443,115 @@ class ItemController extends Controller
     $validatedData['link_item'] = $request->link_item;
     $validatedData['status_enum'] = $request->status_enum;
 
-    if ($request->gambar) {
+    if ($request->hasfile('gambar') && $request->isFirstPositionChange == 'true') {
       if($request->oldGambar){
         \Storage::delete('/item/'.$request->oldGambar);
       }
 
-      $file= $request->file('gambar');
-      $nama_item = str_replace(" ", "-", $validatedData['nama']);
-      $file_name = 'ITM-' . $nama_item . '-' .date_format(now(),"YmdHis"). '.' . $file->getClientOriginalExtension();
-      Image::make($request->file('gambar'))->resize(350, null, function ($constraint) {
+      $images = $request->file('gambar');
+      $nama_item = str_replace(" ", "-", $request->nama);
+      $file_name = 'ITM-' . $nama_item . '-' .date_format(now(),"YmdHis"). '.' . $images[0]->extension();
+      $validatedData['gambar'] = $file_name;
+      Image::make($images[0])->resize(350, null, function ($constraint) {
         $constraint->aspectRatio();
       })->save(public_path('storage/item/') . $file_name);
-      $validatedData['gambar'] = $file_name;
     }    
 
     Item::where('id', $id)->update($validatedData);
-  
+
+
+    $listIdGaleryToInsert = []; 
+    if($request->listIdGalery != null){
+      $listIdGalery = explode("+",$request->listIdGalery);
+      foreach($listIdGalery as $idg){
+        array_push($listIdGaleryToInsert, [
+          'id_galery' => $idg
+        ]);
+      }
+    }
+
+
+    $listGalery = [];
+    if ($request->hasfile('gambar')) {  
+      $images = $request->file('gambar');
+
+      foreach($images as $key=>$image){
+        $nama_item = str_replace(" ", "-", $request->nama);
+        $file_name = 'ITM-' . $nama_item . '-' .$key . '-' .$key . '-' .date_format(now(),"YmdHis"). '.' . $image->extension();
+        Image::make($image)->resize(350, null, function ($constraint) {
+          $constraint->aspectRatio();
+        })->save(public_path('storage/item/') . $file_name);
+
+        array_push($listGalery, [
+          'image' => $file_name
+        ]);
+      }
+    }
+
+    $result = array();
+    foreach($listIdGaleryToInsert as $key=>$val){ 
+        $val2 = $listGalery[$key]; 
+        $result[$key] = $val + $val2; 
+    }
+
+    foreach ($result as $r) {
+      $galeryItem = GaleryItem::where('id', $r['id_galery'])->first();
+      if($galeryItem){
+        $oldImage =  $galeryItem->image ?? null;
+        if($oldImage){
+          \Storage::delete('/item/'.$oldImage);
+        }
+      }
+
+      if($r['id_galery'] != 0){
+        GaleryItem::where('id', $key)->update([
+          'image' => $r['image'],
+          'updated_at' => now()
+        ]);
+      }else if($r['id_galery'] == 0){
+        GaleryItem::create([
+          'image' => $r['image'],
+          'id_item' => $id,
+          'created_at' => now()
+        ]);
+      }
+    }
+
+    
+    if($request->listIdGaleryRmv != null){
+      $listIdGaleryRmv = explode("-",$request->listIdGaleryRmv);
+    }else if($request->listIdGaleryRmv == null){
+      $listIdGaleryRmv = [];
+    }
+
+    foreach($listIdGaleryRmv as $idRmv){
+      $oldImgRmv = GaleryItem::find($idRmv)->image;
+      $idItm = GaleryItem::find($idRmv)->id_item;
+
+      GaleryItem::where('id', $idRmv)->delete();
+      if($oldImgRmv){
+        \Storage::delete('/item/'.$oldImgRmv);
+      }
+
+      if($request->isFirstPositionChangeRmv == 'true'){
+        $galery = GaleryItem::where('id_item', $idItm)->first();
+
+        if($galery){
+          $gambar_pengganti = $galery->image;
+          $gambar_item_lama = Item::where('id', $idItm)->first()->gambar;
+
+          Item::where('id', $idItm)->update([
+            'gambar' => $gambar_pengganti,
+            'updated_at' => now()
+          ]);
+
+          if($gambar_item_lama != null){
+            \Storage::delete('/item/'.$gambar_item_lama);
+          }
+        }
+      }
+    }
+
     return redirect('/administrasi/stok/produk') -> with('pesanSukses', 'Berhasil mengubah data');
   }
 

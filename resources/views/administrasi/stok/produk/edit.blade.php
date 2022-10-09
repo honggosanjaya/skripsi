@@ -236,11 +236,40 @@
                 <label for="gambar" class="form-label">Gambar</label>
                 <input type="hidden" name="oldImage" value="{{ $item->gambar }}">
 
-                @foreach ($galeryItems as $galeryItem)
+                <input type="hidden" name="listIdGalery" class="input-galery-change">
+                <input type="hidden" name="listIdGaleryRmv" class="input-galery-remove">
+                <input type="hidden" name="isFirstPositionChange" class="isFirstPositionChange">
+                <input type="hidden" name="isFirstPositionChangeRmv" class="isFirstPositionChangeRmv">
+
+                @if (count($galeryItems) > 0)
+                  @foreach ($galeryItems as $key => $galeryItem)
+                    <div class="form-input">
+                      <img src="{{ asset('storage/item/' . $galeryItem->image) }}"
+                        class="img-preview img-fluid d-block">
+                      <input type="file" id="gambar" name="gambar[]"
+                        class="form-control input-gambar @error('gambar') is-invalid @enderror"
+                        onchange="prevImg({{ $key + 1 }}, {{ $galeryItem->id ?? 0 }})">
+                      @error('gambar')
+                        <div class="invalid-feedback">
+                          {{ $message }}
+                        </div>
+                      @enderror
+                      <div class="d-flex justify-content-end my-3">
+                        <button class="btn btn-danger remove-form-type2 me-3" type="button"
+                          onclick="rmvImg({{ $key + 1 }}, {{ $galeryItem->id ?? 0 }}, this)">
+                          -
+                        </button>
+                        <button class="btn btn-success add-form" type="button">
+                          +
+                        </button>
+                      </div>
+                    </div>
+                  @endforeach
+                @else
                   <div class="form-input">
-                    <img src="{{ asset('storage/item/' . $galeryItem->image) }}" class="img-preview img-fluid d-block">
-                    <input type="file" id="gambar" name="gambar[]"
-                      class="form-control input-gambar @error('gambar') is-invalid @enderror" onchange="prevImg(1)">
+                    <img class="img-preview img-fluid">
+                    <input type="file" id="gambar" name="gambar[]" accept="image/*"
+                      class="form-control input-gambar @error('gambar') is-invalid @enderror" onchange="prevImg(1, 0)">
                     @error('gambar')
                       <div class="invalid-feedback">
                         {{ $message }}
@@ -255,7 +284,8 @@
                       </button>
                     </div>
                   </div>
-                @endforeach
+                @endif
+
               </div>
             </div>
           </div>
@@ -272,8 +302,49 @@
 
   @push('JS')
     <script>
-      function prevImg(id) {
-        console.log('running');
+      let countCust = $(".form-group .form-input").length;
+
+      if (countCust <= 1) {
+        $('.form-input').find('.remove-form').addClass('d-none');
+        $('.form-input').find('.remove-form-type2').addClass('d-none');
+      }
+
+      function rmvImg(pos, idGalery, thisis) {
+        if (pos == 1) {
+          $('.isFirstPositionChangeRmv').val('true');
+        }
+
+        Swal.fire({
+          title: 'Apakah anda yakin untuk menghapus gambar ?',
+          showDenyButton: true,
+          confirmButtonText: 'Ya',
+          denyButtonText: `Tidak`,
+        }).then((result) => {
+          if (result.isConfirmed) {
+            countCust--;
+            $(thisis).parents('.form-input').remove();
+            console.log('countCust', countCust)
+            if (countCust <= 1) {
+              $('.form-input').find('.remove-form-type2').addClass('d-none');
+              $('.form-input').find('.remove-form-type2').addClass('d-none');
+            }
+
+            let oldVal = $('.input-galery-remove').val();
+            if (oldVal != '') {
+              $('.input-galery-remove').val(oldVal + '-' + idGalery);
+            } else {
+              $('.input-galery-remove').val(idGalery);
+            }
+          } else if (result.isDenied) {
+            Swal.fire('Aksi dibatalkan', '', 'info');
+          }
+        })
+      }
+
+      function prevImg(id, idGalery) {
+        if (id == 1) {
+          $('.isFirstPositionChange').val('true');
+        }
         const image = document.getElementsByClassName('input-gambar')[id - 1];
         const imgPreview = document.getElementsByClassName('img-preview')[id - 1];
         imgPreview.style.display = 'block';
@@ -282,29 +353,42 @@
         oFReader.onload = function(OFREvent) {
           imgPreview.src = OFREvent.target.result;
         }
+
+        if (idGalery == undefined) {
+          idGalery = 0;
+        }
+
+        let oldVal = $('.input-galery-change').val();
+        if (oldVal != '') {
+          $('.input-galery-change').val(oldVal + '+' + idGalery);
+        } else {
+          $('.input-galery-change').val(idGalery);
+        }
       }
 
-      let countCust = $(".form-group").children().length;
       $(document).on('click', '.add-form', function(e) {
         countCust++;
         $('.form-input').last().clone().appendTo('.form-group');
         $('.form-input').find('.remove-form').removeClass('d-none');
+        $('.form-input').find('.remove-form-type2').removeClass('d-none');
         $('.form-input').last().find('.input-gambar').val('');
 
         let inputGambarLength = $('.input-gambar').length;
         $('.form-input').last().find('.input-gambar').attr('onchange', 'prevImg(' + inputGambarLength + ')');
         $(".img-preview").last().attr('src', '');
 
-        if (countCust == 1) {
+        if (countCust <= 1) {
           $('.form-input').find('.remove-form').addClass('d-none');
+          $('.form-input').find('.remove-form-type2').addClass('d-none');
         }
       })
 
       $(document).on('click', '.remove-form', function(e) {
         countCust--;
         $(this).parents('.form-input').remove();
-        if (countCust == 1) {
+        if (countCust <= 1) {
           $('.form-input').find('.remove-form').addClass('d-none');
+          $('.form-input').find('.remove-form-type2').addClass('d-none');
         }
       })
     </script>

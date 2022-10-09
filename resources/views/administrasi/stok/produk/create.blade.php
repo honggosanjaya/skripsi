@@ -228,7 +228,7 @@
                 <label for="gambar" class="form-label">Gambar</label>
                 <div class="form-input">
                   <img class="img-preview img-fluid">
-                  <input type="file" id="gambar" name="gambar[]"
+                  <input type="file" id="gambar" name="gambar[]" accept="image/*"
                     class="form-control input-gambar @error('gambar') is-invalid @enderror" onchange="prevImg(1)">
                   @error('gambar')
                     <div class="invalid-feedback">
@@ -262,7 +262,6 @@
   @push('JS')
     <script>
       function prevImg(id) {
-        console.log('running');
         const image = document.getElementsByClassName('input-gambar')[id - 1];
         const imgPreview = document.getElementsByClassName('img-preview')[id - 1];
         imgPreview.style.display = 'block';

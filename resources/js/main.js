@@ -4,4 +4,5 @@ require('datatables.net-datetime');
 require('datatables.net-searchpanes-bs5');
 
 require('select2');
-
+import Swal from 'sweetalert2';
+window.Swal = Swal;
