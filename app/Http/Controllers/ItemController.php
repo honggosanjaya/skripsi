@@ -494,6 +494,8 @@ class ItemController extends Controller
         $result[$key] = $val + $val2; 
     }
 
+    // dd($result);
+
     foreach ($result as $r) {
       $galeryItem = GaleryItem::where('id', $r['id_galery'])->first();
       if($galeryItem){
@@ -504,7 +506,7 @@ class ItemController extends Controller
       }
 
       if($r['id_galery'] != 0){
-        GaleryItem::where('id', $key)->update([
+        GaleryItem::where('id', $r['id_galery'])->update([
           'image' => $r['image'],
           'updated_at' => now()
         ]);
