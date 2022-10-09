@@ -173,7 +173,6 @@
         </div>
 
         <div class="row">
-
           <div class="col">
             <div class="mb-3">
               <label for="volume" class="form-label">Volume Barang <span class='text-danger'>*</span></label>
@@ -218,22 +217,48 @@
           </div>
         </div>
 
-        <div class="mb-3">
-          <label for="gambar" class="form-label">Gambar</label>
-          <input type="hidden" name="oldImage" value="{{ $item->gambar }}">
-          @if ($item->gambar)
-            <img src="{{ asset('storage/item/' . $item->gambar) }}" class="img-preview img-fluid d-block">
-          @else
-            <img class="img-preview img-fluid">
-            <p>Belum ada gambar</p>
-          @endif
-          <input class="form-control @error('gambar') is-invalid @enderror" type="file" id="gambar"
-            name="gambar" onchange="prevImg()">
-          @error('gambar')
-            <div class="invalid-feedback">
-              {{ $message }}
+        <div class="row">
+          <div class="col">
+            <div class="mb-3">
+              <label for="deskripsi" class="form-label">Deskripsi</label>
+              <textarea class="form-control @error('volume') is-invalid @enderror" id="deskripsi" name="deskripsi">{{ old('deskripsi', $item->deskripsi) }}</textarea>
+              @error('deskripsi')
+                <div class="invalid-feedback">
+                  {{ $message }}
+                </div>
+              @enderror
             </div>
-          @enderror
+          </div>
+
+          <div class="col">
+            <div class="form-group">
+              <div>
+                <label for="gambar" class="form-label">Gambar</label>
+                <input type="hidden" name="oldImage" value="{{ $item->gambar }}">
+
+                @foreach ($galeryItems as $galeryItem)
+                  <div class="form-input">
+                    <img src="{{ asset('storage/item/' . $galeryItem->image) }}" class="img-preview img-fluid d-block">
+                    <input type="file" id="gambar" name="gambar[]"
+                      class="form-control input-gambar @error('gambar') is-invalid @enderror" onchange="prevImg(1)">
+                    @error('gambar')
+                      <div class="invalid-feedback">
+                        {{ $message }}
+                      </div>
+                    @enderror
+                    <div class="d-flex justify-content-end my-3">
+                      <button class="btn btn-danger remove-form me-3" type="button">
+                        -
+                      </button>
+                      <button class="btn btn-success add-form" type="button">
+                        +
+                      </button>
+                    </div>
+                  </div>
+                @endforeach
+              </div>
+            </div>
+          </div>
         </div>
 
         <div class="row justify-content-end mt-4">
@@ -245,21 +270,44 @@
     </div>
   </div>
 
-  <script>
-    function prevImg() {
-      const image = document.querySelector('#gambar');
-      const imgPreview = document.querySelector('.img-preview');
-
-      imgPreview.style.display = 'block';
-      const oFReader = new FileReader();
-      oFReader.readAsDataURL(image.files[0]);
-
-      oFReader.onload = function(OFREvent) {
-        imgPreview.src = OFREvent.target.result;
-      }
-    }
-  </script>
   @push('JS')
+    <script>
+      function prevImg(id) {
+        console.log('running');
+        const image = document.getElementsByClassName('input-gambar')[id - 1];
+        const imgPreview = document.getElementsByClassName('img-preview')[id - 1];
+        imgPreview.style.display = 'block';
+        const oFReader = new FileReader();
+        oFReader.readAsDataURL(image.files[0]);
+        oFReader.onload = function(OFREvent) {
+          imgPreview.src = OFREvent.target.result;
+        }
+      }
+
+      let countCust = $(".form-group").children().length;
+      $(document).on('click', '.add-form', function(e) {
+        countCust++;
+        $('.form-input').last().clone().appendTo('.form-group');
+        $('.form-input').find('.remove-form').removeClass('d-none');
+        $('.form-input').last().find('.input-gambar').val('');
+
+        let inputGambarLength = $('.input-gambar').length;
+        $('.form-input').last().find('.input-gambar').attr('onchange', 'prevImg(' + inputGambarLength + ')');
+        $(".img-preview").last().attr('src', '');
+
+        if (countCust == 1) {
+          $('.form-input').find('.remove-form').addClass('d-none');
+        }
+      })
+
+      $(document).on('click', '.remove-form', function(e) {
+        countCust--;
+        $(this).parents('.form-input').remove();
+        if (countCust == 1) {
+          $('.form-input').find('.remove-form').addClass('d-none');
+        }
+      })
+    </script>
     <script src="{{ mix('js/administrasi.js') }}"></script>
   @endpush
 @endsection

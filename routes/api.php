@@ -115,3 +115,5 @@ Route::get('/administrasi/checkSalesHasKanvas/{id}', [ItemController::class, 'ch
 Route::get('/salesman/target', [TargetController::class, 'getTargetAPI']);
 Route::get('/salesman/itemkanvas/{idStaf}', [ItemController::class, 'getItemKanvasAPI']);
 Route::get('/salesman/itemkanvasactive/{idStaf}', [ItemController::class, 'getActiveItemKanvasAPI']);
+
+Route::post('/salesman/getProductCatalog', [ItemController::class, 'getProductCatalog']);

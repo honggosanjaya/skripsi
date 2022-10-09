@@ -29,6 +29,7 @@ const TripSales = () => {
   const [ketAlamat, setKetAlamat] = useState('');
   const [telepon, setTelepon] = useState('');
   const [statusTelepon, setStatusTelepon] = useState('');
+  const [tipeHarga, setTipeHarga] = useState('');
   const [durasiTrip, setDurasiTrip] = useState(7);
   const [alasanPenolakan, setAlasanPenolakan] = useState('');
   const [file, setFile] = useState(null);
@@ -125,6 +126,7 @@ const TripSales = () => {
         setKetAlamat(response.data.data.keterangan_alamat == null ? '' : response.data.data.keterangan_alamat);
         setTelepon(response.data.data.telepon == null ? '' : response.data.data.telepon);
         setDurasiTrip(response.data.data.durasi_kunjungan);
+        setTipeHarga(response.data.data.tipe_harga);
         if (response.data.data.jatuh_tempo != null) {
           setJatuhTempo(response.data.data.jatuh_tempo);
         }
@@ -380,15 +382,27 @@ const TripSales = () => {
     setDataUri('');
   }
 
+  const viewCatalog = () => {
+    history.push(`/salesman/catalog/${id}`);
+  }
+
   return (
     <main className="page_main">
       <HeaderSales title="Trip" toBack={goBack} />
       <div className="page_container py-4">
         {error && <AlertComponent errorMsg={error} />}
         {isLoading && <LoadingIndicator />}
-        {id && <button className="btn btn-primary mb-3" onClick={handletripretur}>
-          <span className="iconify fs-4 me-2" data-icon="material-symbols:change-circle-outline-rounded"></span>Retur
-        </button>}
+        {id && tipeHarga != '' &&
+          <Fragment>
+            <button className="btn btn-primary mb-3 me-3" onClick={handletripretur}>
+              <span className="iconify fs-4 me-2" data-icon="material-symbols:change-circle-outline-rounded"></span>Retur
+            </button>
+
+            <button className="btn btn-purple mb-3" onClick={viewCatalog}>
+              <span className="iconify fs-4 me-2" data-icon="carbon:shopping-catalog"></span>Katalog
+            </button>
+          </Fragment>
+        }
         <form>
           <div className={`${errorValidasi.nama ? '' : 'mb-3'}`}>
             <label className="form-label">Nama Customer <span className='text-danger'>*</span></label>
@@ -457,11 +471,11 @@ const TripSales = () => {
 
           <div className="mb-3">
             <label className="form-label">Status Telepon</label>
-            <div class="input-group mb-3">
+            <div className="input-group mb-3">
               <input type="text" className="form-control"
                 value={statusTelepon}
                 onChange={(e) => setStatusTelepon(e.target.value)} />
-              <button class="btn btn-outline-primary" type="button" onClick={() => setStatusTelepon('WhatsApp (WA)')}>Nomor WA</button>
+              <button className="btn btn-outline-primary" type="button" onClick={() => setStatusTelepon('WhatsApp (WA)')}>Nomor WA</button>
             </div>
           </div>
 

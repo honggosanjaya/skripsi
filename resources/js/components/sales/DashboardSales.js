@@ -228,7 +228,7 @@ const DashboardSales = () => {
             <Modal.Body>
               <div className="d-flex justify-content-between">
                 <Button variant="primary" onClick={handleShowModalRencana}>
-                  <span className="iconify fs-3 me-1" data-icon="flat-color-icons:planner"></span>Rencana Kunjungan
+                  <span className="iconify fs-3 me-1" data-icon="flat-color-icons:planner"></span>Rencana Trip
                 </Button>
 
                 {!isOrder && <Button variant="success" onClick={handleShowModalQR}>
