@@ -167,9 +167,9 @@ label {
 }
 
 // ==== MODAL =======
-.reset-left {
-    left: 0 !important;
-}
+// .reset-left {
+//     left: 0 !important;
+// }
 
 .modal-body {
     max-height: 80vh;
@@ -803,4 +803,9 @@ ul.info-list {
     object-fit: cover;
     object-position: center;
     border: 1px solid lightgray;
+}
+
+.print-component {
+    max-width: 5.8cm;
+    margin: 0 auto;
 }
