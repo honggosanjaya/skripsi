@@ -24,11 +24,11 @@ class LoginController extends Controller
         'password' => ['required', 'string', 'max:255']
       ]);
 
-      Auth::guard('web')->logout();
-      $request->session()->invalidate();
-      $request->session()->regenerateToken();
+      // Auth::guard('web')->logout();
+      // $request->session()->invalidate();
+      // $request->session()->regenerateToken();
 
-      // User::with('linkStaff.linkStaffRole')->where('email',$request->email)->first()->linkStaff->linkStaffRole->nama;
+      User::with('linkStaff.linkStaffRole')->where('email',$request->email)->first()->linkStaff->linkStaffRole->nama;
 
       if ($validator->fails()){
         return response()->json([
