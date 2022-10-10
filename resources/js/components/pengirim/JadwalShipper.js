@@ -1,6 +1,5 @@
 import React, { useState, useEffect, useContext, useRef, Fragment } from 'react';
-import Camera from 'react-html5-camera-photo';
-import 'react-html5-camera-photo/build/css/index.css';
+import Webcam from "react-webcam";
 import axios from 'axios';
 import HeaderShipper from './HeaderShipper';
 import { UserContext } from "../../contexts/UserContext";
@@ -19,6 +18,12 @@ import ImagePreview from '../reuse/ImagePreview';
 import { dataURLtoFile } from "../reuse/HelperFunction";
 
 let source;
+const FACING_MODE_USER = "user";
+const FACING_MODE_ENVIRONMENT = "environment";
+const videoConstraints = {
+  facingMode: FACING_MODE_ENVIRONMENT
+};
+
 const ShippingShipper = () => {
   const { token } = useContext(AuthContext);
   const { setIdInvoice } = useContext(ReturContext);
@@ -41,6 +46,7 @@ const ShippingShipper = () => {
   const [isFromGalery, setISFromGalery] = useState(false);
   const [perluKirim, setPerluKirim] = useState(null);
   const [sudahSampai, setSudahSampai] = useState(null);
+  const [facingMode, setFacingMode] = useState(FACING_MODE_USER);
 
   const radios = [
     { name: 'Perlu Dikirim', value: '3' },
@@ -97,9 +103,23 @@ const ShippingShipper = () => {
     };
   }, [dataUser, successMessage])
 
-  const handleTakePhotoAnimationDone = (dataUri) => {
-    setDataUri(dataUri);
-  }
+  const handleClick = React.useCallback(() => {
+    setFacingMode(
+      prevState =>
+        prevState === FACING_MODE_USER
+          ? FACING_MODE_ENVIRONMENT
+          : FACING_MODE_USER
+    );
+  }, []);
+
+  const webcamRef = React.useRef(null);
+  const capture = React.useCallback(
+    () => {
+      const imageSrc = webcamRef.current.getScreenshot();
+      setDataUri(imageSrc);
+    },
+    [webcamRef]
+  );
 
   const handleClose = () => setShow(false);
 
@@ -314,7 +334,6 @@ const ShippingShipper = () => {
                 onChange={handleImageChange} />
             </Fragment>}
 
-
             {isTakePhoto && dataUri
               ? <Fragment>
                 <ImagePreview dataUri={dataUri} />
@@ -323,7 +342,28 @@ const ShippingShipper = () => {
                 </Button>
               </Fragment>
               : isTakePhoto
-                ? <Camera onTakePhotoAnimationDone={handleTakePhotoAnimationDone} />
+                ? <Fragment>
+                  <Webcam
+                    audio={false}
+                    height={340}
+                    width={340}
+                    ref={webcamRef}
+                    screenshotFormat="image/png"
+                    videoConstraints={{
+                      ...videoConstraints,
+                      facingMode
+                    }}
+                  />
+
+                  <div className="d-flex justify-content-between">
+                    <button className='btn btn-warning' onClick={handleClick}>
+                      <span className="iconify fs-3 me-1" data-icon="ic:sharp-flip-camera-android"></span>Switch camera
+                    </button>
+                    <button className='btn btn-success' onClick={capture}>
+                      <span className="iconify fs-3 me-1" data-icon="charm:camera"></span>Capture
+                    </button>
+                  </div>
+                </Fragment>
                 : null
             }
 

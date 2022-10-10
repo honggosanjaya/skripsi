@@ -80,6 +80,22 @@
               @enderror
             </div>
           </div>
+          <div class="col">
+            <div class="mb-3">
+              <label for="status_telepon" class="form-label">Status Telepon</label>
+              <div class="input-group mb-3">
+                <input type="text" class="form-control @error('status_telepon') is-invalid @enderror"
+                  id="status_telepon" name="status_telepon" value="{{ old('status_telepon') }}">
+                <button class="btn btn-outline-primary btn-tagline-nowa" type="button" id="button-addon2">Nomor
+                  WA</button>
+              </div>
+              @error('status_telepon')
+                <div class="invalid-feedback">
+                  {{ $message }}
+                </div>
+              @enderror
+            </div>
+          </div>
         </div>
 
         <div class="mb-3">
@@ -136,7 +152,9 @@
               <label for="status_enum" class="form-label">Status <span class="text-danger">*</span></label>
               <select class="form-select" name="status_enum">
                 @foreach ($statuses as $key => $val)
-                  @if (old('status_enum') == $key)
+                  @if (old('status_enum') == null)
+                    <option value="{{ $key }}">{{ $val }}</option>
+                  @elseif (old('status_enum') == $key)
                     <option value="{{ $key }}" selected>{{ $val }}</option>
                   @else
                     <option value="{{ $key }}">{{ $val }}</option>
@@ -222,6 +240,11 @@
     }
   </script>
   @push('JS')
+    <script>
+      $(document).on('click', '.btn-tagline-nowa', function() {
+        $('#status_telepon').val('WhatsApp (WA)')
+      });
+    </script>
     <script src="{{ mix('js/administrasi.js') }}"></script>
   @endpush
 @endsection

@@ -24,11 +24,11 @@ class LoginController extends Controller
         'password' => ['required', 'string', 'max:255']
       ]);
 
-      Auth::guard('web')->logout();
-      $request->session()->invalidate();
-      $request->session()->regenerateToken();
+      // Auth::guard('web')->logout();
+      // $request->session()->invalidate();
+      // $request->session()->regenerateToken();
 
-      // User::with('linkStaff.linkStaffRole')->where('email',$request->email)->first()->linkStaff->linkStaffRole->nama;
+      User::with('linkStaff.linkStaffRole')->where('email',$request->email)->first()->linkStaff->linkStaffRole->nama;
 
       if ($validator->fails()){
         return response()->json([
@@ -134,5 +134,13 @@ class LoginController extends Controller
       $request->session()->regenerateToken();
 
       return redirect('/spa/login');
+    }
+
+    public function logoutUserAPI(Request $request){
+      if(auth()->user()->linkStaff->linkStaffRole->nama == 'salesman' || auth()->user()->linkStaff->linkStaffRole->nama == 'shipper'){
+        Auth::guard('web')->logout();
+        $request->session()->invalidate();
+        $request->session()->regenerateToken();
+      }
     }
 }

@@ -20,7 +20,7 @@ class LaporanPenagihanController extends Controller
     })->get();
     
     $staffs = Staff::where('status_enum','1')->whereIn('role', [3, 4])->get();
-    $histories = LaporanPenagihan::all();
+    $histories = LaporanPenagihan::orderBy('tanggal', 'DESC')->orderBy('id', 'DESC')->get();
     $districts = District::all();
 
     return view('administrasi.lp3.index',[

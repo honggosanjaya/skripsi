@@ -2,6 +2,7 @@
 @import url("https://fonts.googleapis.com/css2?family=Caveat:wght@400;500;600;700&display=swap");
 @import "./variables";
 @import "./modifBoostrap";
+@import "~select2/dist/css/select2.css";
 
 * {
     padding: 0;
@@ -508,7 +509,6 @@ table tbody th {
     }
 }
 
-// TASK: Warna status dibedakan
 .badge {
     color: #fff;
     padding: 0.35em 0.65em;
@@ -526,7 +526,8 @@ table tbody th {
 
 .badge-order-track-2,
 .badge-reimbursement-2,
-.badge-opname-1 {
+.badge-opname-1,
+.badge-kas-disetujui {
     background-color: #20c21a;
 }
 
@@ -539,7 +540,8 @@ table tbody th {
 }
 
 .badge-order-track-5,
-.badge-reimbursement-1 {
+.badge-reimbursement-1,
+.badge-kas-diajukan {
     background-color: #1a25c2;
 }
 
@@ -548,7 +550,8 @@ table tbody th {
 }
 
 .badge-order-track--1,
-.badge-reimbursement--1 {
+.badge-reimbursement--1,
+.badge-kas-ditolak {
     background-color: #c21a1a;
 }
 
@@ -646,4 +649,11 @@ select[readonly] {
             color: #fff;
         }
     }
+}
+
+#map {
+    height: 400px;
+    width: 600px;
+    margin-left: auto;
+    margin-right: auto;
 }

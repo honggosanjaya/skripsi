@@ -4,10 +4,11 @@ namespace App\Models;
 
 use App\Models\History;
 use App\Models\Pengadaan;
-
+use App\Models\Kanvas;
 use App\Models\OrderItem;
 use App\Models\Retur;
 use App\Models\CategoryItem;
+use App\Models\GaleryItem;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
@@ -31,11 +32,19 @@ class Item extends Model
         return $this->hasMany(OrderItem::class,'id_item','id');
     }
 
+    public function linkKanvas(){
+      return $this->hasMany(Kanvas::class,'id_item','id');
+    }
+
     public function linkRetur(){
         return $this->hasMany(Retur::class,'id_item','id');
     }
 
     public function linkCategoryItem(){
       return $this->belongsTo(CategoryItem::class,'id_category','id');
-  }
+    }
+
+    public function linkGaleryItem(){
+      return $this->hasMany(GaleryItem::class,'id_item','id');
+    }
 }

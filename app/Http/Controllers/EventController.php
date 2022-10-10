@@ -29,7 +29,7 @@ class EventController extends Controller
   }
 
   public function index(){
-    $events = Event::where('status_enum','!=', '-2')->paginate(10);
+    $events = Event::where('status_enum','!=', '-2')->orderBy('id', 'DESC')->paginate(10);
     return view('supervisor.event.index',[
       'events' => $events
     ]);
@@ -207,7 +207,7 @@ class EventController extends Controller
 
   //Controller untuk Customer
   public function customerIndex(){
-    $events = Event::where('status_enum','!=', '-2')->paginate(10);
+    $events = Event::where('status_enum','!=', '-2')->orderBy('id', 'DESC')->paginate(10);
 
     return view('customer.event',[
         'events' => $events

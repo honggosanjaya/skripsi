@@ -19,14 +19,18 @@ use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\File;
 use Intervention\Image\ImageManagerStatic as Image;
-
+use PDF;
+use SimpleSoftwareIO\QrCode\Facades\QrCode;
 use App\Mail\ConfirmationEmail;
 use Illuminate\Support\Facades\Mail;
 
 class CustomerController extends Controller
 {
     public function cariCustomerApi(Request $request){
-      $customer=Customer::where(strtolower('nama'),'like','%'.$request->nama.'%')->where(strtolower('alamat_utama'),'like','%'.$request->alamat_utama.'%')->with(['linkDistrict','linkCustomerType'])->get();
+      $customer=Customer::where(strtolower('nama'),'like','%'.$request->nama.'%')
+              ->where(strtolower('alamat_utama'),'like','%'.$request->alamat_utama.'%')
+              ->where('status_enum', '1')
+              ->with(['linkDistrict','linkCustomerType'])->get();
       if ($customer->count()>0) {
         return response()->json([
           'data' => $customer,
@@ -148,8 +152,8 @@ class CustomerController extends Controller
           event(new Registered($user));
           Customer::find($id_customer)->update(['password'=>Hash::make(12345678)]);
         }
-        if (Customer::find($id_customer)->koordinat==null) {
-          $customer = Customer::find($id_customer)->update($data+['koordinat' =>  $request->koordinat]);
+        if (Customer::find($id_customer)->koordinat==null || Customer::find($id_customer)->koordinat=="0@0") {
+          $customer = Customer::find($id_customer)->update($data + ['koordinat' =>  $request->koordinat]);
         }else {
           $customer = Customer::find($id_customer)->update($data);
         }
@@ -285,6 +289,7 @@ class CustomerController extends Controller
 
       $statuses = [
         1 => 'active',
+        0 => 'hide',
         -1 => 'inactive',
       ];
 
@@ -311,6 +316,7 @@ class CustomerController extends Controller
         'tipe_harga' => ['required', 'integer'],
         'status_enum' => ['required'],
         'foto' => ['image', 'file', 'max:1024'],
+        'status_telepon' => ['nullable', 'string', 'max:255'],
       ];
 
       if($request->email){
@@ -321,6 +327,7 @@ class CustomerController extends Controller
       $validatedData['tipe_retur'] = $request->tipe_retur;
       $validatedData['tipe_harga'] = $request->tipe_harga;
       $validatedData['id_staff'] = auth()->user()->id_users;
+      $validatedData['status_telepon'] = $request->status_telepon;
       // $validatedData['limit_pembelian'] = 200000;
       $validatedData['durasi_kunjungan'] = 7;
       $validatedData['counter_to_effective_call'] = 1;
@@ -426,6 +433,7 @@ class CustomerController extends Controller
 
       $statuses = [
         1 => 'active',
+        0 => 'hide',
         -1 => 'inactive',
       ];
 
@@ -453,6 +461,7 @@ class CustomerController extends Controller
         'tipe_harga' => ['required', 'integer'],
         'status_enum' => ['required'],
         'foto' => 'image|file|max:1024',
+        'status_telepon' => ['required', 'string', 'max:255'],
       ];
 
       if($request->email!=null && $request->email !== $customer->email){
@@ -467,6 +476,7 @@ class CustomerController extends Controller
       $validatedData['counter_to_effective_call'] = $customer->counter_to_effective_call;
       $validatedData['pengajuan_limit_pembelian'] = $request->pengajuan_limit_pembelian;
       $validatedData['tipe_harga'] = $request->tipe_harga;
+      $validatedData['status_telepon'] = $request->status_telepon;
 
       if ($request->foto) {
         $file_name = 'CUST-' . $request->nama . '-' .date_format(now(),"YmdHis"). '.' . $request->foto->extension();
@@ -583,5 +593,39 @@ class CustomerController extends Controller
         'invoices' => $invoices,
         "invoiceJatuhTempo" => $invoiceJatuhTempo
       ]);
+    }
+
+    public function generateQRCustomer(Customer $customer)
+    {
+        return view('administrasi.dataCustomer.qrCode', [
+          "customer" => $customer
+        ]);
+    }
+
+    public function cetakQRCustomer(Customer $customer){  
+      $nama_customer = str_replace(" ", "-", $customer->nama);
+
+      $exists = Storage::disk('local')->exists('/public/customer/QR-CUST-' . $nama_customer . '.svg');
+      if($exists){
+        Storage::delete('/public/customer/QR-CUST-' . $nama_customer . '.svg');
+      }
+
+      $image = \QrCode::format('svg')
+                ->size(300)
+                ->generate(env('APP_URL') . '/salesman/trip/' . $customer->id );
+                // ->generate('https://salesman-dev.suralaya.web.id/salesman/trip/' . $customer->id );
+
+      $output_file = '/public/customer/QR-CUST-' . $nama_customer . '.svg';
+
+      Storage::disk('local')->put($output_file, $image); 
+
+      $pdf = PDF::loadview('administrasi.dataCustomer.cetakQR',[
+          'customer' => $customer,   
+          'nama_customer' => $nama_customer
+      ]);
+
+      $pdf->setPaper('A5');
+  
+      return $pdf->stream('qr-'.$customer->id.'-'.$customer->nama.'.pdf'); 
     }
 }

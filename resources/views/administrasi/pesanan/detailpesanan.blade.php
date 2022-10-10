@@ -33,7 +33,7 @@
       </div>
     @endif
 
-    <div class="container">
+    <div class="container" id="detail_pesanan-admn">
       <div class="row mt-3 detail-pesanan-admin_action">
         <div class="d-flex flex-row justify-content-between">
           @if ($order->linkOrderTrack->status_enum)
@@ -126,7 +126,7 @@
           <thead>
             <tr>
               <th scope="col">Kode Barang</th>
-              <th scope="col">Nama Barang</th>
+              <th scope="col" style="width: 300px">Nama Barang</th>
               <th scope="col">Harga Satuan</th>
               <th scope="col">Kuantitas</th>
               <th scope="col">Harga Total</th>
@@ -138,20 +138,43 @@
             @endphp
             @foreach ($items as $item)
               <tr>
-                <td>{{ $item->linkItem->kode_barang ?? null }}</td>
-                <td>{{ $item->linkItem->nama ?? null }}</td>
-                <td>{{ number_format($item->harga_satuan ?? 0, 0, '', '.') }}</td>
-                <td>{{ $item->kuantitas ?? null }}</td>
-                @if ($item->harga_satuan && $item->kuantitas)
-                  <td>{{ number_format($item->harga_satuan * $item->kuantitas, 0, '', '.') }}</td>
+                <td>{{ $item['original']->linkItem->kode_barang ?? null }}</td>
+                <td>
+                  <form action="/administrasi/changeorderitem/{{ $item['original']->id }}" method="POST">
+                    @csrf
+                    <div class="d-flex justify-content-between align-items-center">
+                      <span class="nama-item">{{ $item['original']->linkItem->nama ?? null }}</span>
+                      @if ($order->linkOrderTrack->status_enum == '1')
+                        <select style="width: 170px" class="form-select select-alt-item d-none" name="id_item_serupa">
+                          @foreach ($item['itemSerupa'] as $itm)
+                            @if ($itm->id == $item['original']->linkItem->id)
+                              <option value="{{ $itm->id }}" selected>{{ $itm->nama }}</option>
+                            @else
+                              <option value="{{ $itm->id }}">{{ $itm->nama }}</option>
+                            @endif
+                          @endforeach
+                        </select>
+                        <button type="button" class="btn btn-warning change-item-btn">Ubah</button>
+                        <button type="submit" class="btn btn-success ok-item-btn d-none">OK</button>
+                      @endif
+                    </div>
+                  </form>
+                </td>
+                <td>{{ number_format($item['original']->harga_satuan ?? 0, 0, '', '.') }}</td>
+                <td>{{ $item['original']->kuantitas ?? null }}</td>
+                @if ($item['original']->harga_satuan && $item['original']->kuantitas)
+                  <td>{{ number_format($item['original']->harga_satuan * $item['original']->kuantitas, 0, '', '.') }}
+                  </td>
                 @else
                   <td></td>
                 @endif
                 @php
-                  $ttl += $item->harga_satuan * $item->kuantitas;
+                  $ttl += $item['original']->harga_satuan * $item['original']->kuantitas;
                 @endphp
               </tr>
             @endforeach
+
+
             @if ($order->linkInvoice != null && $order->linkInvoice->id_event != null)
               <tr>
                 <td colspan="4" class="text-center fw-bold">Potongan event

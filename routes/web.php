@@ -24,6 +24,7 @@ use App\Http\Controllers\LaporanPenagihanController;
 use App\Http\Controllers\RencanaTripController;
 use App\Http\Controllers\TargetController;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Auth;
 
 /*
 |--------------------------------------------------------------------------
@@ -43,12 +44,14 @@ Route::get('/test',[Controller::class, 'test']);
 
 Route::get('/confirmemail/{id}',[RegisteredUserController::class, 'confirmEmail']);
 
-Auth::routes(['verify'=>true]);
+// Auth::routes(['verify'=>true]);
 
 // ============ OWNER ==============
 Route::prefix('owner')->middleware('owner')->group(function() {
   Route::get('/report/penjualan', [ReportController::class,'penjualan']);
   Route::get('/report/kinerja', [ReportController::class,'kinerja']);
+  Route::get('/report/koordinattrip', [ReportController::class,'koordinattrip']);
+  Route::get('/report/koordinattrip/{trip:id}', [ReportController::class,'cekKoordinatTrip']);
 
   Route::get('/', [ReportController::class, 'index']);
   // Route::post('/', [ReportController::class, 'index']);
@@ -68,6 +71,8 @@ Route::prefix('owner')->middleware('owner')->group(function() {
   Route::post('/profil/check/{user:id_users}', [AuthController::class, 'check']);
   Route::get('/profil/ubahpasswordbaru/{user:id}', [AuthController::class, 'passwordBaru']);
   Route::post('/profil/gantipassword/{user:id}', [AuthController::class, 'gantiPassword']);
+
+  Route::get('/panduan', [ReportController::class, 'panduanPelaporan']);
 });
 
 
@@ -117,6 +122,8 @@ Route::prefix('supervisor')->middleware('supervisor')->group(function() {
 
   Route::get('/report/penjualan', [ReportController::class,'penjualan']);
   Route::get('/report/kinerja', [ReportController::class,'kinerja']);
+  Route::get('/report/koordinattrip', [ReportController::class,'koordinattrip']);
+  Route::get('/report/koordinattrip/{trip:id}', [ReportController::class,'cekKoordinatTrip']);
 
   Route::get('/cashaccount', [CashAccountController::class, 'cashAccountIndex']);
   Route::get('/cashaccount/cari', [CashAccountController::class, 'cashAccountSearch']);
@@ -140,6 +147,12 @@ Route::prefix('supervisor')->middleware('supervisor')->group(function() {
   Route::get('/target', [TargetController::class, 'index']);
   Route::get('/target/tambah', [TargetController::class, 'tambahTarget']);
   Route::post('/target/tambah', [TargetController::class, 'storeTarget']);
+
+  Route::get('/perubahankas', [KasController::class, 'perubahanKasSpv']);
+  Route::post('/perubahankas/setuju/{kas:id}', [KasController::class, 'setujuPerubahanKasSpv']);
+  Route::post('/perubahankas/tolak/{kas:id}', [KasController::class, 'tolakPerubahanKasSpv']);
+
+  Route::get('/panduan', [ReportController::class, 'panduanPelaporan']);
 });
 
 
@@ -174,6 +187,8 @@ Route::prefix('administrasi')->middleware('administrasi')->group(function() {
   Route::post('/kendaraan/tambahkendaraan', [VehicleController::class, 'store']);
   Route::get('/kendaraan/ubah/{vehicle:id}', [VehicleController::class, 'edit']);
   Route::put('/kendaraan/ubahkendaraan/{vehicle:id}', [VehicleController::class, 'update']);
+  Route::get('/kendaraan/{vehicle:id}', [VehicleController::class, 'detail']);
+  Route::get('/kendaraan/{vehicle:id}/cetak-memo', [OrderController::class, 'cetakKeseluruhanMemo']);
 
   Route::prefix('stok')->group(function(){
     Route::get('/', [ItemController::class, 'indexAdministrasi']);
@@ -208,6 +223,13 @@ Route::prefix('administrasi')->middleware('administrasi')->group(function() {
     // Route::post('/opname/remove', [CartController::class, 'removeCart']);
     Route::get('/opname/clear', [CartController::class, 'clearAllCart']);
     Route::get('/opname/tambahopname', [ItemController::class, 'simpanDataOpname']);
+
+    // Rout untuk stok retur
+    Route::get('/stokretur', [ItemController::class, 'productListStokRetur']);
+    Route::get('/stokretur/cart', [CartController::class, 'cartList']);
+    Route::post('/stokretur/cart', [CartController::class, 'addToCart']);
+    Route::get('/stokretur/clear', [CartController::class, 'clearAllCart']);
+    Route::post('/stokretur/tambahstokretur', [ItemController::class, 'simpanDataStokRetur']);
   });
 
   //Route untuk data customer
@@ -217,6 +239,8 @@ Route::prefix('administrasi')->middleware('administrasi')->group(function() {
   Route::get('/datacustomer/ubah/{customer:id}', [CustomerController::class, 'administrasiEdit']);
   Route::put('/datacustomer/ubahcustomer/{customer:id}', [CustomerController::class, 'administrasiUpdate']);
   Route::get('/datacustomer/{customer:id}', [CustomerController::class, 'administrasiShow']);
+  Route::get('/datacustomer/{customer:id}/generate-qr', [CustomerController::class, 'generateQRCustomer']);
+  Route::get('/datacustomer/{customer:id}/cetak-qr', [CustomerController::class, 'cetakQRCustomer']);
 
   Route::get('/profil', [HomeController::class, 'lihatProfil']);
   Route::get('/profil/ubahpassword', [HomeController::class, 'lihatPassword']);
@@ -242,6 +266,16 @@ Route::prefix('administrasi')->middleware('administrasi')->group(function() {
   Route::get('/kas/create/{cashaccount:id}', [KasController::class, 'createKas']);
   Route::post('/kas/store', [KasController::class, 'storeKas']);
   Route::get('/kas/{cashaccount:id}', [KasController::class, 'bukuKas']);
+  Route::post('/kas/pengajuanpenghapusan/{kas:id}', [KasController::class, 'pengajuanPenghapusanKas']);
+  Route::get('/kas/print/{cashaccount:id}', [KasController::class, 'cetakKas']);
+  Route::post('/kas/print/{cashaccount:id}/cetak-kas', [KasController::class, 'cetakKasPDF']);
+  Route::post('/changeorderitem/{order_item:id}', [OrderController::class, 'changeOrderItem']);
+
+  Route::get('/kanvas', [ItemController::class, 'indexKanvas']);
+  Route::get('/kanvas/create', [ItemController::class, 'createKanvas']);
+  Route::post('/kanvas/store', [ItemController::class, 'storeKanvas']);
+  Route::get('/kanvas/history', [ItemController::class, 'historyKanvas']);
+  Route::post('/kanvas/dikembalikan/{ids}', [ItemController::class, 'pengembalianKanvas']);
 });
 
 

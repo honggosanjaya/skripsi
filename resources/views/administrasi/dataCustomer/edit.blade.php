@@ -94,6 +94,23 @@
               @enderror
             </div>
           </div>
+          <div class="col">
+            <div class="mb-3">
+              <label for="status_telepon" class="form-label">Status Telepon</label>
+              <div class="input-group mb-3">
+                <input type="text" class="form-control @error('status_telepon') is-invalid @enderror"
+                  id="status_telepon" name="status_telepon"
+                  value="{{ old('status_telepon', $customer->status_telepon ?? null) }}">
+                <button class="btn btn-outline-primary btn-tagline-nowa" type="button" id="button-addon2">Nomor
+                  WA</button>
+              </div>
+              @error('status_telepon')
+                <div class="invalid-feedback">
+                  {{ $message }}
+                </div>
+              @enderror
+            </div>
+          </div>
         </div>
 
         <div class="mb-3">
@@ -240,6 +257,11 @@
     }
   </script>
   @push('JS')
+    <script>
+      $(document).on('click', '.btn-tagline-nowa', function() {
+        $('#status_telepon').val('WhatsApp (WA)')
+      });
+    </script>
     <script src="{{ mix('js/administrasi.js') }}"></script>
   @endpush
 @endsection

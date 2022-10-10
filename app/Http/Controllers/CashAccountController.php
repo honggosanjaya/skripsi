@@ -31,19 +31,50 @@ class CashAccountController extends Controller
     $defaults = [
       1 => 'pengadaan',
       2 => 'penjualan',
+      3 => 'parent'
     ];
 
+    $cashaccounts = CashAccount::all();
+    $temp = array();
+
+    for($i=0; $i<count($cashaccounts); $i++){
+      $get1 = '';
+      $get2 = '';
+      $value = 0;
+
+      if($cashaccounts[$i]->account_parent == null){
+        $get1 =  $cashaccounts[$i]->nama;
+        $value = $cashaccounts[$i]->account;
+        array_push($temp, [$get1, $value]);
+      }
+
+      else if($cashaccounts[$i]->account_parent != null){
+        for($j=count($cashaccounts)-1; $j>=0; $j--){
+          if($cashaccounts[$i]->account_parent == $cashaccounts[$j]->account){
+            $get2 = $temp[$j][0] . " - " .$cashaccounts[$i]->nama;
+            $value = $cashaccounts[$i]->account;
+            array_push($temp, [$get2, $value]);
+          }
+        }
+      }
+    }
+    usort($temp, function($a, $b) {
+        return $a[0] <=> $b[0];
+    });
+
     return view('supervisor.cashaccount.addcashaccount',[
-      'defaults' => $defaults
+      'defaults' => $defaults,
+      'parent_accounts' => $temp
     ]);
   }
 
   public function cashAccountStore(Request $request){
     $rules = ([
       'nama' => 'required|max:255',
-      'keterangan' => 'required',
+      'keterangan' => 'nullable',
       'account' => 'required|numeric|unique:cash_accounts',
-      'default' => 'nullable'            
+      'default' => 'nullable',
+      'account_parent' => 'nullable'            
     ]);
 
     $validatedData = $request->validate($rules);
@@ -73,19 +104,50 @@ class CashAccountController extends Controller
     $defaults = [
       1 => 'pengadaan',
       2 => 'penjualan',
+      3 => 'parent'
     ];
+
+    $cashaccounts = CashAccount::all();
+    $temp = array();
+
+    for($i=0; $i<count($cashaccounts); $i++){
+      $get1 = '';
+      $get2 = '';
+      $value = 0;
+
+      if($cashaccounts[$i]->account_parent == null){
+        $get1 = $cashaccounts[$i]->nama;
+        $value = $cashaccounts[$i]->account;
+        array_push($temp, [$get1, $value]);
+      }
+
+      else if($cashaccounts[$i]->account_parent != null){
+        for($j=count($cashaccounts)-1; $j>=0; $j--){
+          if($cashaccounts[$i]->account_parent == $cashaccounts[$j]->account){
+            $get2 = $temp[$j][0] . " - " .$cashaccounts[$i]->nama;
+            $value = $cashaccounts[$i]->account;
+            array_push($temp, [$get2, $value]);
+          }
+        }
+      }
+    }
+    usort($temp, function($a, $b) {
+        return $a[0] <=> $b[0];
+    });
 
     return view('supervisor.cashaccount.editcashaccount',[
       'cashaccount' => $cashaccount,
-      'defaults' => $defaults
+      'defaults' => $defaults,
+      'parent_accounts' => $temp
     ]);
   }
 
   public function cashAccountUpdate(Request $request, CashAccount $cashaccount){
     $validation = ([
       'nama' => 'required|max:255',
-      'keterangan' => 'required',
-      'default' => 'nullable'    
+      'keterangan' => 'nullable',
+      'default' => 'nullable',
+      'account_parent' => 'nullable'    
     ]);
 
     if($request->account != CashAccount::where('id', $cashaccount->id)->first()->account){
@@ -116,8 +178,40 @@ class CashAccountController extends Controller
 
 
   public function cashAccountOptionAPI(){
+    $cashaccounts = CashAccount::all();
+    $temp = array();
+    
+    for($i=0; $i<count($cashaccounts); $i++){
+      $get1 = '';
+      $get2 = '';
+      $value = 0;
+      
+      if($cashaccounts[$i]->account_parent == null){
+        $get1 = $cashaccounts[$i]->nama;
+        $value = $cashaccounts[$i]->id;
+        $default = $cashaccounts[$i]->default;
+        $account = $cashaccounts[$i]->account;
+        array_push($temp, [$get1, $value, $default, $account]);
+      }
+  
+      else if($cashaccounts[$i]->account_parent != null){
+        for($j=count($cashaccounts)-1; $j>=0; $j--){
+          if($cashaccounts[$i]->account_parent == $cashaccounts[$j]->account){
+            $get2 = $temp[$j][0] . " - " .$cashaccounts[$i]->nama;
+            $value = $cashaccounts[$i]->id;
+            $default = $cashaccounts[$i]->default;
+            $account = $cashaccounts[$i]->account;
+            array_push($temp, [$get2, $value, $default, $account]);
+          }
+        }
+      }
+    }
+    usort($temp, function($a, $b) {
+        return $a[0] <=> $b[0];
+    });
+
     return response()->json([
-      'cashaccount' => CashAccount::where('account', '>', 100)->get()
+      'cashaccount' => $temp
     ]);
   }
 
@@ -229,37 +323,90 @@ class CashAccountController extends Controller
   
   public function adminReimbursementPengajuanDetail(Reimbursement $reimbursement){
     $reimbursement = Reimbursement::find($reimbursement->id);
-    $listskas = CashAccount::where('account', '<=', '100')->get();
+    $listskas = CashAccount::where('account', '<=', '100')
+                  ->where(function ($query) {
+                    $query->whereNull('default')->orWhereIn('default', ['1', '2']);                  
+                  })->get();
+
+    $cashaccounts = CashAccount::all();
+    $temp = array();
+    
+    for($i=0; $i<count($cashaccounts); $i++){
+      $get1 = '';
+      $get2 = '';
+      $value = 0;
+      
+      if($cashaccounts[$i]->account_parent == null){
+        $get1 = $cashaccounts[$i]->nama;
+        $value = $cashaccounts[$i]->id;
+        $default = $cashaccounts[$i]->default;
+        $account = $cashaccounts[$i]->account;
+        array_push($temp, [$get1, $value, $default, $account]);
+      }
+
+      else if($cashaccounts[$i]->account_parent != null){
+        for($j=count($cashaccounts)-1; $j>=0; $j--){
+          if($cashaccounts[$i]->account_parent == $cashaccounts[$j]->account){
+            $get2 = $temp[$j][0] . " - " .$cashaccounts[$i]->nama;
+            $value = $cashaccounts[$i]->id;
+            $default = $cashaccounts[$i]->default;
+            $account = $cashaccounts[$i]->account;
+            array_push($temp, [$get2, $value, $default, $account]);
+          }
+        }
+      }
+    }
+    usort($temp, function($a, $b) {
+        return $a[0] <=> $b[0];
+    });
+
 
     return view('administrasi.reimbursement.detailReimbursement', [
       'reimbursement' => $reimbursement,
-      'listskas' => $listskas
+      'listskas' => $listskas,
+      'cash_accounts' => $temp
     ]);
   }
 
   public function setujuReimbursement(Request $request, Reimbursement $reimbursement){
     $request->validate([
-      'keterangan_konfirmasi' => 'required'            
+      'keterangan_konfirmasi' => 'required'      
     ]);
 
     Reimbursement::find($reimbursement->id)->update([
       'keterangan_konfirmasi' => $request->keterangan_konfirmasi,
       'id_staff_pengonfirmasi' => auth()->user()->id_users,
-      'status_enum' => '1'
+      'status_enum' => '1',
+      'updated_at' => now()
     ]);
+
+    if($request->id_cash_account != null){
+      Reimbursement::find($reimbursement->id)->update([
+        'id_cash_account' => $request->id_cash_account,
+      ]);
+    }
+
     return redirect('/administrasi/reimbursement') -> with('pesanSukses', 'Berhasil menyetujui pengajuan' );
   }
 
   public function tolakReimbursement(Request $request, Reimbursement $reimbursement){
     $request->validate([
-      'keterangan_konfirmasi' => 'required'            
+      'keterangan_konfirmasi' => 'required'        
     ]);
 
     Reimbursement::find($reimbursement->id)->update([
       'keterangan_konfirmasi' => $request->keterangan_konfirmasi,
       'id_staff_pengonfirmasi' => auth()->user()->id_users,
-      'status_enum' => '-1'
+      'status_enum' => '-1',
+      'updated_at' => now()
     ]);
+
+    if($request->id_cash_account != null){
+      Reimbursement::find($reimbursement->id)->update([
+        'id_cash_account' => $request->id_cash_account,
+      ]);
+    }
+
     return redirect('/administrasi/reimbursement') -> with('pesanSukses', 'Berhasil menolak pengajuan' );
   }
 

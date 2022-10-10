@@ -44,6 +44,21 @@
       <div class="row">
         <div class="col">
           <div class="mb-3">
+            <label for="account_parent" class="form-label">Account yang Dituju (Parent)</label>
+            <select class="form-select select-account-parent @error('account_parent') is-invalid @enderror"
+              name="account_parent">
+              <option value="">-- Pilih Account --</option>
+              @foreach ($parent_accounts as $account)
+                @if (old('account_parent', $cashaccount->account_parent) == $account[1])
+                  <option value="{{ $account[1] }}" selected>{{ $account[1] . ' - ' . $account[0] }}</option>
+                @else
+                  <option value="{{ $account[1] }}">{{ $account[1] . ' - ' . $account[0] }}</option>
+                @endif
+              @endforeach
+            </select>
+          </div>
+
+          <div class="mb-3">
             <label for="default" class="form-label">Default <span class="text-danger">*</span></label>
             <select class="form-select" name="default">
               <option value="">Tidak Ada</option>
@@ -60,7 +75,7 @@
 
         <div class="col">
           <div class="mb-3">
-            <label for="keterangan" class="form-label">Keterangan <span class='text-danger'>*</span></label>
+            <label for="keterangan" class="form-label">Keterangan</label>
             <textarea class="form-control @error('keterangan') is-invalid @enderror" id="keterangan" name="keterangan">{{ $cashaccount->keterangan ?? null }}</textarea>
             @error('keterangan')
               <div class="invalid-feedback">
@@ -78,4 +93,12 @@
       </div>
     </form>
   </div>
+
+  @push('JS')
+    <script>
+      $(document).ready(function() {
+        $('.select-account-parent').select2();
+      });
+    </script>
+  @endpush
 @endsection

@@ -12,6 +12,8 @@ use App\Models\Pengadaan;
 use App\Models\History;
 use App\Models\Staff;
 use App\Models\Customer;
+use App\Models\GaleryItem;
+use App\Models\Kanvas;
 use Barryvdh\DomPDF\Facade\Pdf as FacadePdf;
 use Barryvdh\DomPDF\PDF as DomPDFPDF;
 use Illuminate\Http\Request;
@@ -19,6 +21,7 @@ use Illuminate\Support\Facades\DB;
 use PDF;
 use Illuminate\Database\QueryException;
 use Intervention\Image\ImageManagerStatic as Image;
+use App\FormMultipleUpload;
 
 class ItemController extends Controller
 {
@@ -316,8 +319,7 @@ class ItemController extends Controller
       'harga1_satuan' => ['required', 'numeric'],
       'harga2_satuan' => ['nullable', 'numeric'],
       'harga3_satuan' => ['nullable', 'numeric'],
-      'gambar' => 'image|file|max:1024',
-      // 'gambar' => 'image|file',
+      'deskripsi' => 'nullable',
       'volume' => 'required'
     ]);
 
@@ -336,18 +338,32 @@ class ItemController extends Controller
     $validatedData['id_category'] = $request->category;
     $validatedData['link_item'] = $request->link_item;
     $validatedData['max_pengadaan'] = ($request->max_stok??0) - ($request->min_stok??0);
-    
-    if ($request->gambar) {
+        
+    if ($request->hasfile('gambar')) {
+      $images = $request->file('gambar');
       $nama_item = str_replace(" ", "-", $request->nama);
-      $file_name = 'ITM-' . $nama_item . '-' .date_format(now(),"YmdHis"). '.' . $request->gambar->extension();
+      $file_name = 'ITM-' . $nama_item . '-' .date_format(now(),"YmdHis"). '.' . $images[0]->extension();
       $validatedData['gambar'] = $file_name;
-      Image::make($request->file('gambar'))->resize(350, null, function ($constraint) {
+      Image::make($images[0])->resize(350, null, function ($constraint) {
         $constraint->aspectRatio();
       })->save(public_path('storage/item/') . $file_name);
-    }    
+      $item_id= Item::insertGetId($validatedData);
 
-    Item::create($validatedData);
+      foreach($images as $key=>$image){
+        $nama_item = str_replace(" ", "-", $request->nama);
+        $file_name = 'ITM-' . $nama_item . '-' .$key . '-' .date_format(now(),"YmdHis"). '.' . $image->extension();
+        Image::make($image)->resize(350, null, function ($constraint) {
+          $constraint->aspectRatio();
+        })->save(public_path('storage/item/') . $file_name);
 
+        GaleryItem::create([
+          'image' => $file_name,
+          'id_item' => $item_id,
+          'created_at' => now()
+        ]);
+      }
+   }
+        
     return redirect('/administrasi/stok/produk') -> with('pesanSukses', 'Produk berhasil ditambahkan' );
   }
 
@@ -392,12 +408,15 @@ class ItemController extends Controller
       1 => 'active',
       -1 => 'inactive',
     ];
+
+    $galeryItems = GaleryItem::where('id_item', $id)->get();
   
     return view('administrasi.stok.produk.edit',[
       'item' => Item::where('id', $id)->first(),
       'parentItems' => $parentItems,
       'categories' => CategoryItem::all(),
       'statuses' => $statuses,
+      'galeryItems' => $galeryItems
     ]);
   }
 
@@ -405,13 +424,13 @@ class ItemController extends Controller
   {
     $rules = ([
       'nama' => ['required', 'string', 'max:255'],
-      'gambar' => 'image|file|max:1024',
       'min_stok' => ['required', 'integer', 'min:0'],
       'max_stok' => ['required', 'integer', 'min:0'],
       'satuan' => ['required', 'string', 'max:30'],
       'harga1_satuan' => ['required', 'numeric'],
       'harga2_satuan' => ['nullable', 'numeric'],
       'harga3_satuan' => ['nullable', 'numeric'],
+      'deskripsi' => 'nullable',
       'volume' => ['required'],
     ]);
 
@@ -424,22 +443,117 @@ class ItemController extends Controller
     $validatedData['link_item'] = $request->link_item;
     $validatedData['status_enum'] = $request->status_enum;
 
-    if ($request->gambar) {
+    if ($request->hasfile('gambar') && $request->isFirstPositionChange == 'true') {
       if($request->oldGambar){
         \Storage::delete('/item/'.$request->oldGambar);
       }
 
-      $file= $request->file('gambar');
-      $nama_item = str_replace(" ", "-", $validatedData['nama']);
-      $file_name = 'ITM-' . $nama_item . '-' .date_format(now(),"YmdHis"). '.' . $file->getClientOriginalExtension();
-      Image::make($request->file('gambar'))->resize(350, null, function ($constraint) {
+      $images = $request->file('gambar');
+      $nama_item = str_replace(" ", "-", $request->nama);
+      $file_name = 'ITM-' . $nama_item . '-' .date_format(now(),"YmdHis"). '.' . $images[0]->extension();
+      $validatedData['gambar'] = $file_name;
+      Image::make($images[0])->resize(350, null, function ($constraint) {
         $constraint->aspectRatio();
       })->save(public_path('storage/item/') . $file_name);
-      $validatedData['gambar'] = $file_name;
     }    
 
     Item::where('id', $id)->update($validatedData);
-  
+
+
+    $listIdGaleryToInsert = []; 
+    if($request->listIdGalery != null){
+      $listIdGalery = explode("+",$request->listIdGalery);
+      foreach($listIdGalery as $idg){
+        array_push($listIdGaleryToInsert, [
+          'id_galery' => $idg
+        ]);
+      }
+    }
+
+
+    $listGalery = [];
+    if ($request->hasfile('gambar')) {  
+      $images = $request->file('gambar');
+
+      foreach($images as $key=>$image){
+        $nama_item = str_replace(" ", "-", $request->nama);
+        $file_name = 'ITM-' . $nama_item . '-' .$key . '-' .$key . '-' .date_format(now(),"YmdHis"). '.' . $image->extension();
+        Image::make($image)->resize(350, null, function ($constraint) {
+          $constraint->aspectRatio();
+        })->save(public_path('storage/item/') . $file_name);
+
+        array_push($listGalery, [
+          'image' => $file_name
+        ]);
+      }
+    }
+
+    $result = array();
+    foreach($listIdGaleryToInsert as $key=>$val){ 
+        $val2 = $listGalery[$key]; 
+        $result[$key] = $val + $val2; 
+    }
+
+    // dd($result);
+
+    foreach ($result as $r) {
+      $galeryItem = GaleryItem::where('id', $r['id_galery'])->first();
+      if($galeryItem){
+        $oldImage =  $galeryItem->image ?? null;
+        if($oldImage){
+          \Storage::delete('/item/'.$oldImage);
+        }
+      }
+
+      if($r['id_galery'] != 0){
+        GaleryItem::where('id', $r['id_galery'])->update([
+          'image' => $r['image'],
+          'updated_at' => now()
+        ]);
+      }else if($r['id_galery'] == 0){
+        GaleryItem::create([
+          'image' => $r['image'],
+          'id_item' => $id,
+          'created_at' => now()
+        ]);
+      }
+    }
+
+    
+    if($request->listIdGaleryRmv != null){
+      $listIdGaleryRmv = explode("-",$request->listIdGaleryRmv);
+    }else if($request->listIdGaleryRmv == null){
+      $listIdGaleryRmv = [];
+    }
+
+    foreach($listIdGaleryRmv as $idRmv){
+      $oldImgRmv = GaleryItem::find($idRmv)->image;
+      $idItm = GaleryItem::find($idRmv)->id_item;
+
+      GaleryItem::where('id', $idRmv)->delete();
+      if($oldImgRmv){
+        \Storage::delete('/item/'.$oldImgRmv);
+      }
+
+      if($request->isFirstPositionChangeRmv == 'true'){
+        $galery = GaleryItem::where('id_item', $idItm)->first();
+
+        if($galery){
+          $gambar_pengganti = $galery->image;
+          $gambar_item_lama = Item::where('id', $idItm)->first()->gambar;
+
+          Item::where('id', $idItm)->update([
+            'gambar' => $gambar_pengganti,
+            'updated_at' => now()
+          ]);
+
+          if($gambar_item_lama != null){
+            \Storage::delete('/item/'.$gambar_item_lama);
+          }
+        }
+      }
+    }
+
     return redirect('/administrasi/stok/produk') -> with('pesanSukses', 'Berhasil mengubah data');
   }
 
@@ -648,5 +762,316 @@ class ItemController extends Controller
       }
 
       return redirect('/administrasi/stok/produk') -> with('pesanSukses', 'Berhasil ubah status' );
+    }
+
+    public function productListStokRetur(Request $request){
+      $products = Item::where('stok_retur', '>', 0)->orderBy("status_enum", "ASC")->get();
+      $counter = $request->session()->increment('counterStokRetur');
+      $pageWasRefreshed = isset($_SERVER['HTTP_CACHE_CONTROL']) && $_SERVER['HTTP_CACHE_CONTROL'] === 'max-age=0';
+
+      if(!$pageWasRefreshed) {
+        if($counter>0){
+          \Cart::session(auth()->user()->id.'stokretur')->clear();
+          session(['counterStokRetur' => 0]);
+        }
+      }
+
+      return view('administrasi.stok.stokretur.index', [
+        "products" => $products,
+      ]);
+    }
+
+    public function simpanDataStokRetur(Request $request){
+      $cartItems = \Cart::session(auth()->user()->id.$request->route)->getContent();
+
+      foreach($cartItems as $item){
+        $stok = Item::find($item->id);
+        if($item->attributes->metode == 'potongan'){
+          $rules = ([
+            'uang' => ['required'],
+          ]);
+          if($request->kas != null){
+            $rules['kas'] = ['required'];
+          }
+          $request->validate($rules);
+          
+          $stok->stok_retur -= $item->quantity;
+          $stok->save();
+
+          $cashaccount = CashAccount::where('default', '1')->first();
+          if($cashaccount != null){
+            Kas::insert([
+              'id_staff' => auth()->user()->id_users,
+              'tanggal' => date("Y-m-d"),
+              'debit_kredit' => '1',
+              'keterangan_1' => 'Stok Retur',
+              'uang' => $request->uang,
+              'id_cash_account' => $cashaccount->id,
+              'kas' => $request->kas,
+              'created_at' => now()
+            ]);
+          }
+        }else{
+          $stok->stok += $item->quantity;
+          $stok->stok_retur -= $item->quantity;
+          $stok->save();
+        }
+      }
+  
+      \Cart::session(auth()->user()->id.$request->route)->clear();
+  
+      return redirect('/administrasi/stok/stokretur')->with('pesanSukses', 'Stok retur tercatat ke database');
+    }
+
+    public function indexKanvas(){
+      $listkanvas = Kanvas::whereNull('waktu_dikembalikan')
+                    ->select(DB::raw('GROUP_CONCAT(id) as ids'),'nama','id_staff_pengonfirmasi_pembawaan','id_staff_yang_membawa','waktu_dibawa', DB::raw('COUNT(id_item) as banyak_jenis_item')) 
+                    ->groupBy('nama','id_staff_pengonfirmasi_pembawaan','waktu_dibawa','id_staff_yang_membawa')
+                    ->orderBy('id', 'DESC')
+                    ->get();
+      
+      return view('administrasi.kanvas.index', [
+        'listkanvas' => $listkanvas
+      ]);
+    }
+
+    public function createKanvas(){
+      $staffs = Staff::where('status_enum', '1')->where('role', 3)->get();
+      $items = Item::all();
+
+      return view('administrasi.kanvas.createKanvas', [
+        "staffs" => $staffs,
+        "items" => $items
+      ]);
+    }
+
+    public function storeKanvas(Request $request){
+      $request->validate([
+        'nama' => 'required',
+        'id_staff_yang_membawa' => 'required',
+      ]);
+
+      for($i=0; $i<count($request->id_item); $i++){
+        Kanvas::insert([
+          "nama" => $request->nama,
+          "id_item" => $request->id_item[$i],
+          "stok_awal" => $request->jumlah_item[$i],
+          "sisa_stok" => $request->jumlah_item[$i],
+          "id_staff_pengonfirmasi_pembawaan" => auth()->user()->id_users,
+          "id_staff_yang_membawa" => $request->id_staff_yang_membawa,
+          "waktu_dibawa" => now(),
+          "created_at" => now()
+        ]);
+
+        $stokGudang = Item::where('id', $request->id_item[$i])->first()->stok;
+
+        Item::where('id', $request->id_item[$i])->update([
+          "stok" => $stokGudang - $request->jumlah_item[$i],
+          "updated_at" => now()
+        ]);
+      }
+      if($request->route=='history'){
+        return redirect('/administrasi/kanvas/history')->with('pesanSukses', 'Berhasil menambahkan kanvas');
+      }else{
+        return redirect('/administrasi/kanvas/create')->with('pesanSukses', 'Berhasil menambahkan kanvas');
+      }
+    }
+
+    public function checkSalesHasKanvasAPI($idSales){
+      $kanvas = Kanvas::where('id_staff_yang_membawa', $idSales)->whereNull('waktu_dikembalikan')->get();
+
+      if(count($kanvas) > 0){
+        $sales = Staff::find($idSales)->nama;
+        return response()->json([
+          'status' => 'error',
+          'message' => 'Kanvas untuk ' . $sales .' sudah ada'
+        ]); 
+      }else{
+        return response()->json([
+          'status' => 'success',
+          'message' => 'Bisa menambah data'
+        ]); 
+      }
+    }
+
+    public function getDetailKanvas($id){
+      $getId = explode("-", $id);
+      $detailsKanvas = [];
+
+      foreach($getId as $getid){
+        $kanvas = Kanvas::where('id', $getid)->with(['linkItem','linkStaffPengonfirmasiPembawaan','linkStaffPengonfirmasiPengembalian'])->first();
+        array_push($detailsKanvas,[
+          $kanvas
+        ]);
+      }
+
+      return response()->json([
+        'status' => 'success',
+        'data' => $detailsKanvas
+      ]); 
+    }
+
+    public function historyKanvas(){
+      $listkanvas = Kanvas::whereNotNull('waktu_dikembalikan')
+      ->whereBetween('waktu_dibawa',[now()->subDays(59),now()])
+      ->select(DB::raw('GROUP_CONCAT(id) as ids'),'nama','id_staff_pengonfirmasi_pembawaan','id_staff_yang_membawa','id_staff_pengonfirmasi_pengembalian','waktu_dibawa','waktu_dikembalikan', DB::raw('COUNT(id_item) as banyak_jenis_item')) 
+      ->groupBy('nama','id_staff_pengonfirmasi_pembawaan','waktu_dibawa','id_staff_yang_membawa','waktu_dikembalikan','id_staff_pengonfirmasi_pengembalian')
+      ->orderBy('id', 'DESC')->get();
+
+      $staffs = Staff::where('status_enum', '1')->where('role', 3)->get();
+      $items = Item::all();
+
+      return view('administrasi.kanvas.historyKanvas', [
+        "listkanvas" => $listkanvas,
+        "staffs" => $staffs,
+        "items" => $items
+      ]);
+    }
+
+    public function pengembalianKanvas($ids){
+      $getId = explode("-", $ids);
+
+      foreach($getId as $getid){
+        Kanvas::where('id', $getid)->update([
+          "id_staff_pengonfirmasi_pengembalian" => auth()->user()->id_users,
+          "waktu_dikembalikan" => now(),
+          "updated_at" => now()
+        ]);
+
+        $kanvas = Kanvas::where('id', $getid)->first();
+        $sisaStokKanvas = $kanvas->sisa_stok;
+        $idItem = $kanvas->id_item;
+
+        $stokGudang = Item::where('id', $idItem)->first()->stok;
+
+        Item::where('id', $idItem)->update([
+          "stok" => $stokGudang + $sisaStokKanvas,
+          "updated_at" => now()
+        ]);
+      }
+
+      return redirect('/administrasi/kanvas')->with('pesanSukses', 'Berhasil mengonfirmasi pengembalian kanvas');
+    }
+
+    public function getItemKanvasAPI($idStaf){
+      $listkanvas = Kanvas::where('id_staff_yang_membawa',$idStaf)
+      ->select(DB::raw('GROUP_CONCAT(id) as ids'),'nama','id_staff_pengonfirmasi_pembawaan','id_staff_pengonfirmasi_pengembalian','waktu_dibawa','waktu_dikembalikan', DB::raw('COUNT(id_item) as banyak_jenis_item')) 
+      ->groupBy('nama','id_staff_pengonfirmasi_pembawaan','id_staff_pengonfirmasi_pengembalian','waktu_dibawa','waktu_dikembalikan')
+      ->orderBy('id', 'DESC')->get();
+
+      return response()->json([
+        'status' => 'success',
+        'data' => $listkanvas
+      ]); 
+    }
+
+    public function getKanvasAPI($idStaf){
+      $activeKanvas = Kanvas::whereNull('waktu_dikembalikan')
+                      ->where('id_staff_yang_membawa', $idStaf)
+                      ->get();
+
+      $listIdItems = [];
+      $listItems = [];
+
+      foreach($activeKanvas as $kanvas){
+        array_push($listIdItems, $kanvas->id_item);
+
+        array_push($listItems, [
+          "id_item" => $kanvas->id_item,
+          "nama_item" => $kanvas->linkItem->nama,
+          "sisa_stok" => $kanvas->sisa_stok
+        ]);
+      }
+
+      return response()->json([
+        'status' => 'success',
+        'dataIdItem' => $listIdItems,
+        'dataItem' => $listItems
+      ]); 
+    }
+
+    public function getActiveItemKanvasAPI($idStaf){
+      $kanvas = Kanvas::where('id_staff_yang_membawa', $idStaf)
+                ->whereNull('waktu_dikembalikan')
+                ->with(['linkItem'])
+                ->get();
+
+      return response()->json([
+        'status' => 'success',
+        'data' => $kanvas
+      ]); 
+    }
+
+    public function getProductCatalog(Request $request){
+      $listItems = [];
+
+      $tipeHarga = Customer::find($request->id_customer)->tipe_harga;
+      $diskonTipeCust = Customer::find($request->id_customer)->linkCustomerType->diskon;
+
+      $items = Item::where('status_enum', '1')
+              ->select('id', 'nama', 'kode_barang', 'stok', 'satuan', 'harga1_satuan', 'harga2_satuan', 'harga3_satuan', 'deskripsi') 
+              ->with(['linkGaleryItem'])
+              ->get();
+
+      foreach($items as $item){
+        $data = [
+          'id' => $item->id,
+          'nama' => $item->nama,
+          'kode_barang' => $item->kode_barang,
+          'stok' => $item->stok,
+          'satuan' => $item->satuan,
+          'gambar' => $item->linkGaleryItem,
+          'deskripsi' => $item->deskripsi
+        ];
+
+        if($diskonTipeCust > 0){
+          if($tipeHarga == 2 && $item->harga2_satuan ?? null){
+            $data['harga_satuan'] = $item->harga2_satuan - ($item->harga2_satuan * $diskonTipeCust / 100);
+          }if($tipeHarga == 3 && $item->harga3_satuan ?? null){
+            $data['harga_satuan'] = $item->harga3_satuan - ($item->harga3_satuan * $diskonTipeCust / 100);
+          } else{
+            $data['harga_satuan'] = $item->harga1_satuan - ($item->harga1_satuan * $diskonTipeCust / 100);
+          }
+        }else{
+          if($tipeHarga == 2 && $item->harga2_satuan ?? null){
+            $data['harga_satuan'] = $item->harga2_satuan;
+          }if($tipeHarga == 3 && $item->harga3_satuan ?? null){
+            $data['harga_satuan'] = $item->harga3_satuan;
+          } else{
+            $data['harga_satuan'] = $item->harga1_satuan;
+          }
+        }
+
+        $harga_setelah_diskon = $data['harga_satuan'];
+
+        foreach($request->diskon_sales as $diskonSales){
+          if($diskonSales != 0){
+            $harga_setelah_diskon = ($harga_setelah_diskon - ($harga_setelah_diskon * $diskonSales / 100));
+          }
+        }
+
+        $data['harga_diskon_sales'] = $harga_setelah_diskon;
+        array_push($listItems, $data);
+      }
+      
+      // dd($listItems);
+
+      $orderItemUnconfirmed=OrderItem::
+      whereHas('linkOrder',function($q) {
+        $q->where('status_enum', '-1');
+      })
+      ->whereHas('linkOrder',function($q) {
+        $q->whereHas('linkOrderTrack',function($q) {
+          $q->where('status_enum','!=', '-1');
+        });
+      })
+      ->select('id_item', DB::raw('SUM(kuantitas) as jumlah_blmkonfirmasi'))      
+      ->groupBy('id_item')->pluck('jumlah_blmkonfirmasi','id_item')->all();
+    
+      return response()->json([
+        'status' => 'success',
+        'data' => $listItems,
+        "orderRealTime" => $orderItemUnconfirmed
+      ]); 
     }
 }

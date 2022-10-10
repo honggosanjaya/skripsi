@@ -350,3 +350,8 @@ body {
     object-fit: cover;
     object-position: center;
 }
+
+.swal2-shown[style],
+.modal-open[style] {
+    padding-right: 0 !important;
+}

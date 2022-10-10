@@ -49,16 +49,18 @@
               <td>{{ $customer->telepon ?? null }}</td>
               <td>harga {{ $customer->tipe_harga ?? null }}</td>
               @if ($customer->status_enum != null)
-                <td>{{ $customer->status_enum == 1 ? 'Active' : 'Inactive' }}</td>
+                <td>{{ $customer->status_enum == '1' ? 'Active' : ($customer->status_enum == '0' ? 'Hide' : 'Inactive') }}
+                </td>
               @else
                 <td></td>
               @endif
-              <td>
-                <div class="d-flex justify-content-center">
-                  <a href="/administrasi/datacustomer/ubah/{{ $customer->id }}" class="btn btn-sm btn-warning me-3">
-                    <span class="iconify fs-5 me-1" data-icon="eva:edit-2-fill"></span> Edit
-                  </a>
-                </div>
+              <td width="20%" class="text-center">
+                <a href="/administrasi/datacustomer/ubah/{{ $customer->id }}" class="btn btn-warning">
+                  <span class="iconify fs-5 me-1" data-icon="eva:edit-2-fill"></span> Edit
+                </a>
+                <a href="/administrasi/datacustomer/{{ $customer->id }}/generate-qr" class="btn btn-primary">
+                  <span class="iconify fs-5 me-1" data-icon="bx:qr-scan"></span> QR
+                </a>
               </td>
             </tr>
           @endforeach

@@ -12,12 +12,27 @@ class CartController extends Controller
   {
     session(['counterPengadaan' => 0]);
     session(['counterOpname' => 0]);
+    session(['counterStokRetur' => 0]);
     
-    if ($request->route=="pengadaan") {
+    if ($request->route=="pengadaan" || $request->route=="stokretur") {
       $cartItems = \Cart::session(auth()->user()->id.$request->route)->getContent();
       $defaultpengadaan = CashAccount::where('default', '1')->first();
-      $listskas = CashAccount::where('account', '<=', '100')->get();
-      return view('administrasi.stok.pengadaan.cart', compact('cartItems','defaultpengadaan', 'listskas'));
+      $listskas = CashAccount::where('account', '<=', '100')
+                  ->where(function ($query) {
+                    $query->whereNull('default')->orWhereIn('default', ['1', '2']);                  
+                  })->get();
+      
+      if($request->route=="stokretur"){
+        $shouldShowKas = false;
+        foreach($cartItems as $item){
+          if($item->attributes->metode == 'potongan'){
+            $shouldShowKas = true;
+          }
+        }
+        return view('administrasi.stok.stokretur.cart', compact('cartItems','defaultpengadaan', 'listskas', 'shouldShowKas'));
+      }elseif($request->route=="pengadaan"){
+        return view('administrasi.stok.pengadaan.cart', compact('cartItems','defaultpengadaan', 'listskas'));
+      }
     }elseif($request->route=="customerOrder") {
       $cartItems = \Cart::session(auth()->user()->id.$request->route)->getContent();
       $customer = Customer::where('id', auth()->user()->id_users)->first();
@@ -26,7 +41,6 @@ class CartController extends Controller
       $cartItems = \Cart::session(auth()->user()->id.$request->route)->getContent();
       return view('administrasi.stok.opname.cart', compact('cartItems'));
     }
-      
   }
 
   public function addToCart(Request $request)
@@ -140,6 +154,48 @@ class CartController extends Controller
         'message' => 'Produk berhasil ditambahkan ke keranjang'
       ]);
       // return redirect('/administrasi/stok/opname/')->with('pesanSukses', 'Produk berhasil ditambahkan ke keranjang');
+    }elseif ($request->route=="stokretur") {
+      if($cartItem !== null){
+        \Cart::session(auth()->user()->id.$request->route)->update(
+          $request->id,
+          [
+              'quantity' => [
+                  'relative' => false,
+                  'value' => $request->quantity
+              ],
+              'attributes' => array(
+                'kode_barang' => $request->kode_barang,
+                'satuan' => $request->satuan,
+                'stok' => $request->stok,
+                'stok_retur' => $request->stok_retur,
+                'metode' => $request->metode
+              )
+          ]
+        );
+        if($cartItem->quantity == 0){
+          \Cart::session(auth()->user()->id.$request->route)->remove($request->id);
+        }
+  
+      } else if($cartItem == null){
+        \Cart::session(auth()->user()->id.$request->route)->add([
+          'id' => $request->id,
+          'name' => $request->nama,
+          'quantity' => $request->quantity,
+          'price' => 0,
+          'attributes' => array(
+            'kode_barang' => $request->kode_barang,
+            'satuan' => $request->satuan,
+            'stok' => $request->stok,
+            'stok_retur' => $request->stok_retur,
+            'metode' => $request->metode
+          )
+        ]);
+      }
+
+      return response()->json([
+        'status' => 'success',
+        'message' => 'Produk berhasil ditambahkan ke keranjang'
+      ]);
     }
   }
 
@@ -196,7 +252,8 @@ class CartController extends Controller
 
       if ($request->route=="pengadaan") {
         $cartItems = \Cart::session(auth()->user()->id.$request->route)->getContent();
-        return view('administrasi.stok.pengadaan.cart', compact('cartItems'));
+        return redirect('/administrasi/stok/pengadaan/cart?route=pengadaan');
+        // return view('administrasi.stok.pengadaan.cart', compact('cartItems'));
       }elseif($request->route=="customerOrder") {
         $cartItems = \Cart::session(auth()->user()->id.$request->route)->getContent();
         $customer = Customer::where('id', auth()->user()->id_users)->first();
@@ -204,6 +261,10 @@ class CartController extends Controller
       }elseif($request->route=="opname") {
         $cartItems = \Cart::session(auth()->user()->id.$request->route)->getContent();
         return view('administrasi.stok.opname.cart', compact('cartItems'));
+      }elseif($request->route=="stokretur") {
+        $cartItems = \Cart::session(auth()->user()->id.$request->route)->getContent();
+        return redirect('/administrasi/stok/stokretur/cart?route=stokretur');
+        // return view('administrasi.stok.stokretur.cart', compact('cartItems'));
       }
   }
 }

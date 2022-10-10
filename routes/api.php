@@ -14,6 +14,7 @@ use App\Http\Controllers\DistrictController;
 use App\Http\Controllers\KasController;
 use App\Http\Controllers\LaporanPenagihanController;
 use App\Http\Controllers\RencanaTripController;
+use App\Http\Controllers\ReportController;
 use App\Http\Controllers\StaffController;
 use App\Http\Controllers\TargetController;
 use Illuminate\Http\Request;
@@ -47,6 +48,7 @@ Route::group(['middleware' => 'auth:sanctum'], function(){
   Route::post('/pesanan/detail/{order:id}/dikirimkan', [OrderController::class, 'konfirmasiPengiriman']);
 });
 Route::get('/forceLogout', [LoginController::class, 'logoutUnauthorizedSPAApi']);
+Route::get('/logoutUser', [LoginController::class, 'logoutUserAPI']);
 
 // SALESMAN
 Route::post('/cariCustomer', [CustomerController::class, 'cariCustomerApi']);
@@ -58,6 +60,7 @@ Route::prefix('salesman')->group(function() {
 
   Route::get('/listitems/{id}/{name}', [ItemController::class, 'searchProductAPI']); 
   Route::get('/filteritems/{id}/{filterby}', [ItemController::class, 'filterProductAPI']);
+  Route::get('/getinvoice/{id}', [OrderController::class, 'getInvoiceByIdAPI']);
 });
 // TRIP
 Route::get('/tripCustomer/{id}', [CustomerController::class, 'dataCustomerApi']);
@@ -71,8 +74,10 @@ Route::post('/salesman/buatOrder', [OrderController::class, 'simpanDataOrderSale
 Route::get('/tipeRetur', [ReturController::class, 'getTypeReturAPI']);
 Route::get('/kodeEvent/{kode}', [EventController::class, 'dataKodeEventAPI']);
 Route::get('/kodeCustomer/{id}', [OrderController::class, 'dataKodeCustomer']);
+Route::get('/kanvas/{id}', [ItemController::class, 'getKanvasAPI']);
 // KELUAR
 Route::post('/keluarToko/{id}', [OrderController::class, 'keluarTripOrderApi']);
+Route::get('/belanjalagi/{id}', [OrderController::class, 'belanjaLagiOrderApi']);
 //UBAH PASSWORD
 Route::post('/checkpassword/{staff:id}', [AuthController::class, 'checkPasswordAPI']);
 Route::post('/changepassword/{staff:id}', [AuthController::class, 'changePasswordAPI']);
@@ -97,6 +102,7 @@ Route::get('/administrasi/detailpenagihan/{invoice:id}', [LaporanPenagihanContro
 Route::get('/lapangan/penagihan/{staff:id}', [LaporanPenagihanController::class, 'getPenagihanLapanganAPI']);
 Route::get('/lapangan/handlepenagihan/{id}', [LaporanPenagihanController::class, 'handlePenagihanLapanganAPI']);
 
+Route::post('/administrasi/stok/stokretur/cart', [CartController::class, 'addToCart']);
 Route::post('/administrasi/stok/pengadaan/cart', [CartController::class, 'addToCart']);
 Route::post('/administrasi/stok/opname/cart', [CartController::class, 'addToCart']);
 Route::post('administrasi/stok/pengadaan/remove', [CartController::class, 'removeCart']);
@@ -105,5 +111,10 @@ Route::post('/getrencanakunjungan/{id}', [RencanaTripController::class, 'datakun
 
 Route::get('/administrasi/unduhinvoice/{order:id}', [OrderController::class, 'unduhInvocieBtnAPI']);
 Route::get('/administrasi/selectdistict/{district:id}', [DistrictController::class, 'getCustByDistrictAPI']);
-
+Route::get('/administrasi/getDetailKanvas/{id}', [ItemController::class, 'getDetailKanvas']);
+Route::get('/administrasi/checkSalesHasKanvas/{id}', [ItemController::class, 'checkSalesHasKanvasAPI']);
 Route::get('/salesman/target', [TargetController::class, 'getTargetAPI']);
+Route::get('/salesman/itemkanvas/{idStaf}', [ItemController::class, 'getItemKanvasAPI']);
+Route::get('/salesman/itemkanvasactive/{idStaf}', [ItemController::class, 'getActiveItemKanvasAPI']);
+
+Route::post('/salesman/getProductCatalog', [ItemController::class, 'getProductCatalog']);

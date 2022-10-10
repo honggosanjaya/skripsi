@@ -1,11 +1,20 @@
-import React, { useEffect, useState, useContext } from 'react';
+import React, { useEffect, useState, useContext, Fragment } from 'react';
 import axios from 'axios';
+import Webcam from "react-webcam";
 import HeaderSales from './HeaderSales';
 import { useParams, useHistory, Link } from 'react-router-dom'
 import { UserContext } from '../../contexts/UserContext';
 import AlertComponent from '../reuse/AlertComponent';
 import urlAsset from '../../config';
 import LoadingIndicator from '../reuse/LoadingIndicator';
+import ImagePreview from '../reuse/ImagePreview';
+import { dataURLtoFile } from "../reuse/HelperFunction";
+
+const FACING_MODE_USER = "user";
+const FACING_MODE_ENVIRONMENT = "environment";
+const videoConstraints = {
+  facingMode: FACING_MODE_ENVIRONMENT
+};
 
 const TripSales = () => {
   const { id } = useParams();
@@ -19,6 +28,8 @@ const TripSales = () => {
   const [wilayah, setWilayah] = useState('');
   const [ketAlamat, setKetAlamat] = useState('');
   const [telepon, setTelepon] = useState('');
+  const [statusTelepon, setStatusTelepon] = useState('');
+  const [tipeHarga, setTipeHarga] = useState('');
   const [durasiTrip, setDurasiTrip] = useState(7);
   const [alasanPenolakan, setAlasanPenolakan] = useState('');
   const [file, setFile] = useState(null);
@@ -39,11 +50,67 @@ const TripSales = () => {
   const jamMasuk = Date.now() / 1000;
   const [shouldDisabled, setShouldDisabled] = useState(false);
   const [metodePembayaran, setMetodePembayaran] = useState('1');
+  const [isTakePhoto, setIsTakePhoto] = useState(false);
+  const [isFromGalery, setISFromGalery] = useState(false);
+  const [dataUri, setDataUri] = useState('');
+  const [facingMode, setFacingMode] = useState(FACING_MODE_USER);
 
   useEffect(() => {
-    navigator.geolocation.getCurrentPosition(function (position) {
-      setKoordinat(position.coords.latitude + '@' + position.coords.longitude)
+    navigator.permissions.query({ name: 'geolocation' }).then((result) => {
+      if (result.state === 'prompt') {
+        let timerInterval;
+        let seconds = 7;
+        Swal.fire({
+          title: 'Peringatan Izin Akses Lokasi Perangkat',
+          html: 'Selanjutnya kami akan meminta akses lokasi anda, mohon untuk mengizinkannya. <br><br> Tunggu <b></b> detik untuk menutupnya',
+          icon: 'info',
+          allowOutsideClick: false,
+          allowEscapeKey: false,
+          timer: 7000,
+          didOpen: () => {
+            Swal.showLoading();
+            const b = Swal.getHtmlContainer().querySelector('b')
+            timerInterval = setInterval(() => {
+              if (seconds > 0) {
+                seconds -= 1;
+              }
+              b.textContent = seconds;
+            }, 1000);
+          },
+        }).then((result) => {
+          navigator.geolocation.getCurrentPosition(function (position) {
+            setKoordinat(position.coords.latitude + '@' + position.coords.longitude)
+          });
+        })
+      } else if (result.state === 'granted') {
+        navigator.geolocation.getCurrentPosition(function (position) {
+          setKoordinat(position.coords.latitude + '@' + position.coords.longitude)
+        });
+      } else if (result.state === 'denied') {
+        let timerInterval2;
+        let seconds2 = 4;
+        Swal.fire({
+          title: 'Tidak Ada Akses Lokasi Perangkat',
+          html: 'Agar memudahkan kunjungan silahkan buka pengaturan browser anda dan ijinkan aplikasi mengakses lokasi. <br><br> Tunggu <b></b> detik untuk menutupnya',
+          icon: 'info',
+          allowOutsideClick: false,
+          allowEscapeKey: false,
+          confirmButtonText: 'Tutup',
+          didOpen: () => {
+            Swal.showLoading();
+            const b = Swal.getHtmlContainer().querySelector('b')
+            timerInterval2 = setInterval(() => {
+              if (seconds2 > 0) {
+                seconds2 -= 1;
+              }
+              b.textContent = seconds2;
+            }, 1000);
+            setTimeout(() => { Swal.hideLoading() }, 4000);
+          },
+        })
+      }
     });
+
     if (id != null) {
       setShouldDisabled(true);
       axios.get(`${window.location.origin}/api/tripCustomer/${id}`).then(response => {
@@ -59,6 +126,7 @@ const TripSales = () => {
         setKetAlamat(response.data.data.keterangan_alamat == null ? '' : response.data.data.keterangan_alamat);
         setTelepon(response.data.data.telepon == null ? '' : response.data.data.telepon);
         setDurasiTrip(response.data.data.durasi_kunjungan);
+        setTipeHarga(response.data.data.tipe_harga);
         if (response.data.data.jatuh_tempo != null) {
           setJatuhTempo(response.data.data.jatuh_tempo);
         }
@@ -117,6 +185,7 @@ const TripSales = () => {
     keterangan_alamat: ketAlamat,
     koordinat: koordinat,
     telepon: telepon,
+    status_telepon: statusTelepon,
     durasi_kunjungan: durasiTrip,
     counter_to_effective_call: totalTripEC,
     jam_masuk: jamMasuk,
@@ -137,7 +206,12 @@ const TripSales = () => {
     }).then((result) => {
       if (result.isConfirmed) {
         let formData = new FormData();
-        formData.append("foto", file);
+        if (isFromGalery) {
+          formData.append("foto", file);
+        } else if (isTakePhoto) {
+          let convertedFile = dataURLtoFile(dataUri, `${Math.random(10)}.png`);
+          formData.append("foto", convertedFile);
+        }
         objData["status_enum"] = "trip";
         setIsLoading(true);
         setShouldDisabled(true);
@@ -175,6 +249,11 @@ const TripSales = () => {
               icon: 'success',
               confirmButtonText: 'Trip Selanjutnya'
             }).then((result) => {
+              setFile(null);
+              setImagePreviewUrl('');
+              setDataUri('');
+              setIsTakePhoto(false);
+              setISFromGalery(false);
               history.push('/salesman');
             })
           })
@@ -182,6 +261,11 @@ const TripSales = () => {
             setError(error.message);
             setIsLoading(false);
             setShouldDisabled(false);
+            setFile(null);
+            setImagePreviewUrl('');
+            setDataUri('');
+            setIsTakePhoto(false);
+            setISFromGalery(false);
           });
       }
     })
@@ -245,11 +329,11 @@ const TripSales = () => {
 
   let $imagePreview = null;
   if (imagePreviewUrl) {
-    $imagePreview = <img src={imagePreviewUrl} className="img-fluid img_prev" />
+    $imagePreview = <img src={imagePreviewUrl} className="img-fluid img_prev mb-3 d-block" />
   } else {
     if (prevImage) {
       let image = prevImage.replace('public', '');
-      $imagePreview = <img src={`${urlAsset}/storage/customer/${image}`} className="img-fluid img_prev" />
+      $imagePreview = <img src={`${urlAsset}/storage/customer/${image}`} className="img-fluid img_prev mb-3 d-block" />
     }
   }
 
@@ -264,15 +348,61 @@ const TripSales = () => {
     history.push('/salesman');
   }
 
+  const handleClick = React.useCallback(() => {
+    setFacingMode(
+      prevState =>
+        prevState === FACING_MODE_USER
+          ? FACING_MODE_ENVIRONMENT
+          : FACING_MODE_USER
+    );
+  }, []);
+
+  const webcamRef = React.useRef(null);
+  const capture = React.useCallback(
+    () => {
+      const imageSrc = webcamRef.current.getScreenshot();
+      setDataUri(imageSrc);
+    },
+    [webcamRef]
+  );
+
+  const openGalerry = () => {
+    setIsTakePhoto(false);
+    setISFromGalery(true);
+  }
+
+  const openCamera = () => {
+    setISFromGalery(false);
+    setIsTakePhoto(true);
+  }
+
+  const takeAgain = () => {
+    setISFromGalery(false);
+    setIsTakePhoto(true);
+    setDataUri('');
+  }
+
+  const viewCatalog = () => {
+    history.push(`/salesman/catalog/${id}`);
+  }
+
   return (
     <main className="page_main">
       <HeaderSales title="Trip" toBack={goBack} />
       <div className="page_container py-4">
         {error && <AlertComponent errorMsg={error} />}
         {isLoading && <LoadingIndicator />}
-        {id && <button className="btn btn-primary mb-3" onClick={handletripretur}>
-          <span className="iconify fs-4 me-2" data-icon="material-symbols:change-circle-outline-rounded"></span>Retur
-        </button>}
+        {id && tipeHarga != '' &&
+          <Fragment>
+            <button className="btn btn-primary mb-3 me-3" onClick={handletripretur}>
+              <span className="iconify fs-4 me-2" data-icon="material-symbols:change-circle-outline-rounded"></span>Retur
+            </button>
+
+            <button className="btn btn-purple mb-3" onClick={viewCatalog}>
+              <span className="iconify fs-4 me-2" data-icon="carbon:shopping-catalog"></span>Katalog
+            </button>
+          </Fragment>
+        }
         <form>
           <div className={`${errorValidasi.nama ? '' : 'mb-3'}`}>
             <label className="form-label">Nama Customer <span className='text-danger'>*</span></label>
@@ -340,6 +470,16 @@ const TripSales = () => {
           </div>
 
           <div className="mb-3">
+            <label className="form-label">Status Telepon</label>
+            <div className="input-group mb-3">
+              <input type="text" className="form-control"
+                value={statusTelepon}
+                onChange={(e) => setStatusTelepon(e.target.value)} />
+              <button className="btn btn-outline-primary" type="button" onClick={() => setStatusTelepon('WhatsApp (WA)')}>Nomor WA</button>
+            </div>
+          </div>
+
+          <div className="mb-3">
             <label className="form-label">Durasi Trip <span className='text-danger'>*</span></label>
             <div className="position-relative">
               <input type="number" className="form-control"
@@ -359,7 +499,7 @@ const TripSales = () => {
               className="form-select">
               <option value="1">Tunai</option>
               <option value="2">Giro</option>
-              <option value="3">Dicicil</option>
+              <option value="3">Transfer</option>
             </select>
           </div>
 
@@ -385,12 +525,59 @@ const TripSales = () => {
           <div className="mb-4">
             <label className="form-label">Foto Tempat Usaha</label>
             {(imagePreviewUrl || prevImage) ? $imagePreview : <p>Belum ada foto</p>}
-            <input
-              type="file"
-              name="foto"
-              id="file"
-              accept="image/png, image/jpeg"
-              onChange={handleImageChange} />
+
+            <div>
+              <button type='button' className='btn btn-primary mb-3' onClick={openGalerry}>
+                <span className="iconify fs-3 me-1" data-icon="clarity:image-gallery-solid"></span> Galeri
+              </button>
+
+              <button type='button' className='btn btn-secondary ms-3 mb-3' onClick={openCamera}>
+                <span className="iconify fs-3 me-1" data-icon="charm:camera"></span>Kamera
+              </button>
+            </div>
+
+            {isFromGalery && <Fragment>
+              {/* {$imagePreview && $imagePreview} */}
+              <input
+                type="file"
+                name="foto"
+                id="file"
+                accept="image/png, image/jpeg"
+                onChange={handleImageChange} />
+            </Fragment>}
+
+            {isTakePhoto && dataUri
+              ? <Fragment>
+                <ImagePreview dataUri={dataUri} />
+                <button onClick={takeAgain} className="d-block mx-auto mt-3 btn btn-warning">
+                  <span className="iconify fs-3 me-1" data-icon="ic:sharp-flip-camera-android"></span>Ulang
+                </button>
+              </Fragment>
+              : isTakePhoto
+                ? <Fragment>
+                  <Webcam
+                    audio={false}
+                    height={340}
+                    width={350}
+                    ref={webcamRef}
+                    screenshotFormat="image/png"
+                    videoConstraints={{
+                      ...videoConstraints,
+                      facingMode
+                    }}
+                  />
+
+                  <div className="d-flex justify-content-between">
+                    <button type='button' className='btn btn-warning' onClick={handleClick}>
+                      <span className="iconify fs-3 me-1" data-icon="ic:sharp-flip-camera-android"></span>Switch camera
+                    </button>
+                    <button type="button" className='btn btn-success' onClick={capture}>
+                      <span className="iconify fs-3 me-1" data-icon="charm:camera"></span>Capture
+                    </button>
+                  </div>
+                </Fragment>
+                : null
+            }
           </div>
 
           <div className="d-flex justify-content-end">

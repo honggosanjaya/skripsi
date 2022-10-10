@@ -2,22 +2,30 @@
 
 <head>
   <title>Surat Jalan - {{ $date ?? '-' }}</title>
-
+  <link rel="icon" href="{{ public_path('images/icon-perusahaan.png') }}">
   <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
     integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
-</head>
 
-<body>
   <style type="text/css">
     table tr td,
     table tr th {
       font-size: 9pt;
     }
+
+    .logo {
+      float: left;
+    }
   </style>
+</head>
+
+<body>
   <div class="container">
     <table class="table table-borderless">
       <tr>
         <td style="width: 300px">
+          {{-- <img src="{{ asset('images/icon-perusahaan.png') }}" alt=""> --}}
+          <img class="logo" src="{{ public_path('images/icon-perusahaan.png') }}" width="70" height="70"
+            alt="UD">
           <h5>UD. Mandiri</h5>
           <h6 class="font-weight-normal">Jalan santoso pojok no 2</h6>
           <h6 class="font-weight-normal">(0341) - 726025</h6>

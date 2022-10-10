@@ -11,6 +11,7 @@ use App\Models\OrderTrack;
 use App\Models\Order;
 use App\Models\LaporanPenagihan;
 use App\Models\Retur;
+use App\Models\Kanvas;
 use App\Models\Reimbursement;
 use App\Models\Pembayaran;
 use App\Models\RencanaTrip;
@@ -33,6 +34,7 @@ class Staff extends Model
     public function linkTrip(){
         return $this->hasMany(Trip::class,'id_staff','id');
     }
+
     public function linkTripEc(){
         return $this->hasMany(Trip::class,'id_staff','id')->where('status_enum','2')->whereHas('linkCustomer',function($q) {
             $q->where('status_enum','1');
@@ -62,6 +64,18 @@ class Staff extends Model
 
     public function linkStaffPengirim(){
         return $this->hasMany(OrderTrack::class,'id_staff_pengirim','id');
+    }
+
+    public function linkStaffPengonfirmasiPembawaan(){
+        return $this->hasMany(Kanvas::class,'id_staff_penngonfirmasi_pembawaan','id');
+    }
+
+    public function linkStaffPengonfirmasiPengembalian(){
+      return $this->hasMany(Kanvas::class,'id_staff_penngonfirmasi_pengembalian','id');
+    }
+
+    public function linkStaffYangMembawa(){
+      return $this->hasMany(Kanvas::class,'id_staff_yang_membawa','id');
     }
 
     public function linkOrder(){

@@ -18,6 +18,7 @@ use App\Models\Pembayaran;
 use App\Models\History;
 use App\Models\Kas;
 use App\Models\RencanaTrip;
+use App\Models\Kanvas;
 use Illuminate\Support\Facades\DB;
 use PDF;
 use Illuminate\Support\Facades\Validator;
@@ -36,18 +37,67 @@ class OrderController extends Controller
     $id_order = $request->kodePesanan ?? 'belum ada';
     $id_customer = $request->idCustomer;
     $tipeRetur = $request -> tipeRetur;
+    $stok_kanvas = $request->stok_kanvas;
+
+    if($stok_kanvas == true){
+      $listKanvas = Kanvas::where('id_staff_yang_membawa', $idStaf)->whereNull('waktu_dikembalikan')->get();
+
+      foreach($keranjangItems as $item){
+        foreach($listKanvas as $kanvas){
+          if($kanvas->id_item == $item['id']){
+            Kanvas::where('id_staff_yang_membawa', $idStaf)
+                      ->whereNull('waktu_dikembalikan')
+                      ->where('id_item', $kanvas->id_item)
+                      ->update([
+                        "sisa_stok" => $kanvas->sisa_stok - $item['jumlah'],
+                        "updated_at" => now()
+                      ]);
+          }
+        }
+
+
+        $stokMaksimalTerakhir = History::where("id_item", $item['id'])->orderBy("id", "DESC")->first()->stok_maksimal_customer ?? 0;
+
+        $stokSekarang = (History::where("id_item", $item['id'])->orderBy("id", "DESC")->first()->stok_terakhir_customer ?? 0) + $item['jumlah'];
+
+
+        if($stokSekarang > $stokMaksimalTerakhir){
+          History::updateOrCreate(
+            ['id_customer' => $id_customer, 'id_item' => $item['id']],
+            ['stok_maksimal_customer' => $stokSekarang, 'stok_terakhir_customer' => $stokSekarang]
+          );
+        }else{
+          History::updateOrCreate(
+            ['id_customer' => $id_customer, 'id_item' => $item['id']],
+            ['stok_maksimal_customer' => $stokMaksimalTerakhir, 'stok_terakhir_customer' => $stokSekarang]
+          );
+        }
+      }
+    }
     
     $customertype=Customer::with(['linkCustomerType'])->find($id_customer);
 
     if($id_order == "belum ada"){
       $limitPembelian = Customer::find($id_customer)->limit_pembelian;
       if($limitPembelian == null || $limitPembelian>=$totalPesanan){
-        $id_order=Order::insertGetId([
-          'id_customer' => $id_customer,
-          'id_staff' => $idStaf,
-          'status_enum' => '-1',
-          'created_at'=> now(),
-        ]);
+
+        if($stok_kanvas == true){
+          $id_order=Order::insertGetId([
+            'id_customer' => $id_customer,
+            'id_staff' => $idStaf,
+            'status_enum' => '1',
+            'created_at'=> now(),
+            'metode' => '1'
+          ]);
+        }else{
+          $id_order=Order::insertGetId([
+            'id_customer' => $id_customer,
+            'id_staff' => $idStaf,
+            'status_enum' => '-1',
+            'created_at'=> now(),
+            'metode' => '2'
+          ]);
+        }
         
         $data = [];
         foreach($keranjangItems as $item){
@@ -61,14 +111,30 @@ class OrderController extends Controller
           ]);
         }
 
-        OrderTrack::insert([
-          'id_order' => $id_order,
-          'status_enum' => '1',
-          'waktu_order'=> now(),
-          'created_at'=> now(),
-          'waktu_diteruskan' => now(),
-          'estimasi_waktu_pengiriman' => $estimasiWaktuPengiriman,
-        ]);
+        if($stok_kanvas == true){
+          OrderTrack::insert([
+            'id_order' => $id_order,
+            'status_enum' => '4',
+            'waktu_order'=> now(),
+            'waktu_diteruskan' => now(),
+            'waktu_dikonfirmasi' => now(),
+            'waktu_berangkat' => now(),
+            'waktu_sampai' => now(),
+            'created_at'=> now(),
+            'waktu_diteruskan' => now(),
+            'estimasi_waktu_pengiriman' => $estimasiWaktuPengiriman,
+          ]);
+        }else{
+          OrderTrack::insert([
+            'id_order' => $id_order,
+            'status_enum' => '1',
+            'waktu_order'=> now(),
+            'created_at'=> now(),
+            'waktu_diteruskan' => now(),
+            'estimasi_waktu_pengiriman' => $estimasiWaktuPengiriman,
+          ]);
+        }
+
         OrderItem::insert($data);
         Customer::find($id_customer) -> update([
           'tipe_retur' => $tipeRetur,
@@ -120,15 +186,35 @@ class OrderController extends Controller
             }
         }
 
-        Order::where('id', $id_order)->update([
-          'id_staff' => $idStaf,
-        ]);
+        if($stok_kanvas == true){
+          Order::where('id', $id_order)->update([
+            'id_staff' => $idStaf,
+            'status_enum' => '1',
+            'metode' => '1'
+          ]);
 
-        OrderTrack::where('id_order', $id_order)->update([
-          'waktu_diteruskan' => now(),
-          'status_enum' => '1',
-          'estimasi_waktu_pengiriman' => $estimasiWaktuPengiriman,
-        ]);
+          OrderTrack::where('id_order', $id_order)->update([
+            'waktu_diteruskan' => now(),
+            'waktu_dikonfirmasi' => now(),
+            'waktu_berangkat' => now(),
+            'waktu_sampai' => now(),
+            'status_enum' => '4',
+            'estimasi_waktu_pengiriman' => $estimasiWaktuPengiriman,
+          ]);
+
+        }else{
+          Order::where('id', $id_order)->update([
+            'id_staff' => $idStaf,
+            'metode' => '2'
+          ]);
+
+          OrderTrack::where('id_order', $id_order)->update([
+            'waktu_diteruskan' => now(),
+            'status_enum' => '1',
+            'estimasi_waktu_pengiriman' => $estimasiWaktuPengiriman,
+          ]);
+        }
+
         Customer::find($id_customer) -> update([
           'tipe_retur' => $tipeRetur,
           'metode_pembayaran' => $request->metode_pembayaran
@@ -161,6 +247,7 @@ class OrderController extends Controller
     Trip::find($request->idTrip)->update([
       'waktu_keluar' => now(),
       'updated_at' => now(),
+      'status_enum' => '2',
       'alasan_penolakan' => $request->alasan_penolakan
     ]);
     
@@ -184,15 +271,38 @@ class OrderController extends Controller
     ]);
   }
 
-  public function keluarTripOrderApi(Request $request, $id){
+  public function belanjaLagiOrderApi($id){
     $idCust = Trip::find($id)->id_customer; 
-    Trip::find($id)->update([
-      'waktu_keluar' => now(),
-      'updated_at' => now(),
-      'status_enum' => '1',
-      'alasan_penolakan' => $request->alasan_penolakan
+    Trip::where('id', $id)->update([
+      'waktu_keluar' => null
     ]);
-    Customer::where('id', $idCust)->update(['updated_at'=> now()]);
+
+    return response()->json([
+      'status' => 'success',
+      'data' => [
+        'customer' => Customer::find($idCust)
+      ]
+    ]);
+  }
+
+  public function keluarTripOrderApi(Request $request, $id){
+    $isBelanjaLagi = $request->isBelanjaLagi;
+    $idCust = Trip::find($id)->id_customer; 
+
+    if($isBelanjaLagi == false){
+      Trip::find($id)->update([
+        'waktu_keluar' => now(),
+        'updated_at' => now(),
+        'status_enum' => '1',
+        'alasan_penolakan' => $request->alasan_penolakan
+      ]);
+    }else if($isBelanjaLagi == true){
+      Trip::find($id)->update([
+        'waktu_keluar' => now(),
+        'updated_at' => now()
+      ]);
+    }
+    // Customer::where('id', $idCust)->update(['updated_at'=> now()]);
 
     return response()->json([
       'status' => 'success',
@@ -221,7 +331,7 @@ class OrderController extends Controller
       'koordinat' => $request->koordinat,
       'waktu_masuk' => date('Y-m-d H:i:s', $request->jam_masuk),
       'waktu_keluar' => null,
-      'status_enum' => '2',
+      'status_enum' => '1',
       'created_at'=> now()
     ];
     if($trip == null){
@@ -240,10 +350,11 @@ class OrderController extends Controller
         'counter_to_effective_call' => $customer->counter_to_effective_call+1
       ]);
     }
-    if (Customer::find($id_customer)->koordinat==null) {
-      Customer::find($id_customer)->update(['koordinat' =>  $request->koordinat]);
-    }else{
-      Customer::find($id_customer)->update(['updated_at'=> now()]);
+
+    if($request->koordinat != '0@0'){
+      if (Customer::find($id_customer)->koordinat==null || Customer::find($id_customer)->koordinat=='0@0') {
+        Customer::find($id_customer)->update(['koordinat' =>  $request->koordinat]);
+      }
     }
 
     $date = date("Y-m-d");
@@ -334,6 +445,7 @@ class OrderController extends Controller
     $inactiveVehicles = Vehicle::where('is_active',false)->get();
     $activeVehicles = Vehicle::where('is_active',true)->get();
     $invoice = Invoice::where('id_order','=',$order->id)->first();
+    $completeItems = [];
 
     if($invoice != null){
       $total_bayar = Invoice::where('invoices.id', $invoice->id)
@@ -358,9 +470,22 @@ class OrderController extends Controller
       $pembayaran_terakhir = null;
     }
 
+    foreach($items as $item){
+      $itemSerupa = Item::where('link_item', $item->linkItem->link_item)
+              ->where('harga1_satuan', $item->linkItem->harga1_satuan)
+              ->where('status_enum', '1')
+              ->where('stok', '>=', $item->kuantitas)
+              ->get();
+
+      array_push($completeItems, [
+        'original' => $item, 
+        'itemSerupa' => $itemSerupa
+      ]);
+    }
+
     return view('administrasi.pesanan.detailpesanan',[
       'order' => $order,
-      'items' => $items,
+      'items' => $completeItems,
       'total_bayar' => $total_bayar,
       'pembayaran_terakhir' => $pembayaran_terakhir,
       'inactiveVehicles' => $inactiveVehicles,
@@ -849,7 +974,7 @@ class OrderController extends Controller
   }
 
   public function dataPengajuanOpname(){
-    $opnames = Order::where('id_customer', 0)->where('status_enum', '-1')->get();
+    $opnames = Order::where('id_customer', 0)->where('status_enum', '-1')->orderBy('id', 'DESC')->get();
 
     return view('supervisor.opname.pengajuanOpname', [
       'opnames' => $opnames,
@@ -895,6 +1020,7 @@ class OrderController extends Controller
     ->whereHas('linkOrder', function($q) use($id_staff) {
         $q->where('id_staff', $id_staff);
       })
+    ->orderBy('id','DESC')
     ->with(['linkOrder'])
     ->get();
 
@@ -926,11 +1052,14 @@ class OrderController extends Controller
     $metodes_pembayaran = [
       1 => 'tunai',
       2 => 'giro',
-      3 => 'dicicil',
+      3 => 'transfer',
     ];
 
     $defaultpenjualan = CashAccount::where('default', '2')->first();
-    $listskas = CashAccount::where('account', '<=', '100')->get();
+    $listskas = CashAccount::where('account', '<=', '100')
+                ->where(function ($query) {
+                  $query->whereNull('default')->orWhereIn('default', ['1', '2']);                  
+                })->get();
 
     return view('administrasi.pesanan.pembayaran.index',[
       'order' => $order,
@@ -944,12 +1073,13 @@ class OrderController extends Controller
   }
 
   public function konfirmasiPembayaran(Request $request, order $order){
+    $sisa = (double) $request->sisatagihan;
      $rules = [
         'id_invoice' => ['required'],
         'id_staff_penagih' => ['required'],
         'tanggal' => ['required'],
-        'jumlah_pembayaran' => ['required'],
-        // 'metode_pembayaran' => ['required']
+        'jumlah_pembayaran' => 'required|numeric|max:'.$sisa,
+        'metode_pembayaran' => ['required']
       ];
 
       $validatedData = $request->validate($rules);
@@ -957,9 +1087,9 @@ class OrderController extends Controller
       Pembayaran::insert($validatedData);
       $invoice = Invoice::where('id_order','=',$order->id)->first();
 
-      $invoice->update([
-        'metode_pembayaran' => $request->metode_pembayaran
-      ]);
+      // $invoice->update([
+      //   'metode_pembayaran' => $request->metode_pembayaran
+      // ]);
 
       $total_bayar = Invoice::where('invoices.id', $invoice->id)
       ->join('pembayarans','invoices.id','=','pembayarans.id_invoice')
@@ -997,5 +1127,45 @@ class OrderController extends Controller
       }
       
       return redirect('/administrasi/pesanan/detail/'.$order->id) -> with('addPesananSuccess', 'Berhasil mengonfirmasi pembayaran untuk '.$order->linkCustomer->nama);
+  }
+
+  public function cetakKeseluruhanMemo(Vehicle $vehicle){
+    $invoices = Invoice::whereHas('linkOrder',function($q) use($vehicle){
+      $q->whereHas('linkOrderTrack', function($q) use($vehicle){
+        $q->where('status_enum','2')->where('id_vehicle', $vehicle->id);
+      });
+    })
+    ->with(['linkOrder', 'linkOrder.linkOrderItem', 'linkOrder.linkOrderItem.linkItem'])
+    ->get();
+
+    $administrasi = Staff::select('nama')->where('id','=',auth()->user()->id_users)->first();
+
+    $pdf = PDF::loadview('administrasi.kendaraan.cetakkeseluruhanmemo',[
+      'vehicle' => $vehicle,
+      'invoices' => $invoices,
+      'date' => date("d-m-Y"),
+      'administrasi' => $administrasi          
+    ]);
+
+    return $pdf->stream('memo-'.$vehicle->kode_kendaraan.'.pdf'); 
+  }
+
+  public function changeOrderItem(Request $request, OrderItem $order_item){
+    OrderItem::where('id', $order_item->id)->update([
+      'id_item' => $request->id_item_serupa,
+      'updated_at' => now()
+    ]);
+  
+
+    return redirect('/administrasi/pesanan/detail/'.$order_item->id_order) -> with('addPesananSuccess', 'Berhasil mengubah item' );
+  }
+
+  public function getInvoiceByIdAPI($id){
+    $invoice = Invoice::where('id', $id)->with(['linkOrder', 'linkOrder.linkOrderItem'])->first();
+
+    return response()->json([
+      'data' => $invoice,
+      'status' => 'success'
+    ]);
   }
 }

@@ -1,5 +1,0 @@
-INSERT INTO `statuses` (`id`, `nama`, `tabel`, `detail`, `created_at`, `updated_at`, `order`) VALUES
-(27, 'reimbursement diajukan', 'reimbursements', 'reimbursement telah diajukan, sedang menunggu konfirmasi', NULL, NULL, 0),
-(28, 'reimbursement diproses', 'reimbursements', 'reimbursement telah disetujui, sedang diproses', NULL, NULL, 1),
-(29, 'reimbursement dibayar', 'reimbursements', 'reimbursement telah dibayarkan', NULL, NULL, 2),
-(30, 'reimbursement ditolak', 'reimbursements', 'reimbursement telah ditolak', NULL, NULL, -1)

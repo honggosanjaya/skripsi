@@ -13,16 +13,18 @@
   <div class="px-5 pt-4">
     <h1 class="fs-4 fw-bold mb-4">Stok Marketing</h1>
 
-    <a href="/administrasi/stok/produk" class="btn btn-primary me-2"><span class="iconify me-2 fs-4"
+    <a href="/administrasi/stok/produk" class="btn btn-primary me-2 mb-3"><span class="iconify me-2 fs-4"
         data-icon="icon-park-outline:ad-product"></span>List Produk</a>
-    <a href="/administrasi/stok/pengadaan?route=pengadaan" class="btn btn-success me-2"><span class="iconify me-2 fs-4"
-        data-icon="material-symbols:add-shopping-cart"></span>Pengadaan</a>
-    <a href="/administrasi/stok/opname?route=opname" class="btn btn-success me-2"><span class="iconify fs-4 me-2"
+    <a href="/administrasi/stok/pengadaan?route=pengadaan" class="btn btn-success me-2 mb-3"><span
+        class="iconify me-2 fs-4" data-icon="material-symbols:add-shopping-cart"></span>Pengadaan</a>
+    <a href="/administrasi/stok/opname?route=opname" class="btn btn-success me-2 mb-3"><span class="iconify fs-4 me-2"
         data-icon="healthicons:rdt-result-out-stock-outline"></span>Stok Opname</a>
-    <a href="/administrasi/stok/riwayat" class="btn btn_purple me-2"><span class="iconify me-2 fs-4"
+    <a href="/administrasi/stok/riwayat" class="btn btn_purple me-2 mb-3"><span class="iconify me-2 fs-4"
         data-icon="ant-design:history-outlined"></span>Riwayat Pengadaan</a>
-    <a href="/administrasi/stok/opname/riwayat" class="btn btn_purple me-2"><span class="iconify me-2 fs-4"
+    <a href="/administrasi/stok/opname/riwayat" class="btn btn_purple me-2 mb-3"><span class="iconify me-2 fs-4"
         data-icon="ant-design:history-outlined"></span>Riwayat Stok Opname</a>
+    <a href="/administrasi/stok/stokretur" class="btn btn-info me-2 mb-3 text-white"><span class="iconify me-2 fs-4"
+        data-icon="ph:key-return-bold"></span>Stok Retur</a>
 
     <div class="row justify-content-end mt-4">
       <div class="col-4 d-flex justify-content-end">
@@ -49,7 +51,7 @@
             <th scope="col" class="text-center">Satuan</th>
             <th scope="col" class="text-center">Stok<br>Min</th>
             <th scope="col" class="text-center">Stok<br>Maks</th>
-            <th scope="col" class="text-center">Pengadaan<br>Maks</th>
+            <th scope="col" class="text-center">Stok<br>Retur</th>
             <th scope="col" class="text-center">Harga (Rp)</th>
             <th scope="col" class="text-center">Status</th>
           </tr>
@@ -74,7 +76,7 @@
             <td class="text-center">{{ $item->satuan ?? null }}</td>
             <td class="text-center">{{ number_format($item->min_stok ?? 0, 0, '', '.') }}</td>
             <td class="text-center">{{ number_format($item->max_stok ?? 0, 0, '', '.') }}</td>
-            <td class="text-center">{{ number_format($item->max_pengadaan ?? 0, 0, '', '.') }}</td>
+            <td class="text-center">{{ number_format($item->stok_retur ?? 0, 0, '', '.') }}</td>
             <td>{{ number_format($item->harga_satuan ?? 0, 0, '', '.') }}</td>
             @if ($item->status_enum != null)
               <td class="text-capitalize text-center">{{ $item->status_enum == '1' ? 'Active' : 'Inactive' }}</td>
