@@ -49,7 +49,7 @@ class AuthenticatedSessionController extends Controller
         $request->session()->put('id',User::with('linkStaff.linkStaffRole')->find(auth()->user()->id)->id);
         
         // uncomment untuk user yg blm konfirmasi email agar tdk bisa login
-        $user = User::find(auth()->user()->id);
+        // $user = User::find(auth()->user()->id);
   
         // if(($role != 'shipper' && $role != 'salesman') && $user->email_verified_at == null){
         //   Auth::guard('web')->logout();

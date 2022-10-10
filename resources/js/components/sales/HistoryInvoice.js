@@ -4,6 +4,8 @@ import HeaderSales from './HeaderSales';
 import { UserContext } from '../../contexts/UserContext';
 import { convertPrice } from '../reuse/HelperFunction';
 import Modal from 'react-bootstrap/Modal';
+import Button from 'react-bootstrap/Button';
+import { useHistory } from "react-router";
 
 const HistoryInvoice = () => {
   const { dataUser } = useContext(UserContext);
@@ -11,6 +13,7 @@ const HistoryInvoice = () => {
   const [showModal, setShowModal] = useState(false);
   const [detailInvoice, setDetailInvoice] = useState([]);
   const [detailItem, setDetailItem] = useState([]);
+  const history = useHistory();
 
   var currentMonth = new Date().getMonth() + 1;
   var currentYear = new Date().getFullYear();
@@ -71,6 +74,9 @@ const HistoryInvoice = () => {
     setShowModal(false);
   }
 
+  const handleCetakInvoice = () => {
+    history.push(`/salesman/historyinvoice/cetak/${detailInvoice.id}`);
+  }
 
   return (
     <main className="page_main">
@@ -152,6 +158,10 @@ const HistoryInvoice = () => {
               </table>
             </div>
           </Modal.Body>
+          <Modal.Footer>
+            <Button variant="primary" onClick={handleCetakInvoice}><span className="iconify fs-3 me-1" data-icon="bi:printer"></span>Cetak</Button>
+            <Button variant="danger" onClick={handleCloseModal}><span className="iconify fs-3 me-1" data-icon="carbon:close-outline"></span>Tutup</Button>
+          </Modal.Footer>
         </Modal>}
       </div>
     </main>

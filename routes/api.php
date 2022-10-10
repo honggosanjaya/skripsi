@@ -60,6 +60,7 @@ Route::prefix('salesman')->group(function() {
 
   Route::get('/listitems/{id}/{name}', [ItemController::class, 'searchProductAPI']); 
   Route::get('/filteritems/{id}/{filterby}', [ItemController::class, 'filterProductAPI']);
+  Route::get('/getinvoice/{id}', [OrderController::class, 'getInvoiceByIdAPI']);
 });
 // TRIP
 Route::get('/tripCustomer/{id}', [CustomerController::class, 'dataCustomerApi']);

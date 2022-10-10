@@ -19,11 +19,11 @@ class VerifyEmailController extends Controller
      */
     public function __invoke(EmailVerificationRequest $request)
     {
-      if ($request->user()->tabel=='staffs') {
-        $role = User::with('linkStaff.linkStaffRole')->find(auth()->user()->id)->linkStaff->linkStaffRole->nama;
-      } else {
-        $role = 'customer';
-      }
+      // if ($request->user()->tabel=='staffs') {
+      //   $role = User::with('linkStaff.linkStaffRole')->find(auth()->user()->id)->linkStaff->linkStaffRole->nama;
+      // } else {
+      //   $role = 'customer';
+      // }
 
         if ($request->user()->hasVerifiedEmail()) {
             return redirect()->intended(RouteServiceProvider::HOME.'?verified=1');
@@ -32,21 +32,21 @@ class VerifyEmailController extends Controller
         if ($request->user()->markEmailAsVerified()) {
             event(new Verified($request->user()));
         }
-        // return redirect()->intended(RouteServiceProvider::HOME.'?verified=1');
+        return redirect()->intended(RouteServiceProvider::HOME.'?verified=1');
 
-      if($role == 'salesman' || $role == 'shipper'){
-        Auth::guard('web')->logout();
-        $request->session()->invalidate();
-        $request->session()->regenerateToken();
-        return redirect()->intended('/spa/login');
-      }else if($role == 'owner'){
-        return redirect()->intended('/owner');
-      }else if($role == 'supervisor'){
-        return redirect()->intended('/supervisor');
-      }else if($role == 'administrasi'){
-        return redirect()->intended('/administrasi');
-      }else if($role == 'customer'){
-        return redirect()->intended('/customer');
-      }        
+      // if($role == 'salesman' || $role == 'shipper'){
+      //   Auth::guard('web')->logout();
+      //   $request->session()->invalidate();
+      //   $request->session()->regenerateToken();
+      //   return redirect()->intended('/spa/login');
+      // }else if($role == 'owner'){
+      //   return redirect()->intended('/owner');
+      // }else if($role == 'supervisor'){
+      //   return redirect()->intended('/supervisor');
+      // }else if($role == 'administrasi'){
+      //   return redirect()->intended('/administrasi');
+      // }else if($role == 'customer'){
+      //   return redirect()->intended('/customer');
+      // }        
     }
 }

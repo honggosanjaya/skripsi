@@ -1159,4 +1159,13 @@ class OrderController extends Controller
 
     return redirect('/administrasi/pesanan/detail/'.$order_item->id_order) -> with('addPesananSuccess', 'Berhasil mengubah item' );
   }
+
+  public function getInvoiceByIdAPI($id){
+    $invoice = Invoice::where('id', $id)->with(['linkOrder', 'linkOrder.linkOrderItem'])->first();
+
+    return response()->json([
+      'data' => $invoice,
+      'status' => 'success'
+    ]);
+  }
 }
