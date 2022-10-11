@@ -61,7 +61,7 @@ class CustomerController extends Controller
     public function dataFormTripApi(){
       return response()->json([
         'customerType' => CustomerType::get(),
-        'district' => District::get()
+        'district' => District::orderBy('nama', 'ASC')->get()
       ]);
     }
 
@@ -295,7 +295,7 @@ class CustomerController extends Controller
 
       return view('administrasi.dataCustomer.create', [
         'customer_types' => CustomerType::all(),
-        'districts' => District::all(),
+        'districts' => District::orderBy('nama', 'ASC')->get(),
         'retur_types' => ReturType::all(),
         'statuses' =>  $statuses,
         'tipe_hargas' => $tipe_hargas,
@@ -414,7 +414,7 @@ class CustomerController extends Controller
       $data = [
         'customer' => $customer,
         'customer_types' => CustomerType::all(),
-        'districts' => District::all(),
+        'districts' => District::orderBy('nama', 'ASC')->get(),
         'retur_types' => ReturType::all(),
         "title" => "Data Customer - Detail",
         'old_data' => $oldData,
@@ -440,7 +440,7 @@ class CustomerController extends Controller
       return view('administrasi.dataCustomer.edit', [
         'customer' => $customer,
         'customer_types' => CustomerType::all(),
-        'districts' => District::all(),
+        'districts' => District::orderBy('nama', 'ASC')->get(),
         'retur_types' => ReturType::all(),
         'statuses' =>  $statuses,
         'tipe_hargas' => $tipe_hargas,

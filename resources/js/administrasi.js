@@ -336,11 +336,13 @@ $(document).on('click', '#laporan-penagihan .remove-form', function (e) {
 
 const districtspenagihan = [];
 $(document).on('change', '#laporan-penagihan .select-district', function (e) {
+  $('.spinner-border').removeClass('d-none');
   $.ajax({
     url: window.location.origin + `/api/administrasi/selectdistict/${e.target.value}`,
     method: "GET",
     success: function (data) {
       console.log(data.customersInvoice);
+      $('.spinner-border').addClass('d-none');
       districtspenagihan.push(e.target.value);
       // $('#laporan-penagihan .form-input').not(':first').remove();
       // $('#laporan-penagihan .form-input').last().find('.select-invoice').val('');
@@ -355,10 +357,12 @@ $(document).on('change', '#laporan-penagihan .select-district', function (e) {
           $('#laporan-penagihan .form-input').find('.remove-form').removeClass('d-none');
           $('#laporan-penagihan .form-input').last().find('.select-invoice').val(customer.link_order[0].link_invoice.id);
 
+          $('.spinner-border').removeClass('d-none');
           $.ajax({
             url: window.location.origin + `/api/administrasi/detailpenagihan/${customer.link_order[0].link_invoice.id}`,
             method: "GET",
             success: function (data) {
+              $('.spinner-border').addClass('d-none');
               if (data.status == 'success') {
                 $(`#laporan-penagihan .select-invoice:eq(${index})`).parentsUntil('.form-input').find('.nama-customer').val(data.data.customer.nama);
                 $(`#laporan-penagihan .select-invoice:eq(${index})`).closest('.form-input').find('.jumlah-tagihan').val(data.data.tagihan);
@@ -407,10 +411,12 @@ $(document).on('click', '#perencanaan-kunjungan .remove-form', function (e) {
 
 const districts = [];
 $(document).on('change', '#perencanaan-kunjungan .select-district', function (e) {
+  $('.spinner-border').removeClass('d-none');
   $.ajax({
     url: window.location.origin + `/api/administrasi/selectdistict/${e.target.value}`,
     method: "GET",
     success: function (data) {
+      $('.spinner-border').addClass('d-none');
       districts.push(e.target.value);
       // $('#perencanaan-kunjungan .form-input').not(':first').remove();
       // $('#perencanaan-kunjungan .form-input').last().find('.select-customer').val('');

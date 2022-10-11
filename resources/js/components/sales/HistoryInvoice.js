@@ -44,7 +44,7 @@ const HistoryInvoice = () => {
         },
       })
         .then(response => {
-          // console.log('dataku', response.data.data);
+          console.log('dataku', response.data.data);
           setDataInvoices(response.data.data);
         })
         .catch(error => {
@@ -53,10 +53,17 @@ const HistoryInvoice = () => {
     }
   }, [dataUser, dateStart, dateEnd])
 
-  const getTotalItem = (items, prop) => {
-    return items.reduce(function (a, b) {
-      return a + b[prop];
-    }, 0);
+  const getTotalItem = (items) => {
+    let totalItem = 0;
+    items.map((item) => {
+      totalItem += item.kuantitas
+    });
+
+    return totalItem;
+
+    // return items.reduce(function (a, b) {
+    //   return a + b[prop];
+    // }, 0);
   }
 
   const handleClickInvoice = (idInvoice) => {
@@ -122,7 +129,7 @@ const HistoryInvoice = () => {
                     <tr key={data.id} onClick={() => handleClickInvoice(data.id)}>
                       <td className='align-middle'>{data.link_order.link_customer.nama ?? null}</td>
                       {data.harga_total ? <td className='text-center align-middle'>{convertPrice(data.harga_total)}</td> : <td></td>}
-                      {data.link_order.link_order_item ? <td className='text-center align-middle'>{getTotalItem(data.link_order.link_order_item, "kuantitas")}</td> : <td></td>}
+                      {data.link_order.link_order_item ? <td className='text-center align-middle'>{getTotalItem(data.link_order.link_order_item)}</td> : <td></td>}
                     </tr>
                   ))}
                 </tbody>
