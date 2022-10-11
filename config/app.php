@@ -14,6 +14,7 @@ return [
     */
 
     'name' => env('APP_NAME', 'Laravel'),
+    'enabled_email_confirmation' => false,
 
     /*
     |--------------------------------------------------------------------------

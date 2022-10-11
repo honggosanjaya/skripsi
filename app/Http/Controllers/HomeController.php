@@ -15,10 +15,11 @@ use Illuminate\Http\Request;
 
 class HomeController extends Controller
 {
-  // public function __construct()
-  // {
-  //   $this->middleware(['auth', 'verified']);
-  // }
+    public function __construct(){
+      if(config('app.enabled_email_confirmation')==true){
+        $this->middleware(['auth', 'verified']);
+      }
+    }
   
     public function indexOwner(){
         $role='indexOwner';

@@ -24,11 +24,15 @@ class LoginController extends Controller
         'password' => ['required', 'string', 'max:255']
       ]);
 
-      // Auth::guard('web')->logout();
-      // $request->session()->invalidate();
-      // $request->session()->regenerateToken();
+      if(config('app.enabled_email_confirmation')==true){
+        Auth::guard('web')->logout();
+        $request->session()->invalidate();
+        $request->session()->regenerateToken();
+      }
 
-      User::with('linkStaff.linkStaffRole')->where('email',$request->email)->first()->linkStaff->linkStaffRole->nama;
+      if(config('app.enabled_email_confirmation')==false){
+        User::with('linkStaff.linkStaffRole')->where('email',$request->email)->first()->linkStaff->linkStaffRole->nama;
+      }
 
       if ($validator->fails()){
         return response()->json([
@@ -44,13 +48,14 @@ class LoginController extends Controller
         ], 401);
       }
 
-      // uncomment untuk user yg blm konfirmasi email agar tdk bisa login
-      if($user != null){
-        if($user->email_verified_at == null){
-          return response() -> json([
-            'status' => 'error',
-            'message' => 'Anda Belum Mengonfirmasi Email'
-          ], 401);
+      if(config('app.enabled_email_confirmation')==true){
+        if($user != null){
+          if($user->email_verified_at == null){
+            return response() -> json([
+              'status' => 'error',
+              'message' => 'Anda Belum Mengonfirmasi Email'
+            ], 401);
+          }
         }
       }
 
