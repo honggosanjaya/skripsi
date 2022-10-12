@@ -335,6 +335,8 @@ $(document).on('click', '#laporan-penagihan .remove-form', function (e) {
 
 
 const districtspenagihan = [];
+let isNoInvoice = false;
+
 $(document).on('change', '#laporan-penagihan .select-district', function (e) {
   $('.spinner-border').removeClass('d-none');
   $.ajax({
@@ -349,9 +351,13 @@ $(document).on('change', '#laporan-penagihan .select-district', function (e) {
       $('.select-invoice option').removeClass('disabled-option');
       $('.select-district option[value="' + e.target.value + '"]').attr("disabled", true);
 
+      if (data.customersInvoice.length == 0) {
+        isNoInvoice = true;
+      }
+
       if (data.customersInvoice.length > 0) {
         data.customersInvoice.map((customer, index) => {
-          countCust++;
+          // countCust++;
           $('.select-invoice option[value="' + customer.link_order[0].link_invoice.id + '"]').addClass('disabled-option');
           $('#laporan-penagihan .form-input').last().clone().appendTo('#laporan-penagihan .form-group');
           $('#laporan-penagihan .form-input').find('.remove-form').removeClass('d-none');
@@ -370,10 +376,18 @@ $(document).on('change', '#laporan-penagihan .select-district', function (e) {
             },
           });
 
-          if (countCust == 1) {
-            $('#laporan-penagihan .form-input').find('.remove-form').addClass('d-none');
-          }
+          // if (countCust == 1) {
+          //   $('#laporan-penagihan .form-input').find('.remove-form').addClass('d-none');
+          // }
         })
+
+        const firstSelect = $('.select-invoice').first().val();
+
+        if (isNoInvoice && firstSelect == null) {
+          $('#laporan-penagihan .form-input').first().remove();
+        }
+
+        isNoInvoice = false;
 
         if (districtspenagihan.length == 1) {
           $('#laporan-penagihan .form-input').first().remove();
@@ -410,6 +424,7 @@ $(document).on('click', '#perencanaan-kunjungan .remove-form', function (e) {
 })
 
 const districts = [];
+let isNoCustomer = false;
 $(document).on('change', '#perencanaan-kunjungan .select-district', function (e) {
   $('.spinner-border').removeClass('d-none');
   $.ajax({
@@ -423,6 +438,10 @@ $(document).on('change', '#perencanaan-kunjungan .select-district', function (e)
       $('.select-customer option').removeClass('disabled-option');
       $('.select-district option[value="' + e.target.value + '"]').attr("disabled", true);
 
+      if (data.customers.length == 0) {
+        isNoCustomer = true;
+      }
+
       if (data.customers.length > 0) {
         data.customers.map((customer, index) => {
           countCust++;
@@ -430,10 +449,20 @@ $(document).on('change', '#perencanaan-kunjungan .select-district', function (e)
           $('#perencanaan-kunjungan .form-input').last().clone().appendTo('#perencanaan-kunjungan .form-group');
           $('#perencanaan-kunjungan .form-input').find('.remove-form').removeClass('d-none');
           $('#perencanaan-kunjungan .form-input').last().find('.select-customer').val(customer.id);
+
           if (countCust == 1) {
             $('#perencanaan-kunjungan .form-input').find('.remove-form').addClass('d-none');
           }
         })
+
+        const firstSelect = $('.select-customer').first().val();
+
+        if (isNoCustomer && firstSelect == null) {
+          $('#perencanaan-kunjungan .form-input').first().remove();
+        }
+
+        isNoCustomer = false;
+
         if (districts.length == 1) {
           $('#perencanaan-kunjungan .form-input').first().remove();
         }
