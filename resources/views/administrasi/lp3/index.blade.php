@@ -69,7 +69,12 @@
 
           <div class="row mb-3">
             <div class="col-6">
-              <label class="form-label">Kunjungi Berdasar Wilayah</label>
+              <div class="d-flex justify-content-between">
+                <label class="form-label">Kunjungi Berdasar Wilayah</label>
+                <div class="spinner-border d-none" role="status">
+                  <span class="visually-hidden">Loading...</span>
+                </div>
+              </div>
               <select class="form-select select-district" id="id_district" name="id_district">
                 <option disabled selected value>
                   Pilih Wilayah

@@ -48,17 +48,17 @@ class AuthenticatedSessionController extends Controller
         $request->session()->put('counterAdminVisitKas', 0);
         $request->session()->put('id',User::with('linkStaff.linkStaffRole')->find(auth()->user()->id)->id);
         
-        // uncomment untuk user yg blm konfirmasi email agar tdk bisa login
-        // $user = User::find(auth()->user()->id);
+        if(config('app.enabled_email_confirmation')==true){
+          $user = User::find(auth()->user()->id);
+          // UNCOMMENT JIKA TIDAK MENGGUNAKAN DEFAULT lARAVEL
+          // if(($role != 'shipper' && $role != 'salesman') && $user->email_verified_at == null){
+          //   Auth::guard('web')->logout();
+          //   $request->session()->invalidate();
+          //   $request->session()->regenerateToken();
+          //   return redirect('/login')->with('error','Anda Belum Mengonfirmasi Email');
+          // }
+        }
   
-        // if(($role != 'shipper' && $role != 'salesman') && $user->email_verified_at == null){
-        //   Auth::guard('web')->logout();
-        //   $request->session()->invalidate();
-        //   $request->session()->regenerateToken();
-        //   return redirect('/login')->with('error','Anda Belum Mengonfirmasi Email');
-        // }
-
-
         if ($role!='customer') {
             if(User::with('linkStaff.linkStaffRole')->find(auth()->user()->id)->linkStaff->status_enum=='-1'){
                 Auth::guard('web')->logout();

@@ -118,3 +118,4 @@ Route::get('/salesman/itemkanvas/{idStaf}', [ItemController::class, 'getItemKanv
 Route::get('/salesman/itemkanvasactive/{idStaf}', [ItemController::class, 'getActiveItemKanvasAPI']);
 
 Route::post('/salesman/getProductCatalog', [ItemController::class, 'getProductCatalog']);
+Route::post('/salesman/getDetailProductCatalog', [ItemController::class, 'getDetailProductCatalog']);

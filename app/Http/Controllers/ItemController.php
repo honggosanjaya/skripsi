@@ -1006,7 +1006,6 @@ class ItemController extends Controller
       $listItems = [];
 
       $tipeHarga = Customer::find($request->id_customer)->tipe_harga;
-      $diskonTipeCust = Customer::find($request->id_customer)->linkCustomerType->diskon;
 
       $items = Item::where('status_enum', '1')
               ->select('id', 'nama', 'kode_barang', 'stok', 'satuan', 'harga1_satuan', 'harga2_satuan', 'harga3_satuan', 'deskripsi') 
@@ -1024,54 +1023,83 @@ class ItemController extends Controller
           'deskripsi' => $item->deskripsi
         ];
 
-        if($diskonTipeCust > 0){
-          if($tipeHarga == 2 && $item->harga2_satuan ?? null){
-            $data['harga_satuan'] = $item->harga2_satuan - ($item->harga2_satuan * $diskonTipeCust / 100);
-          }if($tipeHarga == 3 && $item->harga3_satuan ?? null){
-            $data['harga_satuan'] = $item->harga3_satuan - ($item->harga3_satuan * $diskonTipeCust / 100);
-          } else{
-            $data['harga_satuan'] = $item->harga1_satuan - ($item->harga1_satuan * $diskonTipeCust / 100);
-          }
-        }else{
-          if($tipeHarga == 2 && $item->harga2_satuan ?? null){
-            $data['harga_satuan'] = $item->harga2_satuan;
-          }if($tipeHarga == 3 && $item->harga3_satuan ?? null){
-            $data['harga_satuan'] = $item->harga3_satuan;
-          } else{
-            $data['harga_satuan'] = $item->harga1_satuan;
-          }
+        if($tipeHarga == 2 && $item->harga2_satuan ?? null){
+          $data['harga_satuan'] = $item->harga2_satuan;
+        }if($tipeHarga == 3 && $item->harga3_satuan ?? null){
+          $data['harga_satuan'] = $item->harga3_satuan;
+        } else{
+          $data['harga_satuan'] = $item->harga1_satuan;
         }
 
-        $harga_setelah_diskon = $data['harga_satuan'];
+        array_push($listItems, $data);
+      }
+      
+      return response()->json([
+        'status' => 'success',
+        'data' => $listItems,
+      ]); 
+    }
 
+    public function getDetailProductCatalog(Request $request){
+      $idItem = $request->id_item;
+      $tipeHarga = $request->tipe_harga;
+      $detailItem = [];
+
+      $item = Item::where('id', $idItem)
+                // ->select('id', 'nama', 'kode_barang', 'stok', 'satuan', 'harga1_satuan', 'harga2_satuan', 'harga3_satuan', 'deskripsi', 'link_item', 'id_category') 
+                ->with(['linkGaleryItem'])
+                ->first();
+
+      $data = [
+        'id' => $item->id,
+        'nama' => $item->nama,
+        'kode_barang' => $item->kode_barang,
+        'stok' => $item->stok,
+        'satuan' => $item->satuan,
+        'deskripsi' => $item->deskripsi,
+        'link_item' => $item->link_item,
+        'link_galery_item' => $item->linkGaleryItem,
+      ];
+
+      if($tipeHarga == 3 && $item->harga3_satuan != null){
+        $data['harga_satuan'] = $item->harga3_satuan;
+      }else if($tipeHarga == 2  && $item->harga2_satuan != null){
+        $data['harga_satuan'] = $item->harga2_satuan;
+      }else{
+        $data['harga_satuan'] = $item->harga1_satuan;
+      }
+      
+      $harga_setelah_diskon = $data['harga_satuan'];
+
+      if($request->diskon_sales){
         foreach($request->diskon_sales as $diskonSales){
           if($diskonSales != 0){
             $harga_setelah_diskon = ($harga_setelah_diskon - ($harga_setelah_diskon * $diskonSales / 100));
           }
         }
-
-        $data['harga_diskon_sales'] = $harga_setelah_diskon;
-        array_push($listItems, $data);
       }
-      
-      // dd($listItems);
+  
+      $data['harga_diskon_sales'] = $harga_setelah_diskon;
+      array_push($detailItem, $data);
+ 
+      $relatedItem = Item::where('link_item', $item->link_item)->where('id', '!=', $item->id)->get();
+      $tenNewProduct = Item::latest()->where('id', '!=', $item->id)->take(10)->get();
 
-      $orderItemUnconfirmed=OrderItem::
-      whereHas('linkOrder',function($q) {
-        $q->where('status_enum', '-1');
-      })
-      ->whereHas('linkOrder',function($q) {
-        $q->whereHas('linkOrderTrack',function($q) {
-          $q->where('status_enum','!=', '-1');
-        });
-      })
-      ->select('id_item', DB::raw('SUM(kuantitas) as jumlah_blmkonfirmasi'))      
-      ->groupBy('id_item')->pluck('jumlah_blmkonfirmasi','id_item')->all();
-    
+      if($item->id_category != null){
+        $fiveCategoryProduct = Item::where('id_category', $item->id_category)
+        ->where('id', '!=', $idItem)->take(5)->get();
+      }else{
+        $fiveCategoryProduct = [];
+      }
+
       return response()->json([
         'status' => 'success',
-        'data' => $listItems,
-        "orderRealTime" => $orderItemUnconfirmed
+        'data' => [
+          'item' => $detailItem,
+          'related_item' => $relatedItem,
+          'new_item' => $tenNewProduct,
+          'category_item' => $fiveCategoryProduct
+        ],
       ]); 
     }
 }
