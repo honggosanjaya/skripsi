@@ -2,7 +2,8 @@ import React, { useEffect, useState, useContext, Fragment } from 'react';
 import axios from 'axios';
 import Webcam from "react-webcam";
 import HeaderSales from './HeaderSales';
-import { useParams, useHistory, Link } from 'react-router-dom'
+import { useParams, useHistory, Link } from 'react-router-dom';
+import { KeranjangSalesContext } from '../../contexts/KeranjangSalesContext';
 import { UserContext } from '../../contexts/UserContext';
 import AlertComponent from '../reuse/AlertComponent';
 import urlAsset from '../../config';
@@ -18,6 +19,7 @@ const videoConstraints = {
 
 const TripSales = () => {
   const { id } = useParams();
+  const { setIdCustomer } = useContext(KeranjangSalesContext);
   const history = useHistory();
   const { dataUser } = useContext(UserContext);
   const [namaCust, setNamaCust] = useState('');
@@ -54,6 +56,12 @@ const TripSales = () => {
   const [isFromGalery, setISFromGalery] = useState(false);
   const [dataUri, setDataUri] = useState('');
   const [facingMode, setFacingMode] = useState(FACING_MODE_USER);
+
+  useEffect(() => {
+    if (id != null) {
+      setIdCustomer(id);
+    }
+  }, [id])
 
   useEffect(() => {
     navigator.permissions.query({ name: 'geolocation' }).then((result) => {

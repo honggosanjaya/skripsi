@@ -8,6 +8,7 @@ const KeranjangSalesContextProvider = (props) => {
   const [produks, setProduks] = useState([]);
   const [isBelanjaLagi, setIsBelanjaLagi] = useState(false);
   const [canOrderKanvas, setCanOrderKanvas] = useState(false);
+  const [idCustomer, setIdCustomer] = useState(null);
 
   const getAllProduks = () => {
     const produks = KeranjangDB.getAllProduks();
@@ -31,7 +32,9 @@ const KeranjangSalesContextProvider = (props) => {
     getAllProduks,
     isBelanjaLagi,
     setIsBelanjaLagi,
-    canOrderKanvas
+    canOrderKanvas,
+    idCustomer,
+    setIdCustomer
   }
 
   return (
