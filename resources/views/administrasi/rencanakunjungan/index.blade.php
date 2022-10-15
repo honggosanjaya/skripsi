@@ -139,7 +139,7 @@
             <tr>
               <th scope="col" class="text-center">No</th>
               <th scope="col" class="text-center">Nama Customer</th>
-              <th scope="col" class="text-center">Nama Penagih</th>
+              <th scope="col" class="text-center">Nama Salesman</th>
               <th scope="col" class="text-center">Tanggal</th>
               <th scope="col" class="text-center">Status</th>
             </tr>
@@ -152,7 +152,7 @@
                 <td>{{ $history->linkStaff->nama ?? null }}</td>
                 <td>{{ $history->tanggal ?? null }}</td>
                 @if ($history->status_enum != null)
-                  <td>{{ $history->status_enum == '1' ? 'Sudah Ditagih' : 'Belum Ditagih' }}</td>
+                  <td>{{ $history->status_enum == '1' ? 'Sudah Dikunjungi' : 'Belum Dikunjungi' }}</td>
                 @else
                   <td></td>
                 @endif
