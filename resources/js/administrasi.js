@@ -477,25 +477,16 @@ $(document).on('change', '#perencanaan-kunjungan .select-district', function (e)
 // PDF
 $("#detail-pesanan-admin .btn-unduh-invoice").click(function () {
   const idOrder = $('#detail-pesanan-admin .btn-unduh-invoice').val();
-  const thisis = $(this);
 
-  $.ajax({
-    url: window.location.origin + `/api/administrasi/unduhinvoice/${idOrder}`,
-    method: "GET",
-    success: function (data) {
-      if (data.status == 'success') {
-        $(`<div class="position-relative"><iframe id="myFrame"
-        src="http://127.0.0.1:8000/administrasi/pesanan/detail/${idOrder}/cetak-invoice#toolbar=0"
-        style="margin-top:30px;" frameborder="0" width="100%" height="500px">
+  $(`<div class="position-relative"><iframe id="myFrame"
+        src="${window.location.origin}/administrasi/pesanan/detail/${idOrder}/cetak-invoice#toolbar=0"
+        style="margin-top:30px;" frameborder="0" width="100%" height="570px">
       </iframe> <div class="embed-cover"></div></div>`).appendTo("#detail-pesanan-admin .detail-pesanan-admin_action");
 
-        const counter_unduh = data.counter_unduh.toString();
-        thisis.children('span').text(counter_unduh);
-        $('#detail-pesanan-admin .btn-print-pdf').removeClass('d-none');
-        $('#detail-pesanan-admin .btn-close-pdf').removeClass('d-none');
-      }
-    },
-  });
+  setTimeout(() => {
+    $('#detail-pesanan-admin .btn-print-pdf').removeClass('d-none');
+    $('#detail-pesanan-admin .btn-close-pdf').removeClass('d-none');
+  }, 3000)
 });
 
 $("#detail-pesanan-admin .btn-print-pdf").click(function () {

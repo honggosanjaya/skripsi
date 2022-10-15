@@ -109,7 +109,6 @@ Route::post('administrasi/stok/pengadaan/remove', [CartController::class, 'remov
 
 Route::post('/getrencanakunjungan/{id}', [RencanaTripController::class, 'datakunjunganAPI']);
 
-Route::get('/administrasi/unduhinvoice/{order:id}', [OrderController::class, 'unduhInvocieBtnAPI']);
 Route::get('/administrasi/selectdistict/{district:id}', [DistrictController::class, 'getCustByDistrictAPI']);
 Route::get('/administrasi/getDetailKanvas/{id}', [ItemController::class, 'getDetailKanvas']);
 Route::get('/administrasi/checkSalesHasKanvas/{id}', [ItemController::class, 'checkSalesHasKanvasAPI']);

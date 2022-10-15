@@ -238,7 +238,6 @@ class OrderController extends Controller
       'id_event' => $id_event,
       'nomor_invoice' => $invoice_count,
       'harga_total' => $totalPesanan,
-      'counter_unduh' => 0,
       'metode_pembayaran' => $request->metode_pembayaran,
       'jatuh_tempo' => $jatuh_tempo,
       'created_at' => now()
@@ -632,20 +631,6 @@ class OrderController extends Controller
         'order' => $order,
         'datas' => $sameVehicle,
         'selectedVehicle' => $selectedVehicle
-    ]);
-  }
-
-
-  public function unduhInvocieBtnAPI(Order $order){
-    $invoice = Invoice::where('id_order', $order->id)->first();
-
-    Invoice::where('id_order', $order->id)->update([
-      'counter_unduh' => $invoice->counter_unduh+1
-    ]);
-
-    return response()->json([
-      'status' => 'success',
-      'counter_unduh' => $invoice->counter_unduh+1
     ]);
   }
 
