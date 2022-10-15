@@ -236,9 +236,20 @@
                 <label for="gambar" class="form-label">Gambar</label>
                 <input type="hidden" name="oldImage" value="{{ $item->gambar }}">
 
+                {{-- <br>
+                <label class="form-label">id add</label> --}}
                 <input type="hidden" name="listIdGalery" class="input-galery-change">
+
+                {{-- <br>
+                <label class="form-label">id remove</label> --}}
                 <input type="hidden" name="listIdGaleryRmv" class="input-galery-remove">
+
+                {{-- <br>
+                <label class="form-label">first change</label> --}}
                 <input type="hidden" name="isFirstPositionChange" class="isFirstPositionChange">
+
+                {{-- <br>
+                <label class="form-label">first remove</label> --}}
                 <input type="hidden" name="isFirstPositionChangeRmv" class="isFirstPositionChangeRmv">
 
                 @if (count($galeryItems) > 0)
@@ -269,16 +280,21 @@
                   <div class="form-input">
                     <img class="img-preview img-fluid">
                     <input type="file" id="gambar" name="gambar[]" accept="image/*"
-                      class="form-control input-gambar @error('gambar') is-invalid @enderror" onchange="prevImg(1, 0)">
+                      class="form-control input-gambar @error('gambar') is-invalid @enderror" onchange="prevImg(1, 0)"
+                      isjustinsert="true">
                     @error('gambar')
                       <div class="invalid-feedback">
                         {{ $message }}
                       </div>
                     @enderror
                     <div class="d-flex justify-content-end my-3">
-                      <button class="btn btn-danger remove-form me-3" type="button">
+                      <button class="btn btn-danger remove-form-type2 me-3" type="button" onclick="rmvImg(1, 0, this)"
+                        isjustinsert="true">
                         -
                       </button>
+                      {{-- <button class="btn btn-danger remove-form me-3" type="button">
+                        -
+                      </button> --}}
                       <button class="btn btn-success add-form" type="button">
                         +
                       </button>
@@ -310,10 +326,6 @@
       }
 
       function rmvImg(pos, idGalery, thisis) {
-        if (pos == 1) {
-          $('.isFirstPositionChangeRmv').val('true');
-        }
-
         Swal.fire({
           title: 'Apakah anda yakin untuk menghapus gambar ?',
           showDenyButton: true,
@@ -323,17 +335,44 @@
           if (result.isConfirmed) {
             countCust--;
             $(thisis).parents('.form-input').remove();
-            console.log('countCust', countCust)
+
             if (countCust <= 1) {
-              $('.form-input').find('.remove-form-type2').addClass('d-none');
+              $('.form-input').find('.remove-form').addClass('d-none');
               $('.form-input').find('.remove-form-type2').addClass('d-none');
             }
 
-            let oldVal = $('.input-galery-remove').val();
-            if (oldVal != '') {
-              $('.input-galery-remove').val(oldVal + '-' + idGalery);
-            } else {
-              $('.input-galery-remove').val(idGalery);
+            const attr = $(thisis).attr('isjustinsert');
+            // console.log('attr', attr)
+
+            if (attr === undefined || attr === false) {
+              if (pos == 1) {
+                $('.isFirstPositionChangeRmv').val('true');
+              }
+              let oldVal = $('.input-galery-remove').val();
+              if (oldVal != '') {
+                $('.input-galery-remove').val(oldVal + '-' + idGalery);
+              } else {
+                $('.input-galery-remove').val(idGalery);
+              }
+            } else if (attr === 'true') {
+              if (pos == 1) {
+                $('.isFirstPositionChange').val('');
+              }
+
+              $('.input-galery-change').val(
+                function(index, value) {
+                  return value.substr(0, value.length - 1);
+                })
+
+              const fullStr = $('.input-galery-change').val();
+              const lastChar = fullStr.substr(fullStr.length - 1);
+
+              if (lastChar == '+') {
+                $('.input-galery-change').val(
+                  function(index, value) {
+                    return value.substr(0, value.length - 1);
+                  })
+              }
             }
           } else if (result.isDenied) {
             Swal.fire('Aksi dibatalkan', '', 'info');
@@ -372,6 +411,8 @@
         $('.form-input').find('.remove-form').removeClass('d-none');
         $('.form-input').find('.remove-form-type2').removeClass('d-none');
         $('.form-input').last().find('.input-gambar').val('');
+        $('.form-input').last().find('.remove-form-type2').attr('isjustinsert', 'true');
+        $('.form-input').last().find('.input-gambar').attr('isjustinsert', 'true');
 
         let inputGambarLength = $('.input-gambar').length;
         $('.form-input').last().find('.input-gambar').attr('onchange', 'prevImg(' + inputGambarLength + ')');

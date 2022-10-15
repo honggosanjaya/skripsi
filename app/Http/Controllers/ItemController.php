@@ -459,7 +459,6 @@ class ItemController extends Controller
 
     Item::where('id', $id)->update($validatedData);
 
-
     $listIdGaleryToInsert = []; 
     if($request->listIdGalery != null){
       $listIdGalery = explode("+",$request->listIdGalery);
@@ -470,11 +469,9 @@ class ItemController extends Controller
       }
     }
 
-
     $listGalery = [];
     if ($request->hasfile('gambar')) {  
       $images = $request->file('gambar');
-
       foreach($images as $key=>$image){
         $nama_item = str_replace(" ", "-", $request->nama);
         $file_name = 'ITM-' . $nama_item . '-' .$key . '-' .$key . '-' .date_format(now(),"YmdHis"). '.' . $image->extension();
@@ -488,10 +485,13 @@ class ItemController extends Controller
       }
     }
 
+    // dd($listIdGaleryToInsert);
+    // dd($listGalery);
+
     $result = array();
     foreach($listIdGaleryToInsert as $key=>$val){ 
-        $val2 = $listGalery[$key]; 
-        $result[$key] = $val + $val2; 
+      $val2 = $listGalery[$key]; 
+      $result[$key] = $val + $val2; 
     }
 
     // dd($result);
@@ -550,6 +550,11 @@ class ItemController extends Controller
           if($gambar_item_lama != null){
             \Storage::delete('/item/'.$gambar_item_lama);
           }
+        }else{
+          Item::where('id', $idItm)->update([
+            'gambar' => null,
+            'updated_at' => now()
+          ]);
         }
       }
     }
