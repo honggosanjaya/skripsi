@@ -288,7 +288,7 @@ $(".alert_jatuhtempo").click(function () {
 });
 
 
-// PENAGIHAN LP3
+// ====================== LP3 ======================
 var count = $("#laporan-penagihan .form-group").children().length;
 
 $(document).on('change', '#laporan-penagihan .select-invoice', function (e) {
@@ -308,10 +308,8 @@ $(document).on('change', '#laporan-penagihan .select-invoice', function (e) {
 $(document).on('click', '#laporan-penagihan .add-form', function (e) {
   count++;
   let value = $(this).parents('#laporan-penagihan .form-input').find('.select-invoice option:selected').val();
-  // $('.select-invoice option[value="' + value + '"]').attr("disabled", true);
   $('.select-invoice option[value="' + value + '"]').addClass('disabled-option');
   $('#laporan-penagihan .form-input').last().clone().appendTo('#laporan-penagihan .form-group');
-  // $(this).addClass('d-none');
   $('#laporan-penagihan .form-input').find('.remove-form').removeClass('d-none');
   $('#laporan-penagihan .form-input').last().find('.select-invoice').val('');
   $('#laporan-penagihan .form-input').last().find('.nama-customer').val('pilih invoice dulu');
@@ -324,10 +322,8 @@ $(document).on('click', '#laporan-penagihan .add-form', function (e) {
 $(document).on('click', '#laporan-penagihan .remove-form', function (e) {
   count--;
   let value = $(this).parents('#laporan-penagihan .form-input').find('.select-invoice option:selected').val();
-  // $('.select-invoice option[value="' + value + '"]').removeAttr("disabled");
   $('.select-invoice option[value="' + value + '"]').removeClass('disabled-option');
   $(this).parents('#laporan-penagihan .form-input').remove();
-  // $('#laporan-penagihan .form-input:last').find('.add-form').removeClass('d-none');
   if (count == 1) {
     $('#laporan-penagihan .form-input').find('.remove-form').addClass('d-none');
   }
@@ -391,8 +387,31 @@ $(document).on('change', '#laporan-penagihan .select-district', function (e) {
   });
 });
 
-// ======================
-// Rencana Kunjungan
+$(document).on('click', '#laporan-penagihan .delete-all', function (e) {
+  Swal.fire({
+    title: 'Apakah anda yakin membatalkan pembuatan LP3 ?',
+    icon: 'warning',
+    showCancelButton: true,
+    confirmButtonColor: '#3085d6',
+    cancelButtonColor: '#d33',
+    confirmButtonText: 'Ya!'
+  }).then((result) => {
+    if (result.isConfirmed) {
+      $('#laporan-penagihan .form-input').not(':first').remove();
+      $('#laporan-penagihan .form-input:first').find('.select-invoice').prop('selectedIndex', 0);
+      $('#laporan-penagihan .form-input:first').find('.select-invoice option').removeClass('disabled-option');
+
+      $('#laporan-penagihan .form-input:first').find('.nama-customer').val('pilih invoice dulu');
+      $('#laporan-penagihan .form-input:first').find('.jumlah-tagihan').val('pilih invoice dulu');
+
+      $('#laporan-penagihan .select-district').prop('selectedIndex', 0);
+      $('#laporan-penagihan .select-district option').removeAttr('disabled');
+    }
+  })
+})
+// ====================== END LP3 ======================
+
+//  ====================== RENCANA KUNJUNGAN ======================
 var countCust = $("#perencanaan-kunjungan .form-group").children().length;
 $(document).on('click', '#perencanaan-kunjungan .add-form', function (e) {
   countCust++;
@@ -464,10 +483,27 @@ $(document).on('change', '#perencanaan-kunjungan .select-district', function (e)
   });
 });
 
+$(document).on('click', '#perencanaan-kunjungan .delete-all', function (e) {
+  Swal.fire({
+    title: 'Apakah anda yakin membatalkan pembuatan perencanaan kunjungan ?',
+    icon: 'warning',
+    showCancelButton: true,
+    confirmButtonColor: '#3085d6',
+    cancelButtonColor: '#d33',
+    confirmButtonText: 'Ya!'
+  }).then((result) => {
+    if (result.isConfirmed) {
+      $('#perencanaan-kunjungan .form-input').not(':first').remove();
+      $('#perencanaan-kunjungan .form-input:first').find('.select-customer').prop('selectedIndex', 0);
+      $('#perencanaan-kunjungan .form-input:first').find('.select-customer option').removeClass('disabled-option');
+      $('#perencanaan-kunjungan .select-district').prop('selectedIndex', 0);
+      $('#perencanaan-kunjungan .select-district option').removeAttr('disabled');
+    }
+  })
+})
+// ====================== END RENCANA KUNJUNGAN ======================
 
-// ===========================
-
-// PDF
+// =========================== PDF ===========================
 $("#detail-pesanan-admin .btn-unduh-invoice").click(function () {
   const idOrder = $('#detail-pesanan-admin .btn-unduh-invoice').val();
 
