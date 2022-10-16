@@ -3,7 +3,7 @@
 namespace App\Models;
 
 use App\Models\Customer;
-use App\Models\District;
+// use App\Models\District;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 

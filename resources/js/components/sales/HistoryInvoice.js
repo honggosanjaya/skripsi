@@ -6,14 +6,16 @@ import { convertPrice } from '../reuse/HelperFunction';
 import Modal from 'react-bootstrap/Modal';
 import Button from 'react-bootstrap/Button';
 import { useHistory } from "react-router";
+import LoadingIndicator from '../reuse/LoadingIndicator';
 
 const HistoryInvoice = () => {
   const { dataUser } = useContext(UserContext);
+  const history = useHistory();
   const [dataInvoices, setDataInvoices] = useState([]);
   const [showModal, setShowModal] = useState(false);
   const [detailInvoice, setDetailInvoice] = useState([]);
   const [detailItem, setDetailItem] = useState([]);
-  const history = useHistory();
+  const [isLoading, setIsLoading] = useState(false);
 
   var currentMonth = new Date().getMonth() + 1;
   var currentYear = new Date().getFullYear();
@@ -31,6 +33,7 @@ const HistoryInvoice = () => {
 
   useEffect(() => {
     if (dataUser) {
+      setIsLoading(true);
       axios({
         method: "post",
         url: `${window.location.origin}/api/historyinvoice`,
@@ -46,9 +49,11 @@ const HistoryInvoice = () => {
         .then(response => {
           console.log('dataku', response.data.data);
           setDataInvoices(response.data.data);
+          setIsLoading(false);
         })
         .catch(error => {
           console.log(error.message);
+          setIsLoading(false);
         });
     }
   }, [dataUser, dateStart, dateEnd])
@@ -88,7 +93,7 @@ const HistoryInvoice = () => {
   return (
     <main className="page_main">
       <HeaderSales title="Riwayat Invoice" />
-
+      {isLoading && <LoadingIndicator />}
       <div className="page_container pt-4">
         <label>Tanggal Mulai</label>
         <div className="input-group">

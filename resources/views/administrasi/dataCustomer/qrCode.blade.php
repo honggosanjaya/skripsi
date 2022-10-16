@@ -16,7 +16,6 @@
     <h1 class="fs-4 mb-4 text-center"><b>Kode QR untuk {{ $customer->nama }}</b></h1>
 
     <div class="text-center">
-      {{-- {!! QrCode::size(300)->generate('https://salesman-dev.suralaya.web.id/salesman/trip/' . $customer->id) !!} --}}
       {!! QrCode::size(300)->generate(env('APP_URL') . '/salesman/trip/' . $customer->id) !!}
     </div>
 

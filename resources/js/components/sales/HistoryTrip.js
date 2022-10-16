@@ -3,6 +3,7 @@ import axios from 'axios';
 import HeaderSales from './HeaderSales';
 import { UserContext } from '../../contexts/UserContext';
 import { getTime } from "../reuse/HelperFunction";
+import LoadingIndicator from '../reuse/LoadingIndicator';
 
 const HistoryTrip = () => {
   const { dataUser } = useContext(UserContext);
@@ -14,8 +15,10 @@ const HistoryTrip = () => {
   const [dataEC, setDataEC] = useState([]);
   const [dataTargetKunjungan, setDataTargetKunjungan] = useState([]);
   const [dataTargetEC, setDataTargetEC] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
+    setIsLoading(true);
     axios({
       method: "get",
       url: `${window.location.origin}/api/salesman/target`,
@@ -26,9 +29,11 @@ const HistoryTrip = () => {
       .then(response => {
         console.log('data target', response.data.data);
         setDataTarget(response.data.data);
+        setIsLoading(false);
       })
       .catch(error => {
         console.log(error.message);
+        setIsLoading(false);
       });
   }, [])
 
@@ -47,6 +52,7 @@ const HistoryTrip = () => {
 
   useEffect(() => {
     if (dataUser.id_staff) {
+      setIsLoading(true);
       axios({
         method: "post",
         url: `${window.location.origin}/api/historytrip/${dataUser.id_staff}`,
@@ -60,9 +66,11 @@ const HistoryTrip = () => {
         .then(response => {
           console.log('data kunjungan', response.data.data);
           setDataKunjungans(response.data.data);
+          setIsLoading(false);
         })
         .catch(error => {
           console.log(error.message);
+          setIsLoading(false);
         });
     }
   }, [dataUser, tanggal])
@@ -71,7 +79,7 @@ const HistoryTrip = () => {
   return (
     <main className="page_main">
       <HeaderSales title="Riwayat Kunjungan" />
-
+      {isLoading && <LoadingIndicator />}
       <div className="page_container pt-4">
         <label>Tanggal Kunjungan</label>
         <div className="input-group">

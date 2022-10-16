@@ -288,7 +288,7 @@ $(".alert_jatuhtempo").click(function () {
 });
 
 
-// PENAGIHAN LP3
+// ====================== LP3 ======================
 var count = $("#laporan-penagihan .form-group").children().length;
 
 $(document).on('change', '#laporan-penagihan .select-invoice', function (e) {
@@ -308,10 +308,8 @@ $(document).on('change', '#laporan-penagihan .select-invoice', function (e) {
 $(document).on('click', '#laporan-penagihan .add-form', function (e) {
   count++;
   let value = $(this).parents('#laporan-penagihan .form-input').find('.select-invoice option:selected').val();
-  // $('.select-invoice option[value="' + value + '"]').attr("disabled", true);
   $('.select-invoice option[value="' + value + '"]').addClass('disabled-option');
   $('#laporan-penagihan .form-input').last().clone().appendTo('#laporan-penagihan .form-group');
-  // $(this).addClass('d-none');
   $('#laporan-penagihan .form-input').find('.remove-form').removeClass('d-none');
   $('#laporan-penagihan .form-input').last().find('.select-invoice').val('');
   $('#laporan-penagihan .form-input').last().find('.nama-customer').val('pilih invoice dulu');
@@ -324,19 +322,23 @@ $(document).on('click', '#laporan-penagihan .add-form', function (e) {
 $(document).on('click', '#laporan-penagihan .remove-form', function (e) {
   count--;
   let value = $(this).parents('#laporan-penagihan .form-input').find('.select-invoice option:selected').val();
-  // $('.select-invoice option[value="' + value + '"]').removeAttr("disabled");
   $('.select-invoice option[value="' + value + '"]').removeClass('disabled-option');
   $(this).parents('#laporan-penagihan .form-input').remove();
-  // $('#laporan-penagihan .form-input:last').find('.add-form').removeClass('d-none');
   if (count == 1) {
     $('#laporan-penagihan .form-input').find('.remove-form').addClass('d-none');
   }
 })
 
+$(document).on('change', '#laporan-penagihan .select-invoice', function (e) {
+  $('.select-invoice option').removeClass('disabled-option');
+  const elements = document.querySelectorAll('#laporan-penagihan .select-invoice');
+  Array.from(elements).forEach((element, index) => {
+    $('.select-invoice option[value="' + element.value + '"]').addClass('disabled-option');
+  });
+})
 
 const districtspenagihan = [];
 let isNoInvoice = false;
-
 $(document).on('change', '#laporan-penagihan .select-district', function (e) {
   $('.spinner-border').removeClass('d-none');
   $.ajax({
@@ -346,8 +348,6 @@ $(document).on('change', '#laporan-penagihan .select-district', function (e) {
       console.log(data.customersInvoice);
       $('.spinner-border').addClass('d-none');
       districtspenagihan.push(e.target.value);
-      // $('#laporan-penagihan .form-input').not(':first').remove();
-      // $('#laporan-penagihan .form-input').last().find('.select-invoice').val('');
       $('.select-invoice option').removeClass('disabled-option');
       $('.select-district option[value="' + e.target.value + '"]').attr("disabled", true);
 
@@ -375,30 +375,43 @@ $(document).on('change', '#laporan-penagihan .select-district', function (e) {
               }
             },
           });
-
-          // if (countCust == 1) {
-          //   $('#laporan-penagihan .form-input').find('.remove-form').addClass('d-none');
-          // }
         })
 
         const firstSelect = $('.select-invoice').first().val();
-
-        if (isNoInvoice && firstSelect == null) {
+        if (isNoInvoice && firstSelect == null || districtspenagihan.length == 1 && firstSelect == null) {
           $('#laporan-penagihan .form-input').first().remove();
         }
-
         isNoInvoice = false;
-
-        if (districtspenagihan.length == 1) {
-          $('#laporan-penagihan .form-input').first().remove();
-        }
       }
     }
   });
 });
 
-// ======================
-// Rencana Kunjungan
+$(document).on('click', '#laporan-penagihan .delete-all', function (e) {
+  Swal.fire({
+    title: 'Apakah anda yakin membatalkan pembuatan LP3 ?',
+    icon: 'warning',
+    showCancelButton: true,
+    confirmButtonColor: '#3085d6',
+    cancelButtonColor: '#d33',
+    confirmButtonText: 'Ya!'
+  }).then((result) => {
+    if (result.isConfirmed) {
+      $('#laporan-penagihan .form-input').not(':first').remove();
+      $('#laporan-penagihan .form-input:first').find('.select-invoice').prop('selectedIndex', 0);
+      $('#laporan-penagihan .form-input:first').find('.select-invoice option').removeClass('disabled-option');
+
+      $('#laporan-penagihan .form-input:first').find('.nama-customer').val('pilih invoice dulu');
+      $('#laporan-penagihan .form-input:first').find('.jumlah-tagihan').val('pilih invoice dulu');
+
+      $('#laporan-penagihan .select-district').prop('selectedIndex', 0);
+      $('#laporan-penagihan .select-district option').removeAttr('disabled');
+    }
+  })
+})
+// ====================== END LP3 ======================
+
+//  ====================== RENCANA KUNJUNGAN ======================
 var countCust = $("#perencanaan-kunjungan .form-group").children().length;
 $(document).on('click', '#perencanaan-kunjungan .add-form', function (e) {
   countCust++;
@@ -423,6 +436,14 @@ $(document).on('click', '#perencanaan-kunjungan .remove-form', function (e) {
   }
 })
 
+$(document).on('change', '#perencanaan-kunjungan .select-customer', function (e) {
+  $('.select-customer option').removeClass('disabled-option');
+  const elements = document.querySelectorAll('#perencanaan-kunjungan .select-customer');
+  Array.from(elements).forEach((element, index) => {
+    $('.select-customer option[value="' + element.value + '"]').addClass('disabled-option');
+  });
+})
+
 const districts = [];
 let isNoCustomer = false;
 $(document).on('change', '#perencanaan-kunjungan .select-district', function (e) {
@@ -433,8 +454,6 @@ $(document).on('change', '#perencanaan-kunjungan .select-district', function (e)
     success: function (data) {
       $('.spinner-border').addClass('d-none');
       districts.push(e.target.value);
-      // $('#perencanaan-kunjungan .form-input').not(':first').remove();
-      // $('#perencanaan-kunjungan .form-input').last().find('.select-customer').val('');
       $('.select-customer option').removeClass('disabled-option');
       $('.select-district option[value="' + e.target.value + '"]').attr("disabled", true);
 
@@ -449,53 +468,54 @@ $(document).on('change', '#perencanaan-kunjungan .select-district', function (e)
           $('#perencanaan-kunjungan .form-input').last().clone().appendTo('#perencanaan-kunjungan .form-group');
           $('#perencanaan-kunjungan .form-input').find('.remove-form').removeClass('d-none');
           $('#perencanaan-kunjungan .form-input').last().find('.select-customer').val(customer.id);
-
           if (countCust == 1) {
             $('#perencanaan-kunjungan .form-input').find('.remove-form').addClass('d-none');
           }
         })
 
         const firstSelect = $('.select-customer').first().val();
-
-        if (isNoCustomer && firstSelect == null) {
+        if (isNoCustomer && firstSelect == null || districts.length == 1 && firstSelect == null) {
           $('#perencanaan-kunjungan .form-input').first().remove();
         }
-
         isNoCustomer = false;
-
-        if (districts.length == 1) {
-          $('#perencanaan-kunjungan .form-input').first().remove();
-        }
       }
     }
   });
 });
 
+$(document).on('click', '#perencanaan-kunjungan .delete-all', function (e) {
+  Swal.fire({
+    title: 'Apakah anda yakin membatalkan pembuatan perencanaan kunjungan ?',
+    icon: 'warning',
+    showCancelButton: true,
+    confirmButtonColor: '#3085d6',
+    cancelButtonColor: '#d33',
+    confirmButtonText: 'Ya!'
+  }).then((result) => {
+    if (result.isConfirmed) {
+      $('#perencanaan-kunjungan .form-input').not(':first').remove();
+      $('#perencanaan-kunjungan .form-input:first').find('.select-customer').prop('selectedIndex', 0);
+      $('#perencanaan-kunjungan .form-input:first').find('.select-customer option').removeClass('disabled-option');
+      $('#perencanaan-kunjungan .select-district').prop('selectedIndex', 0);
+      $('#perencanaan-kunjungan .select-district option').removeAttr('disabled');
+    }
+  })
+})
+// ====================== END RENCANA KUNJUNGAN ======================
 
-// ===========================
-
-// PDF
+// =========================== PDF ===========================
 $("#detail-pesanan-admin .btn-unduh-invoice").click(function () {
   const idOrder = $('#detail-pesanan-admin .btn-unduh-invoice').val();
-  const thisis = $(this);
 
-  $.ajax({
-    url: window.location.origin + `/api/administrasi/unduhinvoice/${idOrder}`,
-    method: "GET",
-    success: function (data) {
-      if (data.status == 'success') {
-        $(`<div class="position-relative"><iframe id="myFrame"
-        src="http://127.0.0.1:8000/administrasi/pesanan/detail/${idOrder}/cetak-invoice#toolbar=0"
-        style="margin-top:30px;" frameborder="0" width="100%" height="500px">
+  $(`<div class="position-relative"><iframe id="myFrame"
+        src="${window.location.origin}/administrasi/pesanan/detail/${idOrder}/cetak-invoice#toolbar=0"
+        style="margin-top:30px;" frameborder="0" width="100%" height="570px">
       </iframe> <div class="embed-cover"></div></div>`).appendTo("#detail-pesanan-admin .detail-pesanan-admin_action");
 
-        const counter_unduh = data.counter_unduh.toString();
-        thisis.children('span').text(counter_unduh);
-        $('#detail-pesanan-admin .btn-print-pdf').removeClass('d-none');
-        $('#detail-pesanan-admin .btn-close-pdf').removeClass('d-none');
-      }
-    },
-  });
+  setTimeout(() => {
+    $('#detail-pesanan-admin .btn-print-pdf').removeClass('d-none');
+    $('#detail-pesanan-admin .btn-close-pdf').removeClass('d-none');
+  }, 3000)
 });
 
 $("#detail-pesanan-admin .btn-print-pdf").click(function () {
