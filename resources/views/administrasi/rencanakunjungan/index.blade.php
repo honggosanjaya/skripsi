@@ -135,6 +135,46 @@
 
       <div class="tab-pane fade" id="history-tab-pane" role="tabpanel" aria-labelledby="history-tab" tabindex="0">
         <h3 class="my-4">History Perencanaan Kunjungan</h3>
+
+        <button class="btn btn_purple mx-1 unduhRak-btn mb-3">
+          <i class="bi bi-download px-1"></i>Unduh RAK
+        </button>
+
+        <form id="form_submit" class="form-submit from-downloadRak d-none" method="POST"
+          action="/administrasi/rencanakunjungan/cetak-rak">
+          @csrf
+          <div class="row">
+            <div class="col">
+              <div class="mb-3">
+                <label class="form-label">Date Start</label>
+                <input type="date" name="dateStart" class="form-control" value="{{ $input['dateStart'] ?? null }}"
+                  id="dateStart">
+              </div>
+            </div>
+            <div class="col">
+              <div class="mb-3">
+                <label class="form-label">Date End</label>
+                <input type="date" name="dateEnd" class="form-control" min="{{ $input['dateStart'] ?? null }}"
+                  value="{{ $input['dateEnd'] ?? null }}" id="dateEnd">
+              </div>
+            </div>
+
+            <div class="col">
+              <div class="mb-3">
+                <label class="form-label">Nama Sales</label>
+                <input type="text" class="form-control" placeholder="julian" name="salesman">
+              </div>
+            </div>
+          </div>
+
+          <div class="row justify-content-end mb-4">
+            <div class="col d-flex justify-content-end">
+              <button type="submit" class="btn btn-primary"> <span class="iconify fs-3 me-2"
+                  data-icon="ic:round-print"></span>Cetak</button>
+            </div>
+          </div>
+        </form>
+
         <table class="table table-hover table-sm mt-4" id="table">
           <thead>
             <tr>
@@ -163,8 +203,20 @@
         </table>
       </div>
     </div>
+  </div>
 
-    @push('JS')
-      <script src="{{ mix('js/administrasi.js') }}"></script>
-    @endpush
-  @endsection
+  @push('JS')
+    <script>
+      $(document).on('click', '#perencanaan-kunjungan .unduhRak-btn', function(e) {
+        $("#perencanaan-kunjungan .from-downloadRak").toggleClass('d-none');
+        $(this).toggleClass('btn_purple');
+        $(this).toggleClass('btn-danger');
+
+        $(this).hasClass("btn_purple") ? $(this).html('<i class="bi bi-download px-1"></i>Unduh RAK') :
+          $(this).html('<span class="iconify fs-3 me-2" data-icon="material-symbols:cancel"></span>Batal')
+
+      })
+    </script>
+    <script src="{{ mix('js/administrasi.js') }}"></script>
+  @endpush
+@endsection

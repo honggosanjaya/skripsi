@@ -278,6 +278,8 @@ Route::prefix('administrasi')->middleware('administrasi')->group(function() {
   Route::post('/kanvas/store', [ItemController::class, 'storeKanvas']);
   Route::get('/kanvas/history', [ItemController::class, 'historyKanvas']);
   Route::post('/kanvas/dikembalikan/{ids}', [ItemController::class, 'pengembalianKanvas']);
+
+  Route::post('/rencanakunjungan/cetak-rak', [RencanaTripController::class, 'cetakRAK']);
 });
 
 

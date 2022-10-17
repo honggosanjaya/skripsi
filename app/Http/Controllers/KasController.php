@@ -297,7 +297,7 @@ class KasController extends Controller
         return $a[0] <=> $b[0];
     });  
 
-    return view('administrasi.kas.cetakkas', [
+    return view('administrasi.kas.cetakKas', [
       'input' => $input,
       'cashaccounts' => $temp,
       'cashaccount' => $cashaccount,

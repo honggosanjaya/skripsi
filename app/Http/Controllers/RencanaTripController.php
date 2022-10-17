@@ -4,18 +4,26 @@ namespace App\Http\Controllers;
 use App\Models\Staff;
 use App\Models\Customer;
 use App\Models\District;
+use App\Models\Trip;
 use App\Models\RencanaTrip;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+use PDF;
 
 class RencanaTripController extends Controller
 {
   public function index(){
+    $input=[
+      'dateStart'=>date('Y-m-01'),
+      'dateEnd'=>date('Y-m-t')
+    ];
     $customers = Customer::all();
     $staffs = Staff::where('status_enum','1')->where('role', 3)->get();
     $histories = RencanaTrip::orderBy('tanggal', 'DESC')->get();
     $districts = District::orderBy('nama', 'ASC')->get();
 
     return view('administrasi.rencanakunjungan.index',[
+      'input' => $input,
       'customers' => $customers,  
       'staffs' => $staffs,
       'histories' => $histories,
@@ -66,5 +74,65 @@ class RencanaTripController extends Controller
         'status' => 'success'
       ]);
     }
+  }
+
+  public function cetakRAK(Request $request){
+    $salesman = $request->salesman;
+    $dateStart = $request->dateStart." 00:00:00";
+    $dateEnd = $request->dateEnd." 23:59:59";
+
+    $trips = Trip::whereBetween('waktu_masuk', [$dateStart, $dateEnd])
+              ->whereHas('linkStaff', function($q) use($salesman) {
+                $q->where(strtolower('nama'),'like','%'.$salesman.'%');
+              })->get();
+
+    $rencana_trips = RencanaTrip::whereBetween('tanggal', [$request->dateStart, $request->dateEnd])
+                      ->whereHas('linkStaff', function($q) use($salesman) {
+                        $q->where(strtolower('nama'),'like','%'.$salesman.'%');
+                      })->get();
+    
+    $trip_rak_complete = [];
+    $id_trip_complete = [];
+    $id_rak_complete = [];
+
+    foreach($trips as $trip){
+      foreach($rencana_trips as $rencana){
+        if($rencana->id_customer == $trip->id_customer && $rencana->tanggal == date("Y-m-d", strtotime($trip->waktu_masuk))) {
+            array_push($id_trip_complete, $trip->id);  
+            array_push($id_rak_complete, $rencana->id);  
+
+            array_push($trip_rak_complete, [
+              "trip" => $trip,
+              "rencana_trip" => $rencana,
+            ]);
+        }
+      }
+    }
+
+    $trip_not_complete = Trip::whereNotIn('id',$id_trip_complete)
+                          ->whereBetween('waktu_masuk', [$dateStart, $dateEnd])
+                          ->whereHas('linkStaff', function($q) use($salesman) {
+                            $q->where(strtolower('nama'),'like','%'.$salesman.'%');
+                          })->orderBy('created_at', 'DESC')->get();
+
+    $rak_not_complete = RencanaTrip::whereNotIn('id',$id_rak_complete)
+                          ->whereBetween('tanggal', [$request->dateStart, $request->dateEnd])
+                          ->whereHas('linkStaff', function($q) use($salesman) {
+                            $q->where(strtolower('nama'),'like','%'.$salesman.'%');
+                          })->orderBy('created_at', 'DESC')->get();
+
+
+    $trip_rak_not_complete = $trip_not_complete->merge($rak_not_complete)
+                              ->sortByDesc('created_at')->sortByDesc('tanggal');
+    
+    $pdf = PDF::loadview('administrasi.rencanakunjungan.cetakRAK',[
+      'trip_rak_not_complete' => $trip_rak_not_complete,
+      'trip_rak_complete' => $trip_rak_complete, 
+      'document_title' => 'RAK-'.date("d-m-Y", strtotime($request->dateStart)). '_' . date("d-m-Y", strtotime($request->dateEnd))
+    ]);
+
+    $pdf->setPaper('A4', 'landscape');
+
+    return $pdf->stream('RAK-'.date("d-m-Y", strtotime($request->dateStart)). '_' . date("d-m-Y", strtotime($request->dateEnd)) .'.pdf'); 
   }
 }
