@@ -67,7 +67,12 @@
 
           <div class="row mb-3">
             <div class="col-6">
-              <label class="form-label">Kunjungi Berdasar Wilayah</label>
+              <div class="d-flex justify-content-between">
+                <label class="form-label">Kunjungi Berdasar Wilayah</label>
+                <div class="spinner-border d-none" role="status">
+                  <span class="visually-hidden">Loading...</span>
+                </div>
+              </div>
               <select class="form-select select-district" id="id_district" name="id_district">
                 <option disabled selected value>
                   Pilih Wilayah
@@ -120,7 +125,8 @@
           </div>
 
           <div class="row justify-content-end mt-4">
-            <div class="col-3 d-flex justify-content-end">
+            <div class="col-6 d-flex justify-content-end">
+              <button type="button" class="btn btn-danger delete-all me-3">Hapus Semua</button>
               <button type="submit" class="btn btn-primary">Submit</button>
             </div>
           </div>
@@ -134,7 +140,7 @@
             <tr>
               <th scope="col" class="text-center">No</th>
               <th scope="col" class="text-center">Nama Customer</th>
-              <th scope="col" class="text-center">Nama Penagih</th>
+              <th scope="col" class="text-center">Nama Salesman</th>
               <th scope="col" class="text-center">Tanggal</th>
               <th scope="col" class="text-center">Status</th>
             </tr>
@@ -147,7 +153,7 @@
                 <td>{{ $history->linkStaff->nama ?? null }}</td>
                 <td>{{ $history->tanggal ?? null }}</td>
                 @if ($history->status_enum != null)
-                  <td>{{ $history->status_enum == '1' ? 'Sudah Ditagih' : 'Belum Ditagih' }}</td>
+                  <td>{{ $history->status_enum == '1' ? 'Sudah Dikunjungi' : 'Belum Dikunjungi' }}</td>
                 @else
                   <td></td>
                 @endif

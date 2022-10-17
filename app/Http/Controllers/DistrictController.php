@@ -129,14 +129,18 @@ class DistrictController extends Controller
     }
 
     public function getCustByDistrictAPI(District $district){
-    $customers =  Customer::where('id_wilayah', $district->id)->get();
-
-    $customersInvoice = Customer::where('id_wilayah', $district->id)
-      ->whereHas('linkOrder', function($q){
-        $q->whereHas('linkOrderTrack', function($q){
-          $q->where('status_enum', '4');
-        });
-      })->with(['linkOrder', 'linkOrder.linkInvoice'])->get();
+    $customers =  Customer::whereHas('linkDistrict', function($q) use($district) {
+                    $q->where('id', $district->id)->orWhere('id_parent', $district->id);
+                  })->get();
+    
+    $customersInvoice = Customer::whereHas('linkDistrict', function($q) use($district) {
+                          $q->where('id', $district->id)->orWhere('id_parent', $district->id);
+                        })
+                        ->whereHas('linkOrder', function($q){
+                          $q->whereHas('linkOrderTrack', function($q){
+                            $q->where('status_enum', '4');
+                          });
+                        })->with(['linkOrder', 'linkOrder.linkInvoice'])->get();
 
       return response()->json([
         'status' => 'success',

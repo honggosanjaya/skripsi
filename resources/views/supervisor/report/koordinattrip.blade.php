@@ -74,6 +74,8 @@
             <th scope="col" class="text-center">No</th>
             <th scope="col" class="text-center">Nama Customer</th>
             <th scope="col" class="text-center">Nama Sales</th>
+            <th scope="col" class="text-center">Waktu Masuk</th>
+            <th scope="col" class="text-center">Waktu Keluar</th>
             <th scope="col" class="text-center">Status</th>
             <th scope="col" class="text-center">Cek Lokasi</th>
           </tr>
@@ -84,6 +86,16 @@
               <th scope="row" class="text-center">{{ $loop->iteration ?? null }}</th>
               <td class="text-center">{{ $dt->linkCustomer->nama ?? null }}</td>
               <td class="text-center">{{ $dt->linkStaff->nama ?? null }}</td>
+              @if ($dt->waktu_masuk ?? null)
+                <td>{{ date('j F Y, g:i a', strtotime($dt->waktu_masuk)) }}</td>
+              @else
+                <td></td>
+              @endif
+              @if ($dt->waktu_keluar ?? null)
+                <td>{{ date('j F Y, g:i a', strtotime($dt->waktu_keluar)) }}</td>
+              @else
+                <td></td>
+              @endif
               @if ($dt->status_enum ?? null)
                 <td class="text-center">{{ $dt->status_enum == '1' ? 'Trip' : 'Effective Call' }}</td>
               @else

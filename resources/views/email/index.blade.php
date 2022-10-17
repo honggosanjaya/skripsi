@@ -41,7 +41,7 @@
       <p>{{ $details['body'] }}</p>
     </div>
 
-    <a href="https://salesman-dev.suralaya.web.id/confirmemail/{{ $details['user']->id }}" class="confirm-button">
+    <a href="{{ env('APP_URL') }}/confirmemail/{{ $details['user']->id }}" class="confirm-button">
       Tekan Untuk Mengonfirmasi Email Anda
     </a>
   </div>

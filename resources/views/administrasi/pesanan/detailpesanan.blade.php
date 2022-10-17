@@ -49,15 +49,9 @@
               @endif
 
               @if ($order->linkOrderTrack->status_enum > '1' && $order->linkOrderTrack->status_enum <= '6')
-                @if ($order->linkInvoice->counter_unduh < $order->linkInvoice->max_unduh)
-                  <button class="btn btn_purple mx-1 btn-unduh-invoice" value="{{ $order->id }}">
-                    <i class="bi bi-download px-1"></i>Unduh Invoice
-                    (<span>{{ $order->linkInvoice->counter_unduh }}</span>/{{ $order->linkInvoice->max_unduh }})
-                  </button>
-                @else
-                  <button class="btn btn_purple mx-1" disabled><i class="bi bi-download px-1"></i>Unduh Invoice
-                    {{ '(' . $order->linkInvoice->counter_unduh . '/' . $order->linkInvoice->max_unduh . ')' }}</button>
-                @endif
+                <button class="btn btn_purple mx-1 btn-unduh-invoice" value="{{ $order->id }}">
+                  <i class="bi bi-download px-1"></i>Unduh Invoice
+                </button>
               @endif
 
               <button class="btn btn-primary btn-print-pdf d-none mx-1">
