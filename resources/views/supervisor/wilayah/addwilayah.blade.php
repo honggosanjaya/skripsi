@@ -31,8 +31,12 @@
                 class='text-danger'>*</span></label>
             <select class="form-select @error('nama_wilayah') is-invalid @enderror" name="id_parent">
               <option value="">-- Pilih Wilayah --</option>
-              @foreach ($districts as $district)
-                <option value="{{ $district[1] }}">{{ $district[0] }}</option>
+              @foreach ($dropdown as $d)
+                @if ($d[1] == old('id_parent'))
+                  <option value="{{ $d[1] }}" selected>{{ $d[0] }}</option>
+                @else
+                  <option value="{{ $d[1] }}">{{ $d[0] }}</option>
+                @endif
               @endforeach
             </select>
             @error('id_parent')

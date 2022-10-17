@@ -24,38 +24,56 @@ class DistrictController extends Controller
     }
 
     public function create(){
-      $districtTotal = District::count();
-      $districts = District::all();
+      $districts = District::get();
       $temp = array();
-      
-      for($i=0; $i<$districtTotal; $i++){
+      $dropdown = array();
+
+      for($i=0; $i<count($districts); $i++){
         $get1 = '';
         $get2 = '';
         $value = 0;
-        
-        if($districts[$i]->id_parent == null){
-          $get1 = $districts[$i]->nama;
-          $value = $districts[$i]->id;
-          array_push($temp, [$get1, $value]);
+        $get1 = $districts[$i]->nama;
+        $value = $districts[$i]->id;
+        array_push($temp, [$get1, $value]);        
+      }
+
+      for($j=0; $j<count($temp); $j++){
+        if($districts[$j]->id_parent == null){
+          $get1 = $districts[$j]->nama;
+          $value = $districts[$j]->id;
+          array_push($dropdown, [$get1, $value]);
         }
-        else if($districts[$i]->id_parent != null){
-          for($j=$districtTotal-1; $j>=0; $j--){
-            if($districts[$i]->id_parent == $districts[$j]->id){
-              $get2 = $temp[$j][0] . " - " .$districts[$i]->nama;
-              $value = $districts[$i]->id;
-              array_push($temp, [$get2,$value]);
+
+        else if($districts[$j]->id_parent != null){
+          for($k=count($districts)-1; $k>=0; $k--){
+            if($districts[$j]->id_parent == $temp[$k][1]){
+              for($l=0;$l<count($dropdown);$l++){
+                if($districts[$j]->id_parent == $dropdown[$l][1] && (stripos($dropdown[$l][0],$districts[$j]->nama)) === false){
+                  $get2 = $dropdown[$l][0] . " - " .$districts[$j]->nama;
+                  break;
+                }
+                elseif($districts[$j]->id_parent == $dropdown[$l][1] && (stripos($dropdown[$l][0],$districts[$j]->nama)) >= 0){
+                  $get2 = $districts[$j]->nama;
+                  break;
+                }
+                else{
+                  $get2 = $temp[$k][0] . " - " .$districts[$j]->nama;
+                }
+              }
+
+              $value = $districts[$j]->id;
+              array_push($dropdown, [$get2,$value]);
             }
           }
         }
       }
-      usort($temp, function($a, $b) {
-          return $a[0] <=> $b[0];
+
+      usort($dropdown, function($a, $b) {
+        return $a[0] <=> $b[0];
       });
-
-      // dd($temp);
-
+      
       return view('supervisor.wilayah.addwilayah', [
-        'districts' => $temp
+        'dropdown' => $dropdown,
       ]);
     }
 
@@ -74,37 +92,60 @@ class DistrictController extends Controller
     }
 
     public function edit(District $district){
-      $districtTotal = District::count();
-      $districts = District::all();
+      $data = $district;
+      $districts = District::get();
       $temp = array();
-      
-      for($i=0; $i<$districtTotal; $i++){
+      $dropdown = array();
+
+      for($i=0; $i<count($districts); $i++){
         $get1 = '';
         $get2 = '';
         $value = 0;
-        
-        if($districts[$i]->id_parent == null){
-          $get1 = $districts[$i]->nama;
-          $value = $districts[$i]->id;
-          array_push($temp, [$get1, $value]);
+        $get1 = $districts[$i]->nama;
+        $value = $districts[$i]->id;
+        array_push($temp, [$get1, $value]);        
+      }
+
+      for($j=0; $j<count($temp); $j++){
+        if($districts[$j]->id_parent == null){
+          $get1 = $districts[$j]->nama;
+          $value = $districts[$j]->id;
+          array_push($dropdown, [$get1, $value]);
         }
-        else if($districts[$i]->id_parent != null){
-          for($j=$districtTotal-1; $j>=0; $j--){
-            if($districts[$i]->id_parent == $districts[$j]->id){
-              $get2 = $temp[$j][0] . " - " .$districts[$i]->nama;
-              $value = $districts[$i]->id;
-              array_push($temp, [$get2,$value]);
+
+        else if($districts[$j]->id_parent != null){
+          for($k=count($districts)-1; $k>=0; $k--){
+            if($districts[$j]->id_parent == $temp[$k][1]){
+
+              for($l=0;$l<count($dropdown);$l++){
+                if($districts[$j]->id_parent == $dropdown[$l][1] && (stripos($dropdown[$l][0],$districts[$j]->nama)) === false){
+                  $get2 = $dropdown[$l][0] . " - " .$districts[$j]->nama;
+                  break;
+                }
+                elseif($districts[$j]->id_parent == $dropdown[$l][1] && (stripos($dropdown[$l][0],$districts[$j]->nama)) >= 0){
+                  $get2 = $districts[$j]->nama;
+                  break;
+                }
+                else{
+                  $get2 = $temp[$k][0] . " - " .$districts[$j]->nama;
+                }
+              }
+
+              $value = $districts[$j]->id;
+              array_push($dropdown, [$get2,$value]);
             }
           }
-        }  
+        }
       }
-      usort($temp, function($a, $b) {
+
+      usort($dropdown, function($a, $b) {
         return $a[0] <=> $b[0];
       });
 
       return view('supervisor.wilayah.ubahwilayah', [
         'district' => $district,
-        'selections' => $temp
+        'dropdown' => $dropdown,
+        'data' => $data
       ]);
     }
 
