@@ -1046,6 +1046,7 @@ class ItemController extends Controller
       return response()->json([
         'status' => 'success',
         'data' => $listItems,
+        'tipe_harga' => $tipeHarga
       ]); 
     }
 
