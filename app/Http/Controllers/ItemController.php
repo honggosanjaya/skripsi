@@ -338,6 +338,7 @@ class ItemController extends Controller
     $validatedData['id_category'] = $request->category;
     $validatedData['link_item'] = $request->link_item;
     $validatedData['max_pengadaan'] = ($request->max_stok??0) - ($request->min_stok??0);
+    $validatedData['created_at'] = now();
         
     if ($request->hasfile('gambar')) {
       $images = $request->file('gambar');
@@ -347,7 +348,8 @@ class ItemController extends Controller
       Image::make($images[0])->resize(350, null, function ($constraint) {
         $constraint->aspectRatio();
       })->save(public_path('storage/item/') . $file_name);
-      $item_id= Item::insertGetId($validatedData);
+
+      $item_id = Item::insertGetId($validatedData);
 
       foreach($images as $key=>$image){
         $nama_item = str_replace(" ", "-", $request->nama);
@@ -362,7 +364,9 @@ class ItemController extends Controller
           'created_at' => now()
         ]);
       }
-   }
+    }else{
+      Item::insert($validatedData);
+    }
         
     return redirect('/administrasi/stok/produk') -> with('pesanSukses', 'Produk berhasil ditambahkan' );
   }
