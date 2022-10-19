@@ -169,24 +169,39 @@ class DistrictController extends Controller
       return view('supervisor.wilayah.wilayahTree', compact('parentCategories'));
     }
 
-    public function getCustByDistrictAPI(District $district){
-    $customers =  Customer::whereHas('linkDistrict', function($q) use($district) {
-                    $q->where('id', $district->id)->orWhere('id_parent', $district->id);
-                  })->get();
-    
-    $customersInvoice = Customer::whereHas('linkDistrict', function($q) use($district) {
-                          $q->where('id', $district->id)->orWhere('id_parent', $district->id);
-                        })
-                        ->whereHas('linkOrder', function($q){
-                          $q->whereHas('linkOrderTrack', function($q){
-                            $q->where('status_enum', '4');
-                          });
-                        })->with(['linkOrder', 'linkOrder.linkInvoice'])->get();
+    public function getCustByDistrictAPI($id){
+      $district = District::where('id', $id)->get()->first();  
 
-      return response()->json([
-        'status' => 'success',
-        'customers' => $customers,
-        'customersInvoice' => $customersInvoice
-      ]);
+      $descendantsIds = $district->descendants->pipe(function ($collection){
+        $array = $collection->toArray();
+        $ids = [];
+        array_walk_recursive($array, function ($value, $key) use (&$ids) {
+            if ($key === 'id') {
+                $ids[] = $value;
+            };
+        });
+        return $ids;
+      });
+
+      array_push($descendantsIds, $district->id);
+
+      $customers =  Customer::whereHas('linkDistrict', function($q) use($descendantsIds) {
+                      $q->whereIn('id', $descendantsIds);
+                    })->get();
+      
+      $customersInvoice = Customer::whereHas('linkDistrict', function($q) use($descendantsIds) {
+                            $q->whereIn('id', $descendantsIds);
+                          })
+                          ->whereHas('linkOrder', function($q){
+                            $q->whereHas('linkOrderTrack', function($q){
+                              $q->where('status_enum', '4');
+                            });
+                          })->with(['linkOrder', 'linkOrder.linkInvoice'])->get();
+
+        return response()->json([
+          'status' => 'success',
+          'customers' => $customers,
+          'customersInvoice' => $customersInvoice
+        ]);
     }
 }

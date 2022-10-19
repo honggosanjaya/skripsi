@@ -290,6 +290,7 @@ $(".alert_jatuhtempo").click(function () {
 
 // ====================== LP3 ======================
 var count = $("#laporan-penagihan .form-group").children().length;
+let isHapusSemuaBtnClicked = false;
 
 $(document).on('change', '#laporan-penagihan .select-invoice', function (e) {
   let indicator = $(this);
@@ -330,6 +331,7 @@ $(document).on('click', '#laporan-penagihan .remove-form', function (e) {
 })
 
 $(document).on('change', '#laporan-penagihan .select-invoice', function (e) {
+  console.log('val', e.target.value);
   $('.select-invoice option').removeClass('disabled-option');
   const elements = document.querySelectorAll('#laporan-penagihan .select-invoice');
   Array.from(elements).forEach((element, index) => {
@@ -345,7 +347,7 @@ $(document).on('change', '#laporan-penagihan .select-district', function (e) {
     url: window.location.origin + `/api/administrasi/selectdistict/${e.target.value}`,
     method: "GET",
     success: function (data) {
-      console.log(data.customersInvoice);
+      console.log(data);
       $('.spinner-border').addClass('d-none');
       districtspenagihan.push(e.target.value);
       $('.select-invoice option').removeClass('disabled-option');
@@ -356,29 +358,35 @@ $(document).on('change', '#laporan-penagihan .select-district', function (e) {
       }
 
       if (data.customersInvoice.length > 0) {
-        data.customersInvoice.map((customer, index) => {
+        data.customersInvoice.map((customer) => {
           // countCust++;
-          $('.select-invoice option[value="' + customer.link_order[0].link_invoice.id + '"]').addClass('disabled-option');
-          $('#laporan-penagihan .form-input').last().clone().appendTo('#laporan-penagihan .form-group');
-          $('#laporan-penagihan .form-input').find('.remove-form').removeClass('d-none');
-          $('#laporan-penagihan .form-input').last().find('.select-invoice').val(customer.link_order[0].link_invoice.id);
+          customer.link_order.map((order) => {
+            $('.select-invoice option[value="' + order.link_invoice.id + '"]').addClass('disabled-option');
+            $('#laporan-penagihan .form-input').last().clone().appendTo('#laporan-penagihan .form-group');
+            $('#laporan-penagihan .form-input').find('.remove-form').removeClass('d-none');
+            $('#laporan-penagihan .form-input').last().find('.select-invoice').val(order.link_invoice.id);
 
-          $('.spinner-border').removeClass('d-none');
-          $.ajax({
-            url: window.location.origin + `/api/administrasi/detailpenagihan/${customer.link_order[0].link_invoice.id}`,
-            method: "GET",
-            success: function (data) {
-              $('.spinner-border').addClass('d-none');
-              if (data.status == 'success') {
-                $(`#laporan-penagihan .select-invoice:eq(${index})`).parentsUntil('.form-input').find('.nama-customer').val(data.data.customer.nama);
-                $(`#laporan-penagihan .select-invoice:eq(${index})`).closest('.form-input').find('.jumlah-tagihan').val(data.data.tagihan);
-              }
-            },
-          });
+            $('.spinner-border').removeClass('d-none');
+            $.ajax({
+              url: window.location.origin + `/api/administrasi/detailpenagihan/${order.link_invoice.id}`,
+              method: "GET",
+              success: function (data) {
+                $('.spinner-border').addClass('d-none');
+                if (data.status == 'success') {
+                  $("#laporan-penagihan .select-invoice").each(function () {
+                    if ($(this).val() == order.link_invoice.id) {
+                      $(this).parentsUntil('.form-input').find('.nama-customer').val(data.data.customer.nama);
+                      $(this).closest('.form-input').find('.jumlah-tagihan').val(data.data.tagihan);
+                    }
+                  });
+                }
+              },
+            });
+          })
         })
 
         const firstSelect = $('.select-invoice').first().val();
-        if (isNoInvoice && firstSelect == null || districtspenagihan.length == 1 && firstSelect == null) {
+        if (isNoInvoice && firstSelect == null || districtspenagihan.length == 1 && firstSelect == null || isHapusSemuaBtnClicked && firstSelect == null) {
           $('#laporan-penagihan .form-input').first().remove();
         }
         isNoInvoice = false;
@@ -388,6 +396,7 @@ $(document).on('change', '#laporan-penagihan .select-district', function (e) {
 });
 
 $(document).on('click', '#laporan-penagihan .delete-all', function (e) {
+  isHapusSemuaBtnClicked = true;
   Swal.fire({
     title: 'Apakah anda yakin membatalkan pembuatan LP3 ?',
     icon: 'warning',
@@ -446,6 +455,7 @@ $(document).on('change', '#perencanaan-kunjungan .select-customer', function (e)
 
 const districts = [];
 let isNoCustomer = false;
+let isDeleteAll = false;
 $(document).on('change', '#perencanaan-kunjungan .select-district', function (e) {
   $('.spinner-border').removeClass('d-none');
   $.ajax({
@@ -474,7 +484,7 @@ $(document).on('change', '#perencanaan-kunjungan .select-district', function (e)
         })
 
         const firstSelect = $('.select-customer').first().val();
-        if (isNoCustomer && firstSelect == null || districts.length == 1 && firstSelect == null) {
+        if (isNoCustomer && firstSelect == null || districts.length == 1 && firstSelect == null || isDeleteAll && firstSelect == null) {
           $('#perencanaan-kunjungan .form-input').first().remove();
         }
         isNoCustomer = false;
@@ -484,6 +494,7 @@ $(document).on('change', '#perencanaan-kunjungan .select-district', function (e)
 });
 
 $(document).on('click', '#perencanaan-kunjungan .delete-all', function (e) {
+  isDeleteAll = true;
   Swal.fire({
     title: 'Apakah anda yakin membatalkan pembuatan perencanaan kunjungan ?',
     icon: 'warning',
