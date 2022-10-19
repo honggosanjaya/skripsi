@@ -126,7 +126,11 @@ const TripSales = () => {
         setShouldDisabled(false);
         setNamaCust(response.data.data.nama);
         setJenis(response.data.data.id_jenis);
-        setWilayah(response.data.data.id_wilayah);
+        if (response.data.data.id_wilayah == null) {
+          setWilayah('nodistrict');
+        } else {
+          setWilayah(response.data.data.id_wilayah);
+        }
         setAlamatUtama(response.data.data.alamat_utama);
         setAlamatNomor(response.data.data.alamat_nomor == null ? '' : response.data.data.alamat_nomor);
         setEmail(response.data.data.email == null ? '' : response.data.data.email);
@@ -152,7 +156,7 @@ const TripSales = () => {
       setDistrictArr(response.data.district);
       setCustomerTypeArr(response.data.customerType);
       setJenis(response.data.customerType[0].id);
-      setWilayah(response.data.district[0].id);
+      // setWilayah(response.data.district[0].id);
     })
   }, [])
 
@@ -185,7 +189,7 @@ const TripSales = () => {
     id: id ?? null,
     id_jenis: jenis,
     id_staff: dataUser.id_staff,
-    id_wilayah: wilayah,
+    id_wilayah: wilayah == 'nodistrict' ? null : wilayah,
     nama: namaCust,
     email: email,
     alamat_utama: alamatUtama,
@@ -459,6 +463,7 @@ const TripSales = () => {
             <select className="form-select"
               value={wilayah}
               onChange={(e) => setWilayah(e.target.value)}>
+              <option value='nodistrict'>-- Tanpa Wilayah --</option>
               {showListDistrict}
             </select>
           </div>

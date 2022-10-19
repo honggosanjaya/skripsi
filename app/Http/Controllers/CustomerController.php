@@ -69,7 +69,7 @@ class CustomerController extends Controller
       $rules = [
         'nama' => ['required', 'string', 'max:255'],
         'id_jenis' => ['required'],
-        'id_wilayah' => ['required'],
+        'id_wilayah' => ['nullable'],
         'alamat_utama' => ['required', 'string', 'max:255'],
         'durasi_kunjungan' => ['required', 'integer'],
         'jatuh_tempo' => ['required', 'integer'],
