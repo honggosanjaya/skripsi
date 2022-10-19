@@ -123,20 +123,30 @@
           <td>{{ $data->linkCustomer->nama ?? null }}</td>
           @if ($data->tanggal ?? null)
             <td>{{ date('d-m-Y', strtotime($data->tanggal)) }}</td>
-          @else
-            <td></td>
-          @endif
+            @if ($data->waktu_masuk ?? null)
+              <td>{{ date('g:i a', strtotime($data->waktu_masuk)) }}</td>
+            @else
+              <td></td>
+            @endif
 
-          @if ($data->waktu_masuk ?? null)
-            <td>{{ date('g:i a', strtotime($data->waktu_masuk)) }}</td>
+            @if ($data->waktu_keluar ?? null)
+              <td>{{ date('g:i a', strtotime($data->waktu_keluar)) }}</td>
+            @else
+              <td></td>
+            @endif
           @else
             <td></td>
-          @endif
+            @if ($data->waktu_masuk ?? null)
+              <td>{{ date('d-m-Y, g:i a', strtotime($data->waktu_masuk)) }}</td>
+            @else
+              <td></td>
+            @endif
 
-          @if ($data->waktu_keluar ?? null)
-            <td>{{ date('g:i a', strtotime($data->waktu_keluar)) }}</td>
-          @else
-            <td></td>
+            @if ($data->waktu_keluar ?? null)
+              <td>{{ date('d-m-Y, g:i a', strtotime($data->waktu_keluar)) }}</td>
+            @else
+              <td></td>
+            @endif
           @endif
 
           @if ($data->waktu_masuk ?? null)

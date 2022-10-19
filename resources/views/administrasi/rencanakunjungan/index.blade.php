@@ -126,8 +126,12 @@
 
           <div class="row justify-content-end mt-4">
             <div class="col-6 d-flex justify-content-end">
-              <button type="button" class="btn btn-danger delete-all me-3">Hapus Semua</button>
-              <button type="submit" class="btn btn-primary">Submit</button>
+              <button type="button" class="btn btn-danger delete-all me-3">
+                <span class="iconify fs-3 me-2" data-icon="bi:trash"></span>Hapus Semua
+              </button>
+              <button type="submit" class="btn btn-primary">
+                <span class="iconify fs-3 me-2" data-icon="bi:send-check"></span>Submit
+              </button>
             </div>
           </div>
         </form>
@@ -140,7 +144,7 @@
           <i class="bi bi-download px-1"></i>Unduh RAK
         </button>
 
-        <form id="form_submit" class="form-submit from-downloadRak d-none" method="POST"
+        <form id="form_submit" class="form-submit form-downloadRak d-none" method="POST"
           action="/administrasi/rencanakunjungan/cetak-rak">
           @csrf
           <div class="row">
@@ -208,7 +212,7 @@
   @push('JS')
     <script>
       $(document).on('click', '#perencanaan-kunjungan .unduhRak-btn', function(e) {
-        $("#perencanaan-kunjungan .from-downloadRak").toggleClass('d-none');
+        $("#perencanaan-kunjungan .form-downloadRak").toggleClass('d-none');
         $(this).toggleClass('btn_purple');
         $(this).toggleClass('btn-danger');
 

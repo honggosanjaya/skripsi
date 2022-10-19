@@ -101,8 +101,12 @@
 
       <div class="row justify-content-end mt-4">
         <div class="col-6 d-flex justify-content-end">
-          <button class="btn btn-danger remove-all-form d-none me-2" type="button">Hapus Semua</button>
-          <button type="button" class="btn btn-primary btn-submit">Submit</button>
+          <button class="btn btn-danger remove-all-form d-none me-2" type="button">
+            <span class="iconify fs-3 me-2" data-icon="bi:trash"></span>Hapus Semua
+          </button>
+          <button type="button" class="btn btn-primary btn-submit">
+            <span class="iconify fs-3 me-2" data-icon="bi:send-check"></span>Submit
+          </button>
         </div>
       </div>
     </form>
