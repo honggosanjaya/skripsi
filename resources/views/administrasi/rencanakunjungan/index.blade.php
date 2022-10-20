@@ -73,7 +73,7 @@
                   <span class="visually-hidden">Loading...</span>
                 </div>
               </div>
-              <select class="form-select select-district" id="id_district" name="id_district">
+              <select class="form-select select-district select-two" id="id_district" name="id_district">
                 <option disabled selected value>
                   Pilih Wilayah
                 </option>
