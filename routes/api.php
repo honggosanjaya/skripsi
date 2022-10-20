@@ -79,7 +79,7 @@ Route::get('/kanvas/{id}', [ItemController::class, 'getKanvasAPI']);
 Route::post('/keluarToko/{id}', [OrderController::class, 'keluarTripOrderApi']);
 Route::get('/belanjalagi/{id}', [OrderController::class, 'belanjaLagiOrderApi']);
 //UBAH PASSWORD
-Route::post('/checkpassword/{staff:id}', [AuthController::class, 'checkPasswordAPI']);
+Route::post('/checkpassword/{id}', [AuthController::class, 'checkPasswordAPI']);
 Route::post('/changepassword/{staff:id}', [AuthController::class, 'changePasswordAPI']);
 
 //CUSTOMER
