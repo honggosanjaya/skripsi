@@ -41,7 +41,7 @@ const KeranjangSales = ({ location }) => {
   const [totalHarga, setTotalHarga] = useState(0);
   const [diskon, setDiskon] = useState(0);
   const [isShowRincian, setIsShowRincian] = useState(false);
-  const { kodePesanan, setKodePesanan } = useContext(HitungStokContext);
+  const { kodePesanan, setKodePesanan, isKodePesananValid } = useContext(HitungStokContext);
   const [itemKanvas, setItemKanvas] = useState([]);
   const [idItemKanvas, setIdItemKanvas] = useState([]);
   const [isOrderKanvas, setIsOrderKanvas] = useState(false);
@@ -306,6 +306,28 @@ const KeranjangSales = ({ location }) => {
 
   const checkout = (e) => {
     e.preventDefault();
+
+    let obj = {
+      keranjang: produks,
+      idCustomer: idCust,
+      idStaf: dataUser.id_staff,
+      estimasiWaktuPengiriman: estimasiWaktuPengiriman,
+      jatuhTempo: jatuhTempo,
+      keterangan: keteranganOrderItem,
+      kodeEvent: kodeEvent,
+      totalHarga: (totalHarga - (totalHarga * (dataCustType.diskon ?? 0) / 100) - hargaPromo),
+      idTrip: idTrip,
+      tipeRetur: parseInt(tipeRetur),
+      metode_pembayaran: metodePembayaran,
+      stok_kanvas: isOrderKanvas
+    }
+
+    if (kodePesanan && isKodePesananValid) {
+      obj["kodePesanan"] = kodePesanan
+    } else {
+      obj["kodePesanan"] = null
+    }
+
     if (estimasiWaktuPengiriman) {
       Swal.fire({
         title: 'Apakah anda yakin?',
@@ -323,21 +345,7 @@ const KeranjangSales = ({ location }) => {
             headers: {
               Accept: "application/json",
             },
-            data: {
-              keranjang: produks,
-              idCustomer: idCust,
-              kodePesanan: kodePesanan,
-              idStaf: dataUser.id_staff,
-              estimasiWaktuPengiriman: estimasiWaktuPengiriman,
-              jatuhTempo: jatuhTempo,
-              keterangan: keteranganOrderItem,
-              kodeEvent: kodeEvent,
-              totalHarga: (totalHarga - (totalHarga * (dataCustType.diskon ?? 0) / 100) - hargaPromo),
-              idTrip: idTrip,
-              tipeRetur: parseInt(tipeRetur),
-              metode_pembayaran: metodePembayaran,
-              stok_kanvas: isOrderKanvas
-            }
+            data: obj
           })
             .then(response => {
               console.log('chekout', response);
