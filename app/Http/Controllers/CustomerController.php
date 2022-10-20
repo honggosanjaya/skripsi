@@ -44,7 +44,7 @@ class CustomerController extends Controller
     }
 
     public function dataCustomerApi($id){
-      $customer=Customer::with('linkCustomerType')->find($id);
+      $customer=Customer::with(['linkCustomerType','linkDistrict'])->find($id);
       
       if ($customer->count()>0) {
         return response()->json([
