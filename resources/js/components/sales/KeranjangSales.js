@@ -393,11 +393,70 @@ const KeranjangSales = ({ location }) => {
               console.log('after checkout', error.message);
               setIsLoading(false);
               setIsShowRincian(false);
-              Swal.fire({
-                icon: 'error',
-                title: 'Oops...',
-                text: error.message,
-              })
+              if (error.message == "Total pesanan melebihi limit pembelian") {
+                Swal.fire({
+                  icon: 'error',
+                  title: 'Oops...',
+                  text: error.message,
+                  showCancelButton: true,
+                  confirmButtonColor: '#3085d6',
+                  cancelButtonColor: '#d33',
+                  confirmButtonText: 'Tetap Lanjutkan!'
+                }).then((result) => {
+                  if (result.isConfirmed) {
+                    obj["limit_pembelian"] = 'nolimit'
+                    setIsLoading(true);
+                    axios({
+                      method: "post",
+                      url: `${window.location.origin}/api/salesman/buatOrder`,
+                      headers: {
+                        Accept: "application/json",
+                      },
+                      data: obj
+                    })
+                      .then(response => {
+                        if (response.data.status === 'success') {
+                          hapusSemuaProduk();
+                          setIsLoading(false);
+                          setKodePesanan(null);
+                          Swal.fire({
+                            icon: 'success',
+                            title: 'Tersimpan!',
+                            text: response.data.success_message,
+                            showCancelButton: true,
+                            confirmButtonColor: '#198754',
+                            cancelButtonColor: '#7066e0',
+                            confirmButtonText: 'Belanja Lagi',
+                            cancelButtonText: 'Selesai'
+                          }).then((result) => {
+                            if (result.isConfirmed) {
+                              axios({
+                                method: "get",
+                                url: `${window.location.origin}/api/belanjalagi/${idTrip}`,
+                                headers: {
+                                  Accept: "application/json",
+                                },
+                              })
+                                .then((response) => {
+                                  setIsBelanjaLagi(true);
+                                  history.push(`/salesman/order/${response.data.data.customer.id}`);
+                                })
+                            }
+                            else {
+                              history.push('/salesman');
+                            }
+                          })
+                        }
+                      })
+                  }
+                })
+              } else {
+                Swal.fire({
+                  icon: 'error',
+                  title: 'Oops...',
+                  text: error.message,
+                });
+              }
             });
         }
       })
