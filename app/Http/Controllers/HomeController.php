@@ -53,10 +53,11 @@ class HomeController extends Controller
         $customer_aktif = Customer::where('status_enum', '1')->count();
 
         $notifikasi = [];
-        $notifikasi['trip'] = 
-        Customer::with(['latestLinkTrip'])
-            ->whereRaw('NOW() >= DATE_ADD(updated_at, INTERVAL + durasi_kunjungan DAY)')
-            ->get();
+
+        $notifikasi['trip'] = Customer::with(['latestLinkTrip'])
+                                ->where('durasi_kunjungan', '!=', 0)
+                                ->whereRaw('NOW() >= DATE_ADD(updated_at, INTERVAL + durasi_kunjungan DAY)')
+                                ->get();
 
         $notifikasi['retur'] = 
          Retur::where('status_enum','0')->select('no_retur','id_invoice','id_customer','id_staff_pengaju', 'created_at','status_enum')        
