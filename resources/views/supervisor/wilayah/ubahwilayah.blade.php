@@ -30,8 +30,7 @@
         </div>
         <div class="col">
           <div class="mb-3">
-            <label for="wilayah_parent" class="form-label">Wilayah yang Dituju (Parent) <span
-                class='text-danger'>*</span></label>
+            <label for="wilayah_parent" class="form-label">Wilayah yang Dituju (Parent)</label>
             <select class="form-select select-two" name="id_parent">
               @if ($data->id_parent === null)
                 <option value="">-- Pilih Wilayah --</option>

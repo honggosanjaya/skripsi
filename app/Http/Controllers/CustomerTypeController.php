@@ -39,7 +39,7 @@ class CustomerTypeController extends Controller
         $request->validate([
             'nama_jenis' => 'required|max:255',
             'diskon' => 'required|numeric|min:0|max:100',
-            'keterangan' => 'required'            
+            'keterangan' => 'nullable'            
         ]);
 
         CustomerType::create([
@@ -63,7 +63,7 @@ class CustomerTypeController extends Controller
         $rules = $request->validate([
             'nama' => 'required|max:255',
             'diskon' => 'required',
-            'keterangan' => 'required'                   
+            'keterangan' => 'nullable'                   
         ]);
 
         CustomerType::Where('id', $customertype->id)

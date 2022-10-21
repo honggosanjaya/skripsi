@@ -180,7 +180,7 @@
           </div>
           <div class="col">
             <div class="mb-3">
-              <label for="category" class="form-label">Category Item <span class='text-danger'>*</span></label>
+              <label for="category" class="form-label">Category Item</label>
               <select class="form-select" name="category">
                 @foreach ($categories as $category)
                   @if (old('category') == $category->id)

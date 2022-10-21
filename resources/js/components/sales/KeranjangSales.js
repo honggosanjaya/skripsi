@@ -625,14 +625,14 @@ const KeranjangSales = ({ location }) => {
             {errorKodeEvent && <small className='text-danger d-block'>{errorKodeEvent}</small>}
             {hargaPromo > 0 && <small className='text-success d-block'>Eksta potongan {hargaPromo}</small>}
 
-            <label className="form-label mt-3">Tipe Retur <span className='text-danger'>*</span></label>
+            <label className="form-label mt-3">Tipe Retur</label>
             <select className="form-select mb-3" value={tipeRetur} onChange={(e) => setTipeRetur(e.target.value)}>
               {pilihanRetur.length && pilihanRetur.map((pilihan, index) => (
                 <option value={pilihan.id} key={index}>{pilihan.nama}</option>
               ))}
             </select>
 
-            <label className="form-label mt-3">Metode Pembayaran <span className='text-danger'>*</span></label>
+            <label className="form-label mt-3">Metode Pembayaran</label>
             <select className="form-select mb-3" value={metodePembayaran} onChange={(e) => setMetodePembayaran(e.target.value)}>
               {pilihanMetodePembayaran.length && pilihanMetodePembayaran.map((pilihan, index) => (
                 <option value={pilihan.id} key={index}>{pilihan.nama}</option>

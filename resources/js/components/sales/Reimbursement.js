@@ -357,7 +357,7 @@ const Reimbursement = () => {
               </div>
 
               <div className="mb-3">
-                <label className="form-label">Keterangan <span className='text-danger'>*</span></label>
+                <label className="form-label">Keterangan</label>
                 <textarea className="form-control"
                   value={keteranganPengajuan}
                   onChange={(e) => setKeteranganPengajuan(e.target.value)}></textarea>
@@ -416,15 +416,9 @@ const Reimbursement = () => {
                   : null
               }
 
-              {isFromGalery && jumlahUang && keteranganPengajuan &&
-                <button type="submit" className="btn btn-primary w-100 mt-4" disabled={(imagePreviewUrl == '' || isLoading) ? true : false}>
-                  Submit
-                </button>}
-
-              {isTakePhoto && jumlahUang && keteranganPengajuan &&
-                <button type="submit" className="btn btn-primary w-100 mt-4" disabled={(dataUri == '' || isLoading) ? true : false}>
-                  Submit
-                </button>}
+              <button type="submit" className="btn btn-primary w-100 mt-4" disabled={((isTakePhoto == false && isFromGalery == false) || jumlahUang == '' || (imagePreviewUrl == '' && dataUri == '') || isLoading) ? true : false}>
+                Submit
+              </button>
             </form>
           </div>
         }

@@ -51,8 +51,7 @@
       <div class="row">
         <div class="col">
           <div class="mb-3">
-            <label for="kapasitas_harga" class="form-label">Kapasitas Harga (Rp) <span
-                class='text-danger'>*</span></label>
+            <label for="kapasitas_harga" class="form-label">Kapasitas Harga (Rp)</label>
             <input type="number" class="form-control @error('kapasitas_harga') is-invalid @enderror" id="kapasitas_harga"
               name="kapasitas_harga" value="{{ old('kapasitas_harga') }}" step=".01">
             @error('kapasitas_harga')

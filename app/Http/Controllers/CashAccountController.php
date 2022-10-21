@@ -259,7 +259,7 @@ class CashAccountController extends Controller
     $rules = [
       'id_staff_pengaju' => ['required'],
       'jumlah_uang' => ['required','numeric'],
-      'keterangan_pengajuan' => ['required'],
+      'keterangan_pengajuan' => ['nullable'],
       'id_cash_account' => ['required'],
     ];
 

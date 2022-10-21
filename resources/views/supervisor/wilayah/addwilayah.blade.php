@@ -27,8 +27,7 @@
         </div>
         <div class="col">
           <div class="mb-3">
-            <label for="wilayah_parent" class="form-label">Wilayah yang Dituju (Parent) <span
-                class='text-danger'>*</span></label>
+            <label for="wilayah_parent" class="form-label">Wilayah yang Dituju (Parent)</label>
             <select class="form-select select-two @error('nama_wilayah') is-invalid @enderror" name="id_parent">
               <option value="">-- Pilih Wilayah --</option>
               @foreach ($dropdown as $d)

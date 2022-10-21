@@ -468,7 +468,7 @@ const TripSales = () => {
           </div>
 
           <div className="mb-3">
-            <label className="form-label">Wilayah <span className='text-danger'>*</span></label>
+            <label className="form-label">Wilayah</label>
             <Select
               value={selectWilayahValue}
               onChange={handleChange}

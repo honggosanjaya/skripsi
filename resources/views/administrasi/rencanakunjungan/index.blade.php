@@ -39,7 +39,7 @@
           <div class="row">
             <div class="col">
               <div class="mb-3">
-                <label for="id_staff" class="form-label">Nama Salesman</label>
+                <label for="id_staff" class="form-label">Nama Salesman <span class='text-danger'>*</span></label>
                 <select class="form-select @error('id_staff') is-invalid @enderror" id="id_staff" name="id_staff"
                   value="{{ old('id_staff') }}">
                   @foreach ($staffs as $staff)
@@ -55,7 +55,7 @@
             </div>
             <div class="col">
               <div class="mb-3">
-                <label class="form-label">Tanggal</label>
+                <label class="form-label">Tanggal <span class='text-danger'>*</span></label>
                 <input type="date" name="tanggal" class="form-control @error('tanggal') is-invalid @enderror"
                   id="tanggal" value="{{ old('tanggal') }}" />
                 @error('tanggal')
@@ -90,7 +90,8 @@
             <div>
               <div class="row">
                 <div class="col-6">
-                  <label for="id_customer" class="form-label">Customer yang Dikunjungi</label>
+                  <label for="id_customer" class="form-label">Customer yang Dikunjungi <span
+                      class='text-danger'>*</span></label>
                 </div>
               </div>
               <div class="form-input">

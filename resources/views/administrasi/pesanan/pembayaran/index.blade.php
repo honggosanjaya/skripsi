@@ -90,7 +90,7 @@
       <div class="row">
         <div class="col">
           <div class="mb-3">
-            <label class="form-label">Nama Penagih</label>
+            <label class="form-label">Nama Penagih <span class='text-danger'>*</span></label>
             <select class="form-select" name="id_staff_penagih">
               @foreach ($stafs as $staf)
                 <option value="{{ $staf->id }}">{{ $staf->nama }}</option>
@@ -100,7 +100,7 @@
         </div>
         <div class="col">
           <div class="mb-3">
-            <label class="form-label">Tanggal</label>
+            <label class="form-label">Tanggal <span class='text-danger'>*</span></label>
             <input type="date" name="tanggal" class="form-control @error('tanggal') is-invalid @enderror"
               id="tanggal" value="{{ old('tanggal') }}">
             @error('tanggal')
@@ -114,7 +114,7 @@
       <div class="row">
         <div class="col">
           <div class="mb-3">
-            <label class="form-label">Jumlah Pembayaran</label>
+            <label class="form-label">Jumlah Pembayaran <span class='text-danger'>*</span></label>
             <div class="input-group">
               <span class="input-group-text" id="basic-addon1">Rp.</span>
               <input type="number" class="form-control @error('jumlah_pembayaran') is-invalid @enderror"
@@ -133,7 +133,7 @@
         </div>
         <div class="col">
           <div class="mb-3">
-            <label class="form-label">Metode Pembayaran</label>
+            <label class="form-label">Metode Pembayaran <span class='text-danger'>*</span></label>
             <select class="form-select" name="metode_pembayaran">
               @foreach ($metodes_pembayaran as $key => $val)
                 @if ($order->linkInvoice->metode_pembayaran != null)

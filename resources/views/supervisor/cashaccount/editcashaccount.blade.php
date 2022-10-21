@@ -63,7 +63,7 @@
           </div>
 
           <div class="mb-3">
-            <label for="default" class="form-label">Default <span class="text-danger">*</span></label>
+            <label for="default" class="form-label">Default</label>
             <select class="form-select" name="default">
               <option value="">Tidak Ada</option>
               @foreach ($defaults as $key => $val)
