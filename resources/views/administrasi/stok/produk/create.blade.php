@@ -212,8 +212,7 @@
           <div class="col-6">
             <div class="mb-3">
               <label for="deskripsi" class="form-label">Deskripsi</label>
-              <textarea class="form-control @error('volume') is-invalid @enderror" id="deskripsi" name="deskripsi"
-                value="{{ old('deskripsi') }}"></textarea>
+              <textarea class="form-control @error('deskripsi') is-invalid @enderror" id="deskripsi" name="deskripsi">{{ old('deskripsi') }}</textarea>
               @error('deskripsi')
                 <div class="invalid-feedback">
                   {{ $message }}

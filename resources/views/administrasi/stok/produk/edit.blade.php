@@ -190,6 +190,10 @@
             <div class="mb-3">
               <label for="category" class="form-label">Category Item</label>
               <select class="form-select" name="category">
+                @if ($item->id_category == null)
+                  <option value>Belum ada category</option>
+                @endif
+
                 @foreach ($categories as $category)
                   @if (old('category', $item->id_category) == $category->id)
                     <option value="{{ $category->id }}" selected>{{ $category->nama }}</option>
@@ -221,7 +225,7 @@
           <div class="col">
             <div class="mb-3">
               <label for="deskripsi" class="form-label">Deskripsi</label>
-              <textarea class="form-control @error('volume') is-invalid @enderror" id="deskripsi" name="deskripsi">{{ old('deskripsi', $item->deskripsi) }}</textarea>
+              <textarea class="form-control @error('deskripsi') is-invalid @enderror" id="deskripsi" name="deskripsi">{{ old('deskripsi', $item->deskripsi) }}</textarea>
               @error('deskripsi')
                 <div class="invalid-feedback">
                   {{ $message }}
