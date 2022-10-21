@@ -19,6 +19,10 @@
       float: left;
     }
 
+    .info-perusahaan {
+      padding: 0 5px;
+    }
+
     .info-perusahaan p {
       font-weight: normal;
       margin: 0;
@@ -117,12 +121,11 @@
       <td colspan="3" rowspan="4" class="td-small" align="right">
         <div class="info-perusahaan">
           <div class="logo">
-            <img src="{{ public_path('images/icon-perusahaan.png') }}" width="70" height="70" alt="UD">
+            <img src="{{ public_path('images/icon-perusahaan.png') }}" width="70" height="70">
           </div>
-          <h5>UD. SURYA&nbsp;</h5>
-          <p>TOBA E5 / 15 SWJJ - MLG&nbsp;</p>
-          <p>TLP 0341-718732, 726025&nbsp;</p>
-          <p>FAX. 0341-720035&nbsp;</p>
+          <h5>{{ config('app.company_name') }}</h5>
+          <p>{{ config('app.company_address') }}</p>
+          <p>{{ config('app.company_contact') }}</p>
         </div>
       </td>
       <td colspan="2" rowspan="2" class="td-medium">

@@ -122,7 +122,7 @@ class CustomerController extends Controller
           ]);
 
           // $details = [
-          //   'title' => 'Konfirmasi Customer UD Surya dan UD Mandiri',
+          //   'title' => 'Konfirmasi Customer'.config('app.company_name'),
           //   'body' => 'Anda hanya perlu mengonfirmasi email anda. Proses ini sangat singkat dan tidak rumit. Anda dapat melakukannya dengan sangat cepat.',
           //   'user' => Customer::find($id_customer)
           // ];
@@ -143,7 +143,7 @@ class CustomerController extends Controller
 
           
           // $details = [
-          //   'title' => 'Konfirmasi Customer UD Surya dan UD Mandiri',
+          //   'title' => 'Konfirmasi Customer'.config('app.company_name'),
           //   'body' => 'Anda hanya perlu mengonfirmasi email anda. Proses ini sangat singkat dan tidak rumit. Anda dapat melakukannya dengan sangat cepat.',
           //   'user' => Customer::find($id_customer)
           // ];
@@ -363,7 +363,7 @@ class CustomerController extends Controller
         Customer::find($customer)->update(['password'=>Hash::make(12345678)]);
 
         // $details = [
-        //   'title' => 'Konfirmasi Customer UD Surya dan UD Mandiri',
+        //   'title' => 'Konfirmasi Customer'.config('app.company_name'),
         //   'body' => 'Anda hanya perlu mengonfirmasi email anda. Proses ini sangat singkat dan tidak rumit. Anda dapat melakukannya dengan sangat cepat.',
         //   'user' => Customer::find($customer)
         // ];
@@ -502,7 +502,7 @@ class CustomerController extends Controller
         event(new Registered($user));
 
         // $details = [
-        //   'title' => 'Konfirmasi Customer UD Surya dan UD Mandiri',
+        //   'title' => 'Konfirmasi Customer'.config('app.company_name'),
         //   'body' => 'Anda hanya perlu mengonfirmasi email anda. Proses ini sangat singkat dan tidak rumit. Anda dapat melakukannya dengan sangat cepat.',
         //   'user' => Customer::find($customer->id)
         // ];
