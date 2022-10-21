@@ -10,6 +10,7 @@ import Modal from 'react-bootstrap/Modal';
 import Button from 'react-bootstrap/Button';
 import { useHistory } from "react-router";
 import QrReader from 'react-qr-reader';
+import LoadingIndicator from '../reuse/LoadingIndicator';
 
 let source;
 const DashboardSales = () => {
@@ -25,6 +26,7 @@ const DashboardSales = () => {
   const [showModalRencana, setShowModalRencana] = useState(false);
   const [showModalQR, setShowModalQR] = useState(false);
   const [isOrder, setIsOrder] = useState();
+  const [isLoading, setIsLoading] = useState(false);
   const _isMounted = useRef(true);
   const Swal = require('sweetalert2');
   const history = useHistory();
@@ -96,6 +98,7 @@ const DashboardSales = () => {
   }, [tanggal, dataUser])
 
   const cariCustomer = (e) => {
+    setIsLoading(true);
     e.preventDefault();
     source = axios.CancelToken.source();
     setShouldDisabled(true);
@@ -114,6 +117,7 @@ const DashboardSales = () => {
     })
       .then(response => {
         if (_isMounted.current) {
+          setIsLoading(false);
           setShouldDisabled(false);
           setListCustomer(response.data.data);
           setAddButton('active');
@@ -123,6 +127,7 @@ const DashboardSales = () => {
       })
       .catch(error => {
         if (_isMounted.current) {
+          setIsLoading(false);
           setShouldDisabled(false);
           setListCustomer([]);
           setDataShow('active');
@@ -235,7 +240,7 @@ const DashboardSales = () => {
                   <span className="iconify fs-3 me-1" data-icon="bx:qr-scan"></span>Scan QR
                 </Button>}
               </div>
-
+              {isLoading && <LoadingIndicator />}
               <form onSubmit={cariCustomer} className="mt-4">
                 <div className="mb-3">
                   <label className="form-label">Nama Customer</label>

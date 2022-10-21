@@ -672,7 +672,12 @@ const Pemesanan = ({ location }) => {
                     value={kodePesanan}
                     onChange={(e) => setKodePesanan(e.target.value)}
                   />
-                  {loadingKode ? <button type="submit" className="btn btn-primary" disabled={true}>Proses</button>
+                  {loadingKode ?
+                    <button type="submit" className="btn btn-primary" disabled={true}>
+                      <div class="spinner-border" role="status">
+                        <span class="visually-hidden">Loading...</span>
+                      </div>
+                    </button>
                     : <button type="submit" className="btn btn-primary" disabled={kodePesanan !== '' ? false : true}>Proses</button>
                   }
                 </div>

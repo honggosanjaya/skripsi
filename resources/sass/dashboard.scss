@@ -135,6 +135,10 @@ textarea {
             margin-left: 185px;
         }
     }
+
+    & ~ .main-content main .loading-indicator {
+        left: calc(50% + 70px);
+    }
 }
 
 .main-content {
@@ -610,4 +614,12 @@ select[readonly] {
     width: 600px;
     margin-left: auto;
     margin-right: auto;
+}
+
+.loading-indicator {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 9999;
 }

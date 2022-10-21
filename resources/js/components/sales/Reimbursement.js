@@ -47,11 +47,11 @@ const Reimbursement = () => {
   ];
 
   useEffect(() => {
+    setIsLoading(true);
     axios.get(`${window.location.origin}/api/cashAcountOption`).then(response => {
       setListCashAccount(response.data.cashaccount);
-
+      setIsLoading(false);
       console.log(response.data.cashaccount);
-
       for (var i = 0; i < response.data.cashaccount.length; i++) {
         if (response.data.cashaccount[i][3] > 100 && response.data.cashaccount[i][2] != '3') {
           setCashAccount(response.data.cashaccount[i][1]);
@@ -63,8 +63,9 @@ const Reimbursement = () => {
 
   const getHistoryReimbursement = () => {
     if (dataUser.id_staff != undefined) {
+      setIsLoading(true);
       axios.get(`${window.location.origin}/api/historyReimbursement/${dataUser.id_staff}`).then(response => {
-        console.log('reimbursement', response.data);
+        setIsLoading(false);
         setHistoryReimbursement(response.data.data);
       })
     }

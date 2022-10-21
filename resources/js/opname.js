@@ -12,11 +12,13 @@ function opname() {
       keterangan: $('#opname .input-keterangancart-' + iditem).val(),
     }
 
+    $('#opname .loading-indicator').removeClass('d-none');
     $.ajax({
       url: window.location.origin + `/api/administrasi/stok/opname/cart?route=opname`,
       method: "POST",
       data: objData,
       success: function (response) {
+        $('#opname .loading-indicator').addClass('d-none');
         if (response.status == 'success') {
           $('#opname').prepend(`<div id="hideMeAfter3Seconds">
           <div class="alert alert-success alert-dismissible fade show" role="alert">

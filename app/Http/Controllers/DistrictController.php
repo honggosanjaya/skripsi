@@ -196,7 +196,7 @@ class DistrictController extends Controller
                             $q->whereHas('linkOrderTrack', function($q){
                               $q->where('status_enum', '4');
                             });
-                          })->with(['linkOrder', 'linkOrder.linkInvoice'])->get();
+                          })->with(['linkOrder', 'linkOrder.linkInvoice', 'linkOrder.linkOrderTrack'])->get();
 
         return response()->json([
           'status' => 'success',

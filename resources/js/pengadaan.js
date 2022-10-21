@@ -16,9 +16,7 @@
 
 function pengadaan() {
   let iditem = $(this).data('iditem');
-  // console.log('hao1');
   if ($(`#pengadaan .input-totalhargacart-${iditem}`).val() > 0 && $(`#pengadaan .input-quantitycart-${iditem}`).val() > 0) {
-    // console.log('haoo2');
     let objData = {
       id: $("#pengadaan .input-idcart-" + iditem).val(),
       kode_barang: $('#pengadaan .input-kodecart-' + iditem).val(),
@@ -30,11 +28,13 @@ function pengadaan() {
       quantity: $('#pengadaan .input-quantitycart-' + iditem).val(),
     }
 
+    $('#pengadaan .loading-indicator').removeClass('d-none');
     $.ajax({
       url: window.location.origin + `/api/administrasi/stok/pengadaan/cart?route=pengadaan`,
       method: "POST",
       data: objData,
       success: function (response) {
+        $('#pengadaan .loading-indicator').addClass('d-none');
         if (response.status == 'success') {
           $('#pengadaan').prepend(`<div id="hideMeAfter3Seconds">
           <div class="alert alert-success alert-dismissible fade show" role="alert">

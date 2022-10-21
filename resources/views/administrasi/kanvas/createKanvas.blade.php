@@ -21,6 +21,18 @@
   @endif
 
   <div class="px-5 pt-4" id="kanvas">
+    <div class="loading-indicator d-none">
+      <div class="spinner-grow spinner-grow-sm" role="status">
+        <span class="visually-hidden">Loading...</span>
+      </div>
+      <div class="spinner-grow spinner-grow-sm" role="status">
+        <span class="visually-hidden">Loading...</span>
+      </div>
+      <div class="spinner-grow spinner-grow-sm" role="status">
+        <span class="visually-hidden">Loading...</span>
+      </div>
+    </div>
+
     <h1 class="fs-4 mb-4">Pembuatan Kanvas</h1>
     <form id="form_submit" method="POST" action="/administrasi/kanvas/store">
       @csrf
