@@ -4,6 +4,7 @@ class ComponentToPrint extends React.Component {
   render() {
     const { invoice } = this.props;
     let totalSementara = 0;
+    const company_name = process.env.MIX_COMPANY_NAME;
 
     return (
       <div className="print-component border p-2">
@@ -37,7 +38,7 @@ class ComponentToPrint extends React.Component {
           <p className="mb-0">Rp{(invoice.harga_total ?? 0).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".")}</p>
         </div>
 
-        <p className='text-center mt-4 mb-0'>Dicetak oleh UD. Surya</p>
+        <p className='text-center mt-4 mb-0'>Dicetak oleh {`${company_name}`}</p>
       </div>
     );
   }
