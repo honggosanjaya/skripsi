@@ -33,8 +33,8 @@
               {{-- @csrf --}}
               <td>{{ $item->attributes->kode_barang ?? null }}</td>
               <td>{{ $item->name ?? null }}</td>
-              <td>{{ $item->quantity ?? null }}</td>
-              <td>{{ ($item->quantity ?? null) + ($item->attributes->jumlah ?? null) }}</td>
+              <td>{{ $item->attributes->quantity ?? null }}</td>
+              <td>{{ ($item->attributes->quantity ?? null) + ($item->attributes->jumlah ?? null) }}</td>
               <td>{{ $item->attributes->jumlah ?? null }}</td>
               <td>{{ $item->attributes->keterangan ?? null }}</td>
 

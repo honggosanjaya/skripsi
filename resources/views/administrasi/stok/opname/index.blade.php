@@ -87,7 +87,7 @@
                       class="input-kodecart-{{ $product->id }}">
                     <div class="d-flex justify-content-between">
                       <div>jumlah</div>
-                      <input type="number" class="form-control input-jumlahcart-{{ $product->id }}" id="quantity"
+                      <input type="number" class="form-control input-jumlahcart-{{ $product->id }}" id="jumlah"
                         name="jumlah" style="width: 180px" data-iditem="{{ $product->id }}"
                         value="{{ $cartItem->attributes->jumlah ?? null }}">
                     </div>
