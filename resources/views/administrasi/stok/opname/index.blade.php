@@ -21,6 +21,18 @@
     </div>
   @endif --}}
   <div id="opname" class="pt-4 px-5">
+    <div class="loading-indicator d-none">
+      <div class="spinner-grow spinner-grow-sm" role="status">
+        <span class="visually-hidden">Loading...</span>
+      </div>
+      <div class="spinner-grow spinner-grow-sm" role="status">
+        <span class="visually-hidden">Loading...</span>
+      </div>
+      <div class="spinner-grow spinner-grow-sm" role="status">
+        <span class="visually-hidden">Loading...</span>
+      </div>
+    </div>
+
     <div class="d-flex justify-content-between align-items-center">
       <h1 class="fs-4 fw-4">Opname</h1>
       <a href="/administrasi/stok/opname/final?route=opname" class="btn btn-primary"><span class="iconify me-1 fs-4"

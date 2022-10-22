@@ -41,7 +41,7 @@ const KeranjangSales = ({ location }) => {
   const [totalHarga, setTotalHarga] = useState(0);
   const [diskon, setDiskon] = useState(0);
   const [isShowRincian, setIsShowRincian] = useState(false);
-  const { kodePesanan, setKodePesanan } = useContext(HitungStokContext);
+  const { kodePesanan, setKodePesanan, isKodePesananValid } = useContext(HitungStokContext);
   const [itemKanvas, setItemKanvas] = useState([]);
   const [idItemKanvas, setIdItemKanvas] = useState([]);
   const [isOrderKanvas, setIsOrderKanvas] = useState(false);
@@ -306,6 +306,28 @@ const KeranjangSales = ({ location }) => {
 
   const checkout = (e) => {
     e.preventDefault();
+
+    let obj = {
+      keranjang: produks,
+      idCustomer: idCust,
+      idStaf: dataUser.id_staff,
+      estimasiWaktuPengiriman: estimasiWaktuPengiriman,
+      jatuhTempo: jatuhTempo,
+      keterangan: keteranganOrderItem,
+      kodeEvent: kodeEvent,
+      totalHarga: (totalHarga - (totalHarga * (dataCustType.diskon ?? 0) / 100) - hargaPromo),
+      idTrip: idTrip,
+      tipeRetur: parseInt(tipeRetur),
+      metode_pembayaran: metodePembayaran,
+      stok_kanvas: isOrderKanvas
+    }
+
+    if (kodePesanan && isKodePesananValid) {
+      obj["kodePesanan"] = kodePesanan
+    } else {
+      obj["kodePesanan"] = null
+    }
+
     if (estimasiWaktuPengiriman) {
       Swal.fire({
         title: 'Apakah anda yakin?',
@@ -323,21 +345,7 @@ const KeranjangSales = ({ location }) => {
             headers: {
               Accept: "application/json",
             },
-            data: {
-              keranjang: produks,
-              idCustomer: idCust,
-              kodePesanan: kodePesanan,
-              idStaf: dataUser.id_staff,
-              estimasiWaktuPengiriman: estimasiWaktuPengiriman,
-              jatuhTempo: jatuhTempo,
-              keterangan: keteranganOrderItem,
-              kodeEvent: kodeEvent,
-              totalHarga: (totalHarga - (totalHarga * (dataCustType.diskon ?? 0) / 100) - hargaPromo),
-              idTrip: idTrip,
-              tipeRetur: parseInt(tipeRetur),
-              metode_pembayaran: metodePembayaran,
-              stok_kanvas: isOrderKanvas
-            }
+            data: obj
           })
             .then(response => {
               console.log('chekout', response);
@@ -385,11 +393,70 @@ const KeranjangSales = ({ location }) => {
               console.log('after checkout', error.message);
               setIsLoading(false);
               setIsShowRincian(false);
-              Swal.fire({
-                icon: 'error',
-                title: 'Oops...',
-                text: error.message,
-              })
+              if (error.message == "Total pesanan melebihi limit pembelian") {
+                Swal.fire({
+                  icon: 'error',
+                  title: 'Oops...',
+                  text: error.message,
+                  showCancelButton: true,
+                  confirmButtonColor: '#3085d6',
+                  cancelButtonColor: '#d33',
+                  confirmButtonText: 'Tetap Lanjutkan!'
+                }).then((result) => {
+                  if (result.isConfirmed) {
+                    obj["limit_pembelian"] = 'nolimit'
+                    setIsLoading(true);
+                    axios({
+                      method: "post",
+                      url: `${window.location.origin}/api/salesman/buatOrder`,
+                      headers: {
+                        Accept: "application/json",
+                      },
+                      data: obj
+                    })
+                      .then(response => {
+                        if (response.data.status === 'success') {
+                          hapusSemuaProduk();
+                          setIsLoading(false);
+                          setKodePesanan(null);
+                          Swal.fire({
+                            icon: 'success',
+                            title: 'Tersimpan!',
+                            text: response.data.success_message,
+                            showCancelButton: true,
+                            confirmButtonColor: '#198754',
+                            cancelButtonColor: '#7066e0',
+                            confirmButtonText: 'Belanja Lagi',
+                            cancelButtonText: 'Selesai'
+                          }).then((result) => {
+                            if (result.isConfirmed) {
+                              axios({
+                                method: "get",
+                                url: `${window.location.origin}/api/belanjalagi/${idTrip}`,
+                                headers: {
+                                  Accept: "application/json",
+                                },
+                              })
+                                .then((response) => {
+                                  setIsBelanjaLagi(true);
+                                  history.push(`/salesman/order/${response.data.data.customer.id}`);
+                                })
+                            }
+                            else {
+                              history.push('/salesman');
+                            }
+                          })
+                        }
+                      })
+                  }
+                })
+              } else {
+                Swal.fire({
+                  icon: 'error',
+                  title: 'Oops...',
+                  text: error.message,
+                });
+              }
             });
         }
       })
@@ -558,14 +625,14 @@ const KeranjangSales = ({ location }) => {
             {errorKodeEvent && <small className='text-danger d-block'>{errorKodeEvent}</small>}
             {hargaPromo > 0 && <small className='text-success d-block'>Eksta potongan {hargaPromo}</small>}
 
-            <label className="form-label mt-3">Tipe Retur <span className='text-danger'>*</span></label>
+            <label className="form-label mt-3">Tipe Retur</label>
             <select className="form-select mb-3" value={tipeRetur} onChange={(e) => setTipeRetur(e.target.value)}>
               {pilihanRetur.length && pilihanRetur.map((pilihan, index) => (
                 <option value={pilihan.id} key={index}>{pilihan.nama}</option>
               ))}
             </select>
 
-            <label className="form-label mt-3">Metode Pembayaran <span className='text-danger'>*</span></label>
+            <label className="form-label mt-3">Metode Pembayaran</label>
             <select className="form-select mb-3" value={metodePembayaran} onChange={(e) => setMetodePembayaran(e.target.value)}>
               {pilihanMetodePembayaran.length && pilihanMetodePembayaran.map((pilihan, index) => (
                 <option value={pilihan.id} key={index}>{pilihan.nama}</option>

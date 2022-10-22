@@ -44,7 +44,7 @@ class CustomerController extends Controller
     }
 
     public function dataCustomerApi($id){
-      $customer=Customer::with('linkCustomerType')->find($id);
+      $customer=Customer::with(['linkCustomerType','linkDistrict'])->find($id);
       
       if ($customer->count()>0) {
         return response()->json([
@@ -69,7 +69,7 @@ class CustomerController extends Controller
       $rules = [
         'nama' => ['required', 'string', 'max:255'],
         'id_jenis' => ['required'],
-        'id_wilayah' => ['required'],
+        'id_wilayah' => ['nullable'],
         'alamat_utama' => ['required', 'string', 'max:255'],
         'durasi_kunjungan' => ['required', 'integer'],
         'jatuh_tempo' => ['required', 'integer'],
@@ -122,7 +122,7 @@ class CustomerController extends Controller
           ]);
 
           // $details = [
-          //   'title' => 'Konfirmasi Customer UD Surya dan UD Mandiri',
+          //   'title' => 'Konfirmasi Customer'.config('app.company_name'),
           //   'body' => 'Anda hanya perlu mengonfirmasi email anda. Proses ini sangat singkat dan tidak rumit. Anda dapat melakukannya dengan sangat cepat.',
           //   'user' => Customer::find($id_customer)
           // ];
@@ -143,7 +143,7 @@ class CustomerController extends Controller
 
           
           // $details = [
-          //   'title' => 'Konfirmasi Customer UD Surya dan UD Mandiri',
+          //   'title' => 'Konfirmasi Customer'.config('app.company_name'),
           //   'body' => 'Anda hanya perlu mengonfirmasi email anda. Proses ini sangat singkat dan tidak rumit. Anda dapat melakukannya dengan sangat cepat.',
           //   'user' => Customer::find($id_customer)
           // ];
@@ -307,7 +307,7 @@ class CustomerController extends Controller
       $rules = [
         'nama' => ['required', 'string', 'max:255'],
         'id_jenis' => ['required'],
-        'id_wilayah' => ['required'],
+        'id_wilayah' => ['nullable'],
         'alamat_utama' => ['required', 'string', 'max:255'],
         'alamat_nomor' => ['nullable', 'string', 'max:255'],
         'keterangan_alamat' => ['nullable', 'string', 'max:255'],
@@ -327,7 +327,9 @@ class CustomerController extends Controller
       $validatedData['tipe_retur'] = $request->tipe_retur;
       $validatedData['tipe_harga'] = $request->tipe_harga;
       $validatedData['id_staff'] = auth()->user()->id_users;
-      $validatedData['status_telepon'] = $request->status_telepon;
+      if($request->status_telepon){
+        $validatedData['status_telepon'] = $request->status_telepon;
+      }
       // $validatedData['limit_pembelian'] = 200000;
       $validatedData['durasi_kunjungan'] = 7;
       $validatedData['counter_to_effective_call'] = 1;
@@ -361,7 +363,7 @@ class CustomerController extends Controller
         Customer::find($customer)->update(['password'=>Hash::make(12345678)]);
 
         // $details = [
-        //   'title' => 'Konfirmasi Customer UD Surya dan UD Mandiri',
+        //   'title' => 'Konfirmasi Customer'.config('app.company_name'),
         //   'body' => 'Anda hanya perlu mengonfirmasi email anda. Proses ini sangat singkat dan tidak rumit. Anda dapat melakukannya dengan sangat cepat.',
         //   'user' => Customer::find($customer)
         // ];
@@ -452,7 +454,7 @@ class CustomerController extends Controller
       $rules = [
         'nama' => ['required', 'string', 'max:255'],
         'id_jenis' => ['required'],
-        'id_wilayah' => ['required'],
+        'id_wilayah' => ['nullable'],
         'alamat_utama' => ['required', 'string', 'max:255'],
         'alamat_nomor' => ['nullable', 'string', 'max:255'],
         'keterangan_alamat' => ['nullable','string', 'max:255'],
@@ -461,7 +463,7 @@ class CustomerController extends Controller
         'tipe_harga' => ['required', 'integer'],
         'status_enum' => ['required'],
         'foto' => 'image|file|max:1024',
-        'status_telepon' => ['required', 'string', 'max:255'],
+        'status_telepon' => ['nullable', 'string', 'max:255'],
       ];
 
       if($request->email!=null && $request->email !== $customer->email){
@@ -500,7 +502,7 @@ class CustomerController extends Controller
         event(new Registered($user));
 
         // $details = [
-        //   'title' => 'Konfirmasi Customer UD Surya dan UD Mandiri',
+        //   'title' => 'Konfirmasi Customer'.config('app.company_name'),
         //   'body' => 'Anda hanya perlu mengonfirmasi email anda. Proses ini sangat singkat dan tidak rumit. Anda dapat melakukannya dengan sangat cepat.',
         //   'user' => Customer::find($customer->id)
         // ];

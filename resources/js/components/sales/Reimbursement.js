@@ -47,11 +47,11 @@ const Reimbursement = () => {
   ];
 
   useEffect(() => {
+    setIsLoading(true);
     axios.get(`${window.location.origin}/api/cashAcountOption`).then(response => {
       setListCashAccount(response.data.cashaccount);
-
+      setIsLoading(false);
       console.log(response.data.cashaccount);
-
       for (var i = 0; i < response.data.cashaccount.length; i++) {
         if (response.data.cashaccount[i][3] > 100 && response.data.cashaccount[i][2] != '3') {
           setCashAccount(response.data.cashaccount[i][1]);
@@ -63,8 +63,9 @@ const Reimbursement = () => {
 
   const getHistoryReimbursement = () => {
     if (dataUser.id_staff != undefined) {
+      setIsLoading(true);
       axios.get(`${window.location.origin}/api/historyReimbursement/${dataUser.id_staff}`).then(response => {
-        console.log('reimbursement', response.data);
+        setIsLoading(false);
         setHistoryReimbursement(response.data.data);
       })
     }
@@ -356,7 +357,7 @@ const Reimbursement = () => {
               </div>
 
               <div className="mb-3">
-                <label className="form-label">Keterangan <span className='text-danger'>*</span></label>
+                <label className="form-label">Keterangan</label>
                 <textarea className="form-control"
                   value={keteranganPengajuan}
                   onChange={(e) => setKeteranganPengajuan(e.target.value)}></textarea>
@@ -415,15 +416,9 @@ const Reimbursement = () => {
                   : null
               }
 
-              {isFromGalery && jumlahUang && keteranganPengajuan &&
-                <button type="submit" className="btn btn-primary w-100 mt-4" disabled={(imagePreviewUrl == '' || isLoading) ? true : false}>
-                  Submit
-                </button>}
-
-              {isTakePhoto && jumlahUang && keteranganPengajuan &&
-                <button type="submit" className="btn btn-primary w-100 mt-4" disabled={(dataUri == '' || isLoading) ? true : false}>
-                  Submit
-                </button>}
+              <button type="submit" className="btn btn-primary w-100 mt-4" disabled={((isTakePhoto == false && isFromGalery == false) || jumlahUang == '' || (imagePreviewUrl == '' && dataUri == '') || isLoading) ? true : false}>
+                Submit
+              </button>
             </form>
           </div>
         }

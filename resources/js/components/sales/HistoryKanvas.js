@@ -37,7 +37,7 @@ const HistoryKanvas = () => {
 
   const handleShow = (idsKanvas) => {
     const ids = idsKanvas.replace(/,/g, '-');
-
+    setIsLoading(true);
     axios({
       method: "get",
       url: `${window.location.origin}/api/administrasi/getDetailKanvas/${ids}`,

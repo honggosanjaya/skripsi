@@ -15,6 +15,7 @@ const CatalogItem = () => {
   const [listItem, setListItem] = useState([]);
   const [filteredListItem, setFilteredListItem] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
+  const [tipeHarga, setTipeHarga] = useState(null);
 
   useEffect(() => {
     setIsLoading(true);
@@ -33,6 +34,7 @@ const CatalogItem = () => {
         setIsLoading(false);
         setListItem(response.data.data);
         setFilteredListItem(response.data.data);
+        setTipeHarga(response.data.tipe_harga);
       })
       .catch(error => {
         console.log(error.message);
@@ -45,7 +47,7 @@ const CatalogItem = () => {
   }, [])
 
   const handleDetailItem = (idItem) => {
-    history.push(`/salesman/detailcatalog/${idItem}`);
+    history.push(`/salesman/detailcatalog/${tipeHarga}/${idItem}`);
   }
 
   const onSearchHandler = (val) => {

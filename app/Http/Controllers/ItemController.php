@@ -172,7 +172,7 @@ class ItemController extends Controller
     $rules = ([
       'no_nota' => ['required', 'max:20'],
       'harga_total' => ['required'],
-      'keterangan' => ['required', 'string', 'max:255'],
+      'keterangan' => ['nullable', 'string', 'max:255'],
     ]);
 
     if($request->kas != null){
@@ -1046,6 +1046,7 @@ class ItemController extends Controller
       return response()->json([
         'status' => 'success',
         'data' => $listItems,
+        'tipe_harga' => $tipeHarga
       ]); 
     }
 

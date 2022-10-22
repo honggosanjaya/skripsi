@@ -30,15 +30,22 @@
         </div>
         <div class="col">
           <div class="mb-3">
-            <label for="wilayah_parent" class="form-label">Wilayah yang Dituju (Parent) <span
-                class='text-danger'>*</span></label>
-            <select class="form-select" name="id_parent">
-              <option value="">-- Pilih Wilayah --</option>
-              @foreach ($selections as $selection)
-                <option value="{{ $selection[1] }}" {{ $selection[1] === $district->id ? 'selected' : '' }}>
-                  {{ $selection[0] }}
-                </option>
-              @endforeach
+            <label for="wilayah_parent" class="form-label">Wilayah yang Dituju (Parent)</label>
+            <select class="form-select select-two" name="id_parent">
+              @if ($data->id_parent === null)
+                <option value="">-- Pilih Wilayah --</option>
+                @foreach ($dropdown as $d)
+                  <option value="{{ $d[1] }}">{{ $d[0] }}</option>
+                @endforeach
+              @else
+                <option value="">-- Pilih Wilayah --</option>
+                @foreach ($dropdown as $d)
+                  <option value="{{ $d[1] }}" {{ $d[1] === $data->id ? 'selected' : '' }}>
+                    {{ $d[0] }}
+                  </option>
+                @endforeach
+              @endif
+
             </select>
           </div>
         </div>

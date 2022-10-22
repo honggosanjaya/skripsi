@@ -66,7 +66,7 @@ function App() {
                 <Route exact path="/salesman/itemkanvas/history" component={HistoryKanvas} />
                 <Route exact path="/salesman/catalog/:idCust" component={CatalogItem} />
                 <Route exact path="/salesman/historyinvoice/cetak/:idInvoice" component={PrintComponent} />
-                <Route exact path="/salesman/detailcatalog/:idItem" component={DetailCatalogItem} />
+                <Route exact path="/salesman/detailcatalog/:tipeHarga/:idItem" component={DetailCatalogItem} />
 
                 <HitungStokContextProvider>
                   <Route exact path="/salesman/order/:idCust" component={Pemesanan} />

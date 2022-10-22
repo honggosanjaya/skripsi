@@ -24,6 +24,21 @@
     .logo {
       float: left;
     }
+
+    .info-perusahaan {
+      padding: 0 5px;
+    }
+
+    .info-perusahaan p {
+      font-weight: normal;
+      margin: 0;
+      font-size: 0.9rem;
+    }
+
+    .info-perusahaan h5 {
+      font-size: 1.5rem;
+      margin: 0;
+    }
   </style>
 </head>
 
@@ -31,12 +46,15 @@
   <div class="container">
     <table class="table table-borderless">
       <tr>
-        <td style="width: 300px">
-          <img class="logo" src="{{ public_path('images/icon-perusahaan.png') }}" width="70" height="70"
-            alt="UD">
-          <h5>UD. Mandiri</h5>
-          <h6 class="font-weight-normal">Jalan santoso pojok no 2</h6>
-          <h6 class="font-weight-normal">(0341) - 726025</h6>
+        <td>
+          <div class="info-perusahaan">
+            <div class="logo">
+              <img src="{{ public_path('images/icon-perusahaan.png') }}" width="70" height="70">
+            </div>
+            <h5>{{ config('app.company_name') }}</h5>
+            <p>{{ config('app.company_address') }}</p>
+            <p>{{ config('app.company_contact') }}</p>
+          </div>
         </td>
       </tr>
     </table>

@@ -26,6 +26,17 @@
 @endsection
 
 @section('content')
+  <div class="loader d-none">
+    <div class="spinner-grow spinner-grow-sm" role="status">
+      <span class="visually-hidden">Loading...</span>
+    </div>
+    <div class="spinner-grow spinner-grow-sm" role="status">
+      <span class="visually-hidden">Loading...</span>
+    </div>
+    <div class="spinner-grow spinner-grow-sm" role="status">
+      <span class="visually-hidden">Loading...</span>
+    </div>
+  </div>
   <div class="d-flex justify-content-between mt-3">
     <form method="GET" action="/customer/produk/cari">
       <div class="input-group">

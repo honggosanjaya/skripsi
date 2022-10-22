@@ -46,18 +46,18 @@
             <select class="form-select select-account-parent @error('account_parent') is-invalid @enderror"
               name="account_parent">
               <option value="">-- Pilih Account --</option>
-              @foreach ($parent_accounts as $account)
-                @if (old('account_parent') == $account[1])
-                  <option value="{{ $account[1] }}" selected>{{ $account[1] . ' - ' . $account[0] }}</option>
+              @foreach ($dropdown as $d)
+                @if ($d[1] == old('account_parent'))
+                  <option value="{{ $d[1] }}" selected>{{ $d[1] }} - {{ $d[0] }}</option>
                 @else
-                  <option value="{{ $account[1] }}">{{ $account[1] . ' - ' . $account[0] }}</option>
+                  <option value="{{ $d[1] }}">{{ $d[1] }} - {{ $d[0] }}</option>
                 @endif
               @endforeach
             </select>
           </div>
 
           <div class="mb-3">
-            <label for="default" class="form-label">Default <span class="text-danger">*</span></label>
+            <label for="default" class="form-label">Default</label>
             <select class="form-select" name="default">
               <option value="">Tidak Ada</option>
               @foreach ($defaults as $key => $val)

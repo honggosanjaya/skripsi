@@ -6,12 +6,15 @@ const HitungStokContextProvider = (props) => {
 
   const [newHistoryItem, setNewHistoryItem] = useState([]);
   const [kodePesanan, setKodePesanan] = useState('');
+  const [isKodePesananValid, setIsKodePesananValid] = useState(false);
 
   const defaultContext = {
     newHistoryItem,
     setNewHistoryItem,
     kodePesanan,
     setKodePesanan,
+    isKodePesananValid,
+    setIsKodePesananValid
   }
 
   return (

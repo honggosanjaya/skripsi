@@ -79,7 +79,7 @@ class OrderController extends Controller
 
     if($id_order == "belum ada"){
       $limitPembelian = Customer::find($id_customer)->limit_pembelian;
-      if($limitPembelian == null || $limitPembelian>=$totalPesanan){
+      if($limitPembelian == null || $limitPembelian>=$totalPesanan || $request->limit_pembelian == 'nolimit'){
 
         if($stok_kanvas == true){
           $id_order=Order::insertGetId([
@@ -149,7 +149,7 @@ class OrderController extends Controller
     }
     else{   
       $limitPembelian = Customer::find($id_customer)->limit_pembelian;
-      if($limitPembelian == null || $limitPembelian>=$totalPesanan){
+      if($limitPembelian == null || $limitPembelian>=$totalPesanan || $request->limit_pembelian == 'nolimit'){
         foreach($keranjangItems as $item){
           $updateitem=OrderItem::where('id_order', $id_order)->where('id_item', $item['id'])->first();
           //jika data order item di database ditemukan
@@ -238,6 +238,7 @@ class OrderController extends Controller
       'id_event' => $id_event,
       'nomor_invoice' => $invoice_count,
       'harga_total' => $totalPesanan,
+      'counter_unduh' => 0,
       'metode_pembayaran' => $request->metode_pembayaran,
       'jatuh_tempo' => $jatuh_tempo,
       'created_at' => now()

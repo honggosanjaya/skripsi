@@ -36,35 +36,54 @@ class CashAccountController extends Controller
 
     $cashaccounts = CashAccount::all();
     $temp = array();
+    $dropdown = array();
 
     for($i=0; $i<count($cashaccounts); $i++){
       $get1 = '';
       $get2 = '';
-      $value = 0;
+      $get1 = $cashaccounts[$i]->nama;
+      $value = $cashaccounts[$i]->account;
+      array_push($temp, [$get1, $value]);        
+    }
 
-      if($cashaccounts[$i]->account_parent == null){
-        $get1 =  $cashaccounts[$i]->nama;
-        $value = $cashaccounts[$i]->account;
-        array_push($temp, [$get1, $value]);
+    for($j=0; $j<count($temp); $j++){
+      if($cashaccounts[$j]->account_parent == null){
+        $get1 = $cashaccounts[$j]->nama;
+        $value = $cashaccounts[$j]->account;
+        array_push($dropdown, [$get1, $value]);
       }
 
-      else if($cashaccounts[$i]->account_parent != null){
-        for($j=count($cashaccounts)-1; $j>=0; $j--){
-          if($cashaccounts[$i]->account_parent == $cashaccounts[$j]->account){
-            $get2 = $temp[$j][0] . " - " .$cashaccounts[$i]->nama;
-            $value = $cashaccounts[$i]->account;
-            array_push($temp, [$get2, $value]);
+      else if($cashaccounts[$j]->account_parent != null){
+        for($k=count($cashaccounts)-1; $k>=0; $k--){
+          if($cashaccounts[$j]->account_parent == $temp[$k][1]){
+            for($l=0;$l<count($dropdown);$l++){
+              if($cashaccounts[$j]->account_parent == $dropdown[$l][1] && (stripos($dropdown[$l][0],$cashaccounts[$j]->nama)) === false){
+                $get2 = $dropdown[$l][0] . " - " .$cashaccounts[$j]->nama;
+                break;
+              }
+              elseif($cashaccounts[$j]->account_parent == $dropdown[$l][1] && (stripos($dropdown[$l][0],$cashaccounts[$j]->nama)) >= 0){
+                $get2 = $cashaccounts[$j]->nama;
+                break;
+              }
+              else{
+                $get2 = $temp[$k][0] . " - " .$cashaccounts[$j]->nama;
+              }
+            }
+
+            $value = $cashaccounts[$j]->account;
+            array_push($dropdown, [$get2,$value]);
           }
         }
       }
     }
-    usort($temp, function($a, $b) {
-        return $a[0] <=> $b[0];
+
+    usort($dropdown, function($a, $b) {
+      return $a[0] <=> $b[0];
     });
 
     return view('supervisor.cashaccount.addcashaccount',[
       'defaults' => $defaults,
-      'parent_accounts' => $temp
+      'dropdown' => $dropdown,
     ]);
   }
 
@@ -106,39 +125,60 @@ class CashAccountController extends Controller
       2 => 'penjualan',
       3 => 'parent'
     ];
-
+    
+    $data = $cashaccount;
     $cashaccounts = CashAccount::all();
     $temp = array();
+    $dropdown = array();
 
     for($i=0; $i<count($cashaccounts); $i++){
       $get1 = '';
       $get2 = '';
-      $value = 0;
+      $get1 = $cashaccounts[$i]->nama;
+      $value = $cashaccounts[$i]->account;
+      array_push($temp, [$get1, $value]);        
+    }
 
-      if($cashaccounts[$i]->account_parent == null){
-        $get1 = $cashaccounts[$i]->nama;
-        $value = $cashaccounts[$i]->account;
-        array_push($temp, [$get1, $value]);
+    for($j=0; $j<count($temp); $j++){
+      if($cashaccounts[$j]->account_parent == null){
+        $get1 = $cashaccounts[$j]->nama;
+        $value = $cashaccounts[$j]->account;
+        array_push($dropdown, [$get1, $value]);
       }
 
-      else if($cashaccounts[$i]->account_parent != null){
-        for($j=count($cashaccounts)-1; $j>=0; $j--){
-          if($cashaccounts[$i]->account_parent == $cashaccounts[$j]->account){
-            $get2 = $temp[$j][0] . " - " .$cashaccounts[$i]->nama;
-            $value = $cashaccounts[$i]->account;
-            array_push($temp, [$get2, $value]);
+      else if($cashaccounts[$j]->account_parent != null){
+        for($k=count($cashaccounts)-1; $k>=0; $k--){
+          if($cashaccounts[$j]->account_parent == $temp[$k][1]){
+            for($l=0;$l<count($dropdown);$l++){
+              if($cashaccounts[$j]->account_parent == $dropdown[$l][1] && (stripos($dropdown[$l][0],$cashaccounts[$j]->nama)) === false){
+                $get2 = $dropdown[$l][0] . " - " .$cashaccounts[$j]->nama;
+                break;
+              }
+              elseif($cashaccounts[$j]->account_parent == $dropdown[$l][1] && (stripos($dropdown[$l][0],$cashaccounts[$j]->nama)) >= 0){
+                $get2 = $cashaccounts[$j]->nama;
+                break;
+              }
+              else{
+                $get2 = $temp[$k][0] . " - " .$cashaccounts[$j]->nama;
+              }
+            }
+
+            $value = $cashaccounts[$j]->account;
+            array_push($dropdown, [$get2,$value]);
           }
         }
       }
     }
-    usort($temp, function($a, $b) {
-        return $a[0] <=> $b[0];
+
+    usort($dropdown, function($a, $b) {
+      return $a[0] <=> $b[0];
     });
 
     return view('supervisor.cashaccount.editcashaccount',[
       'cashaccount' => $cashaccount,
       'defaults' => $defaults,
-      'parent_accounts' => $temp
+      'dropdown' => $dropdown,
+      'data' => $data
     ]);
   }
 
@@ -219,7 +259,7 @@ class CashAccountController extends Controller
     $rules = [
       'id_staff_pengaju' => ['required'],
       'jumlah_uang' => ['required','numeric'],
-      'keterangan_pengajuan' => ['required'],
+      'keterangan_pengajuan' => ['nullable'],
       'id_cash_account' => ['required'],
     ];
 

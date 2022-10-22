@@ -39,7 +39,7 @@
           <div class="row">
             <div class="col">
               <div class="mb-3">
-                <label for="id_staff_penagih" class="form-label">Nama Penagih</label>
+                <label for="id_staff_penagih" class="form-label">Nama Penagih <span class='text-danger'>*</span></label>
                 <select class="form-select @error('id_staff_penagih') is-invalid @enderror" id="id_staff_penagih"
                   name="id_staff_penagih" value="{{ old('id_staff_penagih') }}">
                   @foreach ($staffs as $staff)
@@ -55,7 +55,7 @@
             </div>
             <div class="col">
               <div class="mb-3">
-                <label class="form-label">Tanggal</label>
+                <label class="form-label">Tanggal <span class='text-danger'>*</span></label>
                 <input type="date" name="tanggal" class="form-control @error('tanggal') is-invalid @enderror"
                   id="tanggal" value="{{ old('tanggal') }}">
                 @error('tanggal')
@@ -70,12 +70,12 @@
           <div class="row mb-3">
             <div class="col-6">
               <div class="d-flex justify-content-between">
-                <label class="form-label">Kunjungi Berdasar Wilayah</label>
+                <label class="form-label">Tagih Berdasar Wilayah</label>
                 <div class="spinner-border d-none" role="status">
                   <span class="visually-hidden">Loading...</span>
                 </div>
               </div>
-              <select class="form-select select-district" id="id_district" name="id_district">
+              <select class="form-select select-district select-two" id="id_district" name="id_district">
                 <option disabled selected value>
                   Pilih Wilayah
                 </option>
@@ -92,7 +92,7 @@
             <div>
               <div class="row">
                 <div class="col">
-                  <label class="form-label">Invoice yang Ditagih</label>
+                  <label class="form-label">Invoice yang Ditagih <span class='text-danger'>*</span></label>
                 </div>
                 <div class="col">
                   <label class="form-label">Nama Customer</label>
@@ -137,8 +137,12 @@
 
           <div class="row justify-content-end mt-4">
             <div class="col-6 d-flex justify-content-end">
-              <button type="button" class="btn btn-danger delete-all me-3">Hapus Semua</button>
-              <button type="submit" class="btn btn-primary">Submit</button>
+              <button type="button" class="btn btn-danger delete-all me-3">
+                <span class="iconify fs-3 me-2" data-icon="bi:trash"></span>Hapus Semua
+              </button>
+              <button type="submit" class="btn btn-primary">
+                <span class="iconify fs-3 me-2" data-icon="bi:send-check"></span>Submit
+              </button>
             </div>
           </div>
         </form>
@@ -147,6 +151,39 @@
 
       <div class="tab-pane fade" id="history-tab-pane" role="tabpanel" aria-labelledby="history-tab" tabindex="0">
         <h3 class="my-4">History Pembuatan LP3</h3>
+
+        <button class="btn btn_purple mx-1 unduhLp3-btn mb-3">
+          <i class="bi bi-download px-1"></i>Unduh LP3
+        </button>
+
+        <form id="form_submit" class="form-submit form-downloadLp3 d-none" method="POST"
+          action="/administrasi/lp3/cetak-lp3">
+          @csrf
+          <div class="row">
+            <div class="col">
+              <div class="mb-3">
+                <label class="form-label">Date Start</label>
+                <input type="date" name="dateStart" class="form-control" value="{{ $input['dateStart'] ?? null }}"
+                  id="dateStart">
+              </div>
+            </div>
+            <div class="col">
+              <div class="mb-3">
+                <label class="form-label">Date End</label>
+                <input type="date" name="dateEnd" class="form-control" min="{{ $input['dateStart'] ?? null }}"
+                  value="{{ $input['dateEnd'] ?? null }}" id="dateEnd">
+              </div>
+            </div>
+          </div>
+
+          <div class="row justify-content-end mb-4">
+            <div class="col d-flex justify-content-end">
+              <button type="submit" class="btn btn-primary"> <span class="iconify fs-3 me-2"
+                  data-icon="ic:round-print"></span>Cetak</button>
+            </div>
+          </div>
+        </form>
+
         <table class="table table-hover table-sm mt-4" id="table">
           <thead>
             <tr>
@@ -178,6 +215,16 @@
   </div>
 
   @push('JS')
+    <script>
+      $(document).on('click', '#laporan-penagihan .unduhLp3-btn', function(e) {
+        $("#laporan-penagihan .form-downloadLp3").toggleClass('d-none');
+        $(this).toggleClass('btn_purple');
+        $(this).toggleClass('btn-danger');
+
+        $(this).hasClass("btn_purple") ? $(this).html('<i class="bi bi-download px-1"></i>Unduh LP3') :
+          $(this).html('<span class="iconify fs-3 me-2" data-icon="material-symbols:cancel"></span>Batal')
+      })
+    </script>
     <script src="{{ mix('js/administrasi.js') }}"></script>
   @endpush
 @endsection

@@ -14,6 +14,7 @@ const LoginReact = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+  const company_name = process.env.MIX_COMPANY_NAME;
 
   useEffect(() => {
     axios({
@@ -112,7 +113,7 @@ const LoginReact = () => {
           {isLoading && <LoadingIndicator />}
           <h1 className='logo text-center fs-1 mb-5'>salesMan</h1>
           <h1 className='fs-3 text-center fw-bold'>Selamat Datang<span className="iconify ms-2" data-icon="emojione:hand-with-fingers-splayed"></span></h1>
-          <h2 className='fs-6 text-center'>Aplikasi web salesMan <br /> UD Mandiri</h2>
+          <h2 className='fs-6 text-center'>Aplikasi web salesMan <br /> {`${company_name}`}</h2>
           {errorAuth && <AlertComponent errorMsg={errorAuth} />}
           {errorAuth == 'Anda mengakses halaman login yang salah' && <p className='mb-3 text-center'>
             Halaman login khusus untuk salesman dan tenaga pengirim, untuk staff lain silahkan login

@@ -76,7 +76,7 @@ class AuthController extends Controller
     }       
   }
 
-  public function checkPasswordAPI(Request $request, Staff $staff){
+  public function checkPasswordAPI(Request $request, $id){
     $validator = Validator::make($request->all(), [
       'old_password' => 'required|string|min:8',
     ]);
@@ -88,16 +88,18 @@ class AuthController extends Controller
       ]);
     }
 
-    if (Hash::check($request->old_password, $staff->password)) {
+    $user = User::where('tabel', 'staffs')->where('id_users', $id)->first();
+    
+    if (Hash::check($request->old_password, $user->password)) {
         return response()->json([
           'status' => 'success',
           'message' => 'Password lama sesuai',
         ], 200);
-    } else {
-      return response()->json([
+    } elseif (!$user || !Hash::check($request->old_password, $user->password)){
+      return response() -> json([
         'status' => 'error',
-        'message' => 'Password lama tidak sesuai',
-      ], 400);
+        'message' => 'password lama tidak sesuai'
+      ], 401);
     }
   }
 

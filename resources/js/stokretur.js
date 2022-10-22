@@ -14,11 +14,13 @@ function stokretur() {
       metode: 'tukarguling'
     }
 
+    $('#stokretur .loading-indicator').removeClass('d-none');
     $.ajax({
       url: window.location.origin + `/api/administrasi/stok/stokretur/cart?route=stokretur`,
       method: "POST",
       data: objData,
       success: function (response) {
+        $('#stokretur .loading-indicator').addClass('d-none');
         if (response.status == 'success') {
           $('#stokretur').prepend(`<div id="hideMeAfter3Seconds">
           <div class="alert alert-success alert-dismissible fade show" role="alert">

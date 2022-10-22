@@ -41,12 +41,26 @@
           </div>
           <div class="col">
             <div class="mb-3">
-              <label for="id_wilayah" class="form-label">Wilayah <span class="text-danger">*</span></label>
-              <select class="form-select" name="id_wilayah">
+              <label for="id_wilayah" class="form-label">Wilayah</label>
+              @php
+                $isHasChooseWilayah = false;
+              @endphp
+              <select class="form-select select-two" name="id_wilayah">
+                @if ($isHasChooseWilayah == false)
+                  <option selected value>-- Pilih Wilayah --</option>
+                @else
+                  <option value>-- Pilih Wilayah --</option>
+                @endif
                 @foreach ($districts as $district)
                   @if (old('id_wilayah') == $district->id)
+                    @php
+                      $isHasChooseWilayah = true;
+                    @endphp
                     <option value="{{ $district->id }}" selected>{{ $district->nama }}</option>
                   @else
+                    @php
+                      $isHasChooseWilayah = false;
+                    @endphp
                     <option value="{{ $district->id }}">{{ $district->nama }}</option>
                   @endif
                 @endforeach

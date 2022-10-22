@@ -59,7 +59,7 @@
       <div class="row">
         <div class="col-12 col-sm-6">
           <div class="mb-3">
-            <label for="role" class="form-label">Role</label>
+            <label for="role" class="form-label">Role <span class='text-danger'>*</span></label>
             <select class="form-select" name="role">
               @foreach ($roles as $role)
                 @if (old('role', $supervisor->role) == $role->id)
@@ -74,7 +74,7 @@
 
         <div class="col-12 col-sm-6">
           <div class="mb-3">
-            <label for="status_enum" class="form-label">Status</label>
+            <label for="status_enum" class="form-label">Status <span class='text-danger'>*</span></label>
             <select class="form-select" name="status_enum">
               @foreach ($statuses as $key => $val)
                 @if (old('status_enum', $supervisor->status_enum) == $key)

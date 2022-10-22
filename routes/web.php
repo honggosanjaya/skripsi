@@ -260,10 +260,13 @@ Route::prefix('administrasi')->middleware('administrasi')->group(function() {
 
   Route::get('/lp3', [LaporanPenagihanController::class, 'index']);
   Route::post('/lp3/penagihan', [LaporanPenagihanController::class, 'storeLp3']);
+  Route::post('/lp3/cetak-lp3', [LaporanPenagihanController::class, 'cetakLp3']);
 
   Route::get('/rencanakunjungan', [RencanaTripController::class, 'index']);
   Route::post('/rencanakunjungan/create', [RencanaTripController::class, 'storeRencana']);
-
+  Route::post('/rencanakunjungan/cetak-rak', [RencanaTripController::class, 'cetakRAK']);
+  Route::get('/rencanakunjungan/koordinattrip/{trip:id}', [ReportController::class,'cekKoordinatTrip']);
+  
   Route::get('/kas', [KasController::class, 'index']);
   Route::get('/kas/create/{cashaccount:id}', [KasController::class, 'createKas']);
   Route::post('/kas/store', [KasController::class, 'storeKas']);

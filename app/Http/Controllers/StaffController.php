@@ -23,7 +23,7 @@ class StaffController extends Controller
                 ->OrderBy('status_enum', 'ASC')
                 ->orderBy('id', 'DESC')
                 ->paginate(10),
-        "title" => "List Tim Marketing UD Mandiri"
+        "title" => "List Tim Marketing".config('app.company_name')
       ]);
     }
 

@@ -9,7 +9,7 @@ import urlAsset from '../../config';
 import { convertPrice } from "../reuse/HelperFunction";
 
 const DetailCatalogItem = () => {
-  const { idItem } = useParams();
+  const { tipeHarga, idItem } = useParams();
   const { idCustomer } = useContext(KeranjangSalesContext);
   const history = useHistory();
   const [isLoading, setIsLoading] = useState(false);
@@ -17,7 +17,6 @@ const DetailCatalogItem = () => {
   const [relatedItem, setRelatedItem] = useState(null);
   const [categoryItem, setCategoryItem] = useState(null);
   const [newItem, setnewItem] = useState(null);
-  const [tipeHarga, setTipeHarga] = useState(1);
   const [diskonPertama, setDiskonPertama] = useState(0);
   const [diskonKedua, setDiskonKedua] = useState(0);
   const [diskonKetiga, setDiskonKetiga] = useState(0);
@@ -54,16 +53,6 @@ const DetailCatalogItem = () => {
   }
 
   useEffect(() => {
-    console.log(idCustomer);
-    if (idCustomer != null) {
-      setIsLoading(true);
-      axios.get(`${window.location.origin}/api/tripCustomer/${idCustomer}`).then(response => {
-        console.log('cust', response.data.data);
-        setTipeHarga(response.data.data.tipe_harga);
-        setIsLoading(false);
-      })
-    }
-
     if (idItem) {
       getDetailCatalogItem();
     }
@@ -86,8 +75,7 @@ const DetailCatalogItem = () => {
   }
 
   const handleClickProduct = (idItem) => {
-    console.log('clicke');
-    history.push(`/salesman/detailcatalog/${idItem}`);
+    history.push(`/salesman/detailcatalog/${tipeHarga}/${idItem}`);
   }
 
   return (
