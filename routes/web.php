@@ -264,7 +264,9 @@ Route::prefix('administrasi')->middleware('administrasi')->group(function() {
 
   Route::get('/rencanakunjungan', [RencanaTripController::class, 'index']);
   Route::post('/rencanakunjungan/create', [RencanaTripController::class, 'storeRencana']);
-
+  Route::post('/rencanakunjungan/cetak-rak', [RencanaTripController::class, 'cetakRAK']);
+  Route::get('/rencanakunjungan/koordinattrip/{trip:id}', [ReportController::class,'cekKoordinatTrip']);
+  
   Route::get('/kas', [KasController::class, 'index']);
   Route::get('/kas/create/{cashaccount:id}', [KasController::class, 'createKas']);
   Route::post('/kas/store', [KasController::class, 'storeKas']);
@@ -279,8 +281,6 @@ Route::prefix('administrasi')->middleware('administrasi')->group(function() {
   Route::post('/kanvas/store', [ItemController::class, 'storeKanvas']);
   Route::get('/kanvas/history', [ItemController::class, 'historyKanvas']);
   Route::post('/kanvas/dikembalikan/{ids}', [ItemController::class, 'pengembalianKanvas']);
-
-  Route::post('/rencanakunjungan/cetak-rak', [RencanaTripController::class, 'cetakRAK']);
 });
 
 

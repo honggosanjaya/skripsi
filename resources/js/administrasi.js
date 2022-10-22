@@ -2,7 +2,7 @@ import { getJSON } from 'jquery';
 const Swal = require('sweetalert2');
 
 $(document).ready(function () {
-  $('#table').DataTable({
+  $('#table, #table2').DataTable({
     fixedHeader: true,
     buttons: [
       'searchPanes'

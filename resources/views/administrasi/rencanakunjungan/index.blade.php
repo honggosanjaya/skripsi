@@ -22,17 +22,25 @@
   <div class="px-5 pt-4" id="perencanaan-kunjungan">
     <ul class="nav nav-tabs" id="myTab" role="tablist">
       <li class="nav-item" role="presentation">
-        <button class="nav-link active" id="buat-tab" data-bs-toggle="tab" data-bs-target="#buat-tab-pane" type="button"
-          role="tab" aria-controls="buat-tab-pane" aria-selected="true">Buat Rencana Kunjungan</button>
+        <button class="nav-link {{ request()->koordinat ? '' : 'active' }}" id="buat-tab" data-bs-toggle="tab"
+          data-bs-target="#buat-tab-pane" type="button" role="tab" aria-controls="buat-tab-pane"
+          aria-selected="true">Buat Rencana Kunjungan</button>
       </li>
       <li class="nav-item" role="presentation">
         <button class="nav-link" id="history-tab" data-bs-toggle="tab" data-bs-target="#history-tab-pane" type="button"
           role="tab" aria-controls="history-tab-pane" aria-selected="false">History Rencana Kunjungan</button>
       </li>
+      <li class="nav-item" role="presentation">
+        <button class="nav-link {{ request()->koordinat ? 'active' : '' }}" id="coordinate-tab" data-bs-toggle="tab"
+          data-bs-target="#coordinate-tab-pane" type="button" role="tab" aria-controls="coordinate-tab-pane"
+          aria-selected="false">Koordinat Trip
+          Sales</button>
+      </li>
     </ul>
 
     <div class="tab-content" id="myTabContent">
-      <div class="tab-pane fade show active" id="buat-tab-pane" role="tabpanel" aria-labelledby="buat-tab" tabindex="0">
+      <div class="tab-pane fade {{ request()->koordinat ? '' : 'show active' }}" id="buat-tab-pane" role="tabpanel"
+        aria-labelledby="buat-tab" tabindex="0">
         <h3 class="my-4">Perencanaan Kunjungan</h3>
         <form class="form-rencanakunjungan" method="POST" action="/administrasi/rencanakunjungan/create">
           @csrf
@@ -140,7 +148,6 @@
 
       <div class="tab-pane fade" id="history-tab-pane" role="tabpanel" aria-labelledby="history-tab" tabindex="0">
         <h3 class="my-4">History Perencanaan Kunjungan</h3>
-
         <button class="btn btn_purple mx-1 unduhRak-btn mb-3">
           <i class="bi bi-download px-1"></i>Unduh RAK
         </button>
@@ -167,7 +174,7 @@
             <div class="col">
               <div class="mb-3">
                 <label class="form-label">Nama Sales</label>
-                <input type="text" class="form-control" placeholder="julian" name="salesman">
+                <input type="text" class="form-control" placeholder="masukkan nama sales..." name="salesman">
               </div>
             </div>
           </div>
@@ -207,6 +214,88 @@
           </tbody>
         </table>
       </div>
+
+      <div class="tab-pane fade {{ request()->koordinat ? 'show active' : '' }}" id="coordinate-tab-pane"
+        role="tabpanel" aria-labelledby="coordinate-tab" tabindex="0">
+        <h3 class="my-4">Koordinat Trip Sales</h3>
+        <form action="/{{ auth()->user()->linkStaff->linkStaffRole->nama ?? null }}/rencanakunjungan" method="get">
+          <input type="hidden" name="koordinat" value="true">
+          <div class="row">
+            <div class="col">
+              <div class="mb-3">
+                <label class="form-label">Date Start</label>
+                <input type="date" name="tripDateStart" class="form-control"
+                  value="{{ $input['tripDateStart'] ?? null }}" id="tripDateStart">
+              </div>
+            </div>
+            <div class="col">
+              <div class="mb-3">
+                <label class="form-label">Date End</label>
+                <input type="date" name="tripDateEnd" class="form-control"
+                  value="{{ $input['tripDateEnd'] ?? null }}" id="tripDateEnd">
+              </div>
+            </div>
+
+            <div class="col">
+              <div class="mb-3">
+                <label class="form-label">Nama Sales</label>
+                <input type="text" class="form-control" placeholder="masukkan nama sales..." name="tripSalesman"
+                  value="{{ $input['tripSalesman'] ?? null }}">
+              </div>
+            </div>
+          </div>
+          <div class="row justify-content-end">
+            <div class="col d-flex justify-content-end">
+              <button type="submit" class="btn btn-primary"><span class="iconify fs-3 me-1"
+                  data-icon="clarity:filter-grid-solid"></span>Filter Data</button>
+            </div>
+          </div>
+        </form>
+
+        <table class="table table-hover table-sm mt-4" id="table2">
+          <thead>
+            <tr>
+              <th scope="col" class="text-center">No</th>
+              <th scope="col" class="text-center">Nama Customer</th>
+              <th scope="col" class="text-center">Nama Sales</th>
+              <th scope="col" class="text-center">Waktu Masuk</th>
+              <th scope="col" class="text-center">Waktu Keluar</th>
+              <th scope="col" class="text-center">Status</th>
+              <th scope="col" class="text-center">Cek Lokasi</th>
+            </tr>
+          </thead>
+          <tbody>
+            @foreach ($tripssales as $dt)
+              <tr>
+                <th scope="row" class="text-center">{{ $loop->iteration }}</th>
+                <td class="text-center">{{ $dt->linkCustomer->nama ?? null }}</td>
+                <td class="text-center">{{ $dt->linkStaff->nama ?? null }}</td>
+                @if ($dt->waktu_masuk ?? null)
+                  <td>{{ date('j F Y, g:i a', strtotime($dt->waktu_masuk)) }}</td>
+                @else
+                  <td></td>
+                @endif
+                @if ($dt->waktu_keluar ?? null)
+                  <td>{{ date('j F Y, g:i a', strtotime($dt->waktu_keluar)) }}</td>
+                @else
+                  <td></td>
+                @endif
+                @if ($dt->status_enum ?? null)
+                  <td class="text-center">{{ $dt->status_enum == '1' ? 'Trip' : 'Effective Call' }}</td>
+                @else
+                  <td></td>
+                @endif
+                <td class="text-center">
+                  <a href="/{{ auth()->user()->linkStaff->linkStaffRole->nama ?? null }}/rencanakunjungan/koordinattrip/{{ $dt->id }}"
+                    class="btn btn-primary">
+                    <span class="iconify fs-3 me-2" data-icon="akar-icons:check-in"></span> Cek
+                  </a>
+                </td>
+              </tr>
+            @endforeach
+          </tbody>
+        </table>
+      </div>
     </div>
   </div>
 
@@ -216,10 +305,8 @@
         $("#perencanaan-kunjungan .form-downloadRak").toggleClass('d-none');
         $(this).toggleClass('btn_purple');
         $(this).toggleClass('btn-danger');
-
         $(this).hasClass("btn_purple") ? $(this).html('<i class="bi bi-download px-1"></i>Unduh RAK') :
           $(this).html('<span class="iconify fs-3 me-2" data-icon="material-symbols:cancel"></span>Batal')
-
       })
     </script>
     <script src="{{ mix('js/administrasi.js') }}"></script>
