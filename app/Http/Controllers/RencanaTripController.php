@@ -39,13 +39,31 @@ class RencanaTripController extends Controller
     ]);
 
     foreach($request->id_customer as $id_cust){
-      RencanaTrip::insert([
-        'id_customer' => $id_cust,
-        'id_staff' => $request->id_staff,
-        'tanggal' => $request->tanggal,
-        'status_enum' => '-1',
-        'created_at' => now()
-      ]);
+      $waktu_tanggal_start = $request->tanggal." 00:00:00";
+      $waktu_tanggal_end = $request->tanggal." 23:59:59";
+
+      $trip = Trip::where('id_customer', $id_cust)
+      ->where('id_staff', $request->id_staff)    
+      ->whereBetween('waktu_masuk',[$waktu_tanggal_start, $waktu_tanggal_end])
+      ->get();
+
+      if(count($trip) > 0){
+        RencanaTrip::insert([
+          'id_customer' => $id_cust,
+          'id_staff' => $request->id_staff,
+          'tanggal' => $request->tanggal,
+          'status_enum' => '1',
+          'created_at' => now()
+        ]);
+      }else{
+        RencanaTrip::insert([
+          'id_customer' => $id_cust,
+          'id_staff' => $request->id_staff,
+          'tanggal' => $request->tanggal,
+          'status_enum' => '-1',
+          'created_at' => now()
+        ]);
+      }
     }
 
     return redirect('/administrasi/rencanakunjungan')->with('pesanSukses','Berhasil membuat rencana kunjungan'); 
@@ -77,7 +95,7 @@ class RencanaTripController extends Controller
   }
 
   public function cetakRAK(Request $request){
-    $salesman = $request->salesman;
+    $salesman = $request->salesman;    
     $dateStart = $request->dateStart." 00:00:00";
     $dateEnd = $request->dateEnd." 23:59:59";
 
@@ -90,7 +108,7 @@ class RencanaTripController extends Controller
                       ->whereHas('linkStaff', function($q) use($salesman) {
                         $q->where(strtolower('nama'),'like','%'.$salesman.'%');
                       })->get();
-    
+
     $trip_rak_complete = [];
     $id_trip_complete = [];
     $id_rak_complete = [];
@@ -121,12 +139,10 @@ class RencanaTripController extends Controller
                             $q->where(strtolower('nama'),'like','%'.$salesman.'%');
                           })->orderBy('created_at', 'DESC')->get();
 
-
-    $trip_rak_not_complete = $trip_not_complete->merge($rak_not_complete)
-                              ->sortByDesc('created_at')->sortByDesc('tanggal');
     
     $pdf = PDF::loadview('administrasi.rencanakunjungan.cetakRAK',[
-      'trip_rak_not_complete' => $trip_rak_not_complete,
+      'trip_not_complete' => $trip_not_complete,
+      'rak_not_complete' => $rak_not_complete,
       'trip_rak_complete' => $trip_rak_complete, 
       'document_title' => 'RAK-'.date("d-m-Y", strtotime($request->dateStart)). '_' . date("d-m-Y", strtotime($request->dateEnd))
     ]);

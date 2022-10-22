@@ -116,43 +116,37 @@
         </tr>
       @endforeach
 
-      @foreach ($trip_rak_not_complete as $data)
+      @foreach ($trip_not_complete as $data)
         <tr>
           <th scope="row">{{ count($trip_rak_complete) + $loop->iteration }}</th>
           <td>{{ $data->linkCustomer->nama ?? null }}</td>
-          @if ($data->tanggal ?? null)
-            <td>{{ date('d-m-Y', strtotime($data->tanggal)) }}</td>
-            @if ($data->waktu_masuk ?? null)
-              <td>{{ date('g:i a', strtotime($data->waktu_masuk)) }}</td>
-            @else
-              <td></td>
-            @endif
-
-            @if ($data->waktu_keluar ?? null)
-              <td>{{ date('g:i a', strtotime($data->waktu_keluar)) }}</td>
-            @else
-              <td></td>
-            @endif
-          @else
-            <td></td>
-            @if ($data->waktu_masuk ?? null)
-              <td>{{ date('d-m-Y, g:i a', strtotime($data->waktu_masuk)) }}</td>
-            @else
-              <td></td>
-            @endif
-
-            @if ($data->waktu_keluar ?? null)
-              <td>{{ date('d-m-Y, g:i a', strtotime($data->waktu_keluar)) }}</td>
-            @else
-              <td></td>
-            @endif
-          @endif
+          <td></td>
 
           @if ($data->waktu_masuk ?? null)
-            <td>Dikunjungi tanpa RAK</td>
-          @elseif($data->tanggal ?? null)
-            <td>Belum Dikunjungi</td>
+            <td>{{ date('d-m-Y, g:i a', strtotime($data->waktu_masuk)) }}</td>
+          @else
+            <td></td>
           @endif
+
+          @if ($data->waktu_keluar ?? null)
+            <td>{{ date('d-m-Y, g:i a', strtotime($data->waktu_keluar)) }}</td>
+          @else
+            <td></td>
+          @endif
+
+          <td>Dikunjungi tanpa RAK</td>
+          <td>{{ $data->linkStaff->nama ?? null }}</td>
+        </tr>
+      @endforeach
+
+      @foreach ($rak_not_complete as $data)
+        <tr>
+          <th scope="row">{{ count($trip_rak_complete) + count($trip_not_complete) + $loop->iteration }}</th>
+          <td>{{ $data->linkCustomer->nama ?? null }}</td>
+          <td>{{ date('d-m-Y', strtotime($data->tanggal)) }}</td>
+          <td></td>
+          <td></td>
+          <td>Belum Dikunjungi</td>
           <td>{{ $data->linkStaff->nama ?? null }}</td>
         </tr>
       @endforeach
