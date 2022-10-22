@@ -162,7 +162,7 @@ const HistoryTrip = () => {
 
         {detailTrip && <Modal show={showModal} onHide={handleCloseModal}>
           <Modal.Header closeButton>
-            <Modal.Title>Detal Trip</Modal.Title>
+            <Modal.Title>Detail Trip</Modal.Title>
           </Modal.Header>
           <Modal.Body>
             <div className='info-2column'>
@@ -182,10 +182,11 @@ const HistoryTrip = () => {
                 <b>Status</b>
                 <p className='mb-0 word_wrap'>{detailTrip.status_enum == '1' ? 'Tidak Effective Call' : (detailTrip.status_enum == '2' && 'Effective Call')}</p>
               </span>
-              <span className='d-flex'>
-                <b>Alasan Penolakan</b>
-                <p className='mb-0 word_wrap'>{detailTrip.alasan_penolakan ?? null}</p>
-              </span>
+              {detailTrip.alasan_penolakan &&
+                <span className='d-flex'>
+                  <b>Alasan Penolakan</b>
+                  <p className='mb-0 word_wrap'>{detailTrip.alasan_penolakan}</p>
+                </span>}
             </div>
           </Modal.Body>
           <Modal.Footer>
