@@ -275,7 +275,7 @@ class CustomerController extends Controller
         ->orWhere(strtolower('email'),'like','%'.request('cari').'%')
         ->paginate(10);
 
-      return view('supervisor.dataCustomer.dataCustomer', [
+      return view('supervisor.datacustomer.dataCustomer', [
         'customers' => $customers,
         "title" => "Data Customer"
       ]);
@@ -590,7 +590,7 @@ class CustomerController extends Controller
         }
       }
 
-      return view('supervisor.dataCustomer.detailCustomer', [
+      return view('supervisor.datacustomer.detailCustomer', [
         'customer' => $customer,
         'invoices' => $invoices,
         "invoiceJatuhTempo" => $invoiceJatuhTempo
