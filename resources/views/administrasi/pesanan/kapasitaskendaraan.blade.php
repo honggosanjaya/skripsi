@@ -27,18 +27,17 @@
       @endif
       <h4 class="fs-6 fw-bold">Plat Nomor : <span class="fw-normal text-uppercase">{{ $data['kode_vehicle'] }}</span></h4>
 
-      @if ($data['kapasitas_volume'] ?? (0 > 0 && $data['total_persentase_volume'] ?? 0 > 0))
+      @php
+        $eachPersentaseVolumes = explode('+', $data['persentase_volume']);
+        $eachPersentaseHargas = explode('+', $data['persentase_harga']);
+        $eachColors = explode('+', $data['color']);
+        $eachInvoices = explode('+', $data['invoice']);
+      @endphp
+
+      @if ($data['kapasitas_volume'] > 0 && $data['total_persentase_volume'] > 0)
         <h6>Persentase Volume:
           <span class="fw-normal">{{ number_format($data['total_persentase_volume'], 2, ',', '.') }} %</span>
         </h6>
-
-        @php
-          $eachPersentaseVolumes = explode('+', $data['persentase_volume']);
-          $eachPersentaseHargas = explode('+', $data['persentase_harga']);
-          $eachColors = explode('+', $data['color']);
-          $eachInvoices = explode('+', $data['invoice']);
-        @endphp
-
         <div class="progress">
           @for ($i = 0; $i < sizeof($eachPersentaseVolumes); $i++)
             <div class="progress-bar bg-{{ $eachColors[$i] }}" role="progressbar"
@@ -48,11 +47,10 @@
         </div>
       @endif
 
-      @if ($data['kapasitas_harga'] ?? (null && $data['total_persentase_harga'] ?? 0 > 0))
+      @if ($data['kapasitas_harga'] != null && $data['kapasitas_harga'] > 0 && $data['total_persentase_harga'] > 0)
         <h6 class="mt-2">Persentase Harga :
           <span class="fw-normal">{{ number_format($data['total_persentase_harga'], 2, ',', '.') }}%</span>
         </h6>
-
         <div class="progress">
           @for ($i = 0; $i < sizeof($eachPersentaseHargas); $i++)
             <div class="progress-bar bg-{{ $eachColors[$i] }}" role="progressbar"

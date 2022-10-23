@@ -526,7 +526,7 @@ class OrderController extends Controller
       // get persentase harga kendaraan thdp seuatu order
       $kendaraan = Vehicle::where('id', $vehicleId)->first();
       $invoice = Invoice::where('id_order',$orderId)->first();
-      if($kendaraan->kapasitas_harga ?? null){
+      if($kendaraan->kapasitas_harga??0>0){
         return ($invoice->harga_total/$kendaraan->kapasitas_harga)*100;
       } else{
         return 0;
