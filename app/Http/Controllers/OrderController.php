@@ -515,16 +515,22 @@ class OrderController extends Controller
       }   
 
       $totalVolume = array_sum($tempVolume);
-
-      return ($totalVolume/$kendaraan->kapasitas_volume)*100;
+      if($kendaraan->kapasitas_volume??0>0){
+        return ($totalVolume/$kendaraan->kapasitas_volume)*100;
+      } else{
+        return 0;
+      }
     }
 
     function getPersentaseHarga($vehicleId, $orderId){
       // get persentase harga kendaraan thdp seuatu order
       $kendaraan = Vehicle::where('id', $vehicleId)->first();
       $invoice = Invoice::where('id_order',$orderId)->first();
-                 
-      return ($invoice->harga_total/$kendaraan->kapasitas_harga)*100;
+      if($kendaraan->kapasitas_harga??0>0){
+        return ($invoice->harga_total/$kendaraan->kapasitas_harga)*100;
+      } else{
+        return 0;
+      }
     }
 
      // get all order yang menggunakan kendaraan tertentu
@@ -567,6 +573,8 @@ class OrderController extends Controller
             'id_vehicle' => $kendaraans[$i]->id,
             'nama_vehicle' => $kendaraans[$i]->nama,
             'kode_vehicle' => $kendaraans[$i]->kode_kendaraan,
+            'kapasitas_volume' => $kendaraans[$i]->kapasitas_volume,
+            'kapasitas_harga' => $kendaraans[$i]->kapasitas_harga,
             'id_order' => $tempDataOrders[$i][$j],
             'invoice' => $invoice,
             'color' => $color,
@@ -582,6 +590,8 @@ class OrderController extends Controller
           'id_vehicle' => $kendaraans[$i]->id,
           'nama_vehicle' => $kendaraans[$i]->nama,
           'kode_vehicle' => $kendaraans[$i]->kode_kendaraan,
+          'kapasitas_volume' => $kendaraans[$i]->kapasitas_volume,
+          'kapasitas_harga' => $kendaraans[$i]->kapasitas_harga,
           'id_order' => null,
           'invoice' => null,
           'color' => null,
@@ -604,6 +614,8 @@ class OrderController extends Controller
           'id_vehicle' => $item['id_vehicle'],
           'nama_vehicle' => $item['nama_vehicle'],
           'kode_vehicle' => $item['kode_vehicle'],
+          'kapasitas_volume' => $item['kapasitas_volume'],
+          'kapasitas_harga' => $item['kapasitas_harga'],
           'id_order' => $item['id_order'],
           'invoice' => $item['invoice'],
           'color' => $item['color'],

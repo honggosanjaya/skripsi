@@ -77,6 +77,7 @@ const DashboardSales = () => {
   }, [])
 
   useEffect(() => {
+    setIsLoading(true);
     axios({
       method: "post",
       url: `${window.location.origin}/api/getrencanakunjungan/${dataUser.id_staff}`,
@@ -89,10 +90,12 @@ const DashboardSales = () => {
       },
     })
       .then(response => {
+        setIsLoading(false);
         console.log('rencana', response.data.data);
         setListRencanaKunjungan(response.data.data);
       })
       .catch(error => {
+        setIsLoading(false);
         console.log(error.message);
       });
   }, [tanggal, dataUser])
@@ -274,6 +277,7 @@ const DashboardSales = () => {
               <Modal.Title>Rencana Kunjungan</Modal.Title>
             </Modal.Header>
             <Modal.Body>
+              {isLoading && <LoadingIndicator />}
               {listRencanaKunjungan &&
                 <Fragment>
                   <label>Tanggal Kunjungan</label>
