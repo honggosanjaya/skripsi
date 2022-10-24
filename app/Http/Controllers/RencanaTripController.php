@@ -62,7 +62,7 @@ class RencanaTripController extends Controller
       'tanggal' => 'required'           
     ]);
 
-    foreach($request->id_customer as $id_cust){
+    foreach($request->id_customer as $index => $id_cust){
       $waktu_tanggal_start = $request->tanggal." 00:00:00";
       $waktu_tanggal_end = $request->tanggal." 23:59:59";
 
@@ -77,7 +77,9 @@ class RencanaTripController extends Controller
           'id_staff' => $request->id_staff,
           'tanggal' => $request->tanggal,
           'status_enum' => '1',
-          'created_at' => now()
+          'estimasi_nominal' => $request->estimasi_nominal[$index],
+          'created_at' => now(),
+          'updated_at' => now()
         ]);
       }else{
         RencanaTrip::insert([
@@ -85,7 +87,9 @@ class RencanaTripController extends Controller
           'id_staff' => $request->id_staff,
           'tanggal' => $request->tanggal,
           'status_enum' => '-1',
-          'created_at' => now()
+          'estimasi_nominal' => $request->estimasi_nominal[$index],
+          'created_at' => now(),
+          'updated_at' => now()
         ]);
       }
     }

@@ -432,6 +432,7 @@ $(document).on('click', '#perencanaan-kunjungan .add-form', function (e) {
   $('#perencanaan-kunjungan .form-input').last().clone().appendTo('#perencanaan-kunjungan .form-group');
   $('#perencanaan-kunjungan .form-input').find('.remove-form').removeClass('d-none');
   $('#perencanaan-kunjungan .form-input').last().find('.select-customer').val('');
+  $('#perencanaan-kunjungan .form-input').last().find('.input-estimasi-nominal').val('');
   if (countCust == 1) {
     $('#perencanaan-kunjungan .form-input').find('.remove-form').addClass('d-none');
   }

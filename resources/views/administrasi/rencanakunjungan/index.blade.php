@@ -73,7 +73,7 @@
             </div>
           </div>
 
-          <div class="row mb-3">
+          <div class="row">
             <div class="col-6">
               <div class="d-flex justify-content-between">
                 <label class="form-label">Kunjungi Berdasar Wilayah</label>
@@ -119,6 +119,19 @@
                     @error('id_customer')
                       <div class="invalid-feedback">{{ $message }}</div>
                     @enderror
+                  </div>
+                </div>
+                <div class="row mt-2">
+                  <div class="col-6">
+                    <div class="input-group mb-3">
+                      <span class="input-group-text" id="basic-addon1">Estimasi Nominal</span>
+                      <input type="number" class="form-control input-estimasi-nominal" placeholder="boleh dikosongi"
+                        name="estimasi_nominal[]">
+                    </div>
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="col-6">
                     <div class="d-flex justify-content-end my-3">
                       <button class="btn btn-danger remove-form me-3 d-none" type="button">
                         -
@@ -194,6 +207,7 @@
               <th scope="col" class="text-center">Nama Customer</th>
               <th scope="col" class="text-center">Nama Salesman</th>
               <th scope="col" class="text-center">Tanggal</th>
+              <th scope="col" class="text-center">Estimasi Nominal</th>
               <th scope="col" class="text-center">Status</th>
             </tr>
           </thead>
@@ -203,7 +217,18 @@
                 <th scope="row" class="text-center">{{ $loop->iteration }}</th>
                 <td>{{ $history->linkCustomer->nama ?? null }}</td>
                 <td>{{ $history->linkStaff->nama ?? null }}</td>
-                <td>{{ $history->tanggal ?? null }}</td>
+                @if ($history->tanggal ?? null)
+                  <td>{{ date('d M Y', strtotime($history->tanggal)) }}</td>
+                @else
+                  <td></td>
+                @endif
+
+                @if ($history->estimasi_nominal ?? null)
+                  <td>{{ number_format($history->estimasi_nominal, 0, '', '.') }}</td>
+                @else
+                  <td></td>
+                @endif
+
                 @if ($history->status_enum != null)
                   <td>{{ $history->status_enum == '1' ? 'Sudah Dikunjungi' : 'Belum Dikunjungi' }}</td>
                 @else

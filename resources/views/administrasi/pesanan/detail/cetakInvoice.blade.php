@@ -162,8 +162,6 @@
         @if ($order->linkOrderTrack->waktu_order ?? null)
           <p class="margin0 center-text">{{ date('d M Y', strtotime($order->linkOrderTrack->waktu_order)) }}
           </p>
-        @else
-          <p></p>
         @endif
       </td>
       <td class="td-medium">
@@ -214,7 +212,6 @@
       </td>
     </tr>
   </table>
-
 
   <table class="margintop">
     <tr>
