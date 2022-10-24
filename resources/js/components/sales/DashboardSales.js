@@ -297,7 +297,7 @@ const DashboardSales = () => {
                         <tr>
                           <th scope="col" className='text-center'>Nama Toko</th>
                           <th scope="col" className='text-center'>Wilayah</th>
-                          <th scope="col" className='text-center'>Tanggal</th>
+                          <th scope="col" className='text-center'>Estimasi Nominal</th>
                           <th scope="col" className='text-center'>Status</th>
                         </tr>
                       </thead>
@@ -306,7 +306,10 @@ const DashboardSales = () => {
                           <tr key={data.id}>
                             <td>{data.link_customer.nama ?? null}</td>
                             <td>{data.link_customer.link_district.nama ?? null}</td>
-                            <td>{data.tanggal ?? null}</td>
+                            {data.estimasi_nominal ?
+                              <td>{data.estimasi_nominal.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".")}</td>
+                              : <td></td>
+                            }
                             {data.status_enum ? <td className='text-center'>{data.status_enum == '1' ? <p className='text-success'>Sudah Dikunjungi</p> : <p className='text-danger'>Belum Dikunjungi</p>}</td> : <td></td>}
                           </tr>
                         ))}
