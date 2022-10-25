@@ -259,6 +259,7 @@ const KeranjangSales = ({ location }) => {
     const produk = {
       id: item.id,
       orderId: orderid,
+      gambar: item.gambar,
       customer: parseInt(idCust),
       harga: item.harga,
       jumlah: item.jumlah + 1,
@@ -285,6 +286,7 @@ const KeranjangSales = ({ location }) => {
     const produk = {
       id: item.id,
       orderId: orderid,
+      gambar: item.gambar,
       customer: parseInt(idCust),
       harga: item.harga,
       jumlah: item.jumlah - 1,
