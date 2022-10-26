@@ -5,7 +5,6 @@ import { Link, useHistory } from "react-router-dom";
 import { convertPrice } from "../reuse/HelperFunction";
 import { KeranjangSalesContext } from '../../contexts/KeranjangSalesContext';
 import AlertComponent from '../reuse/AlertComponent';
-import { AuthContext } from '../../contexts/AuthContext';
 import { UserContext } from "../../contexts/UserContext";
 import Table from 'react-bootstrap/Table';
 import LoadingIndicator from '../reuse/LoadingIndicator';
@@ -18,7 +17,6 @@ const KeranjangSales = ({ location }) => {
   const { dataUser, loadingDataUser } = useContext(UserContext);
   const history = useHistory();
   const { idCust } = useParams();
-  const { token } = useContext(AuthContext);
   const { produks, setProduks, getAllProduks, setIsBelanjaLagi, canOrderKanvas } = useContext(KeranjangSalesContext);
   const [errorMessage, setErrorMessage] = useState(null);
   const [successMessage, setSuccessMessage] = useState(null);
@@ -306,8 +304,8 @@ const KeranjangSales = ({ location }) => {
     setHargaPromo(null);
   }
 
-  const checkout = (e) => {
-    e.preventDefault();
+  const buatOrder = (limit) => {
+    setIsLoading(true);
 
     let obj = {
       keranjang: produks,
@@ -330,6 +328,91 @@ const KeranjangSales = ({ location }) => {
       obj["kodePesanan"] = null
     }
 
+    if (limit === 'nolimit') {
+      obj["limit_pembelian"] = 'nolimit'
+    }
+
+    axios({
+      method: "post",
+      url: `${window.location.origin}/api/salesman/buatOrder`,
+      headers: {
+        Accept: "application/json",
+      },
+      data: obj
+    })
+      .then(response => {
+        console.log('chekout', response);
+        if (response.data.status === 'success') {
+          hapusSemuaProduk();
+          setIsLoading(false);
+          setKodePesanan(null);
+
+          Swal.fire({
+            icon: 'success',
+            title: 'Tersimpan!',
+            text: response.data.success_message,
+            showCancelButton: true,
+            confirmButtonColor: '#198754',
+            cancelButtonColor: '#7066e0',
+            confirmButtonText: 'Belanja Lagi',
+            cancelButtonText: 'Selesai'
+          }).then((result) => {
+            if (result.isConfirmed) {
+              axios({
+                method: "get",
+                url: `${window.location.origin}/api/belanjalagi/${idTrip}`,
+                headers: {
+                  Accept: "application/json",
+                },
+              })
+                .then((response) => {
+                  setIsBelanjaLagi(true);
+                  history.push(`/salesman/order/${response.data.data.customer.id}`);
+                })
+                .catch(error => {
+                  console.log(error.message);
+                  history.push('/salesman');
+                });
+            }
+            else {
+              history.push('/salesman');
+            }
+          })
+        } else {
+          throw Error(response.data.error_message);
+        }
+      })
+      .catch(error => {
+        console.log('after checkout', error.message);
+        setIsLoading(false);
+        setIsShowRincian(false);
+        if (error.message == "Total pesanan melebihi limit pembelian") {
+          Swal.fire({
+            icon: 'error',
+            title: 'Oops...',
+            text: error.message,
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Tetap Lanjutkan!'
+          }).then((result) => {
+            if (result.isConfirmed) {
+              buatOrder('nolimit');
+            }
+          })
+        } else {
+          Swal.fire({
+            icon: 'error',
+            title: 'Oops...',
+            text: error.message,
+          });
+        }
+      });
+  }
+
+  const checkout = (e) => {
+    e.preventDefault();
+
     if (estimasiWaktuPengiriman) {
       Swal.fire({
         title: 'Apakah anda yakin?',
@@ -340,126 +423,55 @@ const KeranjangSales = ({ location }) => {
         confirmButtonText: 'Checkout!'
       }).then((result) => {
         if (result.isConfirmed) {
-          setIsLoading(true);
-          axios({
-            method: "post",
-            url: `${window.location.origin}/api/salesman/buatOrder`,
-            headers: {
-              Accept: "application/json",
-            },
-            data: obj
-          })
-            .then(response => {
-              console.log('chekout', response);
-              if (response.data.status === 'success') {
-                hapusSemuaProduk();
-                setIsLoading(false);
-                setKodePesanan(null);
+          // task: ada error di halaman checkout lagi
+          let text = "";
+          const errorArr = [];
+          if (produks.length == 0 || !produks || produks === undefined) {
+            errorArr.push("Tidak ada produk");
+          }
+          if (!idCust || idCust === undefined) {
+            errorArr.push("Tidak ada id customer");
+          }
+          if (!dataUser.id_staff || dataUser.id_staff === undefined) {
+            errorArr.push("Tidak ada id staff");
+          }
+          if (!estimasiWaktuPengiriman || estimasiWaktuPengiriman === undefined || estimasiWaktuPengiriman == '') {
+            errorArr.push("Tidak estimasi waktu pengiriman");
+          }
+          if (!jatuhTempo || jatuhTempo === undefined || jatuhTempo == '') {
+            errorArr.push("Tidak ada jatuh tempo");
+          }
+          if (!totalHarga || totalHarga === undefined) {
+            errorArr.push("Tidak ada total harga");
+          }
+          if (!idTrip || idTrip === undefined) {
+            errorArr.push("Tidak ada id trip");
+          }
 
-                Swal.fire({
-                  icon: 'success',
-                  title: 'Tersimpan!',
-                  text: response.data.success_message,
-                  showCancelButton: true,
-                  confirmButtonColor: '#198754',
-                  cancelButtonColor: '#7066e0',
-                  confirmButtonText: 'Belanja Lagi',
-                  cancelButtonText: 'Selesai'
-                }).then((result) => {
-                  if (result.isConfirmed) {
-                    axios({
-                      method: "get",
-                      url: `${window.location.origin}/api/belanjalagi/${idTrip}`,
-                      headers: {
-                        Accept: "application/json",
-                      },
-                    })
-                      .then((response) => {
-                        setIsBelanjaLagi(true);
-                        history.push(`/salesman/order/${response.data.data.customer.id}`);
-                      })
-                      .catch(error => {
-                        console.log(error.message);
-                        history.push('/salesman');
-                      });
-                  }
-                  else {
-                    history.push('/salesman');
-                  }
-                })
-              } else {
-                throw Error(response.data.error_message);
+          errorArr.forEach((errormsg, index) => {
+            text += (index + 1) + ". " + errormsg + "\n";
+          })
+
+          if (errorArr.length > 0) {
+            Swal.fire({
+              icon: 'error',
+              title: 'Checkout Error',
+              text: text,
+              showCancelButton: true,
+              confirmButtonColor: '#3085d6',
+              cancelButtonColor: '#d33',
+              confirmButtonText: 'Tetap Lanjutkan',
+              cancelButtonText: 'Batal'
+            }).then((result) => {
+              if (result.isConfirmed) {
+                buatOrder();
               }
             })
-            .catch(error => {
-              console.log('after checkout', error.message);
-              setIsLoading(false);
-              setIsShowRincian(false);
-              if (error.message == "Total pesanan melebihi limit pembelian") {
-                Swal.fire({
-                  icon: 'error',
-                  title: 'Oops...',
-                  text: error.message,
-                  showCancelButton: true,
-                  confirmButtonColor: '#3085d6',
-                  cancelButtonColor: '#d33',
-                  confirmButtonText: 'Tetap Lanjutkan!'
-                }).then((result) => {
-                  if (result.isConfirmed) {
-                    obj["limit_pembelian"] = 'nolimit'
-                    setIsLoading(true);
-                    axios({
-                      method: "post",
-                      url: `${window.location.origin}/api/salesman/buatOrder`,
-                      headers: {
-                        Accept: "application/json",
-                      },
-                      data: obj
-                    })
-                      .then(response => {
-                        if (response.data.status === 'success') {
-                          hapusSemuaProduk();
-                          setIsLoading(false);
-                          setKodePesanan(null);
-                          Swal.fire({
-                            icon: 'success',
-                            title: 'Tersimpan!',
-                            text: response.data.success_message,
-                            showCancelButton: true,
-                            confirmButtonColor: '#198754',
-                            cancelButtonColor: '#7066e0',
-                            confirmButtonText: 'Belanja Lagi',
-                            cancelButtonText: 'Selesai'
-                          }).then((result) => {
-                            if (result.isConfirmed) {
-                              axios({
-                                method: "get",
-                                url: `${window.location.origin}/api/belanjalagi/${idTrip}`,
-                                headers: {
-                                  Accept: "application/json",
-                                },
-                              })
-                                .then((response) => {
-                                  setIsBelanjaLagi(true);
-                                  history.push(`/salesman/order/${response.data.data.customer.id}`);
-                                })
-                            }
-                            else {
-                              history.push('/salesman');
-                            }
-                          })
-                        }
-                      })
-                  }
-                })
-              } else {
-                Swal.fire({
-                  icon: 'error',
-                  title: 'Oops...',
-                  text: error.message,
-                });
-              }
-            });
+          }
+          // end task
+          else {
+            buatOrder();
+          }
         }
       })
     }
@@ -628,7 +640,7 @@ const KeranjangSales = ({ location }) => {
             {hargaPromo > 0 && <small className='text-success d-block'>Eksta potongan {hargaPromo}</small>}
 
             <label className="form-label mt-3">Tipe Retur</label>
-            <select className="form-select mb-3" value={tipeRetur} onChange={(e) => setTipeRetur(e.target.value)}>
+            <select className="form-select" value={tipeRetur} onChange={(e) => setTipeRetur(e.target.value)}>
               {pilihanRetur.length && pilihanRetur.map((pilihan, index) => (
                 <option value={pilihan.id} key={index}>{pilihan.nama}</option>
               ))}

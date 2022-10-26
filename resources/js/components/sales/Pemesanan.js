@@ -247,7 +247,7 @@ const Pemesanan = ({ location }) => {
 
   const handleShow = () => {
     if (isBelanjaLagi == false) {
-      setShow(true)
+      setShow(true);
     } else {
       Swal.fire({
         title: 'Apakah anda yakin?',
@@ -259,7 +259,6 @@ const Pemesanan = ({ location }) => {
       }).then((result) => {
         if (result.isConfirmed) {
           handleKeluarToko();
-          setIsBelanjaLagi(false);
         }
       })
     }
@@ -297,6 +296,7 @@ const Pemesanan = ({ location }) => {
           setShouldDisabled(false);
           console.log('trip', response.data.message);
           setIsLoading(false);
+          setIsBelanjaLagi(false);
           hapusSemuaProduk();
           history.push('/salesman');
         })

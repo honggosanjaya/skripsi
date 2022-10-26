@@ -28,6 +28,28 @@ use Illuminate\Support\Facades\Storage;
 class OrderController extends Controller
 {
   public function simpanDataOrderSalesmanAPI(Request $request){
+
+    $validator = Validator::make($request->all(), [
+      'keranjang' => ['required'],
+      'idCustomer' => ['required','numeric'],
+      'idStaf' => ['required','numeric'],
+      'estimasiWaktuPengiriman' => ['required','numeric'],
+      'jatuhTempo' => ['required','numeric'],
+      'keterangan' => ['nullable', 'string', 'max:255'],
+      'kodeEvent' => ['nullable', 'string', 'max:50'],
+      'totalHarga' => ['required'],
+      'idTrip' => ['required','numeric'],
+      'tipeRetur' => ['nullable','numeric'],
+      'metode_pembayaran' => ['nullable','numeric'],
+    ]);
+
+    if ($validator->fails()) {
+      return response()->json([
+        'message' => 'validation fails',
+        'validate_err' => $validator->errors()
+      ]);
+    }
+
     $jatuh_tempo = $request->jatuhTempo;
     $totalPesanan = $request->totalHarga;
     $keranjangItems = $request->keranjang;
@@ -36,8 +58,8 @@ class OrderController extends Controller
     $keterangan = $request->keterangan;
     $id_order = $request->kodePesanan ?? 'belum ada';
     $id_customer = $request->idCustomer;
-    $tipeRetur = $request -> tipeRetur;
-    $stok_kanvas = $request->stok_kanvas;
+    $tipeRetur = $request->tipeRetur ?? null;
+    $stok_kanvas = $request->stok_kanvas ?? false;
 
     if($stok_kanvas == true){
       $listKanvas = Kanvas::where('id_staff_yang_membawa', $idStaf)->whereNull('waktu_dikembalikan')->get();
@@ -136,9 +158,9 @@ class OrderController extends Controller
         }
 
         OrderItem::insert($data);
-        Customer::find($id_customer) -> update([
+        Customer::find($id_customer)->update([
           'tipe_retur' => $tipeRetur,
-          'metode_pembayaran' => $request->metode_pembayaran
+          'metode_pembayaran' => $request->metode_pembayaran??null
         ]);
       }else{
         return response()->json([
@@ -215,9 +237,9 @@ class OrderController extends Controller
           ]);
         }
 
-        Customer::find($id_customer) -> update([
+        Customer::find($id_customer)->update([
           'tipe_retur' => $tipeRetur,
-          'metode_pembayaran' => $request->metode_pembayaran
+          'metode_pembayaran' => $request->metode_pembayaran??null
         ]);    
       }else{
         return response()->json([
@@ -227,7 +249,7 @@ class OrderController extends Controller
       }   
     }
 
-    $kode_event = $request -> kodeEvent ?? null;
+    $kode_event = $request->kodeEvent ?? null;
     $id_event = null;
     if ($kode_event != null) {
       $id_event = Event::where('kode', $kode_event)->first()->id;
@@ -239,7 +261,7 @@ class OrderController extends Controller
       'nomor_invoice' => $invoice_count,
       'harga_total' => $totalPesanan,
       'counter_unduh' => 0,
-      'metode_pembayaran' => $request->metode_pembayaran,
+      'metode_pembayaran' => $request->metode_pembayaran??null,
       'jatuh_tempo' => $jatuh_tempo,
       'created_at' => now()
     ]);
@@ -807,7 +829,7 @@ class OrderController extends Controller
 
     if(sizeof($itemYangKurang) > 0){
       return redirect('/administrasi/pesanan/detail/'.$order->id) 
-      -> with('pesanError', 'Tidak dapat menyetujui pesanan jumlah stok kurang');
+      ->with('pesanError', 'Tidak dapat menyetujui pesanan jumlah stok kurang');
     }
 
     if($i == $jumlahItem){
@@ -851,7 +873,7 @@ class OrderController extends Controller
       $validatedData['waktu_dikonfirmasi'] = now();
       OrderTrack::where('id_order', $order->id)->update($validatedData); 
 
-      return redirect('/administrasi/pesanan/detail/'.$order->id) -> with('addPesananSuccess', 'Berhasil menyetujui pesanan');
+      return redirect('/administrasi/pesanan/detail/'.$order->id)->with('addPesananSuccess', 'Berhasil menyetujui pesanan');
     } 
   }
 
@@ -864,7 +886,7 @@ class OrderController extends Controller
     ]);
 
 
-    return redirect('/administrasi/pesanan/detail/'.$order->id) -> with('addPesananSuccess', 'Berhasil menolak pesanan');
+    return redirect('/administrasi/pesanan/detail/'.$order->id)->with('addPesananSuccess', 'Berhasil menolak pesanan');
   }
 
   public function viewPengiriman(order $order){
@@ -912,7 +934,7 @@ class OrderController extends Controller
         'is_active' => false
       ]);
 
-      return redirect('/administrasi/pesanan/detail/'.$order->id) -> with('addPesananSuccess', 'Berhasil mengonfirmasi keberangkatan pengiriman untuk '.$order->linkCustomer->nama);
+      return redirect('/administrasi/pesanan/detail/'.$order->id)->with('addPesananSuccess', 'Berhasil mengonfirmasi keberangkatan pengiriman untuk '.$order->linkCustomer->nama);
     }
 
     if($order->linkOrderTrack->status_enum == '3'){
@@ -959,7 +981,7 @@ class OrderController extends Controller
       OrderTrack::where('id_order', $order->id)->update([
         'status_enum' => '6'
       ]);
-      return redirect('/administrasi/pesanan/detail/'.$order->id) -> with('addPesananSuccess', 'Pesanan untuk '.$order->linkCustomer->nama.' telah selesai');
+      return redirect('/administrasi/pesanan/detail/'.$order->id)->with('addPesananSuccess', 'Pesanan untuk '.$order->linkCustomer->nama.' telah selesai');
     }
   }
 
@@ -968,7 +990,7 @@ class OrderController extends Controller
     OrderItem::where('id_order', $order->id)->delete();
     OrderTrack::where('id_order', $order->id)->delete();
 
-    return redirect('/customer') -> with('pesanSukses', 'Berhasil membatalkan pesanan' );
+    return redirect('/customer')->with('pesanSukses', 'Berhasil membatalkan pesanan' );
   }
 
   public function dataPengajuanOpname(){
@@ -999,14 +1021,14 @@ class OrderController extends Controller
     Order::find($order->id)->update([
       'status_enum' => '1'
     ]);
-    return redirect('/supervisor/stokopname') -> with('pesanSukses', 'Berhasil mengonfirmasi pengajuan stok opname');
+    return redirect('/supervisor/stokopname')->with('pesanSukses', 'Berhasil mengonfirmasi pengajuan stok opname');
   }
 
   public function tolakPengajuanOpname(Order $order){
     Order::find($order->id)->update([
       'status_enum' => '1'
     ]);
-    return redirect('/supervisor/stokopname') -> with('pesanSukses', 'Berhasil menolak pengajuan stok opname');
+    return redirect('/supervisor/stokopname')->with('pesanSukses', 'Berhasil menolak pengajuan stok opname');
   }
 
   public function getInvoiceAPI(Request $request){
@@ -1124,7 +1146,7 @@ class OrderController extends Controller
         ]);
       }
       
-      return redirect('/administrasi/pesanan/detail/'.$order->id) -> with('addPesananSuccess', 'Berhasil mengonfirmasi pembayaran untuk '.$order->linkCustomer->nama);
+      return redirect('/administrasi/pesanan/detail/'.$order->id)->with('addPesananSuccess', 'Berhasil mengonfirmasi pembayaran untuk '.$order->linkCustomer->nama);
   }
 
   public function cetakKeseluruhanMemo(Vehicle $vehicle){
@@ -1155,7 +1177,7 @@ class OrderController extends Controller
     ]);
   
 
-    return redirect('/administrasi/pesanan/detail/'.$order_item->id_order) -> with('addPesananSuccess', 'Berhasil mengubah item' );
+    return redirect('/administrasi/pesanan/detail/'.$order_item->id_order)->with('addPesananSuccess', 'Berhasil mengubah item' );
   }
 
   public function getInvoiceByIdAPI($id){
