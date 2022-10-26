@@ -4,6 +4,9 @@ import HeaderSales from './HeaderSales';
 import { UserContext } from '../../contexts/UserContext';
 import { getTime } from "../reuse/HelperFunction";
 import LoadingIndicator from '../reuse/LoadingIndicator';
+import Modal from 'react-bootstrap/Modal';
+import Button from 'react-bootstrap/Button';
+import { convertDate } from "../reuse/HelperFunction";
 
 const HistoryTrip = () => {
   const { dataUser } = useContext(UserContext);
@@ -16,6 +19,8 @@ const HistoryTrip = () => {
   const [dataTargetKunjungan, setDataTargetKunjungan] = useState([]);
   const [dataTargetEC, setDataTargetEC] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
+  const [showModal, setShowModal] = useState(false);
+  const [detailTrip, setDetailTrip] = useState(null);
 
   useEffect(() => {
     setIsLoading(true);
@@ -75,6 +80,18 @@ const HistoryTrip = () => {
     }
   }, [dataUser, tanggal])
 
+  const handleCloseModal = () => {
+    setShowModal(false);
+  }
+
+  const handleClickTrip = (idTrip) => {
+    setShowModal(true);
+    const filteredTrip = dataKunjungans.filter(x =>
+      x.id == idTrip
+    );
+
+    setDetailTrip(filteredTrip[0]);
+  }
 
   return (
     <main className="page_main">
@@ -130,7 +147,7 @@ const HistoryTrip = () => {
               </thead>
               <tbody>
                 {dataKunjungans.map((data) => (
-                  <tr key={data.id}>
+                  <tr key={data.id} onClick={() => handleClickTrip(data.id)}>
                     <td>{data.link_customer.nama ?? null}</td>
                     <td>{data.link_customer.link_district.nama ?? null}</td>
                     {data.waktu_masuk ? <td>{getTime(data.waktu_masuk)}</td> : <td></td>}
@@ -142,6 +159,40 @@ const HistoryTrip = () => {
             </table>
           </div>
         }
+
+        {detailTrip && <Modal show={showModal} onHide={handleCloseModal}>
+          <Modal.Header closeButton>
+            <Modal.Title>Detail Trip</Modal.Title>
+          </Modal.Header>
+          <Modal.Body>
+            <div className='info-2column'>
+              <span className='d-flex'>
+                <b>Customer</b>
+                <p className='mb-0 word_wrap'>{detailTrip.link_customer.nama ?? null}</p>
+              </span>
+              <span className='d-flex'>
+                <b>Waktu Masuk</b>
+                <p className='mb-0 word_wrap'>{convertDate(detailTrip.waktu_masuk)}</p>
+              </span>
+              <span className='d-flex'>
+                <b>Waktu Keluar</b>
+                <p className='mb-0 word_wrap'>{convertDate(detailTrip.waktu_keluar)}</p>
+              </span>
+              <span className='d-flex'>
+                <b>Status</b>
+                <p className='mb-0 word_wrap'>{detailTrip.status_enum == '1' ? 'Tidak Effective Call' : (detailTrip.status_enum == '2' && 'Effective Call')}</p>
+              </span>
+              {detailTrip.alasan_penolakan &&
+                <span className='d-flex'>
+                  <b>Alasan Penolakan</b>
+                  <p className='mb-0 word_wrap'>{detailTrip.alasan_penolakan}</p>
+                </span>}
+            </div>
+          </Modal.Body>
+          <Modal.Footer>
+            <Button variant="danger" onClick={handleCloseModal}><span className="iconify fs-3 me-1" data-icon="carbon:close-outline"></span>Tutup</Button>
+          </Modal.Footer>
+        </Modal>}
       </div>
     </main>
   );

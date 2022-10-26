@@ -160,7 +160,7 @@
         </div>
 
         <div class="mb-3">
-          <label for="keterangan" class="form-label">Keterangan <span class='text-danger'>*</span></label>
+          <label for="keterangan" class="form-label">Keterangan</label>
           <textarea class="form-control @error('keterangan') is-invalid @enderror" id="keterangan" name="keterangan"
             value="{{ old('keterangan') }}">{{ $eventStatus->keterangan ?? null }}</textarea>
           @error('keterangan')

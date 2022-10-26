@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from 'react';
+import React, { Fragment, useContext, useEffect, useState } from 'react';
 import { useHistory, useParams } from 'react-router-dom';
 import useSWR from 'swr';
 import AlertComponent from '../reuse/AlertComponent';
@@ -39,7 +39,7 @@ const Pemesanan = ({ location }) => {
   const jamMasuk = Date.now() / 1000;
   const [customer, setCustomer] = useState([]);
   const [historyItem, setHistoryItem] = useState([]);
-  const { newHistoryItem, setNewHistoryItem, kodePesanan, setKodePesanan } = useContext(HitungStokContext);
+  const { newHistoryItem, setNewHistoryItem, kodePesanan, setKodePesanan, setIsKodePesananValid } = useContext(HitungStokContext);
   const [jmlItem, setJmlItem] = useState(null);
   let jumlahProdukKeranjang = 0;
   const [jumlahOrderRealTime, setJumlahOrderRealTime] = useState([]);
@@ -51,6 +51,7 @@ const Pemesanan = ({ location }) => {
   const [loadingKode, setLoadingKode] = useState(false);
   const [itemKanvas, setItemKanvas] = useState([]);
   const [idItemKanvas, setIdItemKanvas] = useState([]);
+  const [isHaveCodeCust, setIsHaveCodeCust] = useState(false);
   const Swal = require('sweetalert2');
 
   useEffect(() => {
@@ -246,7 +247,7 @@ const Pemesanan = ({ location }) => {
 
   const handleShow = () => {
     if (isBelanjaLagi == false) {
-      setShow(true)
+      setShow(true);
     } else {
       Swal.fire({
         title: 'Apakah anda yakin?',
@@ -258,7 +259,6 @@ const Pemesanan = ({ location }) => {
       }).then((result) => {
         if (result.isConfirmed) {
           handleKeluarToko();
-          setIsBelanjaLagi(false);
         }
       })
     }
@@ -296,6 +296,7 @@ const Pemesanan = ({ location }) => {
           setShouldDisabled(false);
           console.log('trip', response.data.message);
           setIsLoading(false);
+          setIsBelanjaLagi(false);
           hapusSemuaProduk();
           history.push('/salesman');
         })
@@ -343,6 +344,7 @@ const Pemesanan = ({ location }) => {
 
           if (dataOrder.id_customer == idCust) {
             setOrderId(dataOrder.id);
+            setIsKodePesananValid(true);
             dataOrderItems.map((dataOrderItem) => {
               console.log('data item', dataOrderItem.link_item);
 
@@ -389,6 +391,7 @@ const Pemesanan = ({ location }) => {
           else {
             setErrorKodeCustomer('Kode customer tidak sesusai');
             setIsHandleKodeCust(false);
+            setIsKodePesananValid(false);
             setSuccessKodeCustomer('');
           }
         } else {
@@ -642,26 +645,48 @@ const Pemesanan = ({ location }) => {
     }
   }
 
+  const handleCancelUseCodeCust = () => {
+    setKodePesanan('');
+    setIsHaveCodeCust(false);
+    setErrorKodeCustomer(null);
+    setSuccessKodeCustomer(null);
+  }
+
   return (
     <main className='page_main'>
       <HeaderSales title="Order" isOrder={true} lihatKeranjang={lihatKeranjang} jumlahProdukKeranjang={jmlItem} toBack={toBack} />
       <div className="page_container pt-4">
         {isLoading && <LoadingIndicator />}
         <div className="kode_customer">
-          <p className='fw-bold'>Sudah punya kode customer?</p>
-          <form onSubmit={handleKodeCustomer}>
-            <div className="input-group">
-              <input type="text" className="form-control"
-                value={kodePesanan}
-                onChange={(e) => setKodePesanan(e.target.value)}
-              />
-              {loadingKode ? <button type="submit" className="btn btn-primary" disabled={true}>Proses</button>
-                : <button type="submit" className="btn btn-primary" disabled={kodePesanan !== '' ? false : true}>Proses</button>
-              }
-            </div>
-          </form>
-          {successKodeCustomer && <small className='text-success'>{successKodeCustomer}</small>}
-          {errorKodeCustomer && <small className='text-danger'>{errorKodeCustomer}</small>}
+          <div className="d-flex justify-content-between mb-3">
+            <p className='fw-bold'>Sudah punya kode customer?</p>
+            {isHaveCodeCust ? <button className="btn btn-danger btn-sm" onClick={handleCancelUseCodeCust}>Batal</button>
+              : <button className="btn btn-primary btn-sm" onClick={() => setIsHaveCodeCust(true)}>Punya</button>}
+          </div>
+
+          {isHaveCodeCust &&
+            <Fragment>
+              <form onSubmit={handleKodeCustomer}>
+                <div className="input-group">
+                  <input type="text" className="form-control"
+                    value={kodePesanan}
+                    onChange={(e) => setKodePesanan(e.target.value)}
+                  />
+                  {loadingKode ?
+                    <button type="submit" className="btn btn-primary" disabled={true}>
+                      <div class="spinner-border" role="status">
+                        <span class="visually-hidden">Loading...</span>
+                      </div>
+                    </button>
+                    : <button type="submit" className="btn btn-primary" disabled={kodePesanan !== '' ? false : true}>Proses</button>
+                  }
+                </div>
+              </form>
+
+              {successKodeCustomer && <small className='text-success'>{successKodeCustomer}</small>}
+              {errorKodeCustomer && <small className='text-danger'>{errorKodeCustomer}</small>}
+            </Fragment>
+          }
         </div>
 
         <HitungStok historyItem={historyItem} handleTambahJumlah={handleTambahJumlah}

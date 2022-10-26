@@ -106,7 +106,7 @@ class RegisteredUserController extends Controller
         // Auth::login($user);
 
         // $details = [
-        //   'title' => 'Konfirmasi Owner UD Surya dan UD Mandiri',
+        //   'title' => 'Konfirmasi Owner'.config('app.company_name'),
         //   'body' => 'Anda hanya perlu mengonfirmasi email anda. Proses ini sangat singkat dan tidak rumit. Anda dapat melakukannya dengan sangat cepat.',
         //   'user' => Staff::find($staff)
         // ];

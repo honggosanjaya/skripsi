@@ -10,6 +10,7 @@ import Modal from 'react-bootstrap/Modal';
 import Button from 'react-bootstrap/Button';
 import { useHistory } from "react-router";
 import QrReader from 'react-qr-reader';
+import LoadingIndicator from '../reuse/LoadingIndicator';
 
 let source;
 const DashboardSales = () => {
@@ -25,6 +26,7 @@ const DashboardSales = () => {
   const [showModalRencana, setShowModalRencana] = useState(false);
   const [showModalQR, setShowModalQR] = useState(false);
   const [isOrder, setIsOrder] = useState();
+  const [isLoading, setIsLoading] = useState(false);
   const _isMounted = useRef(true);
   const Swal = require('sweetalert2');
   const history = useHistory();
@@ -75,6 +77,7 @@ const DashboardSales = () => {
   }, [])
 
   useEffect(() => {
+    setIsLoading(true);
     axios({
       method: "post",
       url: `${window.location.origin}/api/getrencanakunjungan/${dataUser.id_staff}`,
@@ -87,15 +90,18 @@ const DashboardSales = () => {
       },
     })
       .then(response => {
+        setIsLoading(false);
         console.log('rencana', response.data.data);
         setListRencanaKunjungan(response.data.data);
       })
       .catch(error => {
+        setIsLoading(false);
         console.log(error.message);
       });
   }, [tanggal, dataUser])
 
   const cariCustomer = (e) => {
+    setIsLoading(true);
     e.preventDefault();
     source = axios.CancelToken.source();
     setShouldDisabled(true);
@@ -114,6 +120,7 @@ const DashboardSales = () => {
     })
       .then(response => {
         if (_isMounted.current) {
+          setIsLoading(false);
           setShouldDisabled(false);
           setListCustomer(response.data.data);
           setAddButton('active');
@@ -123,6 +130,7 @@ const DashboardSales = () => {
       })
       .catch(error => {
         if (_isMounted.current) {
+          setIsLoading(false);
           setShouldDisabled(false);
           setListCustomer([]);
           setDataShow('active');
@@ -235,7 +243,7 @@ const DashboardSales = () => {
                   <span className="iconify fs-3 me-1" data-icon="bx:qr-scan"></span>Scan QR
                 </Button>}
               </div>
-
+              {isLoading && <LoadingIndicator />}
               <form onSubmit={cariCustomer} className="mt-4">
                 <div className="mb-3">
                   <label className="form-label">Nama Customer</label>
@@ -269,6 +277,7 @@ const DashboardSales = () => {
               <Modal.Title>Rencana Kunjungan</Modal.Title>
             </Modal.Header>
             <Modal.Body>
+              {isLoading && <LoadingIndicator />}
               {listRencanaKunjungan &&
                 <Fragment>
                   <label>Tanggal Kunjungan</label>
@@ -288,7 +297,7 @@ const DashboardSales = () => {
                         <tr>
                           <th scope="col" className='text-center'>Nama Toko</th>
                           <th scope="col" className='text-center'>Wilayah</th>
-                          <th scope="col" className='text-center'>Tanggal</th>
+                          <th scope="col" className='text-center'>Estimasi Nominal</th>
                           <th scope="col" className='text-center'>Status</th>
                         </tr>
                       </thead>
@@ -297,7 +306,10 @@ const DashboardSales = () => {
                           <tr key={data.id}>
                             <td>{data.link_customer.nama ?? null}</td>
                             <td>{data.link_customer.link_district.nama ?? null}</td>
-                            <td>{data.tanggal ?? null}</td>
+                            {data.estimasi_nominal ?
+                              <td>{data.estimasi_nominal.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".")}</td>
+                              : <td></td>
+                            }
                             {data.status_enum ? <td className='text-center'>{data.status_enum == '1' ? <p className='text-success'>Sudah Dikunjungi</p> : <p className='text-danger'>Belum Dikunjungi</p>}</td> : <td></td>}
                           </tr>
                         ))}

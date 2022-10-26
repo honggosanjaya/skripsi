@@ -51,8 +51,7 @@
       <div class="row">
         <div class="col">
           <div class="mb-3">
-            <label for="kapasitas_harga" class="form-label">Kapasitas Harga (Rp) <span
-                class='text-danger'>*</span></label>
+            <label for="kapasitas_harga" class="form-label">Kapasitas Harga (Rp)</label>
             <input type="number" class="form-control @error('kapasitas_harga') is-invalid @enderror" id="kapasitas_harga"
               name="kapasitas_harga" value="{{ old('kapasitas_harga') }}" step=".01">
             @error('kapasitas_harga')
@@ -67,7 +66,7 @@
             <label for="kapasitas_volume" class="form-label">Kapasitas Volume (Cm3) <span
                 class='text-danger'>*</span></label>
             <input type="number" class="form-control @error('kapasitas_volume') is-invalid @enderror"
-              id="kapasitas_volume" name="kapasitas_volume" value="{{ old('kapasitas_volume') }}">
+              id="kapasitas_volume" name="kapasitas_volume" value="{{ old('kapasitas_volume', 0) }}">
             @error('kapasitas_volume')
               <div class="invalid-feedback">
                 {{ $message }}

@@ -83,7 +83,9 @@
         <tbody>
           @foreach ($data as $dt)
             <tr>
-              <th scope="row" class="text-center">{{ $loop->iteration ?? null }}</th>
+              <th scope="row" class="text-center">
+                {{ ($data->currentPage() - 1) * $data->perPage() + $loop->iteration }}
+              </th>
               <td class="text-center">{{ $dt->linkCustomer->nama ?? null }}</td>
               <td class="text-center">{{ $dt->linkStaff->nama ?? null }}</td>
               @if ($dt->waktu_masuk ?? null)
@@ -113,8 +115,13 @@
       </table>
     </div>
 
-    @push('JS')
-      <script src="{{ asset('js/chart.js') }}"></script>
-      <script src="{{ mix('js/report.js') }}"></script>
-    @endpush
-  @endsection
+    <div class="d-flex flex-row mt-4">
+      {{ $data->links() }}
+    </div>
+  </div>
+
+  @push('JS')
+    <script src="{{ asset('js/chart.js') }}"></script>
+    <script src="{{ mix('js/report.js') }}"></script>
+  @endpush
+@endsection

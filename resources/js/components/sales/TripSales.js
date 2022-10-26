@@ -10,6 +10,7 @@ import urlAsset from '../../config';
 import LoadingIndicator from '../reuse/LoadingIndicator';
 import ImagePreview from '../reuse/ImagePreview';
 import { dataURLtoFile } from "../reuse/HelperFunction";
+import Select from 'react-select'
 
 const FACING_MODE_USER = "user";
 const FACING_MODE_ENVIRONMENT = "environment";
@@ -56,6 +57,7 @@ const TripSales = () => {
   const [isFromGalery, setISFromGalery] = useState(false);
   const [dataUri, setDataUri] = useState('');
   const [facingMode, setFacingMode] = useState(FACING_MODE_USER);
+  const [selectWilayahValue, setSelectWilayahValue] = useState({ value: 'nodistrict', label: "-- Tanpa Wilayah --" })
 
   useEffect(() => {
     if (id != null) {
@@ -126,7 +128,12 @@ const TripSales = () => {
         setShouldDisabled(false);
         setNamaCust(response.data.data.nama);
         setJenis(response.data.data.id_jenis);
-        setWilayah(response.data.data.id_wilayah);
+        if (response.data.data.id_wilayah == null) {
+          setWilayah('nodistrict');
+        } else {
+          setWilayah(response.data.data.id_wilayah);
+          setSelectWilayahValue({ value: response.data.data.id_wilayah, label: response.data.data.link_district.nama })
+        }
         setAlamatUtama(response.data.data.alamat_utama);
         setAlamatNomor(response.data.data.alamat_nomor == null ? '' : response.data.data.alamat_nomor);
         setEmail(response.data.data.email == null ? '' : response.data.data.email);
@@ -152,7 +159,7 @@ const TripSales = () => {
       setDistrictArr(response.data.district);
       setCustomerTypeArr(response.data.customerType);
       setJenis(response.data.customerType[0].id);
-      setWilayah(response.data.district[0].id);
+      // setWilayah(response.data.district[0].id);
     })
   }, [])
 
@@ -163,11 +170,12 @@ const TripSales = () => {
       );
     }))
 
-    setShowListDistrict(districtArr?.map((data, index) => {
-      return (
-        <option value={data.id} key={index}>{data.nama}</option>
-      );
-    }))
+    let districtObj = districtArr?.map((data) => {
+      return { value: data.id, label: data.nama };
+    });
+
+    districtObj.splice(0, 0, { value: 'nodistrict', label: "-- Tanpa Wilayah --" });
+    setShowListDistrict(districtObj);
   }, [customerTypeArr, districtArr]);
 
   const handleImageChange = (e) => {
@@ -185,7 +193,7 @@ const TripSales = () => {
     id: id ?? null,
     id_jenis: jenis,
     id_staff: dataUser.id_staff,
-    id_wilayah: wilayah,
+    id_wilayah: wilayah == 'nodistrict' ? null : wilayah,
     nama: namaCust,
     email: email,
     alamat_utama: alamatUtama,
@@ -394,6 +402,11 @@ const TripSales = () => {
     history.push(`/salesman/catalog/${id}`);
   }
 
+  const handleChange = (selectedOption) => {
+    setSelectWilayahValue(selectedOption);
+    setWilayah(selectedOption.value);
+  }
+
   return (
     <main className="page_main">
       <HeaderSales title="Trip" toBack={goBack} />
@@ -455,12 +468,12 @@ const TripSales = () => {
           </div>
 
           <div className="mb-3">
-            <label className="form-label">Wilayah <span className='text-danger'>*</span></label>
-            <select className="form-select"
-              value={wilayah}
-              onChange={(e) => setWilayah(e.target.value)}>
-              {showListDistrict}
-            </select>
+            <label className="form-label">Wilayah</label>
+            <Select
+              value={selectWilayahValue}
+              onChange={handleChange}
+              options={showListDistrict}
+            />
           </div>
 
           <div className="mb-3">

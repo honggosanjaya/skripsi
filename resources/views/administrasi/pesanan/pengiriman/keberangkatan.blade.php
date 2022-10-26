@@ -100,13 +100,13 @@
     @endif
 
 
-    @if ($order->linkOrderTrack->status_enum == '4')
+    {{-- @if ($order->linkOrderTrack->status_enum == '4')
       <form class="form-submit" id="pesananselesai" method="POST"
         action="/administrasi/pesanan/detail/{{ $order->id }}/dikirimkan">
         @csrf
         <button type="submit" class="btn btn-success mt-4 pesanan_selesai">Pesanan Selesai</button>
       </form>
-    @endif
+    @endif --}}
   </div>
 
   <script>

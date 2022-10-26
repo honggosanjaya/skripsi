@@ -2,7 +2,7 @@ import { getJSON } from 'jquery';
 const Swal = require('sweetalert2');
 
 $(document).ready(function () {
-  $('#table').DataTable({
+  $('#table, #table2').DataTable({
     fixedHeader: true,
     buttons: [
       'searchPanes'
@@ -290,6 +290,7 @@ $(".alert_jatuhtempo").click(function () {
 
 // ====================== LP3 ======================
 var count = $("#laporan-penagihan .form-group").children().length;
+let isHapusSemuaBtnClicked = false;
 
 $(document).on('change', '#laporan-penagihan .select-invoice', function (e) {
   let indicator = $(this);
@@ -330,6 +331,7 @@ $(document).on('click', '#laporan-penagihan .remove-form', function (e) {
 })
 
 $(document).on('change', '#laporan-penagihan .select-invoice', function (e) {
+  console.log('val', e.target.value);
   $('.select-invoice option').removeClass('disabled-option');
   const elements = document.querySelectorAll('#laporan-penagihan .select-invoice');
   Array.from(elements).forEach((element, index) => {
@@ -345,7 +347,7 @@ $(document).on('change', '#laporan-penagihan .select-district', function (e) {
     url: window.location.origin + `/api/administrasi/selectdistict/${e.target.value}`,
     method: "GET",
     success: function (data) {
-      console.log(data.customersInvoice);
+      console.log(data);
       $('.spinner-border').addClass('d-none');
       districtspenagihan.push(e.target.value);
       $('.select-invoice option').removeClass('disabled-option');
@@ -356,29 +358,37 @@ $(document).on('change', '#laporan-penagihan .select-district', function (e) {
       }
 
       if (data.customersInvoice.length > 0) {
-        data.customersInvoice.map((customer, index) => {
+        data.customersInvoice.map((customer) => {
           // countCust++;
-          $('.select-invoice option[value="' + customer.link_order[0].link_invoice.id + '"]').addClass('disabled-option');
-          $('#laporan-penagihan .form-input').last().clone().appendTo('#laporan-penagihan .form-group');
-          $('#laporan-penagihan .form-input').find('.remove-form').removeClass('d-none');
-          $('#laporan-penagihan .form-input').last().find('.select-invoice').val(customer.link_order[0].link_invoice.id);
+          customer.link_order.map((order) => {
+            if (order.link_order_track.waktu_sampai != null) {
+              $('.select-invoice option[value="' + order.link_invoice.id + '"]').addClass('disabled-option');
+              $('#laporan-penagihan .form-input').last().clone().appendTo('#laporan-penagihan .form-group');
+              $('#laporan-penagihan .form-input').find('.remove-form').removeClass('d-none');
+              $('#laporan-penagihan .form-input').last().find('.select-invoice').val(order.link_invoice.id);
 
-          $('.spinner-border').removeClass('d-none');
-          $.ajax({
-            url: window.location.origin + `/api/administrasi/detailpenagihan/${customer.link_order[0].link_invoice.id}`,
-            method: "GET",
-            success: function (data) {
-              $('.spinner-border').addClass('d-none');
-              if (data.status == 'success') {
-                $(`#laporan-penagihan .select-invoice:eq(${index})`).parentsUntil('.form-input').find('.nama-customer').val(data.data.customer.nama);
-                $(`#laporan-penagihan .select-invoice:eq(${index})`).closest('.form-input').find('.jumlah-tagihan').val(data.data.tagihan);
-              }
-            },
-          });
+              $('.spinner-border').removeClass('d-none');
+              $.ajax({
+                url: window.location.origin + `/api/administrasi/detailpenagihan/${order.link_invoice.id}`,
+                method: "GET",
+                success: function (data) {
+                  $('.spinner-border').addClass('d-none');
+                  if (data.status == 'success') {
+                    $("#laporan-penagihan .select-invoice").each(function () {
+                      if ($(this).val() == order.link_invoice.id) {
+                        $(this).parentsUntil('.form-input').find('.nama-customer').val(data.data.customer.nama);
+                        $(this).closest('.form-input').find('.jumlah-tagihan').val(data.data.tagihan);
+                      }
+                    });
+                  }
+                },
+              });
+            }
+          })
         })
 
         const firstSelect = $('.select-invoice').first().val();
-        if (isNoInvoice && firstSelect == null || districtspenagihan.length == 1 && firstSelect == null) {
+        if (isNoInvoice && firstSelect == null || districtspenagihan.length == 1 && firstSelect == null || isHapusSemuaBtnClicked && firstSelect == null) {
           $('#laporan-penagihan .form-input').first().remove();
         }
         isNoInvoice = false;
@@ -388,6 +398,7 @@ $(document).on('change', '#laporan-penagihan .select-district', function (e) {
 });
 
 $(document).on('click', '#laporan-penagihan .delete-all', function (e) {
+  isHapusSemuaBtnClicked = true;
   Swal.fire({
     title: 'Apakah anda yakin membatalkan pembuatan LP3 ?',
     icon: 'warning',
@@ -421,6 +432,7 @@ $(document).on('click', '#perencanaan-kunjungan .add-form', function (e) {
   $('#perencanaan-kunjungan .form-input').last().clone().appendTo('#perencanaan-kunjungan .form-group');
   $('#perencanaan-kunjungan .form-input').find('.remove-form').removeClass('d-none');
   $('#perencanaan-kunjungan .form-input').last().find('.select-customer').val('');
+  $('#perencanaan-kunjungan .form-input').last().find('.input-estimasi-nominal').val('');
   if (countCust == 1) {
     $('#perencanaan-kunjungan .form-input').find('.remove-form').addClass('d-none');
   }
@@ -446,6 +458,7 @@ $(document).on('change', '#perencanaan-kunjungan .select-customer', function (e)
 
 const districts = [];
 let isNoCustomer = false;
+let isDeleteAll = false;
 $(document).on('change', '#perencanaan-kunjungan .select-district', function (e) {
   $('.spinner-border').removeClass('d-none');
   $.ajax({
@@ -462,7 +475,7 @@ $(document).on('change', '#perencanaan-kunjungan .select-district', function (e)
       }
 
       if (data.customers.length > 0) {
-        data.customers.map((customer, index) => {
+        data.customers.map((customer) => {
           countCust++;
           $('.select-customer option[value="' + customer.id + '"]').addClass('disabled-option');
           $('#perencanaan-kunjungan .form-input').last().clone().appendTo('#perencanaan-kunjungan .form-group');
@@ -474,7 +487,7 @@ $(document).on('change', '#perencanaan-kunjungan .select-district', function (e)
         })
 
         const firstSelect = $('.select-customer').first().val();
-        if (isNoCustomer && firstSelect == null || districts.length == 1 && firstSelect == null) {
+        if (isNoCustomer && firstSelect == null || districts.length == 1 && firstSelect == null || isDeleteAll && firstSelect == null) {
           $('#perencanaan-kunjungan .form-input').first().remove();
         }
         isNoCustomer = false;
@@ -484,6 +497,7 @@ $(document).on('change', '#perencanaan-kunjungan .select-district', function (e)
 });
 
 $(document).on('click', '#perencanaan-kunjungan .delete-all', function (e) {
+  isDeleteAll = true;
   Swal.fire({
     title: 'Apakah anda yakin membatalkan pembuatan perencanaan kunjungan ?',
     icon: 'warning',
@@ -602,10 +616,12 @@ $(document).on('click', '#kanvas .remove-all-form', function (e) {
 $(document).on('click', '#kanvas .detail_trigger', function (e) {
   let idkanvas = $(this).data('idkanvas');
   $('#kanvas .table_body').empty();
+  $('#kanvas .loading-indicator').removeClass('d-none');
   $.ajax({
     url: window.location.origin + `/api/administrasi/getDetailKanvas/${idkanvas}`,
     method: "GET",
     success: function (response) {
+      $('#kanvas .loading-indicator').addClass('d-none');
       response.data.map((dt, index) => {
         let singlerow =
           `
@@ -625,12 +641,13 @@ $(document).on('click', '#kanvas .detail_trigger', function (e) {
 $(document).on('change', '#kanvas .select-history-kanvas', function (e) {
   const namaKanvas = $("#kanvas .select-history-kanvas option:selected").text();
   $('.hidden-nama-kanvas').val(namaKanvas);
-
+  $('#kanvas .loading-indicator').removeClass('d-none');
   $.ajax({
     url: window.location.origin + `/api/administrasi/getDetailKanvas/${e.target.value}`,
     method: "GET",
     success: function (response) {
       console.log(response.data);
+      $('#kanvas .loading-indicator').addClass('d-none');
       $('#kanvas .form-input').not(':first').remove();
 
       for (let i = 0; i < response.data.length - 1; i++) {
@@ -659,11 +676,13 @@ $(document).on('click', '#kanvas .btn-submit', function () {
     denyButtonText: `Tidak`,
   }).then((result) => {
     if (result.isConfirmed) {
+      $('#kanvas .loading-indicator').removeClass('d-none');
       $.ajax({
         url: window.location.origin + `/api/administrasi/checkSalesHasKanvas/${idSales}`,
         method: "GET",
         success: function (response) {
           if (response.status == 'error') {
+            $('#kanvas .loading-indicator').addClass('d-none');
             $("#kanvas").prepend(
               `<div id="hideMeAfter3Seconds">
                   <div class="alert alert-danger alert-dismissible fade show" role="alert">
@@ -673,6 +692,7 @@ $(document).on('click', '#kanvas .btn-submit', function () {
                 </div>`
             )
           } else if (response.status == 'success') {
+            $('#kanvas .loading-indicator').addClass('d-none');
             $('#form_submit').submit();
           }
         },

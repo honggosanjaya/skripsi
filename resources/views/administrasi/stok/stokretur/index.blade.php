@@ -22,6 +22,18 @@
   @endif
 
   <div id="stokretur">
+    <div class="loading-indicator d-none">
+      <div class="spinner-grow spinner-grow-sm" role="status">
+        <span class="visually-hidden">Loading...</span>
+      </div>
+      <div class="spinner-grow spinner-grow-sm" role="status">
+        <span class="visually-hidden">Loading...</span>
+      </div>
+      <div class="spinner-grow spinner-grow-sm" role="status">
+        <span class="visually-hidden">Loading...</span>
+      </div>
+    </div>
+
     <div class="px-5 pt-4">
       <div class="d-flex justify-content-between align-items-center">
         <h1 class="fs-4 fw-bold mb-4">Stok Retur</h1>

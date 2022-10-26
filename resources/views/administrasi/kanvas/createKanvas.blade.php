@@ -21,6 +21,18 @@
   @endif
 
   <div class="px-5 pt-4" id="kanvas">
+    <div class="loading-indicator d-none">
+      <div class="spinner-grow spinner-grow-sm" role="status">
+        <span class="visually-hidden">Loading...</span>
+      </div>
+      <div class="spinner-grow spinner-grow-sm" role="status">
+        <span class="visually-hidden">Loading...</span>
+      </div>
+      <div class="spinner-grow spinner-grow-sm" role="status">
+        <span class="visually-hidden">Loading...</span>
+      </div>
+    </div>
+
     <h1 class="fs-4 mb-4">Pembuatan Kanvas</h1>
     <form id="form_submit" method="POST" action="/administrasi/kanvas/store">
       @csrf
@@ -101,8 +113,12 @@
 
       <div class="row justify-content-end mt-4">
         <div class="col-6 d-flex justify-content-end">
-          <button class="btn btn-danger remove-all-form d-none me-2" type="button">Hapus Semua</button>
-          <button type="button" class="btn btn-primary btn-submit">Submit</button>
+          <button class="btn btn-danger remove-all-form d-none me-2" type="button">
+            <span class="iconify fs-3 me-2" data-icon="bi:trash"></span>Hapus Semua
+          </button>
+          <button type="button" class="btn btn-primary btn-submit">
+            <span class="iconify fs-3 me-2" data-icon="bi:send-check"></span>Submit
+          </button>
         </div>
       </div>
     </form>

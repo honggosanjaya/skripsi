@@ -43,7 +43,7 @@
       <div class="row">
         <div class="col">
           <div class="mb-3">
-            <label for="keterangan" class="form-label">Keterangan <span class='text-danger'>*</span></label>
+            <label for="keterangan" class="form-label">Keterangan</label>
             <textarea class="form-control @error('keterangan') is-invalid @enderror" id="keterangan" name="keterangan">{{ $customertype->keterangan ?? null }}</textarea>
             @error('keterangan')
               <div class="invalid-feedback">

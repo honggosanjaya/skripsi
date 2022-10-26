@@ -28,6 +28,28 @@ use Illuminate\Support\Facades\Storage;
 class OrderController extends Controller
 {
   public function simpanDataOrderSalesmanAPI(Request $request){
+
+    $validator = Validator::make($request->all(), [
+      'keranjang' => ['required'],
+      'idCustomer' => ['required','numeric'],
+      'idStaf' => ['required','numeric'],
+      'estimasiWaktuPengiriman' => ['required','numeric'],
+      'jatuhTempo' => ['required','numeric'],
+      'keterangan' => ['nullable', 'string', 'max:255'],
+      'kodeEvent' => ['nullable', 'string', 'max:50'],
+      'totalHarga' => ['required'],
+      'idTrip' => ['required','numeric'],
+      'tipeRetur' => ['nullable','numeric'],
+      'metode_pembayaran' => ['nullable','numeric'],
+    ]);
+
+    if ($validator->fails()) {
+      return response()->json([
+        'message' => 'validation fails',
+        'validate_err' => $validator->errors()
+      ]);
+    }
+
     $jatuh_tempo = $request->jatuhTempo;
     $totalPesanan = $request->totalHarga;
     $keranjangItems = $request->keranjang;
@@ -36,8 +58,8 @@ class OrderController extends Controller
     $keterangan = $request->keterangan;
     $id_order = $request->kodePesanan ?? 'belum ada';
     $id_customer = $request->idCustomer;
-    $tipeRetur = $request -> tipeRetur;
-    $stok_kanvas = $request->stok_kanvas;
+    $tipeRetur = $request->tipeRetur ?? null;
+    $stok_kanvas = $request->stok_kanvas ?? false;
 
     if($stok_kanvas == true){
       $listKanvas = Kanvas::where('id_staff_yang_membawa', $idStaf)->whereNull('waktu_dikembalikan')->get();
@@ -79,7 +101,7 @@ class OrderController extends Controller
 
     if($id_order == "belum ada"){
       $limitPembelian = Customer::find($id_customer)->limit_pembelian;
-      if($limitPembelian == null || $limitPembelian>=$totalPesanan){
+      if($limitPembelian == null || $limitPembelian>=$totalPesanan || $request->limit_pembelian == 'nolimit'){
 
         if($stok_kanvas == true){
           $id_order=Order::insertGetId([
@@ -136,9 +158,9 @@ class OrderController extends Controller
         }
 
         OrderItem::insert($data);
-        Customer::find($id_customer) -> update([
+        Customer::find($id_customer)->update([
           'tipe_retur' => $tipeRetur,
-          'metode_pembayaran' => $request->metode_pembayaran
+          'metode_pembayaran' => $request->metode_pembayaran??null
         ]);
       }else{
         return response()->json([
@@ -149,7 +171,7 @@ class OrderController extends Controller
     }
     else{   
       $limitPembelian = Customer::find($id_customer)->limit_pembelian;
-      if($limitPembelian == null || $limitPembelian>=$totalPesanan){
+      if($limitPembelian == null || $limitPembelian>=$totalPesanan || $request->limit_pembelian == 'nolimit'){
         foreach($keranjangItems as $item){
           $updateitem=OrderItem::where('id_order', $id_order)->where('id_item', $item['id'])->first();
           //jika data order item di database ditemukan
@@ -215,9 +237,9 @@ class OrderController extends Controller
           ]);
         }
 
-        Customer::find($id_customer) -> update([
+        Customer::find($id_customer)->update([
           'tipe_retur' => $tipeRetur,
-          'metode_pembayaran' => $request->metode_pembayaran
+          'metode_pembayaran' => $request->metode_pembayaran??null
         ]);    
       }else{
         return response()->json([
@@ -227,7 +249,7 @@ class OrderController extends Controller
       }   
     }
 
-    $kode_event = $request -> kodeEvent ?? null;
+    $kode_event = $request->kodeEvent ?? null;
     $id_event = null;
     if ($kode_event != null) {
       $id_event = Event::where('kode', $kode_event)->first()->id;
@@ -238,7 +260,8 @@ class OrderController extends Controller
       'id_event' => $id_event,
       'nomor_invoice' => $invoice_count,
       'harga_total' => $totalPesanan,
-      'metode_pembayaran' => $request->metode_pembayaran,
+      'counter_unduh' => 0,
+      'metode_pembayaran' => $request->metode_pembayaran??null,
       'jatuh_tempo' => $jatuh_tempo,
       'created_at' => now()
     ]);
@@ -514,16 +537,22 @@ class OrderController extends Controller
       }   
 
       $totalVolume = array_sum($tempVolume);
-
-      return ($totalVolume/$kendaraan->kapasitas_volume)*100;
+      if($kendaraan->kapasitas_volume??0>0){
+        return ($totalVolume/$kendaraan->kapasitas_volume)*100;
+      } else{
+        return 0;
+      }
     }
 
     function getPersentaseHarga($vehicleId, $orderId){
       // get persentase harga kendaraan thdp seuatu order
       $kendaraan = Vehicle::where('id', $vehicleId)->first();
       $invoice = Invoice::where('id_order',$orderId)->first();
-                 
-      return ($invoice->harga_total/$kendaraan->kapasitas_harga)*100;
+      if($kendaraan->kapasitas_harga??0>0){
+        return ($invoice->harga_total/$kendaraan->kapasitas_harga)*100;
+      } else{
+        return 0;
+      }
     }
 
      // get all order yang menggunakan kendaraan tertentu
@@ -566,6 +595,8 @@ class OrderController extends Controller
             'id_vehicle' => $kendaraans[$i]->id,
             'nama_vehicle' => $kendaraans[$i]->nama,
             'kode_vehicle' => $kendaraans[$i]->kode_kendaraan,
+            'kapasitas_volume' => $kendaraans[$i]->kapasitas_volume,
+            'kapasitas_harga' => $kendaraans[$i]->kapasitas_harga,
             'id_order' => $tempDataOrders[$i][$j],
             'invoice' => $invoice,
             'color' => $color,
@@ -581,6 +612,8 @@ class OrderController extends Controller
           'id_vehicle' => $kendaraans[$i]->id,
           'nama_vehicle' => $kendaraans[$i]->nama,
           'kode_vehicle' => $kendaraans[$i]->kode_kendaraan,
+          'kapasitas_volume' => $kendaraans[$i]->kapasitas_volume,
+          'kapasitas_harga' => $kendaraans[$i]->kapasitas_harga,
           'id_order' => null,
           'invoice' => null,
           'color' => null,
@@ -603,6 +636,8 @@ class OrderController extends Controller
           'id_vehicle' => $item['id_vehicle'],
           'nama_vehicle' => $item['nama_vehicle'],
           'kode_vehicle' => $item['kode_vehicle'],
+          'kapasitas_volume' => $item['kapasitas_volume'],
+          'kapasitas_harga' => $item['kapasitas_harga'],
           'id_order' => $item['id_order'],
           'invoice' => $item['invoice'],
           'color' => $item['color'],
@@ -794,7 +829,7 @@ class OrderController extends Controller
 
     if(sizeof($itemYangKurang) > 0){
       return redirect('/administrasi/pesanan/detail/'.$order->id) 
-      -> with('pesanError', 'Tidak dapat menyetujui pesanan jumlah stok kurang');
+      ->with('pesanError', 'Tidak dapat menyetujui pesanan jumlah stok kurang');
     }
 
     if($i == $jumlahItem){
@@ -838,7 +873,7 @@ class OrderController extends Controller
       $validatedData['waktu_dikonfirmasi'] = now();
       OrderTrack::where('id_order', $order->id)->update($validatedData); 
 
-      return redirect('/administrasi/pesanan/detail/'.$order->id) -> with('addPesananSuccess', 'Berhasil menyetujui pesanan');
+      return redirect('/administrasi/pesanan/detail/'.$order->id)->with('addPesananSuccess', 'Berhasil menyetujui pesanan');
     } 
   }
 
@@ -851,7 +886,7 @@ class OrderController extends Controller
     ]);
 
 
-    return redirect('/administrasi/pesanan/detail/'.$order->id) -> with('addPesananSuccess', 'Berhasil menolak pesanan');
+    return redirect('/administrasi/pesanan/detail/'.$order->id)->with('addPesananSuccess', 'Berhasil menolak pesanan');
   }
 
   public function viewPengiriman(order $order){
@@ -899,7 +934,7 @@ class OrderController extends Controller
         'is_active' => false
       ]);
 
-      return redirect('/administrasi/pesanan/detail/'.$order->id) -> with('addPesananSuccess', 'Berhasil mengonfirmasi keberangkatan pengiriman untuk '.$order->linkCustomer->nama);
+      return redirect('/administrasi/pesanan/detail/'.$order->id)->with('addPesananSuccess', 'Berhasil mengonfirmasi keberangkatan pengiriman untuk '.$order->linkCustomer->nama);
     }
 
     if($order->linkOrderTrack->status_enum == '3'){
@@ -946,7 +981,7 @@ class OrderController extends Controller
       OrderTrack::where('id_order', $order->id)->update([
         'status_enum' => '6'
       ]);
-      return redirect('/administrasi/pesanan/detail/'.$order->id) -> with('addPesananSuccess', 'Pesanan untuk '.$order->linkCustomer->nama.' telah selesai');
+      return redirect('/administrasi/pesanan/detail/'.$order->id)->with('addPesananSuccess', 'Pesanan untuk '.$order->linkCustomer->nama.' telah selesai');
     }
   }
 
@@ -955,7 +990,7 @@ class OrderController extends Controller
     OrderItem::where('id_order', $order->id)->delete();
     OrderTrack::where('id_order', $order->id)->delete();
 
-    return redirect('/customer') -> with('pesanSukses', 'Berhasil membatalkan pesanan' );
+    return redirect('/customer')->with('pesanSukses', 'Berhasil membatalkan pesanan' );
   }
 
   public function dataPengajuanOpname(){
@@ -986,14 +1021,14 @@ class OrderController extends Controller
     Order::find($order->id)->update([
       'status_enum' => '1'
     ]);
-    return redirect('/supervisor/stokopname') -> with('pesanSukses', 'Berhasil mengonfirmasi pengajuan stok opname');
+    return redirect('/supervisor/stokopname')->with('pesanSukses', 'Berhasil mengonfirmasi pengajuan stok opname');
   }
 
   public function tolakPengajuanOpname(Order $order){
     Order::find($order->id)->update([
       'status_enum' => '1'
     ]);
-    return redirect('/supervisor/stokopname') -> with('pesanSukses', 'Berhasil menolak pengajuan stok opname');
+    return redirect('/supervisor/stokopname')->with('pesanSukses', 'Berhasil menolak pengajuan stok opname');
   }
 
   public function getInvoiceAPI(Request $request){
@@ -1111,7 +1146,7 @@ class OrderController extends Controller
         ]);
       }
       
-      return redirect('/administrasi/pesanan/detail/'.$order->id) -> with('addPesananSuccess', 'Berhasil mengonfirmasi pembayaran untuk '.$order->linkCustomer->nama);
+      return redirect('/administrasi/pesanan/detail/'.$order->id)->with('addPesananSuccess', 'Berhasil mengonfirmasi pembayaran untuk '.$order->linkCustomer->nama);
   }
 
   public function cetakKeseluruhanMemo(Vehicle $vehicle){
@@ -1142,7 +1177,7 @@ class OrderController extends Controller
     ]);
   
 
-    return redirect('/administrasi/pesanan/detail/'.$order_item->id_order) -> with('addPesananSuccess', 'Berhasil mengubah item' );
+    return redirect('/administrasi/pesanan/detail/'.$order_item->id_order)->with('addPesananSuccess', 'Berhasil mengubah item' );
   }
 
   public function getInvoiceByIdAPI($id){

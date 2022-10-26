@@ -1,11 +1,30 @@
 @extends('layouts/main')
 @section('breadcrumbs')
-  <ol class="breadcrumb">
-    <li class="breadcrumb-item"><a href="/{{ auth()->user()->linkStaff->linkStaffRole->nama ?? null }}">Dashboard</a></li>
-    <li class="breadcrumb-item"><a
-        href="/{{ auth()->user()->linkStaff->linkStaffRole->nama ?? null }}/report/koordinattrip">Koordinat Trip</a></li>
-    <li class="breadcrumb-item active" aria-current="page">cekkoordinat</li>
-  </ol>
+
+  @if (auth()->user()->linkStaff->linkStaffRole->nama ?? null)
+    @if (auth()->user()->linkStaff->linkStaffRole->nama == 'administrasi')
+      <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="/{{ auth()->user()->linkStaff->linkStaffRole->nama ?? null }}">Dashboard</a>
+        </li>
+        <li class="breadcrumb-item"><a
+            href="/{{ auth()->user()->linkStaff->linkStaffRole->nama ?? null }}/rencanakunjungan?koordinat=true">Rencana
+            Kunjungan</a>
+        </li>
+        <li class="breadcrumb-item active" aria-current="page">Cek Koordinat</li>
+      </ol>
+    @else
+      <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="/{{ auth()->user()->linkStaff->linkStaffRole->nama ?? null }}">Dashboard</a>
+        </li>
+        <li class="breadcrumb-item"><a
+            href="/{{ auth()->user()->linkStaff->linkStaffRole->nama ?? null }}/report/koordinattrip">Koordinat Trip</a>
+        </li>
+        <li class="breadcrumb-item active" aria-current="page">Cek Koordinat</li>
+      </ol>
+    @endif
+  @endif
+
+
 @endsection
 @section('main_content')
   <div id="cek-koordinat" class="pt-4 px-4">
@@ -34,7 +53,7 @@
       @if ($trip->status_enum ?? null)
         <span><b>Status</b>{{ $trip->status_enum == '1' ? ' Trip' : ' Effective Call' }}</span>
         @if ($trip->status_enum == '1')
-          <span><b>Alasan penolakan</b>{{ $trip->alasan_penolakan ?? null }}</span>
+          <span><b>Alasan penolakan</b> {{ $trip->alasan_penolakan ?? null }}</span>
         @endif
       @endif
     </div>
@@ -43,30 +62,42 @@
     @push('JS')
       <script>
         var map;
-
         const sites = {!! json_encode($datas) !!};
+        if (sites.koordinatCustomer == null) {
+          sites.koordinatCustomer = '0@0';
+        }
         const [latitudeCustomer, longitudeCustomer] = sites.koordinatCustomer.split('@');
         const [latitudeTrip, longitudeTrip] = sites.koordinatTrip.split('@');
 
-        console.log(sites);
-        console.log('latitudeCustomer', latitudeCustomer);
-        console.log('longitudeCustomer', longitudeCustomer);
-        console.log('latitudeTrip', latitudeTrip);
-        console.log('longitudeTrip', longitudeTrip);
-
         function initMap() {
-          const center = {
-            lat: Number(latitudeCustomer),
-            lng: Number(longitudeCustomer)
-          };
+          if (sites.koordinatCustomer != '0@0') {
+            const center = {
+              lat: Number(latitudeCustomer),
+              lng: Number(longitudeCustomer)
+            };
 
-          const options = {
-            zoom: 15,
-            scaleControl: true,
-            center: center
-          };
+            const options = {
+              zoom: 15,
+              scaleControl: true,
+              center: center
+            };
 
-          map = new google.maps.Map(document.getElementById('map'), options);
+            map = new google.maps.Map(document.getElementById('map'), options);
+          } else {
+            const center = {
+              lat: Number(latitudeTrip),
+              lng: Number(longitudeTrip)
+            };
+
+            const options = {
+              zoom: 15,
+              scaleControl: true,
+              center: center
+            };
+
+            map = new google.maps.Map(document.getElementById('map'), options);
+          }
+
 
           if (latitudeCustomer == latitudeTrip && longitudeCustomer == longitudeTrip) {
             const customersales = {
@@ -80,27 +111,31 @@
               title: 'Lokasi Customer dan Sales'
             });
           } else {
-            const customer = {
-              lat: Number(latitudeCustomer),
-              lng: Number(longitudeCustomer)
-            };
+            if (sites.koordinatCustomer != '0@0') {
+              const customer = {
+                lat: Number(latitudeCustomer),
+                lng: Number(longitudeCustomer)
+              };
 
-            const sales = {
-              lat: Number(latitudeTrip),
-              lng: Number(longitudeTrip)
-            };
+              var mk1 = new google.maps.Marker({
+                position: customer,
+                map: map,
+                title: 'Lokasi Customer'
+              });
+            }
 
-            var mk1 = new google.maps.Marker({
-              position: customer,
-              map: map,
-              title: 'Lokasi Customer'
-            });
+            if (sites.koordinatTrip != '0@0') {
+              const sales = {
+                lat: Number(latitudeTrip),
+                lng: Number(longitudeTrip)
+              };
 
-            var mk2 = new google.maps.Marker({
-              position: sales,
-              map: map,
-              title: 'Lokasi Sales'
-            });
+              var mk2 = new google.maps.Marker({
+                position: sales,
+                map: map,
+                title: 'Lokasi Sales'
+              });
+            }
           }
         }
       </script>

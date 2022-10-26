@@ -34,7 +34,7 @@ class VehicleController extends Controller
         $request->validate([
             'nama_kendaraan' => 'required|max:255',
             'plat_kendaraan' => 'required|max:20',
-            'kapasitas_harga' => 'required|numeric',
+            'kapasitas_harga' => 'nullable|numeric',
             'kapasitas_volume' => 'required|numeric',
             'tanggal_pajak' => 'nullable|date'
         ]);
@@ -65,7 +65,7 @@ class VehicleController extends Controller
         $rules = $request->validate([
             'nama_kendaraan' => 'required|max:255',
             'plat_kendaraan' => 'required|max:20',
-            'kapasitas_harga' => 'required|numeric',
+            'kapasitas_harga' => 'nullable|numeric',
             'kapasitas_volume' => 'required|numeric',
             'tanggal_pajak' => 'nullable|date'                  
         ]);

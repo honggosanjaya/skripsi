@@ -69,7 +69,7 @@ class EventController extends Controller
       'tanggal_mulai' => 'required|date',
       'tanggal_selesai' => 'required|date',
       'gambar' => 'max:1024|mimes:jpg,png',
-      'keterangan' => 'required'
+      'keterangan' => 'nullable'
     ]);
   
     if($request->gambar){
@@ -146,7 +146,7 @@ class EventController extends Controller
         'tanggal_mulai' => 'required|date',
         'tanggal_selesai' => 'required|date',
         'gambar' => 'max:1024|mimes:jpg,png',
-        'keterangan' => 'required'
+        'keterangan' => 'nullable'
       ]);
       
 

@@ -12,8 +12,15 @@
       font-size: 9pt;
     }
 
-    .logo {
-      float: left;
+    .info-perusahaan p {
+      font-weight: normal;
+      margin: 0;
+      font-size: 0.9rem;
+    }
+
+    .info-perusahaan h5 {
+      font-size: 1.5rem;
+      margin: 0;
     }
   </style>
 </head>
@@ -23,12 +30,20 @@
     <table class="table table-borderless">
       <tr>
         <td style="width: 300px">
-          {{-- <img src="{{ asset('images/icon-perusahaan.png') }}" alt=""> --}}
-          <img class="logo" src="{{ public_path('images/icon-perusahaan.png') }}" width="70" height="70"
-            alt="UD">
-          <h5>UD. Mandiri</h5>
-          <h6 class="font-weight-normal">Jalan santoso pojok no 2</h6>
-          <h6 class="font-weight-normal">(0341) - 726025</h6>
+          <table>
+            <tr>
+              <td>
+                <img src="{{ public_path('images/icon-perusahaan.png') }}" width="70" height="70">
+              </td>
+              <td>
+                <div class="info-perusahaan">
+                  <h5>{{ config('app.company_name') }}</h5>
+                  <p>{{ config('app.company_address') }}</p>
+                  <p>{{ config('app.company_contact') }}</p>
+                </div>
+              </td>
+            </tr>
+          </table>
         </td>
         <td>
           <h6>Kepada Yth
@@ -39,7 +54,7 @@
         </td>
       </tr>
     </table>
-    <h5 class="text-center">Surat Jalan UD. Mandiri</h5>
+    <h5 class="text-center">Surat Jalan {{ config('app.company_name') }}</h5>
 
     <table class="table table-bordered mt-4">
       <thead>

@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class DropCounterAndMaxUduhInInvoicesTable extends Migration
+class NullableIdWilayahInCustomersTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,9 +13,8 @@ class DropCounterAndMaxUduhInInvoicesTable extends Migration
      */
     public function up()
     {
-        Schema::table('invoices', function (Blueprint $table) {
-          $table->dropColumn('counter_unduh');
-          $table->dropColumn('max_unduh');
+        Schema::table('customers', function (Blueprint $table) {
+          $table->bigInteger('id_wilayah')->nullable()->change();
         });
     }
 
@@ -26,7 +25,7 @@ class DropCounterAndMaxUduhInInvoicesTable extends Migration
      */
     public function down()
     {
-        Schema::table('invoices', function (Blueprint $table) {
+        Schema::table('customers', function (Blueprint $table) {
             //
         });
     }

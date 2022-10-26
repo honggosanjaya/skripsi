@@ -131,7 +131,7 @@ class CartController extends Controller
         \Cart::session(auth()->user()->id.$request->route)->update(
           $request->id,
           [
-              'attributes' => ['jumlah' => $request->jumlah,'keterangan' => $request->keterangan,'kode_barang' => $request->kode_barang]
+              'attributes' => ['quantity' => $request->quantity,'jumlah' => $request->jumlah,'keterangan' => $request->keterangan,'kode_barang' => $request->kode_barang]
           ]
         );
   
@@ -142,10 +142,10 @@ class CartController extends Controller
       } else if($cartItem == null){
         \Cart::session(auth()->user()->id.$request->route)->add([
           'id' => $request->id,
-          'quantity' => $request->quantity,
+          'quantity' => 1,
           'name' => $request->nama,
           'price' => $request->harga_satuan,
-          'attributes' => ['jumlah' => $request->jumlah,'keterangan' => $request->keterangan,'kode_barang' => $request->kode_barang]
+          'attributes' => ['quantity' => $request->quantity,'jumlah' => $request->jumlah,'keterangan' => $request->keterangan,'kode_barang' => $request->kode_barang]
         ]);      
       }
 

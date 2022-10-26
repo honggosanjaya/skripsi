@@ -14,7 +14,8 @@
       font-size: 9pt;
     }
   </style>
-  <h5 class="mb-4 text-center">Laporan NPB UD. Mandiri</h5>
+
+  <h5 class="mb-4 text-center">Laporan NPB {{ config('app.company_name') }}</h5>
   <br>
   <h6 class="mb-4">No Pengadaan : {{ $detail->no_pengadaan ?? null }}</h6>
 

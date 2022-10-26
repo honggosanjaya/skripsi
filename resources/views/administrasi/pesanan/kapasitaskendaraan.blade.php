@@ -26,9 +26,6 @@
         <h4 class="mt-4 fs-6 fw-bold">Kendaraan : <span class="fw-normal">{{ $data['nama_vehicle'] }}</span></h4>
       @endif
       <h4 class="fs-6 fw-bold">Plat Nomor : <span class="fw-normal text-uppercase">{{ $data['kode_vehicle'] }}</span></h4>
-      <h6>Persentase Volume:
-        <span class="fw-normal">{{ number_format($data['total_persentase_volume'], 2, ',', '.') }} %</span>
-      </h6>
 
       @php
         $eachPersentaseVolumes = explode('+', $data['persentase_volume']);
@@ -37,25 +34,31 @@
         $eachInvoices = explode('+', $data['invoice']);
       @endphp
 
-      <div class="progress">
-        @for ($i = 0; $i < sizeof($eachPersentaseVolumes); $i++)
-          <div class="progress-bar bg-{{ $eachColors[$i] }}" role="progressbar"
-            style="width: {{ $eachPersentaseVolumes[$i] }}%" aria-valuenow="{{ $eachPersentaseVolumes[$i] }}"
-            aria-valuemin="0" aria-valuemax="100">{{ $eachInvoices[$i] }}</div>
-        @endfor
-      </div>
+      @if ($data['kapasitas_volume'] > 0 && $data['total_persentase_volume'] > 0)
+        <h6>Persentase Volume:
+          <span class="fw-normal">{{ number_format($data['total_persentase_volume'], 2, ',', '.') }} %</span>
+        </h6>
+        <div class="progress">
+          @for ($i = 0; $i < sizeof($eachPersentaseVolumes); $i++)
+            <div class="progress-bar bg-{{ $eachColors[$i] }}" role="progressbar"
+              style="width: {{ $eachPersentaseVolumes[$i] }}%" aria-valuenow="{{ $eachPersentaseVolumes[$i] }}"
+              aria-valuemin="0" aria-valuemax="100">{{ $eachInvoices[$i] }}</div>
+          @endfor
+        </div>
+      @endif
 
-      <h6 class="mt-2">Persentase Harga :
-        <span class="fw-normal">{{ number_format($data['total_persentase_harga'], 2, ',', '.') }}%</span>
-      </h6>
-
-      <div class="progress">
-        @for ($i = 0; $i < sizeof($eachPersentaseHargas); $i++)
-          <div class="progress-bar bg-{{ $eachColors[$i] }}" role="progressbar"
-            style="width: {{ $eachPersentaseHargas[$i] }}%" aria-valuenow="{{ $eachPersentaseHargas[$i] }}"
-            aria-valuemin="0" aria-valuemax="100">{{ $eachInvoices[$i] }}</div>
-        @endfor
-      </div>
+      @if ($data['kapasitas_harga'] != null && $data['kapasitas_harga'] > 0 && $data['total_persentase_harga'] > 0)
+        <h6 class="mt-2">Persentase Harga :
+          <span class="fw-normal">{{ number_format($data['total_persentase_harga'], 2, ',', '.') }}%</span>
+        </h6>
+        <div class="progress">
+          @for ($i = 0; $i < sizeof($eachPersentaseHargas); $i++)
+            <div class="progress-bar bg-{{ $eachColors[$i] }}" role="progressbar"
+              style="width: {{ $eachPersentaseHargas[$i] }}%" aria-valuenow="{{ $eachPersentaseHargas[$i] }}"
+              aria-valuemin="0" aria-valuemax="100">{{ $eachInvoices[$i] }}</div>
+          @endfor
+        </div>
+      @endif
 
       <hr>
     @endforeach

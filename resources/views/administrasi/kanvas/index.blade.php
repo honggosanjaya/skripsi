@@ -20,6 +20,18 @@
   @endif
 
   <div class="px-5 pt-4" id="kanvas">
+    <div class="loading-indicator d-none">
+      <div class="spinner-grow spinner-grow-sm" role="status">
+        <span class="visually-hidden">Loading...</span>
+      </div>
+      <div class="spinner-grow spinner-grow-sm" role="status">
+        <span class="visually-hidden">Loading...</span>
+      </div>
+      <div class="spinner-grow spinner-grow-sm" role="status">
+        <span class="visually-hidden">Loading...</span>
+      </div>
+    </div>
+
     <a href="/administrasi/kanvas/create" class="btn btn-primary mb-5">
       <span class="iconify fs-3 me-2" data-icon="dashicons:database-add"></span>Tambah Kanvas
     </a>

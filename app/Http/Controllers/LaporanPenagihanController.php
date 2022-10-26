@@ -7,12 +7,19 @@ use App\Models\Staff;
 use App\Models\Order;
 use App\Models\Customer;
 use App\Models\District;
+use App\Models\Pembayaran;
 use Illuminate\Http\Request;
+use PDF;
 
 class LaporanPenagihanController extends Controller
 {
   
   public function index(){
+    $input=[
+      'dateStart'=>date('Y-m-01'),
+      'dateEnd'=>date('Y-m-t')
+    ];
+
     $invoices = Invoice::whereHas('linkOrder', function($q) {
       $q->whereHas('linkOrderTrack', function($q) {
         $q->where('status_enum','4');
@@ -24,6 +31,7 @@ class LaporanPenagihanController extends Controller
     $districts = District::orderBy('nama', 'ASC')->get();
 
     return view('administrasi.lp3.index',[
+      'input' => $input,
       'invoices' => $invoices,  
       'staffs' => $staffs,   
       'histories' => $histories,
@@ -122,5 +130,44 @@ class LaporanPenagihanController extends Controller
       'status' => 'success',
       'message' => 'berhasil mengonfirmasi penagihan pembayaran untuk '.$customer
     ]);
+  }
+
+  public function cetakLp3(Request $request){
+    $lp3s = LaporanPenagihan::whereBetween('tanggal', [$request->dateStart, $request->dateEnd])
+            ->with(['linkStaffPenagih', 'linkInvoice', 'linkInvoice.linkPembayaran', 'linkInvoice.linkOrder.linkCustomer'])
+            ->orderBy('tanggal', 'ASC')
+            ->get();
+    // dd($lp3s);
+
+    $invoices = Invoice::join('pembayarans','invoices.id','=','pembayarans.id_invoice')
+                    ->whereHas('linkOrder', function($q) {
+                      $q->whereHas('linkOrderTrack', function($q) {
+                        $q->whereIn('status_enum',['4','5','6']);
+                      });
+                    })
+                    ->select('invoices.id', 'invoices.nomor_invoice', \DB::raw('SUM(pembayarans.jumlah_pembayaran) as total_bayar'))
+                    ->groupBy('invoices.id', 'invoices.nomor_invoice')->get();
+    // dd($invoices);              
+
+    $pembayarans = Invoice::join('pembayarans','invoices.id','=','pembayarans.id_invoice')
+                ->whereHas('linkOrder', function($q) {
+                  $q->whereHas('linkOrderTrack', function($q) {
+                    $q->whereIn('status_enum',['4','5','6']);
+                  });
+                })
+                ->select('invoices.id', 'invoices.nomor_invoice', \DB::raw('SUM(pembayarans.jumlah_pembayaran) as jml_pembayaran'), 'pembayarans.tanggal', 'pembayarans.id_staff_penagih')
+                ->groupBy('invoices.id', 'invoices.nomor_invoice', 'pembayarans.tanggal', 'pembayarans.id_staff_penagih')->get();
+    // dd($pembayarans);
+
+    $pdf = PDF::loadview('administrasi.lp3.cetakLp3',[
+      'lp3s' => $lp3s,     
+      'invoices' => $invoices,
+      'pembayarans' => $pembayarans,
+      'document_title' => 'LP3-'.date("d-m-Y", strtotime($request->dateStart)). '_' . date("d-m-Y", strtotime($request->dateEnd))
+    ]);
+
+    $pdf->setPaper('A4', 'landscape');
+
+    return $pdf->stream('LP3-'.date("d-m-Y", strtotime($request->dateStart)). '_' . date("d-m-Y", strtotime($request->dateEnd)) .'.pdf'); 
   }
 }

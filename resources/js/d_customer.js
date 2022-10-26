@@ -29,12 +29,14 @@ $(document).on('click', '.minus-button', function () {
 })
 
 $(document).on('change', 'input[name=quantity]', function () {
-  var form = $(this).closest("form").serialize()
+  var form = $(this).closest("form").serialize();
+  $('.loader').removeClass('d-none');
   $.ajax({
     url: window.location.origin + "/api/customer/order/cart?route=customerOrder",
     method: "POST",
     data: form,
     success: function (data) {
+      $('.loader').addClass('d-none');
       if (data.status == 'success') {
         if (data.quantityCart != null && data.quantityCart != 0) {
           $('.cart-quantity').text(data.quantityCart).removeClass("d-none")
