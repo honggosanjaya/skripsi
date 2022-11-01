@@ -14,12 +14,12 @@ return [
     */
 
     'name' => env('APP_NAME', 'Laravel'),
-    'enabled_email_confirmation' => false,
-    'company_name' => env('COMPANY_NAME', 'Sate Blora'),
-    'company_address' => env('COMPANY_ADDRESS', 'Jalan Danau Toba E5-15 Sawojajar, Malang, Jawa Timur'),
-    'company_contact' => env('COMPANY_CONTACT', '08XXXXXXXXXX'),
-    'company_about_us' => env('COMPANY_ABOUT_US', 'Lorem ipsum, dolor sit amet consectetur adipisicing elit. Praesentium cupiditate quas vero dolores corrupti repudiandae odit numquam distinctio neque tempura dimakan brian!'),
-    'company_tag' => env('COMPANY_TAG', 'BESTSATEINMALANG'),
+    'enabled_email_confirmation' => env('EMAIL_ACTIVATE', false),
+    'company_name' => env('COMPANY_NAME', 'Company'),
+    'company_address' => env('COMPANY_ADDRESS', 'Address'),
+    'company_contact' => env('COMPANY_CONTACT', 'Contact'),
+    'company_about_us' => env('COMPANY_ABOUT_US', 'About Us'),
+    'company_tag' => env('COMPANY_TAG', 'Tag'),
 
     /*
     |--------------------------------------------------------------------------
