@@ -53,5 +53,26 @@ class AppServiceProvider extends ServiceProvider
             }            
             return $value;
         });
+        $url=\Request::capture()->getHttpHost();
+
+        if (str_contains($url, 'suralaya.')) {
+            if (str_contains($url, 'salesman-dev.')) {
+                $this->app->bind('path.public', function() {
+                    return base_path().'/../public_html/salesman-dev';
+                });
+            }else if (str_contains($url, 'salesman-jtrg.')) {
+                $this->app->bind('path.public', function() {
+                    return base_path().'/../public_html/salesman-jtrg';
+                });
+            }else if (str_contains($url, 'salesman-surya.')) {
+                $this->app->bind('path.public', function() {
+                    return base_path().'/../public_html/salesman-surya';
+                });
+            }else if (str_contains($url, 'salesman-mandiri.')) {
+                $this->app->bind('path.public', function() {
+                    return base_path().'/../public_html/salesman-mandiri';
+                });
+            }
+        }
     }
 }
