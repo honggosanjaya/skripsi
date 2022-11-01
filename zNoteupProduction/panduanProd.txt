@@ -1,7 +1,6 @@
 ==== Panduan Hosting ====
-1. move public to public_html
-2. change index file
-3. change appserviceprovider
-4. change env + npm run prod
-5. hosting
-6. set db
+1. change env-production to env and set (remark domain)
+2. set public/index.php file (remark domain)
+3. npm run prod
+4. hosting
+5. move public to public_html
