@@ -154,5 +154,21 @@
     <script src="{{ asset('js/chart.js') }}"></script>
     <script src="{{ mix('js/report.js') }}"></script>
     <script src="{{ mix('js/supervisor.js') }}"></script>
+    <script>
+      let time = new Date().getTime();
+      const setActivityTime = (e) => {
+        time = new Date().getTime();
+      }
+      document.body.addEventListener("mousemove", setActivityTime);
+      document.body.addEventListener("keypress", setActivityTime);
+      const refresh = () => {
+        if (new Date().getTime() - time >= 600000) {
+          window.location.reload(true);
+        } else {
+          setTimeout(refresh, 100000);
+        }
+      }
+      setTimeout(refresh, 100000);
+    </script>
   @endpush
 @endsection

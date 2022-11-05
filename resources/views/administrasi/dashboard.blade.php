@@ -211,5 +211,21 @@
 
   @push('JS')
     <script src="{{ mix('js/administrasi.js') }}"></script>
+    <script>
+      let time = new Date().getTime();
+      const setActivityTime = (e) => {
+        time = new Date().getTime();
+      }
+      document.body.addEventListener("mousemove", setActivityTime);
+      document.body.addEventListener("keypress", setActivityTime);
+      const refresh = () => {
+        if (new Date().getTime() - time >= 600000) {
+          window.location.reload(true);
+        } else {
+          setTimeout(refresh, 100000);
+        }
+      }
+      setTimeout(refresh, 100000);
+    </script>
   @endpush
 @endsection
