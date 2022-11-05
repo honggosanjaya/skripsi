@@ -172,15 +172,15 @@ const HistoryTrip = () => {
               </span>
               <span className='d-flex'>
                 <b>Waktu Masuk</b>
-                <p className='mb-0 word_wrap'>{convertDate(detailTrip.waktu_masuk)}</p>
+                {detailTrip.waktu_masuk && <p className='mb-0 word_wrap'>{convertDate(detailTrip.waktu_masuk)}</p>}
               </span>
               <span className='d-flex'>
                 <b>Waktu Keluar</b>
-                <p className='mb-0 word_wrap'>{convertDate(detailTrip.waktu_keluar)}</p>
+                {detailTrip.waktu_keluar && <p className='mb-0 word_wrap'>{convertDate(detailTrip.waktu_keluar)}</p>}
               </span>
               <span className='d-flex'>
                 <b>Status</b>
-                <p className='mb-0 word_wrap'>{detailTrip.status_enum == '1' ? 'Tidak Effective Call' : (detailTrip.status_enum == '2' && 'Effective Call')}</p>
+                {detailTrip.status_enum && <p className='mb-0 word_wrap'>{detailTrip.status_enum == '1' ? 'Tidak Effective Call' : (detailTrip.status_enum == '2' && 'Effective Call')}</p>}
               </span>
               {detailTrip.alasan_penolakan &&
                 <span className='d-flex'>
