@@ -61,7 +61,7 @@ const HistoryInvoice = () => {
   const getTotalItem = (items) => {
     let totalItem = 0;
     items.map((item) => {
-      totalItem += item.kuantitas
+      totalItem += parseInt(item.kuantitas)
     });
 
     return totalItem;
