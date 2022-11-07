@@ -170,20 +170,26 @@ class DistrictController extends Controller
     }
 
     public function getCustByDistrictAPI($id){
-      $district = District::where('id', $id)->get()->first();  
+      $descendantsIds = [];
+      $parentchildIds = [];
+      $parentchildIds[] = [(int)$id];
 
-      $descendantsIds = $district->descendants->pipe(function ($collection){
-        $array = $collection->toArray();
-        $ids = [];
-        array_walk_recursive($array, function ($value, $key) use (&$ids) {
-            if ($key === 'id') {
-                $ids[] = $value;
-            };
-        });
-        return $ids;
-      });
+      do {
+        $parent_child = District::whereIn('id_parent', end($parentchildIds))->select('id')->get();
+        $id_parent_child = $parent_child->pluck('id');
+    
+        $parentchildIds[] = $id_parent_child;
+      } while (count(end($parentchildIds)) > 0);
 
-      array_push($descendantsIds, $district->id);
+      $keys = array_keys($parentchildIds);
+      for($i = 0; $i < count($parentchildIds); $i++) {
+        foreach($parentchildIds[$keys[$i]] as $value) {
+          array_push($descendantsIds, $value);
+        }
+      }
+
+      // dd($descendantsIds);
+      // dd($parentchildIds);
 
       $customers =  Customer::whereHas('linkDistrict', function($q) use($descendantsIds) {
                       $q->whereIn('id', $descendantsIds);
