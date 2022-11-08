@@ -2,7 +2,6 @@
 
 <head>
   <title>Memo - {{ $order->linkInvoice->nomor_invoice }}</title>
-  <link rel="icon" href="{{ public_path('images/icon-perusahaan.png') }}">
   <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
     integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
   <style type="text/css">
@@ -48,7 +47,11 @@
         <td>
           <div class="info-perusahaan">
             <div class="logo">
-              <img src="{{ public_path('images/icon-perusahaan.png') }}" width="70" height="70">
+              @if (config('app.pdf_asset') == 'development')
+                <img src="{{ public_path('images/icon-perusahaan.png') }}" width="70" height="70">
+              @elseif(config('app.pdf_asset') == 'production')
+                <img src="{{ url('images/icon-perusahaan.png') }}" width="70" height="70">
+              @endif
             </div>
             <h5>{{ config('app.company_name') }}</h5>
             <p>{{ config('app.company_address') }}</p>

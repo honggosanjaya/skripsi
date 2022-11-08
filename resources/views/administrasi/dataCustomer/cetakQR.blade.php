@@ -24,7 +24,11 @@
   <div class="container">
     <h1 class="text-center"><b>Kode QR untuk {{ $customer->nama }}</b></h1>
 
-    <img src="{{ public_path('/storage/customer/QR-CUST-' . $nama_customer . '.svg') }}" class="qr-code">
+    @if (config('app.pdf_asset') == 'development')
+      <img src="{{ public_path('/storage/customer/QR-CUST-' . $nama_customer . '.svg') }}" class="qr-code">
+    @elseif(config('app.pdf_asset') == 'production')
+      <img src="{{ url('/storage/customer/QR-CUST-' . $nama_customer . '.svg') }}" class="qr-code">
+    @endif
     <p>Kode ini diterbitkan oleh {{ config('app.company_name') }} <br> Scan kode ini untuk mencatat kunjungan</p>
   </div>
 </body>

@@ -12,8 +12,47 @@
     table tr th {
       font-size: 9pt;
     }
+
+    .logo {
+      float: left;
+    }
+
+    .table-borderless td,
+    .table-borderless th {
+      border: 0;
+    }
+
+    .info-perusahaan p {
+      font-weight: normal;
+      margin: 0;
+      font-size: 0.9rem;
+    }
+
+    .info-perusahaan h5 {
+      font-size: 1.5rem;
+      margin: 0;
+    }
   </style>
   <div class="container">
+    <table class="table table-borderless">
+      <tr>
+        <td>
+          <div class="info-perusahaan">
+            <div class="logo">
+              @if (config('app.pdf_asset') == 'development')
+                <img src="{{ public_path('images/icon-perusahaan.png') }}" width="70" height="70">
+              @elseif(config('app.pdf_asset') == 'production')
+                <img src="{{ url('images/icon-perusahaan.png') }}" width="70" height="70">
+              @endif
+            </div>
+            <h5>{{ config('app.company_name') }}</h5>
+            <p>{{ config('app.company_address') }}</p>
+            <p>{{ config('app.company_contact') }}</p>
+          </div>
+        </td>
+      </tr>
+    </table>
+
     <div class="row mt-3">
       <h4>Retur - {{ $retur->no_retur ?? null }}</h4>
     </div>
