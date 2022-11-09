@@ -62,7 +62,11 @@
       <td>
         <div class="info-perusahaan">
           <div class="logo">
-            <img src="{{ public_path('images/icon-perusahaan.png') }}" width="70" height="70">
+            @if (config('app.pdf_asset') == 'development')
+              <img src="{{ public_path('images/icon-perusahaan.png') }}" width="70" height="70">
+            @elseif(config('app.pdf_asset') == 'production')
+              <img src="{{ url('images/icon-perusahaan.png') }}" width="70" height="70">
+            @endif
           </div>
           <h5>{{ config('app.company_name') }}</h5>
           <p>{{ config('app.company_address') }}</p>

@@ -20,6 +20,7 @@ return [
     'company_contact' => env('COMPANY_CONTACT', 'Contact'),
     'company_about_us' => env('COMPANY_ABOUT_US', 'About Us'),
     'company_tag' => env('COMPANY_TAG', 'Tag'),
+    'pdf_asset' => env('PDF_ASSET', 'production'),
 
     /*
     |--------------------------------------------------------------------------
