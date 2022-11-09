@@ -94,10 +94,20 @@ const LoginReact = () => {
             history.push('/shipper');
           }
         }
+
+        if (response.data.status == 'error') {
+          if (response.data.message == 'please remove local storage') {
+            // console.log('rmv local srg run')
+            window.localStorage.setItem('token', null);
+            window.localStorage.setItem('isAuth ', 'false');
+          }
+        }
       })
       .catch((error) => {
         setIsLoading(false);
-        setIsAuth('false');
+        window.localStorage.setItem('token', null);
+        window.localStorage.setItem('isAuth ', 'false');
+        // console.log('catch running')
         if (error.response.status === 401) {
           setErrorAuth(error.response.data.message);
         } else {
