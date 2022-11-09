@@ -1092,7 +1092,7 @@ class ItemController extends Controller
       $data['harga_diskon_sales'] = $harga_setelah_diskon;
       array_push($detailItem, $data);
  
-      $relatedItem = Item::where('link_item', $item->link_item)->where('id', '!=', $item->id)->get();
+      $relatedItem = Item::where('link_item', $item->link_item)->where('id', '!=', $item->id)->take(15)->get();
       $tenNewProduct = Item::latest()->where('id', '!=', $item->id)->take(10)->get();
 
       if($item->id_category != null){
