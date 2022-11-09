@@ -679,7 +679,8 @@ class OrderController extends Controller
       'administrasi' => $administrasi           
     ]);
 
-    $pdf->setPaper('A5', 'landscape');
+    // $pdf->setPaper('A4', 'landscape');
+    $pdf->setPaper('A4', 'portrait');
 
     // Storage::put('invoice/invoice-'.$order->linkInvoice->nomor_invoice.'.pdf', $pdf->output());
     // return $pdf->download('invoice-'.$order->linkInvoice->nomor_invoice.'.pdf');
