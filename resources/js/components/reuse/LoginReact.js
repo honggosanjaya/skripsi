@@ -100,12 +100,13 @@ const LoginReact = () => {
             // console.log('rmv local srg run')
             window.localStorage.setItem('token', null);
             window.localStorage.setItem('isAuth ', 'false');
+            window.location.reload();
           }
         }
       })
       .catch((error) => {
         setIsLoading(false);
-        window.localStorage.setItem('token', null);
+        // window.localStorage.setItem('token', null);
         window.localStorage.setItem('isAuth ', 'false');
         // console.log('catch running')
         if (error.response.status === 401) {
