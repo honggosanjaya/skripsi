@@ -20,6 +20,9 @@ function opname() {
       success: function (response) {
         $('#opname .loading-indicator').addClass('d-none');
         if (response.status == 'success') {
+          const stokBaru = parseInt($('#opname .input-quantitycart-' + iditem).val()) + parseInt($('#opname .input-jumlahcart-' + iditem).val());
+          $('#opname .stok-baru-' + iditem).text(stokBaru);
+
           $('#opname').prepend(`<div id="hideMeAfter3Seconds">
           <div class="alert alert-success alert-dismissible fade show" role="alert">
             ${response.message}

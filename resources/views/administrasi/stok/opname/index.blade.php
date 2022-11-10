@@ -69,10 +69,11 @@
               <td class="text-center">{{ number_format($product->min_stok ?? 0, 0, '', '.') }}</td>
               <td class="text-center">{{ number_format($product->max_stok ?? 0, 0, '', '.') }}</td>
               <td class="text-center">{{ number_format($product->stok ?? 0, 0, '', '.') }}</td>
-              <td class="text-center">
-                {{ number_format(($product->stok ?? 0) + ($cartItem->attributes->jumlah ?? 0), 0, '', '.') }}</td>
-              <td>
+              <td class="text-center stok-baru-{{ $product->id }}">
+                {{ number_format(($product->stok ?? 0) + ($cartItem->attributes->jumlah ?? 0), 0, '', '.') }}
+              </td>
 
+              <td>
                 @if ($product->id ?? null)
                   <form>
                     <input type="hidden" value="{{ $product->id }}" name="id"
