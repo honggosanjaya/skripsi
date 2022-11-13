@@ -61,7 +61,9 @@
             <td>{{ $kanvas->linkStaffPengonfirmasiPembawaan->nama ?? null }}</td>
             <td>{{ $kanvas->linkStaffYangMembawa->nama ?? null }}</td>
             @if ($kanvas->waktu_dibawa ?? null)
-              <td> {{ date('d F Y, g:i a', strtotime($kanvas->waktu_dibawa)) }}</td>
+              <td data-order="{{ date('Y-m-d g i a', strtotime($kanvas->waktu_dibawa ?? null)) }}">
+                {{ date('d F Y, g:i a', strtotime($kanvas->waktu_dibawa)) }}
+              </td>
             @else
               <td></td>
             @endif

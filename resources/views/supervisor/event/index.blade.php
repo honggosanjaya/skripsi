@@ -64,8 +64,12 @@
             <tr>
               <td>{{ $event->kode ?? null }}</td>
               <td>{{ $event->nama ?? null }}</td>
-              <td>{{ date('d-m-Y', strtotime($event->date_start ?? '-')) }}</td>
-              <td>{{ date('d-m-Y', strtotime($event->date_end ?? '-')) }}</td>
+              <td data-order="{{ date('Y-m-d', strtotime($event->date_start ?? '-')) }}">
+                {{ date('d-m-Y', strtotime($event->date_start ?? '-')) }}
+              </td>
+              <td data-order="{{ date('Y-m-d', strtotime($event->date_end ?? '-')) }}">
+                {{ date('d-m-Y', strtotime($event->date_end ?? '-')) }}
+              </td>
               <td>{{ $event->linkStaff->nama ?? null }}</td>
               @if ($event->status_enum != null)
                 <td>
@@ -84,11 +88,6 @@
               @else
                 <td></td>
               @endif
-
-
-
-
-
 
               <td>
                 @if ($event->gambar ?? null)

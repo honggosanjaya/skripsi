@@ -74,8 +74,9 @@
                 </p>
               </td>
             @endif
-
-            <td>{{ date('d M Y', strtotime($order->created_at ?? '-')) }}</td>
+            <td data-order="{{ date('Y-m-d', strtotime($order->created_at ?? '-')) }}">
+              {{ date('d M Y', strtotime($order->created_at ?? '-')) }}
+            </td>
             <td>
               <a href="/administrasi/pesanan/detail/{{ $order->id }}" class="btn btn-primary">
                 <span class="iconify fs-4 me-1" data-icon="fluent:apps-list-detail-24-filled"></span> Detail</a>

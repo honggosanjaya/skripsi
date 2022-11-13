@@ -148,8 +148,10 @@ const HistoryTrip = () => {
               <tbody>
                 {dataKunjungans.map((data) => (
                   <tr key={data.id} onClick={() => handleClickTrip(data.id)}>
-                    <td>{data.link_customer.nama ?? null}</td>
-                    <td>{data.link_customer.link_district.nama ?? null}</td>
+                    {data.link_customer ? <td>{data.link_customer.nama ?? null}</td> : <td></td>}
+                    {data.link_customer ?
+                      (data.link_customer.link_district && <td>{data.link_customer.nama ?? null}</td>)
+                      : <td></td>}
                     {data.waktu_masuk ? <td>{getTime(data.waktu_masuk)}</td> : <td></td>}
                     {data.waktu_keluar ? <td>{getTime(data.waktu_keluar)}</td> : <td></td>}
                     {data.status_enum ? <td className='text-center'>{data.status_enum == '2' ? 'YA' : 'TIDAK'}</td> : <td></td>}
@@ -168,7 +170,7 @@ const HistoryTrip = () => {
             <div className='info-2column'>
               <span className='d-flex'>
                 <b>Customer</b>
-                <p className='mb-0 word_wrap'>{detailTrip.link_customer.nama ?? null}</p>
+                {detailTrip.link_customer ? <p className='mb-0 word_wrap'>{detailTrip.link_customer.nama ?? null}</p> : <p></p>}
               </span>
               <span className='d-flex'>
                 <b>Waktu Masuk</b>

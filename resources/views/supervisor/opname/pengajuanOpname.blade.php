@@ -33,7 +33,7 @@
             <tr>
               <th scope="row" class="text-center">{{ $loop->iteration }}</th>
               <td class="text-center">{{ $opname->linkStaff->nama ?? null }}</td>
-              <td class="text-center">
+              <td class="text-center" data-order="{{ date('Y-m-d', strtotime($opname->created_at ?? '-')) }}">
                 {{ date('d F Y', strtotime($opname->created_at ?? '-')) }}
               </td>
               <td class="text-center">

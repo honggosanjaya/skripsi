@@ -28,7 +28,9 @@
         @foreach ($returs as $retur)
           <tr>
             <th scope="row" class="text-center">{{ $retur->no_retur ?? null }}</th>
-            <td>{{ date('d M Y', strtotime($retur->created_at ?? '-')) }}</td>
+            <td data-order="{{ date('Y-m-d', strtotime($retur->created_at ?? '-')) }}">
+              {{ date('d M Y', strtotime($retur->created_at ?? '-')) }}
+            </td>
             <td>{{ $retur->linkCustomer->nama ?? null }}</td>
             <td>{{ ($retur->linkCustomer->alamat_utama ?? null) . ' ' . ($retur->linkCustomer->alamat_nomor ?? null) }}
             </td>
