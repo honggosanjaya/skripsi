@@ -48,7 +48,9 @@
               <th scope="row" class="text-center">{{ $loop->iteration }}</th>
               <td>{{ $history->linkStaffPenagih->nama ?? null }}</td>
               <td class="text-center">{{ number_format($history->jumlah_pembayaran ?? 0, 0, '', '.') ?? null }}</td>
-              <td class="text-center">{{ date('d M Y', strtotime($history->tanggal ?? '-')) }}</td>
+              <td class="text-center" data-order="{{ date('Y-m-d', strtotime($history->tanggal ?? '-')) }}">
+                {{ date('d M Y', strtotime($history->tanggal ?? '-')) }}
+              </td>
               @if ($history->metode_pembayaran !== null)
                 <td>
                   {{ $history->metode_pembayaran == '1' ? 'Tunai' : ($history->metode_pembayaran == '2' ? 'Giro' : 'Transfer') }}

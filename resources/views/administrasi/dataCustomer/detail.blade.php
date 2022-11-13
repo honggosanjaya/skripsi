@@ -84,7 +84,9 @@
               <th scope="row" class="text-center">
                 {{ ($invoices->currentPage() - 1) * $invoices->perPage() + $loop->iteration }}
               </th>
-              <td>{{ date('d M Y', strtotime($invoice->created_at ?? null)) }}</td>
+              <td data-order="{{ date('Y-m-d', strtotime($invoice->created_at ?? null)) }}">
+                {{ date('d M Y', strtotime($invoice->created_at ?? null)) }}
+              </td>
               <td>
                 <a class="text-primary cursor-pointer text-decoration-none" data-bs-toggle="modal"
                   data-bs-target="#invoice{{ $invoice->id }}">

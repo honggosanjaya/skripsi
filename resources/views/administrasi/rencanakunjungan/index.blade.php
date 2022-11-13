@@ -218,7 +218,9 @@
                 <td>{{ $history->linkCustomer->nama ?? null }}</td>
                 <td>{{ $history->linkStaff->nama ?? null }}</td>
                 @if ($history->tanggal ?? null)
-                  <td>{{ date('d M Y', strtotime($history->tanggal)) }}</td>
+                  <td data-order="{{ date('Y-m-d', strtotime($history->tanggal)) }}">
+                    {{ date('d M Y', strtotime($history->tanggal)) }}
+                  </td>
                 @else
                   <td></td>
                 @endif

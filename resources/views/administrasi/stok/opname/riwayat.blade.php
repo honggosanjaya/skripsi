@@ -26,7 +26,9 @@
         @foreach ($orders as $order)
           <tr>
             <th scope="row" class="text-center">{{ $loop->iteration }}</th>
-            <td class="text-center">{{ date('d M Y', strtotime($order->created_at ?? '-')) }}</td>
+            <td class="text-center" data-order="{{ date('Y-m-d', strtotime($order->created_at ?? '-')) }}">
+              {{ date('d M Y', strtotime($order->created_at ?? '-')) }}
+            </td>
             <td class="text-center">{{ $order->linkStaff->nama ?? null }}</td>
             <td class="text-center">
               <a href="/administrasi/stok/opname/riwayat/detail/{{ $order->id }}" class="btn btn-primary">
