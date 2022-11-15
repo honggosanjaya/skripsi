@@ -298,12 +298,16 @@
                 <td class="text-center">{{ $dt->linkCustomer->nama ?? null }}</td>
                 <td class="text-center">{{ $dt->linkStaff->nama ?? null }}</td>
                 @if ($dt->waktu_masuk ?? null)
-                  <td>{{ date('j F Y, g:i a', strtotime($dt->waktu_masuk)) }}</td>
+                  <td data-order="{{ date('Y-m-d g i a', strtotime($dt->waktu_masuk)) }}">
+                    {{ date('j F Y, g:i a', strtotime($dt->waktu_masuk)) }}
+                  </td>
                 @else
                   <td></td>
                 @endif
                 @if ($dt->waktu_keluar ?? null)
-                  <td>{{ date('j F Y, g:i a', strtotime($dt->waktu_keluar)) }}</td>
+                  <td data-order="{{ date('Y-m-d g i a', strtotime($dt->waktu_keluar)) }}">
+                    {{ date('j F Y, g:i a', strtotime($dt->waktu_keluar)) }}
+                  </td>
                 @else
                   <td></td>
                 @endif

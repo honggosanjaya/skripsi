@@ -163,8 +163,23 @@
             <td>{{ $kanvas->linkStaffPengonfirmasiPembawaan->nama ?? null }}</td>
             <td>{{ $kanvas->linkStaffYangMembawa->nama ?? null }}</td>
             <td>{{ $kanvas->linkStaffPengonfirmasiPengembalian->nama ?? null }}</td>
-            <td>{{ date('d F Y, g:i a', strtotime($kanvas->waktu_dibawa ?? null)) }}</td>
-            <td>{{ date('d F Y, g:i a', strtotime($kanvas->waktu_dikembalikan ?? null)) }}</td>
+
+            @if ($kanvas->waktu_dibawa ?? null)
+              <td data-order="{{ date('Y-m-d g i a', strtotime($kanvas->waktu_dibawa)) }}">
+                {{ date('j F Y, g:i a', strtotime($kanvas->waktu_dibawa)) }}
+              </td>
+            @else
+              <td></td>
+            @endif
+
+            @if ($kanvas->waktu_dikembalikan ?? null)
+              <td data-order="{{ date('Y-m-d g i a', strtotime($kanvas->waktu_dikembalikan)) }}">
+                {{ date('j F Y, g:i a', strtotime($kanvas->waktu_dikembalikan)) }}
+              </td>
+            @else
+              <td></td>
+            @endif
+
             <td class="text-center">{{ $kanvas->banyak_jenis_item ?? null }}</td>
           </tr>
         @endforeach
