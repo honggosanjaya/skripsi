@@ -150,7 +150,7 @@ const HistoryTrip = () => {
                   <tr key={data.id} onClick={() => handleClickTrip(data.id)}>
                     {data.link_customer ? <td>{data.link_customer.nama ?? null}</td> : <td></td>}
                     {data.link_customer ?
-                      (data.link_customer.link_district && <td>{data.link_customer.nama ?? null}</td>)
+                      (data.link_customer.link_district && <td>{data.link_customer.link_district.nama ?? null}</td>)
                       : <td></td>}
                     {data.waktu_masuk ? <td>{getTime(data.waktu_masuk)}</td> : <td></td>}
                     {data.waktu_keluar ? <td>{getTime(data.waktu_keluar)}</td> : <td></td>}
