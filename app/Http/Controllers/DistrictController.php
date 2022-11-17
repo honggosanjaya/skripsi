@@ -165,11 +165,29 @@ class DistrictController extends Controller
 
     public function lihat(){
       $parentCategories = District::where('id_parent',null)->get();
-      // dd($parentCategories);
       return view('supervisor.wilayah.wilayahTree', compact('parentCategories'));
     }
 
-    public function getCustByDistrictAPI($id){
+    private function codeLama($id){
+      $district = District::where('id', $id)->get()->first();  
+
+      $descendantsIds = $district->descendants->pipe(function ($collection){
+        $array = $collection->toArray();
+        $ids = [];
+        array_walk_recursive($array, function ($value, $key) use (&$ids) {
+            if ($key === 'id') {
+                $ids[] = $value;
+            };
+        });
+        return $ids;
+      });
+
+      array_push($descendantsIds, $district->id);
+
+      return $descendantsIds;
+    }
+
+    private function codeBaru($id){
       $descendantsIds = [];
       $parentchildIds = [];
       $parentchildIds[] = [(int)$id];
@@ -177,7 +195,6 @@ class DistrictController extends Controller
       do {
         $parent_child = District::whereIn('id_parent', end($parentchildIds))->select('id')->get();
         $id_parent_child = $parent_child->pluck('id');
-    
         $parentchildIds[] = $id_parent_child;
       } while (count(end($parentchildIds)) > 0);
 
@@ -187,27 +204,79 @@ class DistrictController extends Controller
           array_push($descendantsIds, $value);
         }
       }
+      
+      return $descendantsIds;
+    }
 
-      // dd($descendantsIds);
-      // dd($parentchildIds);
+    // public function getCustByDistrictAPI($id){
+    //   // ====== Code Baru ======
+    //   $totalTimeBaru = 0;
+    //   for($i=0; $i<10; $i++){
+    //     $startTimeBaru = microtime(true);
+    //     $descendantsIds = $this->codeBaru($id);
+    //     $endTimeBaru = microtime(true);
+    //     $totalTimeBaru += ($endTimeBaru - $startTimeBaru);
+    //   }
+    //   $avgTimeBaru = $totalTimeBaru/10;
+    //   // ====== Code Lama ======
+    //   $totalTimeLama = 0;
+    //   for($i=0; $i<10; $i++){
+    //     $startTimeLama = microtime(true);
+    //     $descendantsIds = $this->codeLama($id); 
+    //     $endTimeLama = microtime(true);
+    //     $totalTimeLama += ($endTimeLama - $startTimeLama);
+    //   }
+    //   $avgTimeLama = $totalTimeLama/10;
+
+    //   // ====================
+    //   $customers =  Customer::whereHas('linkDistrict', function($q) use($descendantsIds) {
+    //     $q->whereIn('id', $descendantsIds);
+    //   })->get();
+
+    //   $customersInvoice = Customer::whereHas('linkDistrict', function($q) use($descendantsIds) {
+    //                 $q->whereIn('id', $descendantsIds);
+    //               })
+    //               ->whereHas('linkOrder', function($q){
+    //                 $q->whereHas('linkOrderTrack', function($q){
+    //                   $q->where('status_enum', '4');
+    //                 });
+    //               })->with(['linkOrder', 'linkOrder.linkInvoice', 'linkOrder.linkOrderTrack'])->get();
+
+    //   return response()->json([
+    //     'status' => 'success',
+    //     'customers' => $customers,
+    //     'customersInvoice' => $customersInvoice,
+    //     'time' => [
+    //       'lama' => $avgTimeLama . ' second',
+    //       'baru' => $avgTimeBaru . ' second'
+    //     ]
+    //   ]);
+    // }
+
+    public function getCustByDistrictAPI($id){
+      $startTime = microtime(true);
+
+      // $descendantsIds = $this->codeLama($id);
+      $descendantsIds = $this->codeBaru($id);
 
       $customers =  Customer::whereHas('linkDistrict', function($q) use($descendantsIds) {
-                      $q->whereIn('id', $descendantsIds);
-                    })->get();
-      
-      $customersInvoice = Customer::whereHas('linkDistrict', function($q) use($descendantsIds) {
-                            $q->whereIn('id', $descendantsIds);
-                          })
-                          ->whereHas('linkOrder', function($q){
-                            $q->whereHas('linkOrderTrack', function($q){
-                              $q->where('status_enum', '4');
-                            });
-                          })->with(['linkOrder', 'linkOrder.linkInvoice', 'linkOrder.linkOrderTrack'])->get();
+        $q->whereIn('id', $descendantsIds);
+      })->get();
 
-        return response()->json([
-          'status' => 'success',
-          'customers' => $customers,
-          'customersInvoice' => $customersInvoice
-        ]);
+      $customersInvoice = Customer::whereHas('linkDistrict', function($q) use($descendantsIds) {
+                    $q->whereIn('id', $descendantsIds);
+                  })
+                  ->whereHas('linkOrder', function($q){
+                    $q->whereHas('linkOrderTrack', function($q){
+                      $q->where('status_enum', '4');
+                    });
+                  })->with(['linkOrder', 'linkOrder.linkInvoice', 'linkOrder.linkOrderTrack'])->get();
+
+      return response()->json([
+        'status' => 'success',
+        'customers' => $customers,
+        'customersInvoice' => $customersInvoice,
+        'time' => number_format(( microtime(true) - $startTime), 5).'seconds'
+      ]);
     }
 }
