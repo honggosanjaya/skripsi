@@ -91,7 +91,7 @@ const DashboardSales = () => {
     })
       .then(response => {
         setIsLoading(false);
-        console.log('rencana', response.data.data);
+        // console.log('rencana', response.data.data);
         setListRencanaKunjungan(response.data.data);
       })
       .catch(error => {

@@ -51,7 +51,7 @@ const Reimbursement = () => {
     axios.get(`${window.location.origin}/api/cashAcountOption`).then(response => {
       setListCashAccount(response.data.cashaccount);
       setIsLoading(false);
-      console.log(response.data.cashaccount);
+      // console.log(response.data.cashaccount);
       for (var i = 0; i < response.data.cashaccount.length; i++) {
         if (response.data.cashaccount[i][3] > 100 && response.data.cashaccount[i][2] != '3') {
           setCashAccount(response.data.cashaccount[i][1]);
@@ -169,7 +169,7 @@ const Reimbursement = () => {
         })
           .then(response => {
             if (response.data.status == 'success') {
-              console.log('reim', response.data.data);
+              // console.log('reim', response.data.data);
               return response.data.data;
             }
           })
