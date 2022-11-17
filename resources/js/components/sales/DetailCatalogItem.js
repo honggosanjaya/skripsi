@@ -10,7 +10,7 @@ import { convertPrice } from "../reuse/HelperFunction";
 
 const DetailCatalogItem = () => {
   const { tipeHarga, idItem } = useParams();
-  const { idCustomer } = useContext(KeranjangSalesContext);
+  // const { idCustomer } = useContext(KeranjangSalesContext);
   const history = useHistory();
   const [isLoading, setIsLoading] = useState(false);
   const [item, setItem] = useState(null);
@@ -144,15 +144,15 @@ const DetailCatalogItem = () => {
             <span>Stok {item.stok}</span>
           </div>
           <hr />
-          <div className="detal-product-description">
+          {item.deskripsi && <div>
             <h1 className="fs-5"><b>Deskripsi Produk</b></h1>
             <h2 className="fs-6">{item.deskripsi}</h2>
-          </div>
-          <hr />
+            <hr />
+          </div>}
         </Fragment>}
 
 
-        {relatedItem &&
+        {relatedItem && relatedItem.length > 0 &&
           <Fragment>
             <div className="related-product">
               <h1 className="fs-5"><b>Related Produk</b></h1>
@@ -177,7 +177,7 @@ const DetailCatalogItem = () => {
             <hr />
           </Fragment>}
 
-        {categoryItem &&
+        {categoryItem && categoryItem.length > 0 &&
           <Fragment>
             <div className="related-product">
               <h1 className="fs-5"><b>Produk Dengan Category Serupa</b></h1>
@@ -202,7 +202,7 @@ const DetailCatalogItem = () => {
             <hr />
           </Fragment>}
 
-        {newItem &&
+        {newItem && newItem.length > 0 &&
           <div className="related-product">
             <h1 className="fs-5"><b>Produk Terbaru</b></h1>
             <div className="horizontal-scroll-wrapper">

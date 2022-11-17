@@ -25,7 +25,13 @@
         @foreach ($pengadaans as $pengadaan)
           <tr>
             <th scope="row">{{ $loop->iteration }}</th>
-            <td>{{ date('d M Y G:i', strtotime($pengadaan->created_at ?? '-')) }}</td>
+            @if ($pengadaan->created_at ?? null)
+              <td data-order="{{ date('Y-m-d g i a', strtotime($pengadaan->created_at)) }}">
+                {{ date('d M Y G:i', strtotime($pengadaan->created_at ?? '-')) }}
+              </td>
+            @else
+              <td></td>
+            @endif
             <td>{{ $pengadaan->no_nota ?? null }}</td>
             <td>{{ $pengadaan->keterangan ?? null }}</td>
             <td>{{ number_format($pengadaan->harga ?? 0, 0, '', '.') }}</td>

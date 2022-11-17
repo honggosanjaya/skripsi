@@ -24,29 +24,29 @@ class District extends Model
         return $this->hasMany(District::class,'id_parent');
     }
 
-    // public function parent()
-    // {
-    //     return $this->belongsTo(self::class,'id_parent','id');
-    // }
+    public function parent()
+    {
+        return $this->belongsTo(self::class,'id_parent','id');
+    }
     
-    // public function children()
-    // {
-    //     return $this->hasMany(self::class,'id_parent','id');
-    // }
+    public function children()
+    {
+        return $this->hasMany(self::class,'id_parent','id');
+    }
     
-    // public function getAscendantsAttribute()
-    // {
-    //     $parents = collect([]);
-    //     $parent = $this->parent;
-    //     while(!is_null($parent)) {
-    //         $parents->push($parent);
-    //         $parent = $parent->parent;
-    //     }
-    //     return $parents;
-    // }
+    public function getAscendantsAttribute()
+    {
+        $parents = collect([]);
+        $parent = $this->parent;
+        while(!is_null($parent)) {
+            $parents->push($parent);
+            $parent = $parent->parent;
+        }
+        return $parents;
+    }
     
-    // public function descendants()
-    // {
-    //     return $this->children()->with('descendants');
-    // }
+    public function descendants()
+    {
+        return $this->children()->with('descendants');
+    }
 }
