@@ -9,6 +9,7 @@
   <title>salesMan</title>
   <link href=" {{ mix('css/bootstrap.css') }}" rel="stylesheet">
   <link href=" {{ mix('css/sales.css') }}" rel="stylesheet">
+  <link rel="icon" href="{{ asset('images/icon-perusahaan.png') }}">
   <!-- PWA  -->
   <meta name="theme-color" content="#007bff" />
   <link rel="apple-touch-icon" href="{{ asset('images/icon-perusahaan.png') }}">
