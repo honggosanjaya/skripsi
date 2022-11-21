@@ -273,6 +273,7 @@ class OrderController extends Controller
         'alasan_penolakan' => $request->alasan_penolakan
       ]);
     }else{
+      // task : menghindari id_trip 0
       $old_trip = Trip::where('id_customer', $id_customer)->where('id_staff', $idStaf)
                   ->whereDate('waktu_masuk', date('Y-m-d'))->latest()->first();
       
