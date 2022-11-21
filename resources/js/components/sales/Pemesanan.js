@@ -289,7 +289,10 @@ const Pemesanan = ({ location }) => {
         },
         data: {
           'alasan_penolakan': alasanPenolakan,
-          'isBelanjaLagi': isBelanjaLagi
+          'isBelanjaLagi': isBelanjaLagi,
+          'idCust': idCust,
+          'idStaf': dataUser.id_staff,
+          'koordinat': koordinat,
         }
       })
         .then((response) => {
@@ -311,7 +314,7 @@ const Pemesanan = ({ location }) => {
   const lihatKeranjang = () => {
     history.push({
       pathname: `/salesman/keranjang/${idCust}`,
-      state: idTrip // your data array of objects
+      state: idTrip, koordinat // your data array of objects
     })
   }
 
