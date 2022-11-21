@@ -25,7 +25,7 @@ self.addEventListener("fetch", function (event) {
 
 var checkResponse = function (request) {
   return new Promise(function (fulfill, reject) {
-    fetch(request).then(function (response) {
+    fetch(request.clone()).then(function (response) {
       if (response.status !== 404) {
         fulfill(response);
       } else {
@@ -37,7 +37,7 @@ var checkResponse = function (request) {
 
 var addToCache = function (request) {
   return caches.open("offline").then(function (cache) {
-    return fetch(request).then(function (response) {
+    return fetch(request.clone()).then(function (response) {
       return cache.put(request, response);
     });
   });
