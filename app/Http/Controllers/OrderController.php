@@ -27,7 +27,7 @@ use Illuminate\Support\Facades\Storage;
 
 class OrderController extends Controller
 {
-  public function simpanDataOrderSalesmanAPI(Request $request){
+  public function simpanDataOrderSalesmanAPI(Request $request){    
     $validator = Validator::make($request->all(), [
       'keranjang' => ['required'],
       'idCustomer' => ['required','numeric'],
@@ -273,16 +273,29 @@ class OrderController extends Controller
         'alasan_penolakan' => $request->alasan_penolakan
       ]);
     }else{
-      Trip::insert([
-        'id_customer' => $id_customer,
-        'id_staff' => $idStaf,
-        'koordinat' => $request->koordinat ?? '0@0',
-        'status_enum' => '2',
-        'waktu_masuk' => now(),
-        'waktu_keluar' => now(),
-        'created_at'=>now(),
-        'updated_at' => now()
-      ]);
+      // task : menghindari id_trip 0
+      $old_trip = Trip::where('id_customer', $id_customer)->where('id_staff', $idStaf)
+                  ->whereDate('waktu_masuk', date('Y-m-d'))->latest()->first();
+      
+      if($old_trip ?? null){
+        Trip::find($old_trip->id)->update([
+          'waktu_keluar' => now(),
+          'updated_at' => now(),
+          'status_enum' => '2',
+          'alasan_penolakan' => $request->alasan_penolakan
+        ]);
+      }else{
+        Trip::insert([
+          'id_customer' => $id_customer,
+          'id_staff' => $idStaf,
+          'koordinat' => $request->koordinat ?? '0@0',
+          'status_enum' => '2',
+          'waktu_masuk' => now(),
+          'waktu_keluar' => now(),
+          'created_at'=>now(),
+          'updated_at' => now()
+        ]);
+      }
     }
     
     Customer::find($id_customer)->update(['updated_at'=> now()]);
@@ -315,38 +328,23 @@ class OrderController extends Controller
   }
 
   public function keluarTripOrderApi(Request $request, $id){
-    if($id ?? null){
-      $isBelanjaLagi = $request->isBelanjaLagi;
-      // $idCust = Trip::find($id)->id_customer; 
-  
-      if($isBelanjaLagi == false){
-        Trip::find($id)->update([
-          'waktu_keluar' => now(),
-          'updated_at' => now(),
-          'status_enum' => '1',
-          'alasan_penolakan' => $request->alasan_penolakan
-        ]);
-      }else if($isBelanjaLagi == true){
-        Trip::find($id)->update([
-          'waktu_keluar' => now(),
-          'updated_at' => now()
-        ]);
-      }
+    $isBelanjaLagi = $request->isBelanjaLagi;
+    $idCust = Trip::find($id)->id_customer; 
 
-      // Customer::where('id', $idCust)->update(['updated_at'=> now()]);
-    }else{
-      $id = Trip::insertGetId([
-        'id_customer' => $request->idCust,
-        'id_staff' => $request->idStaf,
-        'alasan_penolakan' => $request->alasan_penolakan,
-        'koordinat' => $request->koordinat,
-        'waktu_masuk' => now(),
+    if($isBelanjaLagi == false){
+      Trip::find($id)->update([
         'waktu_keluar' => now(),
-        'created_at'=>now(),
         'updated_at' => now(),
-        'status_enum' => '1'
+        'status_enum' => '1',
+        'alasan_penolakan' => $request->alasan_penolakan
+      ]);
+    }else if($isBelanjaLagi == true){
+      Trip::find($id)->update([
+        'waktu_keluar' => now(),
+        'updated_at' => now()
       ]);
     }
+    // Customer::where('id', $idCust)->update(['updated_at'=> now()]);
 
     return response()->json([
       'status' => 'success',
