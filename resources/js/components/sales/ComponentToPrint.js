@@ -23,9 +23,8 @@ class ComponentToPrint extends React.Component {
     const todayTime = [
       now.getHours(),
       ':',
-      now.getMinutes()
+      (now.getMinutes() < 10 ? '0' : '') + now.getMinutes()
     ].join('');
-
 
 
     return (

@@ -44,7 +44,7 @@ const KeranjangSales = ({ location }) => {
   const [idItemKanvas, setIdItemKanvas] = useState([]);
   const [isOrderKanvas, setIsOrderKanvas] = useState(false);
   const Swal = require('sweetalert2');
-  const { state: idTrip } = location;
+  const { state: idTrip, koordinat } = location;
   let jmlProdukError = 0;
   let toHar = 0;
 
@@ -319,7 +319,8 @@ const KeranjangSales = ({ location }) => {
       idTrip: idTrip,
       tipeRetur: parseInt(tipeRetur),
       metode_pembayaran: metodePembayaran,
-      stok_kanvas: isOrderKanvas
+      stok_kanvas: isOrderKanvas,
+      koordinat: koordinat
     }
 
     if (kodePesanan && isKodePesananValid) {

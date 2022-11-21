@@ -28,7 +28,6 @@ use Illuminate\Support\Facades\Storage;
 class OrderController extends Controller
 {
   public function simpanDataOrderSalesmanAPI(Request $request){
-
     $validator = Validator::make($request->all(), [
       'keranjang' => ['required'],
       'idCustomer' => ['required','numeric'],
@@ -38,7 +37,7 @@ class OrderController extends Controller
       'keterangan' => ['nullable', 'string', 'max:255'],
       'kodeEvent' => ['nullable', 'string', 'max:50'],
       'totalHarga' => ['required'],
-      'idTrip' => ['required','numeric'],
+      // 'idTrip' => ['required','numeric'],
       'tipeRetur' => ['nullable','numeric'],
       'metode_pembayaran' => ['nullable','numeric'],
     ]);
@@ -266,19 +265,27 @@ class OrderController extends Controller
       'created_at' => now()
     ]);
 
-    Trip::find($request->idTrip)->update([
-      'waktu_keluar' => now(),
-      'updated_at' => now(),
-      'status_enum' => '2',
-      'alasan_penolakan' => $request->alasan_penolakan
-    ]);
-    
-    if (Customer::find($id_customer)->koordinat==null) {
-      Customer::find($id_customer)->update(['koordinat' =>  $request->koordinat]);
+    if($request->idTrip ?? null){
+      Trip::find($request->idTrip)->update([
+        'waktu_keluar' => now(),
+        'updated_at' => now(),
+        'status_enum' => '2',
+        'alasan_penolakan' => $request->alasan_penolakan
+      ]);
     }else{
-      Customer::find($id_customer)->update(['updated_at'=> now()]);
+      Trip::insert([
+        'id_customer' => $id_customer,
+        'id_staff' => $idStaf,
+        'koordinat' => $request->koordinat ?? '0@0',
+        'status_enum' => '2',
+        'waktu_masuk' => now(),
+        'waktu_keluar' => now(),
+        'created_at'=>now(),
+        'updated_at' => now()
+      ]);
     }
-
+    
+    Customer::find($id_customer)->update(['updated_at'=> now()]);
 
     if (Customer::find($id_customer)->time_to_effective_call==null) {
       Customer::find($id_customer)->update([
@@ -308,23 +315,38 @@ class OrderController extends Controller
   }
 
   public function keluarTripOrderApi(Request $request, $id){
-    $isBelanjaLagi = $request->isBelanjaLagi;
-    $idCust = Trip::find($id)->id_customer; 
+    if($id ?? null){
+      $isBelanjaLagi = $request->isBelanjaLagi;
+      // $idCust = Trip::find($id)->id_customer; 
+  
+      if($isBelanjaLagi == false){
+        Trip::find($id)->update([
+          'waktu_keluar' => now(),
+          'updated_at' => now(),
+          'status_enum' => '1',
+          'alasan_penolakan' => $request->alasan_penolakan
+        ]);
+      }else if($isBelanjaLagi == true){
+        Trip::find($id)->update([
+          'waktu_keluar' => now(),
+          'updated_at' => now()
+        ]);
+      }
 
-    if($isBelanjaLagi == false){
-      Trip::find($id)->update([
+      // Customer::where('id', $idCust)->update(['updated_at'=> now()]);
+    }else{
+      $id = Trip::insertGetId([
+        'id_customer' => $request->idCust,
+        'id_staff' => $request->idStaf,
+        'alasan_penolakan' => $request->alasan_penolakan,
+        'koordinat' => $request->koordinat,
+        'waktu_masuk' => now(),
         'waktu_keluar' => now(),
+        'created_at'=>now(),
         'updated_at' => now(),
-        'status_enum' => '1',
-        'alasan_penolakan' => $request->alasan_penolakan
-      ]);
-    }else if($isBelanjaLagi == true){
-      Trip::find($id)->update([
-        'waktu_keluar' => now(),
-        'updated_at' => now()
+        'status_enum' => '1'
       ]);
     }
-    // Customer::where('id', $idCust)->update(['updated_at'=> now()]);
 
     return response()->json([
       'status' => 'success',
