@@ -353,4 +353,39 @@ class ReportController extends Controller
         'customers' => $customers
       ]);
     }
+
+    public function tripSalesAdmin(Request $request){
+      if (!$request->tripDateStart ?? null) {
+        request()->request->add(['tripDateStart'=>date('Y-m-01')]);  
+        request()->request->add(['tripDateEnd'=>date('Y-m-t')]);  
+      }
+  
+      $input=[
+        'dateStart'=>date('Y-m-01'),
+        'dateEnd'=>date('Y-m-t'),
+        'tripDateStart'=>$request->tripDateStart ?? null,
+        'tripDateEnd'=>$request->tripDateEnd ?? null,
+        'tripSalesman'=>$request->tripSalesman ?? null
+      ];
+  
+      $request->tripDateStart=$request->tripDateStart." 00:00:00";
+      $request->tripDateEnd=$request->tripDateEnd." 23:59:59";
+  
+      $tripssales = Trip::whereBetween('waktu_masuk',[$request->tripDateStart,$request->tripDateEnd])
+                    ->orderBy('id', 'DESC')
+                    ->with(['linkCustomer', 'linkStaff']);
+  
+      if($request->tripSalesman ?? null){
+        $tripssales = $tripssales->whereHas('linkStaff',function($q) use($request){
+          $q->where(strtolower('nama'),'like','%'.$request->tripSalesman.'%');
+        });
+      }
+  
+      $tripssales = $tripssales->get();
+  
+      return view('administrasi.tripsales.index',[
+        'input' => $input,
+        'tripssales' => $tripssales
+      ]);
+    }
 }
