@@ -11,33 +11,21 @@
 
 @section('main_content')
   <div class="px-5 pt-4">
-    @if (session()->has('pesanSukses'))
+    @if (session()->has('successMessage'))
       <div id="hideMeAfter3Seconds">
         <div class="alert alert-success alert-dismissible fade show" role="alert">
-          {{ session('pesanSukses') }}
+          {{ session('successMessage') }}
           <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
         </div>
       </div>
     @endif
 
-    <div class="justify-content-between d-sm-flex">
-      <form method="GET" action="/owner/datasupervisor/cari">
-        <div class="input-group">
-          <input type="text" class="form-control" name="cari" placeholder="Cari Supervisor..."
-            value="{{ request('cari') }}">
-          <button type="submit" class="btn btn-primary">
-            <span class="iconify me-2" data-icon="fe:search"></span>Cari
-          </button>
-        </div>
-      </form>
+    <a href="/owner/datasupervisor/create" class="btn btn-primary">
+      <span class="iconify fs-4 me-1" data-icon="dashicons:database-add"></span> Tambah Supervisor
+    </a>
 
-      <a href="/owner/datasupervisor/create" class="btn btn-primary mt-3 mt-sm-0 ms-0 ms-sm-3">
-        <span class="iconify fs-4 me-1" data-icon="dashicons:database-add"></span> Tambah Supervisor
-      </a>
-    </div>
-
-    <div class="table-responsive mt-4">
-      <table class="table table-hover table-sm">
+    <div class="table-responsive">
+      <table class="table table-hover table-sm" id="table">
         <thead>
           <tr>
             <th scope="col" class="text-center">No</th>
@@ -52,9 +40,7 @@
         <tbody>
           @foreach ($supervisors as $supervisor)
             <tr>
-              <th scope="row" class="text-center">
-                {{ ($supervisors->currentPage() - 1) * $supervisors->perPage() + $loop->iteration }}
-              </th>
+              <th scope="row" class="text-center">{{ $loop->iteration }}</th>
               <td class="text-center">
                 @if ($supervisor->foto_profil ?? null)
                   <img src="{{ asset('storage/staff/' . $supervisor->foto_profil) }}" class="img-fluid" width="40">
@@ -92,7 +78,6 @@
           @endforeach
         </tbody>
       </table>
-      {{ $supervisors->links() }}
     </div>
   </div>
 @endsection

@@ -67,7 +67,7 @@
     </form>
 
     <div class="table-responsive mt-4">
-      <table class="table table-hover table-sm">
+      <table class="table table-hover table-sm" id="table">
         <thead>
           <tr>
             <th scope="col" class="text-center">No</th>

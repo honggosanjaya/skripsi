@@ -12,10 +12,10 @@
 @endsection
 
 @section('content')
-  @if (session()->has('pesanSukses'))
+  @if (session()->has('successMessage'))
     <div id="hideMeAfter3Seconds" class="mt-4">
       <div class="alert alert-success alert-dismissible fade show" role="alert">
-        {{ session('pesanSukses') }}
+        {{ session('successMessage') }}
         <button type="button" class="btn btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
       </div>
     </div>

@@ -1,17 +1,6 @@
 import { getJSON } from 'jquery';
 const Swal = require('sweetalert2');
 
-$(document).ready(function () {
-  $('#table, #table2').DataTable({
-    fixedHeader: true,
-    buttons: [
-      'searchPanes'
-    ],
-    dom: 'Bfrtip',
-    "order": [],
-  });
-});
-
 // $(document).on('change', '#pengadaan input[name=total_harga]', function () {
 //   let iditem = $(this).data('iditem')
 //   $('#pengadaan .submit-cart-' + iditem).removeClass('btn-success')

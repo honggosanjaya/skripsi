@@ -174,10 +174,10 @@
   </div>
 
   <div class="px-5 pt-4" id="dashboardAdmin">
-    @if (session()->has('pesanSukses'))
+    @if (session()->has('successMessage'))
       <div id="hideMeAfter3Seconds">
         <div class="alert alert-success alert-dismissible fade show" role="alert">
-          {{ session('pesanSukses') }}
+          {{ session('successMessage') }}
           <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
         </div>
       </div>

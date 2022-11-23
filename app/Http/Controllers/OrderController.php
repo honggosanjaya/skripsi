@@ -772,7 +772,7 @@ class OrderController extends Controller
 
     \Cart::session(auth()->user()->id.$request->route)->clear();
 
-    return redirect('/customer')->with('pesanSukses', 'Pesanan Berhasil Dibuat');
+    return redirect('/customer')->with('successMessage', 'Pesanan Berhasil Dibuat');
   }
 
   public function getListShippingAPI(Request $request){
@@ -1011,7 +1011,7 @@ class OrderController extends Controller
     OrderItem::where('id_order', $order->id)->delete();
     OrderTrack::where('id_order', $order->id)->delete();
 
-    return redirect('/customer')->with('pesanSukses', 'Berhasil membatalkan pesanan' );
+    return redirect('/customer')->with('successMessage', 'Berhasil membatalkan pesanan' );
   }
 
   public function dataPengajuanOpname(){
@@ -1042,14 +1042,14 @@ class OrderController extends Controller
     Order::find($order->id)->update([
       'status_enum' => '1'
     ]);
-    return redirect('/supervisor/stokopname')->with('pesanSukses', 'Berhasil mengonfirmasi pengajuan stok opname');
+    return redirect('/supervisor/stokopname')->with('successMessage', 'Berhasil mengonfirmasi pengajuan stok opname');
   }
 
   public function tolakPengajuanOpname(Order $order){
     Order::find($order->id)->update([
       'status_enum' => '1'
     ]);
-    return redirect('/supervisor/stokopname')->with('pesanSukses', 'Berhasil menolak pengajuan stok opname');
+    return redirect('/supervisor/stokopname')->with('successMessage', 'Berhasil menolak pengajuan stok opname');
   }
 
   public function getInvoiceAPI(Request $request){

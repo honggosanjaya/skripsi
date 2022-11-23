@@ -66,7 +66,6 @@ Route::prefix('owner')->middleware('owner')->group(function() {
   Route::get('/datasupervisor/edit/{staff:id}', [StaffController::class, 'editSupervisor']);
   Route::put('/datasupervisor/{id}/edit', [StaffController::class, 'update']);
   Route::post('/datasupervisor/ubahstatus/{staf:id}', [StaffController::class, 'editStatusStaf']);
-  Route::get('/datasupervisor/cari', [StaffController::class, 'cariSupervisor']);
 
   Route::get('/profil', [HomeController::class, 'lihatProfil']);
   Route::get('/profil/ubahpassword', [HomeController::class, 'lihatPassword']);
@@ -88,7 +87,6 @@ Route::prefix('supervisor')->middleware('supervisor')->group(function() {
   Route::post('/profil/gantipassword/{user:id}', [AuthController::class, 'gantiPassword']);
 
   Route::get('/event', [EventController::class, 'index']);
-  Route::get('/event/cari', [EventController::class, 'search']);
   Route::get('/event/tambah', [EventController::class, 'create']);
   Route::post('/event/tambahevent', [EventController::class, 'store']);
   Route::get('/event/ubah/{event:id}', [EventController::class, 'edit']);
@@ -96,7 +94,6 @@ Route::prefix('supervisor')->middleware('supervisor')->group(function() {
   Route::get('/event/hapusevent/{event:id}', [EventController::class, 'delete']);
 
   Route::get('/wilayah', [DistrictController::class, 'index']);
-  Route::get('/wilayah/cari', [DistrictController::class, 'search']);
   Route::get('/wilayah/tambah', [DistrictController::class, 'create']);
   Route::get('/wilayah/lihat', [DistrictController::class, 'lihat']);
   Route::post('/wilayah/tambahwilayah', [DistrictController::class, 'store']);
@@ -104,7 +101,6 @@ Route::prefix('supervisor')->middleware('supervisor')->group(function() {
   Route::put('/wilayah/ubahwilayah/{district:id}', [DistrictController::class, 'update']);
 
   Route::get('/datacustomer', [CustomerController::class, 'dataCustomer']);
-  Route::get('/datacustomer/cari', [CustomerController::class, 'supervisorSearch']);
   Route::get('/datacustomer/pengajuan', [CustomerController::class, 'dataPengajuanLimit']);
   Route::get('/datacustomer/pengajuan/{customer:id}', [CustomerController::class, 'detailDataPengajuanLimit']);
   Route::post('/datacustomer/pengajuan/setuju/{customer:id}', [CustomerController::class, 'setujuPengajuanLimit']);
@@ -112,7 +108,6 @@ Route::prefix('supervisor')->middleware('supervisor')->group(function() {
   Route::get('/datacustomer/{customer:id}', [CustomerController::class, 'detailCustomerSPV']);
 
   Route::get('/jenis', [CustomerTypeController::class, 'index']);
-  Route::get('/jenis/cari', [CustomerTypeController::class, 'search']);
   Route::get('/jenis/tambah', [CustomerTypeController::class, 'create']);
   Route::post('/jenis/tambahjenis', [CustomerTypeController::class, 'store']);
   Route::get('/jenis/ubah/{customertype:id}', [CustomerTypeController::class, 'edit']);
@@ -128,14 +123,12 @@ Route::prefix('supervisor')->middleware('supervisor')->group(function() {
   Route::get('/report/koordinattrip/{trip:id}', [ReportController::class,'cekKoordinatTrip']);
 
   Route::get('/cashaccount', [CashAccountController::class, 'cashAccountIndex']);
-  Route::get('/cashaccount/cari', [CashAccountController::class, 'cashAccountSearch']);
   Route::get('/cashaccount/tambah', [CashAccountController::class, 'cashAccountCreate']);
   Route::post('/cashaccount/tambah', [CashAccountController::class, 'cashAccountStore']);
   Route::get('/cashaccount/ubah/{cashaccount:id}', [CashAccountController::class, 'cashAccountEdit']);
   Route::put('/cashaccount/ubah/{cashaccount:id}', [CashAccountController::class, 'cashAccountUpdate']);
 
   Route::get('/category', [CategoryItemController::class, 'categoryIndex']);
-  Route::get('/category/cari', [CategoryItemController::class, 'categorySearch']);
   Route::get('/category/tambah', [CategoryItemController::class, 'categoryCreate']);
   Route::post('/category/tambah', [CategoryItemController::class, 'categoryStore']);
   Route::get('/category/ubah/{category:id}', [CategoryItemController::class, 'categoryEdit']);

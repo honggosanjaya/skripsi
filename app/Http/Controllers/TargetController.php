@@ -53,7 +53,7 @@ class TargetController extends Controller
 
       Target::insert($validatedData);
 
-      return redirect('/supervisor/target') -> with('pesanSukses', 'Target berhasil ditambahkan');
+      return redirect('/supervisor/target') -> with('successMessage', 'Target berhasil ditambahkan');
     }
 
     public function getTargetAPI(){

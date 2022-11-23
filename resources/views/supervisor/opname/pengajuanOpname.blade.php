@@ -8,17 +8,17 @@
 
 @section('main_content')
   <div class="pt-4 px-5">
-    @if (session()->has('pesanSukses'))
+    @if (session()->has('successMessage'))
       <div id="hideMeAfter3Seconds">
         <div class="alert alert-success alert-dismissible fade show" role="alert">
-          {{ session('pesanSukses') }}
+          {{ session('successMessage') }}
           <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
         </div>
       </div>
     @endif
 
-    <div class="table-responsive mt-4">
-      <table class="table table-hover table-sm">
+    <div class="table-responsive">
+      <table class="table table-hover table-sm" id="table">
         <thead>
           <tr>
             <th scope="col" class="text-center">No</th>

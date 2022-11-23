@@ -42,8 +42,8 @@
     <hr class="my-5">
     <h1 class="fs-4">Invoice Customer</h1>
 
-    <div class="table-responsive mt-4">
-      <table class="table table-hover table-sm">
+    <div class="table-responsive">
+      <table class="table table-hover table-sm" id="table">
         <thead>
           <tr>
             <th scope="col" class="text-center">No</th>
@@ -54,17 +54,9 @@
           </tr>
         </thead>
         <tbody>
-          @if (count($invoices) == 0)
-            <tr>
-              <td colspan="5" class="text-center text-danger">Tidak Ada Data</td>
-            </tr>
-          @endif
-
           @foreach ($invoices as $invoice)
             <tr>
-              <th scope="row" class="text-center">
-                {{ ($invoices->currentPage() - 1) * $invoices->perPage() + $loop->iteration }}
-              </th>
+              <th scope="row" class="text-center">{{ $loop->iteration }}</th>
               <td data-order="{{ date('Y-m-d', strtotime($invoice->created_at ?? '-')) }}">
                 {{ date('d M Y', strtotime($invoice->created_at ?? '-')) }}
               </td>
@@ -165,9 +157,5 @@
         </div>
       </div>
     @endforeach
-
-    <div class="d-flex flex-row mt-4">
-      {{ $invoices->links() }}
-    </div>
   </div>
 @endsection

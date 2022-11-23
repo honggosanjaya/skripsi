@@ -250,7 +250,7 @@
             <li>
               <a class="{{ Request::is('owner/report/koordinattrip*') ? 'active-submenu' : '' }}"
                 href="/owner/report/koordinattrip">
-                <i class="bi bi-geo-alt me-2"></i><span>Koordinat Trip</span>
+                <span class="iconify fs-3 me-2" data-icon="akar-icons:check-in"></span><span>Koordinat Trip</span>
               </a>
             </li>
           </ul>

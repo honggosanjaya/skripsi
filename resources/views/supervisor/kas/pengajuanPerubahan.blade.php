@@ -11,19 +11,19 @@
 
 @section('main_content')
   <div class="pt-4 px-5">
-    @if (session()->has('pesanSukses'))
+    @if (session()->has('successMessage'))
       <div id="hideMeAfter3Seconds">
         <div class="alert alert-success alert-dismissible fade show" role="alert">
-          {{ session('pesanSukses') }}
+          {{ session('successMessage') }}
           <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
         </div>
       </div>
     @endif
 
-    <h1 class="fs-4 fw-bold mb-5">Pengajuan Penghapusan Kas</h1>
+    <h1 class="fs-4">Pengajuan Penghapusan Kas</h1>
 
-    <div class="table-responsive mt-4">
-      <table class="table table-hover table-sm">
+    <div class="table-responsive">
+      <table class="table table-hover table-sm" id="table">
         <thead>
           <tr>
             <th scope="col" class="text-center">Tanggal</th>
@@ -42,7 +42,9 @@
         <tbody>
           @foreach ($pengajuansKas as $kas)
             <tr>
-              <td>{{ $kas->tanggal ?? null }}</td>
+              <td data-order="{{ date('Y-m-d', strtotime($kas->tanggal ?? '-')) }}">
+                {{ date('d M Y', strtotime($kas->tanggal ?? '-')) }}
+              </td>
               <td>{{ $kas->linkCashAccount->nama ?? null }}</td>
               <td>{{ $kas->linkStaff->nama ?? null }}</td>
               <td>{{ $kas->kontak ?? null }}</td>

@@ -9,17 +9,9 @@ use Illuminate\Http\Request;
 class DistrictController extends Controller
 {
     public function index(){
-      $districts = District::paginate(10);
+      $districts = District::get();
       return view('supervisor.wilayah.index',[
           'districts' => $districts
-      ]);
-    }
-
-    public function search(){
-      $districts = District::where(strtolower('nama'),'like','%'.request('cari').'%')->paginate(10);
-              
-      return view('supervisor/wilayah.index',[
-        'districts' => $districts
       ]);
     }
 
@@ -88,7 +80,7 @@ class DistrictController extends Controller
         'created_at' => now()
       ]);
       
-      return redirect('/supervisor/wilayah')->with('addWilayahSuccess','Tambah wilayah berhasil');
+      return redirect('/supervisor/wilayah')->with('succesMessage','Tambah wilayah berhasil');
     }
 
     public function edit(District $district){
@@ -160,7 +152,7 @@ class DistrictController extends Controller
       }        
       $district->save(); 
 
-      return redirect('/supervisor/wilayah')->with('updateWilayahSuccess','Update Wilayah Berhasil');
+      return redirect('/supervisor/wilayah')->with('succesMessage','Update Wilayah Berhasil');
     }
 
     public function lihat(){

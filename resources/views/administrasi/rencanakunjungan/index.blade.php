@@ -9,10 +9,10 @@
   </ol>
 @endsection
 @section('main_content')
-  @if (session()->has('pesanSukses'))
+  @if (session()->has('successMessage'))
     <div id="hideMeAfter3Seconds">
       <div class="alert alert-success alert-dismissible fade show mt-4" role="alert">
-        {{ session('pesanSukses') }}
+        {{ session('successMessage') }}
         <button type="button" class="btn btn-close" data-bs-dismiss="alert"></button>
       </div>
     </div>

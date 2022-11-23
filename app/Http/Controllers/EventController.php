@@ -35,16 +35,6 @@ class EventController extends Controller
     ]);
   }
 
-  public function search(){
-    $events = Event::where('status_enum','!=', '-2')->where(strtolower('nama'),'like','%'.request('cari').'%')
-    ->orWhere(strtolower('kode'),'like','%'.request('cari').'%')
-    ->where('status_enum','!=', '-2')->paginate(10);
-            
-    return view('supervisor.event.index',[
-      'events' => $events
-    ]);
-  }
-
   public function create(){
     $statuses = [
       1 => 'active',
@@ -103,7 +93,7 @@ class EventController extends Controller
       'gambar' => $request->gambar
     ]);
     
-    return redirect('/supervisor/event')->with('addEventSuccess','Tambah Event berhasil');
+    return redirect('/supervisor/event')->with('successMessage','Tambah Event berhasil');
   }
 
   public function edit(Event $event){
@@ -196,13 +186,13 @@ class EventController extends Controller
 
       $event->save();        
       
-      return redirect('/supervisor/event')->with('updateEventSuccess','Ubah Event berhasil');
+      return redirect('/supervisor/event')->with('successMessage','Ubah Event berhasil');
   }
 
   public function delete(Request $request, Event $event){
       $event->update(['status_enum'=>'-2']);        
       
-      return redirect('/supervisor/event')->with('updateEventSuccess','data Event berhasil dihapus');
+      return redirect('/supervisor/event')->with('successMessage','data Event berhasil dihapus');
   }
 
   //Controller untuk Customer

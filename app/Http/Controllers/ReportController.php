@@ -333,7 +333,7 @@ class ReportController extends Controller
         });
       }
 
-      $data = $data->paginate(10);
+      $data = $data->get();
 
       return view('supervisor.report.koordinattrip',compact('data','input'));
     }

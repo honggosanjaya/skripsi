@@ -8,17 +8,9 @@ use Illuminate\Http\Request;
 class CategoryItemController extends Controller
 {
   public function categoryIndex(){
-    $categories = CategoryItem::paginate(10);
+    $categories = CategoryItem::get();
     return view('supervisor.categoryitem.index',[
         'categories' => $categories            
-    ]);
-  }
-
-  public function categorySearch(){
-    $categories =  CategoryItem::where(strtolower('nama'),'like','%'.request('cari').'%')->paginate(10);
-   
-    return view('supervisor.categoryitem.index',[
-        'categories' => $categories
     ]);
   }
 
@@ -37,7 +29,7 @@ class CategoryItemController extends Controller
         'keterangan' => $request->keterangan
     ]); 
     
-    return redirect('/supervisor/category')->with('addCategorySuccess','Tambah Category Item Berhasil');
+    return redirect('/supervisor/category')->with('successMessage','Tambah Category Item Berhasil');
   }
 
   public function categoryEdit(CategoryItem $category){
@@ -55,6 +47,6 @@ class CategoryItemController extends Controller
       CategoryItem::Where('id', $category->id)
           ->update($rules);
 
-      return redirect('/supervisor/category')->with('updateCategorySuccess','Update Category Item Berhasil');        
+      return redirect('/supervisor/category')->with('successMessage','Update Category Item Berhasil');        
   }
 }

@@ -71,7 +71,7 @@ class RencanaTripController extends Controller
       }
     }
 
-    return redirect('/administrasi/rencanakunjungan')->with('pesanSukses','Berhasil membuat rencana kunjungan'); 
+    return redirect('/administrasi/rencanakunjungan')->with('successMessage','Berhasil membuat rencana kunjungan'); 
   }
 
   public function datakunjunganAPI(Request $request, $id){

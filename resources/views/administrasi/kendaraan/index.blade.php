@@ -1,4 +1,3 @@
-<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" />
 @extends('layouts/main')
 @push('CSS')
   <link href=" {{ mix('css/administrasi.css') }}" rel="stylesheet">
@@ -39,7 +38,7 @@
           </button>
         </div>
       </form>
-      <a href="/administrasi/kendaraan/tambah" class="btn btn-primary my-3 py-2"><span class="iconify fs-4 me-1"
+      <a href="/administrasi/kendaraan/tambah" class="btn btn-primary"><span class="iconify fs-4 me-1"
           data-icon="dashicons:database-add"></span>Tambah Kendaraan</a>
     </div>
 
