@@ -23,16 +23,27 @@
 </head>
 
 <body>
-  @include('partials/sidebar')
+  @php
+    $agent = Session::get('agent');
+  @endphp
 
-  <div class="main-content">
-    @include('partials/header')
-    <div class="container-fluid">
-      <main class="mb-5 pb-5 position-relative">
-        @yield('main_content')
-      </main>
+  @if (($agent ?? null) && ($agent->isMobile() ?? null))
+    <main class="main-mobile">
+      @include('partials/sidebarmobile')
+      @include('partials/headermobile')
+      @yield('main_content')
+    </main>
+  @else
+    @include('partials/sidebar')
+    <div class="main-content">
+      @include('partials/header')
+      <div class="container-fluid">
+        <main class="mb-5 pb-5 position-relative">
+          @yield('main_content')
+        </main>
+      </div>
     </div>
-  </div>
+  @endif
 
   <script src="{{ mix('js/bootstrap.js') }}"></script>
   <script src="{{ mix('js/main.js') }}"></script>

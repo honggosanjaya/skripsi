@@ -50,7 +50,7 @@ class ReportController extends Controller
         });
       }
       
-      $data = $data->paginate(10);
+      $data = $data->get();
 
       $invoicesSampai = Invoice::whereHas('linkOrder',function($q){
         $q->whereHas('linkOrderTrack', function($q){

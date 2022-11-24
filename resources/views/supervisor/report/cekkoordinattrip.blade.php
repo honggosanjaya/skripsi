@@ -108,7 +108,13 @@
             var mk1 = new google.maps.Marker({
               position: customersales,
               map: map,
-              title: 'Lokasi Customer dan Sales'
+              title: 'Lokasi Customer dan Sales',
+              label: {
+                text: "Lokasi Customer dan Sales",
+                color: "white",
+                fontWeight: "bold",
+                fontSize: "16px"
+              }
             });
           } else {
             if (sites.koordinatCustomer != '0@0') {
@@ -120,7 +126,13 @@
               var mk1 = new google.maps.Marker({
                 position: customer,
                 map: map,
-                title: 'Lokasi Customer'
+                title: 'Lokasi Customer',
+                label: {
+                  text: "Lokasi Customer",
+                  color: "white",
+                  fontWeight: "bold",
+                  fontSize: "16px"
+                }
               });
             }
 
@@ -133,7 +145,13 @@
               var mk2 = new google.maps.Marker({
                 position: sales,
                 map: map,
-                title: 'Lokasi Sales'
+                title: 'Lokasi Sales',
+                label: {
+                  text: "Lokasi Sales",
+                  color: "white",
+                  fontWeight: "bold",
+                  fontSize: "16px"
+                }
               });
             }
           }
