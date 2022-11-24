@@ -13,33 +13,11 @@ use PDF;
 class RencanaTripController extends Controller
 {
   public function index(Request $request){
-    if (!$request->tripDateStart ?? null) {
-      request()->request->add(['tripDateStart'=>date('Y-m-01')]);  
-      request()->request->add(['tripDateEnd'=>date('Y-m-t')]);  
-    }
-
     $input=[
       'dateStart'=>date('Y-m-01'),
-      'dateEnd'=>date('Y-m-t'),
-      'tripDateStart'=>$request->tripDateStart ?? null,
-      'tripDateEnd'=>$request->tripDateEnd ?? null,
-      'tripSalesman'=>$request->tripSalesman ?? null
+      'dateEnd'=>date('Y-m-t')
     ];
 
-    $request->tripDateStart=$request->tripDateStart." 00:00:00";
-    $request->tripDateEnd=$request->tripDateEnd." 23:59:59";
-
-    $tripssales = Trip::whereBetween('waktu_masuk',[$request->tripDateStart,$request->tripDateEnd])
-                  ->orderBy('id', 'DESC')
-                  ->with(['linkCustomer', 'linkStaff']);
-
-    if($request->tripSalesman ?? null){
-      $tripssales = $tripssales->whereHas('linkStaff',function($q) use($request){
-        $q->where(strtolower('nama'),'like','%'.$request->tripSalesman.'%');
-      });
-    }
-
-    $tripssales = $tripssales->get();
     $customers = Customer::all();
     $staffs = Staff::where('status_enum','1')->where('role', 3)->get();
     $histories = RencanaTrip::orderBy('tanggal', 'DESC')->get();
@@ -50,8 +28,7 @@ class RencanaTripController extends Controller
       'customers' => $customers,  
       'staffs' => $staffs,
       'histories' => $histories,
-      'districts' => $districts,
-      'tripssales' => $tripssales
+      'districts' => $districts
     ]);
   }
 
@@ -94,7 +71,7 @@ class RencanaTripController extends Controller
       }
     }
 
-    return redirect('/administrasi/rencanakunjungan')->with('pesanSukses','Berhasil membuat rencana kunjungan'); 
+    return redirect('/administrasi/rencanakunjungan')->with('successMessage','Berhasil membuat rencana kunjungan'); 
   }
 
   public function datakunjunganAPI(Request $request, $id){

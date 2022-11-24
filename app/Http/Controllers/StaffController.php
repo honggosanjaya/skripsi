@@ -22,7 +22,7 @@ class StaffController extends Controller
         'stafs' => Staff::whereNotIn('role', [1, 2])
                 ->OrderBy('status_enum', 'ASC')
                 ->orderBy('id', 'DESC')
-                ->paginate(10),
+                ->get(),
         "title" => "List Tim Marketing".config('app.company_name')
       ]);
     }
@@ -32,7 +32,7 @@ class StaffController extends Controller
       $supervisors = Staff::where('role', $role_spv->id)
                       ->OrderBy('status_enum', 'ASC')
                       ->orderBy('id', 'DESC')
-                      ->paginate(10);
+                      ->get();
 
       return view('owner.dataSupervisor.index', [
         'supervisors' => $supervisors,
@@ -118,9 +118,9 @@ class StaffController extends Controller
       event(new Registered($user));
 
       if($request->route == 'tambahsupervisor'){
-        return redirect('/owner/datasupervisor') -> with('pesanSukses', 'Staf berhasil ditambahkan');
+        return redirect('/owner/datasupervisor') -> with('successMessage', 'Staf berhasil ditambahkan');
       }
-      return redirect('/supervisor/datastaf') -> with('pesanSukses', 'Staf berhasil ditambahkan');
+      return redirect('/supervisor/datastaf') -> with('successMessage', 'Staf berhasil ditambahkan');
     }
 
     public function edit($id){
@@ -192,10 +192,10 @@ class StaffController extends Controller
             $inactive->save();
           }
         }
-        return redirect('/owner/datasupervisor') -> with('pesanSukses', 'Data supervisor '. Staff::where('id', $id)->first()->nama.' berhasil diubah');
+        return redirect('/owner/datasupervisor') -> with('successMessage', 'Data supervisor '. Staff::where('id', $id)->first()->nama.' berhasil diubah');
       }
 
-      return redirect('/supervisor/datastaf') -> with('pesanSukses', 'data staf berhasil diubah');
+      return redirect('/supervisor/datastaf') -> with('successMessage', 'data staf berhasil diubah');
     }
 
     public function editStatusStaf(Request $request, Staff $staf){
@@ -215,18 +215,10 @@ class StaffController extends Controller
       }
 
       if($request->route == 'editstatussupervisor'){
-        return redirect('/owner/datasupervisor') -> with('pesanSukses', 'Berhasil ubah status '.$staf->nama);
+        return redirect('/owner/datasupervisor') -> with('successMessage', 'Berhasil ubah status '.$staf->nama);
       }
 
-      return redirect('/supervisor/datastaf') -> with('pesanSukses', 'Berhasil ubah status '.$staf->nama);
-    }
-
-    public function cariSupervisor(){
-      $supervisors = Staff::where('role', 2)->where(strtolower('nama'),'like','%'.request('cari').'%')->paginate(10);
-             
-      return view('owner.datasupervisor.index',[
-          'supervisors' => $supervisors
-      ]);
+      return redirect('/supervisor/datastaf') -> with('successMessage', 'Berhasil ubah status '.$staf->nama);
     }
 
     public function getHistoryTripApi(Request $request, $id){

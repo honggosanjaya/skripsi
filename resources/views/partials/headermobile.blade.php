@@ -1,6 +1,11 @@
-<header>
-  <div class="breadcrumbs-container">
-    @yield('breadcrumbs')
+<header class="header-mobile">
+  <div class="d-flex align-items-center">
+    <span class="hamburger p-2 me-3">
+      <i class="bi bi-list hamburger_icon"></i>
+    </span>
+    <div class="breadcrumbs-container">
+      @yield('breadcrumbs')
+    </div>
   </div>
 
   <div class="d-flex justify-content-end">
@@ -83,26 +88,24 @@
 
     <a class="dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown"
       aria-expanded="false">
-      <div class="admin-wrapper d-flex justify-content-between align-items-center">
+      <div class="admin-wrapper">
         @if (auth()->user()->linkStaff->foto_profil ?? null)
           <img src="{{ asset('storage/staff/' . auth()->user()->linkStaff->foto_profil) }}"
-            class="profile_picture me-2">
+            class="profile_picture d-block mx-auto">
         @else
-          <img src="{{ asset('images/default_fotoprofil.png') }}" class="profile_picture me-2">
+          <img src="{{ asset('images/default_fotoprofil.png') }}" class="profile_picture d-block mx-auto">
         @endif
-
         <div class="active_indicator"></div>
-        <div class="ms-2">
-          <div class="admin-name fw-bold">
-            {{ auth()->user()->linkStaff->nama ?? null }}
-          </div>
-          <small>{{ auth()->user()->linkStaff->linkStaffRole->nama ?? null }}</small>
-        </div>
       </div>
     </a>
 
     <ul class="dropdown-menu p-3" aria-labelledby="navbarDropdown">
-      <a class="btn btn-success w-100 mb-3 p-1"
+      <div class="admin-name fw-bold text-center">
+        {{ auth()->user()->linkStaff->nama ?? null }}
+      </div>
+      <small class="d-block text-center">{{ auth()->user()->linkStaff->linkStaffRole->nama ?? null }}</small>
+
+      <a class="btn btn-success w-100 my-3 p-1"
         href="/{{ auth()->user()->linkStaff->linkStaffRole->nama ?? null }}/profil">
         <i class="bi bi-person fs-5 me-1"></i> Profil
       </a>

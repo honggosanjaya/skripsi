@@ -56,7 +56,7 @@ class LaporanPenagihanController extends Controller
       ]);
     }
 
-    return redirect('/administrasi/lp3')->with('pesanSukses','Berhasil membuat LP3'); 
+    return redirect('/administrasi/lp3')->with('successMessage','Berhasil membuat LP3'); 
   }
 
   public function getDetailPenagihanAPI(Invoice $invoice){

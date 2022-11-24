@@ -73,6 +73,11 @@
           </ul>
         </li>
         <li class="mb-3">
+          <a class="{{ Request::is('administrasi/tripsales*') ? 'active' : '' }}" href="/administrasi/tripsales">
+            <span class="iconify fs-3 me-2" data-icon="akar-icons:check-in"></span><span>Trip Sales</span>
+          </a>
+        </li>
+        <li class="mb-3">
           <a class="{{ Request::is('administrasi/pesanan*') ? 'active' : '' }}" href="/administrasi/pesanan">
             <i class="bi bi-card-list me-2"></i><span>Pesanan</span>
           </a>
@@ -135,7 +140,7 @@
             <li>
               <a class="{{ Request::is('supervisor/report/koordinattrip*') ? 'active-submenu' : '' }}"
                 href="/supervisor/report/koordinattrip">
-                <i class="bi bi-geo-alt me-2"></i><span>Koordinat Trip</span>
+                <span class="iconify fs-3 me-2" data-icon="akar-icons:check-in"></span><span>Koordinat Trip</span>
               </a>
             </li>
           </ul>
@@ -245,7 +250,7 @@
             <li>
               <a class="{{ Request::is('owner/report/koordinattrip*') ? 'active-submenu' : '' }}"
                 href="/owner/report/koordinattrip">
-                <i class="bi bi-geo-alt me-2"></i><span>Koordinat Trip</span>
+                <span class="iconify fs-3 me-2" data-icon="akar-icons:check-in"></span><span>Koordinat Trip</span>
               </a>
             </li>
           </ul>

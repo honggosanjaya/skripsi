@@ -112,7 +112,7 @@ class ReturController extends Controller
         }
       }
 
-      return redirect('/administrasi/retur') -> with('pesanSukses', 'Berhasil mengubah data');
+      return redirect('/administrasi/retur') -> with('successMessage', 'Berhasil mengubah data');
     }
 
     public function viewRetur(Retur $retur){

@@ -89,7 +89,7 @@ class CartController extends Controller
         'message' => 'Produk berhasil ditambahkan ke keranjang'
       ]);
   
-      // return redirect()->route('products.list')->with('pesanSukses', 'Produk berhasil ditambahkan ke keranjang');
+      // return redirect()->route('products.list')->with('successMessage', 'Produk berhasil ditambahkan ke keranjang');
     }elseif ($request->route=="customerOrder") {
       if($cartItem !== null){
         \Cart::session(auth()->user()->id.$request->route)->update(
@@ -153,7 +153,7 @@ class CartController extends Controller
         'status' => 'success',
         'message' => 'Produk berhasil ditambahkan ke keranjang'
       ]);
-      // return redirect('/administrasi/stok/opname/')->with('pesanSukses', 'Produk berhasil ditambahkan ke keranjang');
+      // return redirect('/administrasi/stok/opname/')->with('successMessage', 'Produk berhasil ditambahkan ke keranjang');
     }elseif ($request->route=="stokretur") {
       if($cartItem !== null){
         \Cart::session(auth()->user()->id.$request->route)->update(

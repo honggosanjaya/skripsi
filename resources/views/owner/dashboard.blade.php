@@ -17,11 +17,8 @@
     <div class="opname_notif notif m-fadeOut p-3">
       @foreach ($stokOpnamePengajuan as $opname)
         <div class="card_notif">
-          {{-- <a href="/supervisor/datacustomer/pengajuan/{{ $customerPengajuanLimit->id }}"
-            class="text-black text-decoration-none"> --}}
           <p class="mb-0 fw-bold">Pengajuan Stok Opname</p>
           <p class="mb-0">Pengajuan stok opname dari {{ $opname->linkStaff->nama ?? null }} </p>
-          {{-- </a> --}}
         </div>
       @endforeach
     </div>
@@ -53,7 +50,7 @@
             <option {{ 12 == $input['month'] ? 'selected' : '' }} value="12">Desember</option>
           </select>
         </div>
-        <div class="col-12 col-sm-6 col-md-3">
+        <div class="col-12 col-sm-6 col-md-3 mt-3 mt-md-0">
           <div class="input-group mb-3">
             <span class="input-group-text" id="basic-addon1">slow item</span>
             <input type="number" class="form-control" name="count" value="{{ $input['count'] ?? 5 }}">

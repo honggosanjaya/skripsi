@@ -8,6 +8,7 @@ use App\Providers\RouteServiceProvider;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Models\User;
+use Jenssegers\Agent\Agent;
 
 class AuthenticatedSessionController extends Controller
 {
@@ -38,7 +39,9 @@ class AuthenticatedSessionController extends Controller
         } else {
             $role='customer';
         }
-        
+
+        $agent = new Agent();
+        $request->session()->put('agent', $agent);
         $request->session()->put('role', $role);
         $request->session()->put('password', $request->input()['password']);
         $request->session()->put('count', 1);

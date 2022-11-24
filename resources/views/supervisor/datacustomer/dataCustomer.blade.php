@@ -11,33 +11,20 @@
 
 @section('main_content')
   <div class="px-5 pt-4">
-    @if (session()->has('pesanSukses'))
+    @if (session()->has('successMessage'))
       <div id="hideMeAfter3Seconds">
         <div class="alert alert-success alert-dismissible fade show" role="alert">
-          {{ session('pesanSukses') }}
+          {{ session('successMessage') }}
           <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
         </div>
       </div>
     @endif
 
-    <div class="d-flex align-items-center justify-content-between">
-      <form method="GET" action="/supervisor/datacustomer/cari">
-        <div class="input-group">
-          <input type="text" class="form-control" name="cari" placeholder="Cari Customer..."
-            value="{{ request('cari') }}">
-          <button type="submit" class="btn btn-primary">
-            <span class="iconify me-2" data-icon="fe:search"></span>Cari
-          </button>
-        </div>
-      </form>
+    <a href="/supervisor/datacustomer/pengajuan" class="btn btn-primary"><span class="iconify fs-5 me-1"
+        data-icon="carbon:data-view-alt"></span>Pengajuan Limit Pembelian</a>
 
-      <a href="/supervisor/datacustomer/pengajuan" class="btn btn-primary"><span class="iconify fs-5 me-1"
-          data-icon="carbon:data-view-alt"></span>Pengajuan Limit Pembelian</a>
-    </div>
-
-
-    <div class="table-responsive mt-4">
-      <table class="table table-hover table-sm">
+    <div class="table-responsive">
+      <table class="table table-hover table-sm" id="table">
         <thead>
           <tr>
             <th scope="col" class="text-center">No</th>
@@ -51,8 +38,7 @@
         <tbody>
           @foreach ($customers as $customer)
             <tr>
-              <th scope="row" class="text-center">
-                {{ ($customers->currentPage() - 1) * $customers->perPage() + $loop->iteration }}</th>
+              <th scope="row" class="text-center">{{ $loop->iteration }}</th>
               <td>
                 <a href="/supervisor/datacustomer/{{ $customer->id ?? null }}"
                   class="text-decoration-none">{{ $customer->nama ?? null }}</a>
@@ -68,8 +54,6 @@
           @endforeach
         </tbody>
       </table>
-
-      {{ $customers->links() }}
     </div>
   </div>
 @endsection

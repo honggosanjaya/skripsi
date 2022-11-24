@@ -1,7 +1,7 @@
 // const moment = require("moment");
+var screenWidth = (window.innerWidth > 0) ? window.innerWidth : screen.width;
 
-if($('#report').length>0){
-
+if ($('#report').length > 0) {
   // window.location.hash = window.location.href.split('?')[0]
   var kinerjaSalesChart = document.getElementById("kinerjaSalesChart");
 
@@ -35,29 +35,30 @@ if($('#report').length>0){
         'rgb(201, 203, 207)'
       ],
       borderWidth: 1
-    }], 
+    }],
   };
 
-  const config = new Chart(kinerjaSalesChart,{
+  const config = new Chart(kinerjaSalesChart, {
     type: 'bar',
     data: data,
-    options: {  
+    options: {
       responsive: true,
       maintainAspectRatio: false,
       scales: {
         xAxis: {
           ticks: {
             maxRotation: 90,
-            labelOffset:-6,
-            padding:0,
+            labelOffset: -6,
+            padding: 0,
+            display: (screenWidth > 992) ? true : false
           }
         }
       },
       plugins: {
         title: {
-            display: true,
-            text: 'Produk Terlaris',
-        }, 
+          display: true,
+          text: 'Produk Terlaris',
+        },
         legend: {
           display: false
         }
@@ -65,9 +66,9 @@ if($('#report').length>0){
     },
   });
 
-  $( "#report [name=month]" ).on( "change", function() {
-    var dateEnd = new Date( $( "#report [name=year]" ).val(), $( "#report [name=month]" ).val(), 0);
-    var dateStart = new Date( $( "#report [name=year]" ).val(), $( "#report [name=month]" ).val(), 1);
+  $("#report [name=month]").on("change", function () {
+    var dateEnd = new Date($("#report [name=year]").val(), $("#report [name=month]").val(), 0);
+    var dateStart = new Date($("#report [name=year]").val(), $("#report [name=month]").val(), 1);
 
     let year = dateEnd.getFullYear();
     let month = String(dateEnd.getMonth() + 1).padStart(2, '0');
@@ -77,14 +78,14 @@ if($('#report').length>0){
     dateEnd = [year, month, dayEnd].join('-');
     dateStart = [year, month, dayStart].join('-');
 
-    $( "#report [name=dateStart]" ).val(dateStart)
-    $( "#report [name=dateEnd]" ).val(dateEnd)
+    $("#report [name=dateStart]").val(dateStart)
+    $("#report [name=dateEnd]").val(dateEnd)
     $('[name="dateEnd"]').attr("min", $(this).val());
 
   });
-  $( "#report [name=year]" ).on( "change", function() {
-    var dateEnd = new Date( $( "#report [name=year]" ).val(), $( "#report [name=month]" ).val(), 0);
-    var dateStart = new Date( $( "#report [name=year]" ).val(), $( "#report [name=month]" ).val(), 1);
+  $("#report [name=year]").on("change", function () {
+    var dateEnd = new Date($("#report [name=year]").val(), $("#report [name=month]").val(), 0);
+    var dateStart = new Date($("#report [name=year]").val(), $("#report [name=month]").val(), 1);
 
     let year = dateEnd.getFullYear();
     let month = String(dateEnd.getMonth() + 1).padStart(2, '0');
@@ -94,15 +95,15 @@ if($('#report').length>0){
     dateEnd = [year, month, dayEnd].join('-');
     dateStart = [year, month, dayStart].join('-');
 
-    $( "#report [name=dateStart]" ).val(dateStart)
-    $( "#report [name=dateEnd]" ).val(dateEnd)
+    $("#report [name=dateStart]").val(dateStart)
+    $("#report [name=dateEnd]").val(dateEnd)
     $('[name="dateEnd"]').attr("min", $(this).val());
 
 
   });
 
-  $( "#report [name=dateEnd]" ).on( "change", function() {
-    console.log( $(this).val() );
+  $("#report [name=dateEnd]").on("change", function () {
+    console.log($(this).val());
   });
 
   $(document).on('change', '[name="dateStart"]', function () {

@@ -482,7 +482,7 @@ class OrderController extends Controller
   //   ]);      
   // }
 
-  public function viewDetail(Order $order){
+  public function viewDetail(Order $order){    
     $items = OrderItem::where('id_order','=',$order->id)->get();
     $inactiveVehicles = Vehicle::where('is_active',false)->get();
     $activeVehicles = Vehicle::where('is_active',true)->get();
@@ -690,8 +690,21 @@ class OrderController extends Controller
   }
 
   public function cetakInvoice(Order $order){
-    $orderitems = OrderItem::where('id_order','=',$order->id)->get();
     $administrasi = Staff::select('nama')->where('id','=',auth()->user()->id_users)->first();
+    $count_loop = ceil(count(OrderItem::where('id_order','=',$order->id)->get()) / 10);
+    $orderitems = [];
+    for($i = 0; $i<$count_loop; $i++){
+      $data = OrderItem::where('id_order','=',$order->id)->skip($i * 10)->take(10)->get();
+      $total_sub = 0;
+      foreach($data as $dt){
+        $total_sub += $dt->kuantitas * $dt->harga_satuan;
+      }
+
+      array_push($orderitems, [
+        'data' => $data,
+        'total_sub' => $total_sub
+      ]);
+    }
 
     $pdf = PDF::loadview('administrasi.pesanan.detail.cetakInvoice',[
       'order' => $order,
@@ -772,7 +785,7 @@ class OrderController extends Controller
 
     \Cart::session(auth()->user()->id.$request->route)->clear();
 
-    return redirect('/customer')->with('pesanSukses', 'Pesanan Berhasil Dibuat');
+    return redirect('/customer')->with('successMessage', 'Pesanan Berhasil Dibuat');
   }
 
   public function getListShippingAPI(Request $request){
@@ -1011,7 +1024,7 @@ class OrderController extends Controller
     OrderItem::where('id_order', $order->id)->delete();
     OrderTrack::where('id_order', $order->id)->delete();
 
-    return redirect('/customer')->with('pesanSukses', 'Berhasil membatalkan pesanan' );
+    return redirect('/customer')->with('successMessage', 'Berhasil membatalkan pesanan' );
   }
 
   public function dataPengajuanOpname(){
@@ -1042,14 +1055,14 @@ class OrderController extends Controller
     Order::find($order->id)->update([
       'status_enum' => '1'
     ]);
-    return redirect('/supervisor/stokopname')->with('pesanSukses', 'Berhasil mengonfirmasi pengajuan stok opname');
+    return redirect('/supervisor/stokopname')->with('successMessage', 'Berhasil mengonfirmasi pengajuan stok opname');
   }
 
   public function tolakPengajuanOpname(Order $order){
     Order::find($order->id)->update([
       'status_enum' => '1'
     ]);
-    return redirect('/supervisor/stokopname')->with('pesanSukses', 'Berhasil menolak pengajuan stok opname');
+    return redirect('/supervisor/stokopname')->with('successMessage', 'Berhasil menolak pengajuan stok opname');
   }
 
   public function getInvoiceAPI(Request $request){

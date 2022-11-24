@@ -1,19 +1,3 @@
-// $(document).on('click', '#pengadaan .btn-submit-pengadaan', function (e) {
-//   e.preventDefault();
-//   Swal.fire({
-//     title: 'Apakah anda yakin untuk menyimpan data ?',
-//     showDenyButton: true,
-//     confirmButtonText: 'Ya',
-//     denyButtonText: `Tidak`,
-//   }).then((result) => {
-//     if (result.isConfirmed) {
-//       $('#pengadaan .form-pengadaan').submit();
-//     } else if (result.isDenied) {
-//       Swal.fire('Aksi dibatalkan', '', 'info');
-//     }
-//   })
-// })
-
 function pengadaan() {
   let iditem = $(this).data('iditem');
   if ($(`#pengadaan .input-totalhargacart-${iditem}`).val() > 0 && $(`#pengadaan .input-quantitycart-${iditem}`).val() > 0) {

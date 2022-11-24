@@ -14,18 +14,9 @@ class CustomerTypeController extends Controller
 {
     public function index()
     {
-        $jenises = CustomerType::paginate(10);
+        $jenises = CustomerType::get();
         return view('supervisor/jeniscustomer.index',[
             'jenises' => $jenises            
-        ]);
-    }
-
-    public function search()
-    {
-        $jenises =  CustomerType::where(strtolower('nama'),'like','%'.request('cari').'%')->paginate(10);
-       
-        return view('supervisor/jeniscustomer.index',[
-            'jenises' => $jenises
         ]);
     }
 
@@ -48,7 +39,7 @@ class CustomerTypeController extends Controller
             'keterangan' => $request->keterangan
         ]); 
         
-        return redirect('/supervisor/jenis')->with('addJenisSuccess','Tambah Jenis Customer berhasil');
+        return redirect('/supervisor/jenis')->with('successMessage','Tambah Jenis Customer berhasil');
     }
 
     public function edit(CustomerType $customertype)
@@ -69,6 +60,6 @@ class CustomerTypeController extends Controller
         CustomerType::Where('id', $customertype->id)
             ->update($rules);
 
-        return redirect('/supervisor/jenis')->with('updateJenisSuccess','Update Jenis Customer '. $customertype->nama .' Berhasil');        
+        return redirect('/supervisor/jenis')->with('successMessage','Update Jenis Customer '. $customertype->nama .' Berhasil');        
     }
 }

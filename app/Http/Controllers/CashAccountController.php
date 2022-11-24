@@ -13,18 +13,10 @@ use Intervention\Image\ImageManagerStatic as Image;
 class CashAccountController extends Controller
 {
   public function cashAccountIndex(){
-      $cashaccounts = CashAccount::orderBy('account', 'ASC')->paginate(10);
+      $cashaccounts = CashAccount::orderBy('account', 'ASC')->get();
       return view('supervisor.cashaccount.index',[
           'cashaccounts' => $cashaccounts            
       ]);
-  }
-
-  public function cashAccountSearch(){
-    $cashaccounts =  CashAccount::where(strtolower('nama'),'like','%'.request('cari').'%')->paginate(10);
-    
-    return view('supervisor.cashaccount.index',[
-      'cashaccounts' => $cashaccounts
-    ]);
   }
 
   public function cashAccountCreate(){
@@ -116,7 +108,7 @@ class CashAccountController extends Controller
       }
     }
       
-    return redirect('/supervisor/cashaccount')->with('addCashAccountSuccess','Tambah Cash Account Berhasil');
+    return redirect('/supervisor/cashaccount')->with('successMessage','Tambah Cash Account Berhasil');
   }
 
   public function cashAccountEdit(CashAccount $cashaccount){
@@ -213,7 +205,7 @@ class CashAccountController extends Controller
       }
     }
 
-    return redirect('/supervisor/cashaccount')->with('updateCashAccountSuccess','Update Cash Account Berhasil');        
+    return redirect('/supervisor/cashaccount')->with('successMessage','Update Cash Account Berhasil');        
   }
 
 
@@ -426,7 +418,7 @@ class CashAccountController extends Controller
       ]);
     }
 
-    return redirect('/administrasi/reimbursement') -> with('pesanSukses', 'Berhasil menyetujui pengajuan' );
+    return redirect('/administrasi/reimbursement') -> with('successMessage', 'Berhasil menyetujui pengajuan' );
   }
 
   public function tolakReimbursement(Request $request, Reimbursement $reimbursement){
@@ -447,7 +439,7 @@ class CashAccountController extends Controller
       ]);
     }
 
-    return redirect('/administrasi/reimbursement') -> with('pesanSukses', 'Berhasil menolak pengajuan' );
+    return redirect('/administrasi/reimbursement') -> with('successMessage', 'Berhasil menolak pengajuan' );
   }
 
   public function bayarReimbursement(Request $request, Reimbursement $reimbursement){
@@ -471,6 +463,6 @@ class CashAccountController extends Controller
     Reimbursement::find($reimbursement->id)->update([
       'status_enum' => '2'
     ]);
-    return redirect('/administrasi/reimbursement') -> with('pesanSukses', 'Berhasil membayar pengajuan' );
+    return redirect('/administrasi/reimbursement') -> with('successMessage', 'Berhasil membayar pengajuan' );
   }
 }

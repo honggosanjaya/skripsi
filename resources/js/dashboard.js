@@ -39,25 +39,22 @@ $(document).ready(function () {
   })
 });
 
-function myFunction(x) {
-  if (x.matches) { // If media query matches
-    document.getElementById("nav-toggle").checked = true;
-  }
-}
-
-var x = window.matchMedia("(max-width: 1000px)")
-myFunction(x)
-x.addListener(myFunction)
-
-
 $(document).ready(function () {
-  $(document).on('click', '.sidebar .menu-group', function (e) {
+  $(document).on('click', '.menu-group', function (e) {
     $(this).toggleClass("showMenu");
   })
 
   $(document).on('click', '#nav-toggle', function (e) {
     if ($('#nav-toggle').is(":checked")) {
-      $('.sidebar .menu-group').removeClass("showMenu");
+      $('.menu-group').removeClass("showMenu");
     }
   })
+});
+
+$(document).on('click', '.header-mobile .hamburger', function (e) {
+  $(".sidebar-mobile .overlay").css("width", "100%");
+});
+
+$(document).on('click', '.sidebar-mobile .closebtn', function (e) {
+  $(".sidebar-mobile .overlay").css("width", "0%");
 });

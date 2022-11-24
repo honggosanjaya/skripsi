@@ -172,6 +172,7 @@ return [
         Barryvdh\DomPDF\ServiceProvider::class,
         Intervention\Image\ImageServiceProvider::class,
         SimpleSoftwareIO\QrCode\QrCodeServiceProvider::class,
+        Jenssegers\Agent\AgentServiceProvider::class,
         /*
          * Package Service Providers...
          */
@@ -243,6 +244,7 @@ return [
         'PDF' => Barryvdh\DomPDF\Facade::class,
         'Image' => Intervention\Image\Facades\Image::class,
         'QrCode' => SimpleSoftwareIO\QrCode\Facades\QrCode::class,
+        'Agent' => Jenssegers\Agent\Facades\Agent::class,
     ],
 
 ];

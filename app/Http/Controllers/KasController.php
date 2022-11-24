@@ -191,10 +191,10 @@ class KasController extends Controller
         'created_at' => now()
       ]);
 
-      return redirect('/administrasi/kas/'. $request->kas)->with('pesanSukses','Berhasil Melakukan Pindah Saldo Kas'); 
+      return redirect('/administrasi/kas/'. $request->kas)->with('successMessage','Berhasil Melakukan Pindah Saldo Kas'); 
     }else{
       Kas::insert($validatedData);
-      return redirect('/administrasi/kas/'. $request->kas)->with('pesanSukses','Berhasil Menambahkan Kas'); 
+      return redirect('/administrasi/kas/'. $request->kas)->with('successMessage','Berhasil Menambahkan Kas'); 
     }   
   }
 
@@ -227,7 +227,7 @@ class KasController extends Controller
       'updated_at' => now()
     ]);
  
-    return redirect('/administrasi/kas/'.$selectedKas)->with('pesanSukses', 'Berhasil mengajukan penghapusan kas');
+    return redirect('/administrasi/kas/'.$selectedKas)->with('successMessage', 'Berhasil mengajukan penghapusan kas');
   }
 
   public function perubahanKasSpv(){
@@ -245,7 +245,7 @@ class KasController extends Controller
       'updated_at' => now()
     ]);
 
-    return redirect('/supervisor/perubahankas')->with('pesanSukses', 'Berhasil menyetujui penghapusan kas');
+    return redirect('/supervisor/perubahankas')->with('successMessage', 'Berhasil menyetujui penghapusan kas');
   }
 
   public function tolakPerubahanKasSpv(Kas $kas){
@@ -255,7 +255,7 @@ class KasController extends Controller
       'updated_at' => now()
     ]);
 
-    return redirect('/supervisor/perubahankas')->with('pesanSukses', 'Berhasil menolak penghapusan kas');
+    return redirect('/supervisor/perubahankas')->with('successMessage', 'Berhasil menolak penghapusan kas');
   }
 
   public function cetakKas(CashAccount $cashaccount){

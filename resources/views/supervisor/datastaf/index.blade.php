@@ -10,10 +10,10 @@
 @endsection
 @section('main_content')
   <div class="pt-4 px-5">
-    @if (session()->has('pesanSukses'))
+    @if (session()->has('successMessage'))
       <div id="hideMeAfter3Seconds">
         <div class="alert alert-success alert-dismissible fade show" role="alert">
-          {{ session('pesanSukses') }}
+          {{ session('successMessage') }}
           <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
         </div>
       </div>
@@ -23,8 +23,8 @@
       <span class="iconify fs-4 me-1" data-icon="dashicons:database-add"></span> Tambah Staf
     </a>
 
-    <div class="table-responsive mt-4">
-      <table class="table table-hover table-sm">
+    <div class="table-responsive">
+      <table class="table table-hover table-sm" id="table">
         <thead>
           <tr>
             <th scope="col" class="text-center">No</th>
@@ -40,8 +40,7 @@
         <tbody>
           @foreach ($stafs as $staf)
             <tr>
-              <th scope="row" class="text-center">
-                {{ ($stafs->currentPage() - 1) * $stafs->perPage() + $loop->iteration }}</th>
+              <th scope="row" class="text-center">{{ $loop->iteration }}</th>
               <td class="text-center">
                 @if ($staf->foto_profil ?? null)
                   <img src="{{ asset('storage/staff/' . $staf->foto_profil) }}" class="img-fluid" width="40">
@@ -88,7 +87,6 @@
           @endforeach
         </tbody>
       </table>
-      {{ $stafs->links() }}
     </div>
   </div>
 @endsection

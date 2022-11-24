@@ -10,3 +10,14 @@ window.Swal = Swal;
 $(document).ready(function () {
   $('.select-two').select2();
 });
+
+$(document).ready(function () {
+  $('#table, #table2').DataTable({
+    fixedHeader: true,
+    buttons: [
+      'searchPanes'
+    ],
+    dom: 'Bfrtip',
+    "order": [],
+  });
+});

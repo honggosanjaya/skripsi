@@ -270,17 +270,6 @@ class CustomerController extends Controller
       ]);
     }
 
-    public function supervisorSearch(){
-      $customers =  Customer::where(strtolower('nama'),'like','%'.request('cari').'%')
-        ->orWhere(strtolower('email'),'like','%'.request('cari').'%')
-        ->paginate(10);
-
-      return view('supervisor.datacustomer.dataCustomer', [
-        'customers' => $customers,
-        "title" => "Data Customer"
-      ]);
-    }
-
     public function administrasiCreate(){
       $tipe_hargas = array();
       $tipe_hargas['harga1'] = array("value"=>1, "name"=>"Harga 1");
@@ -371,7 +360,7 @@ class CustomerController extends Controller
         // Mail::to($request->email)->send(new ConfirmationEmail($details));       
       }
 
-      return redirect('/administrasi/datacustomer') -> with('pesanSukses', 'Data berhasil ditambahkan' );
+      return redirect('/administrasi/datacustomer') -> with('successMessage', 'Data berhasil ditambahkan' );
     }
 
     public function administrasiShow(Request $request, Customer $customer)
@@ -517,11 +506,11 @@ class CustomerController extends Controller
       }
       
 
-      return redirect('/administrasi/datacustomer') -> with('pesanSukses', 'Data berhasil diubah' );
+      return redirect('/administrasi/datacustomer') -> with('successMessage', 'Data berhasil diubah' );
     }
 
     public function dataCustomer(){
-      $customers = Customer::orderBy("status_enum", "ASC")->orderBy('id','DESC')->paginate(10);
+      $customers = Customer::orderBy("status_enum", "ASC")->orderBy('id','DESC')->get();
       return view('supervisor.datacustomer.dataCustomer', [
         'customers' => $customers,
         "title" => "Seluruh Data Customer"
@@ -552,7 +541,7 @@ class CustomerController extends Controller
         // 'pengajuan_limit_pembelian' => null,
         'status_limit_pembelian_enum' => '1'
       ]);
-      return redirect('/supervisor/datacustomer') -> with('pesanSukses', 'Berhasil menyetujui pengajuan' );
+      return redirect('/supervisor/datacustomer') -> with('successMessage', 'Berhasil menyetujui pengajuan' );
     }
 
     public function tolakPengajuanLimit(Customer $customer){
@@ -560,13 +549,13 @@ class CustomerController extends Controller
         // 'pengajuan_limit_pembelian' => null,
         'status_limit_pembelian_enum' => '-1'
       ]);
-      return redirect('/supervisor/datacustomer') -> with('pesanSukses', 'Berhasil menolak pengajuan' );
+      return redirect('/supervisor/datacustomer') -> with('successMessage', 'Berhasil menolak pengajuan' );
     }
 
     public function detailCustomerSPV(Customer $customer){
       $invoices = Invoice::whereHas('linkOrder', function($q) use($customer){
         $q->where('id_customer', $customer->id);
-      })->orderBy('id', 'DESC')->paginate(20);
+      })->orderBy('id', 'DESC')->get();
 
       $invoicesSampai = Invoice::whereHas('linkOrder',function($q){
         $q->whereHas('linkOrderTrack', function($q){

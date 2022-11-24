@@ -11,39 +11,20 @@
 
 @section('main_content')
   <div class="px-5 pt-4">
-    @if (session()->has('addCashAccountSuccess'))
+    @if (session()->has('successMessage'))
       <div id="hideMeAfter3Seconds">
         <div class="alert alert-success alert-dismissible fade show mt-4" role="alert">
-          {{ session('addCashAccountSuccess') }}
-          <button type="button" class="btn btn-close" data-bs-dismiss="alert"></button>
-        </div>
-      </div>
-    @endif
-    @if (session()->has('updateCashAccountSuccess'))
-      <div id="hideMeAfter3Seconds">
-        <div class="alert alert-success alert-dismissible fade show mt-4" role="alert">
-          {{ session('updateCashAccountSuccess') }}
+          {{ session('successMessage') }}
           <button type="button" class="btn btn-close" data-bs-dismiss="alert"></button>
         </div>
       </div>
     @endif
 
-    <div class="d-flex justify-content-between align-items-center">
-      <form method="GET" action="/supervisor/cashaccount/cari">
-        <div class="input-group">
-          <input type="text" class="form-control" name="cari" placeholder="Cari Cash Account..."
-            value="{{ request('cari') }}">
-          <button type="submit" class="btn btn-primary">
-            <span class="iconify" data-icon="fe:search"></span>
-          </button>
-        </div>
-      </form>
-      <a href="/supervisor/cashaccount/tambah" class="btn btn-primary my-3 py-2"><span class="iconify fs-4 me-1"
-          data-icon="dashicons:database-add"></span>Tambah Cash Account</a>
-    </div>
+    <a href="/supervisor/cashaccount/tambah" class="btn btn-primary"><span class="iconify fs-4 me-1"
+        data-icon="dashicons:database-add"></span>Tambah Cash Account</a>
 
-    <div class="table-responsive mt-4">
-      <table class="table table-hover table-sm">
+    <div class="table-responsive">
+      <table class="table table-hover table-sm" id="table">
         <thead>
           <tr>
             <th scope="col" class="text-center">No</th>
@@ -57,9 +38,7 @@
         <tbody>
           @foreach ($cashaccounts as $cashaccount)
             <tr>
-              <th scope="row" class="text-center">
-                {{ ($cashaccounts->currentPage() - 1) * $cashaccounts->perPage() + $loop->iteration }}
-              </th>
+              <th scope="row" class="text-center">{{ $loop->iteration }}</th>
               <td>{{ $cashaccount->nama ?? null }}</td>
               <td>{{ $cashaccount->keterangan ?? null }}</td>
               <td>{{ $cashaccount->account ?? null }}</td>
@@ -79,10 +58,6 @@
           @endforeach
         </tbody>
       </table>
-    </div>
-
-    <div class="d-flex flex-row mt-4">
-      {{ $cashaccounts->links() }}
     </div>
   </div>
 @endsection

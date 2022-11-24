@@ -1,4 +1,3 @@
-<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" />
 @extends('layouts/main')
 @push('CSS')
   <link href=" {{ mix('css/supervisor.css') }}" rel="stylesheet">

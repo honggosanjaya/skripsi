@@ -7,7 +7,8 @@
 @endsection
 @section('main_content')
   <div id="report" class="px-3 px-sm-5 pt-4">
-    <form action="/{{ auth()->user()->linkStaff->linkStaffRole->nama ?? null }}/report/koordinattrip" method="get">
+    <form action="/{{ auth()->user()->linkStaff->linkStaffRole->nama ?? null }}/report/koordinattrip" method="get"
+      class="mb-5">
       <div class="row">
         <div class="col-6 col-md-2">
           <div class="input-group mb-3">
@@ -67,8 +68,8 @@
       </div>
     </form>
 
-    <div class="table-responsive mt-4">
-      <table class="table table-hover table-sm">
+    <div class="table-responsive">
+      <table class="table table-hover table-sm" id="table">
         <thead>
           <tr>
             <th scope="col" class="text-center">No</th>
@@ -83,9 +84,7 @@
         <tbody>
           @foreach ($data as $dt)
             <tr>
-              <th scope="row" class="text-center">
-                {{ ($data->currentPage() - 1) * $data->perPage() + $loop->iteration }}
-              </th>
+              <th scope="row" class="text-center">{{ $loop->iteration }}</th>
               <td class="text-center">{{ $dt->linkCustomer->nama ?? null }}</td>
               <td class="text-center">{{ $dt->linkStaff->nama ?? null }}</td>
               @if ($dt->waktu_masuk ?? null)
@@ -117,10 +116,6 @@
           @endforeach
         </tbody>
       </table>
-    </div>
-
-    <div class="d-flex flex-row mt-4">
-      {{ $data->links() }}
     </div>
   </div>
 

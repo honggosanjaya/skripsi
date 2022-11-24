@@ -222,7 +222,7 @@ class ItemController extends Controller
       ]);
     }
 
-    return redirect()->route('products.list')->with('pesanSukses', 'Produk berhasil ditambahkan ke database');
+    return redirect()->route('products.list')->with('successMessage', 'Produk berhasil ditambahkan ke database');
   }
 
   public function simpanDataOpname(Request $request){
@@ -254,7 +254,7 @@ class ItemController extends Controller
     
     \Cart::session(auth()->user()->id.$request->route)->clear();
 
-    return redirect('/administrasi/stok/')->with('pesanSukses', 'Produk berhasil ditambahkan ke database');
+    return redirect('/administrasi/stok/')->with('successMessage', 'Produk berhasil ditambahkan ke database');
   }
 
   public function index(){      
@@ -368,7 +368,7 @@ class ItemController extends Controller
       Item::insert($validatedData);
     }
         
-    return redirect('/administrasi/stok/produk') -> with('pesanSukses', 'Produk berhasil ditambahkan' );
+    return redirect('/administrasi/stok/produk') -> with('successMessage', 'Produk berhasil ditambahkan' );
   }
 
   public function edit($id){
@@ -563,7 +563,7 @@ class ItemController extends Controller
       }
     }
 
-    return redirect('/administrasi/stok/produk') -> with('pesanSukses', 'Berhasil mengubah data');
+    return redirect('/administrasi/stok/produk') -> with('successMessage', 'Berhasil mengubah data');
   }
 
     public function customerIndex(){
@@ -770,7 +770,7 @@ class ItemController extends Controller
         Item::where('id', $item->id)->update(['status_enum' => '1']);
       }
 
-      return redirect('/administrasi/stok/produk') -> with('pesanSukses', 'Berhasil ubah status' );
+      return redirect('/administrasi/stok/produk') -> with('successMessage', 'Berhasil ubah status' );
     }
 
     public function productListStokRetur(Request $request){
@@ -829,7 +829,7 @@ class ItemController extends Controller
   
       \Cart::session(auth()->user()->id.$request->route)->clear();
   
-      return redirect('/administrasi/stok/stokretur')->with('pesanSukses', 'Stok retur tercatat ke database');
+      return redirect('/administrasi/stok/stokretur')->with('successMessage', 'Stok retur tercatat ke database');
     }
 
     public function indexKanvas(){
@@ -880,9 +880,9 @@ class ItemController extends Controller
         ]);
       }
       if($request->route=='history'){
-        return redirect('/administrasi/kanvas/history')->with('pesanSukses', 'Berhasil menambahkan kanvas');
+        return redirect('/administrasi/kanvas/history')->with('successMessage', 'Berhasil menambahkan kanvas');
       }else{
-        return redirect('/administrasi/kanvas/create')->with('pesanSukses', 'Berhasil menambahkan kanvas');
+        return redirect('/administrasi/kanvas/create')->with('successMessage', 'Berhasil menambahkan kanvas');
       }
     }
 
@@ -959,7 +959,7 @@ class ItemController extends Controller
         ]);
       }
 
-      return redirect('/administrasi/kanvas')->with('pesanSukses', 'Berhasil mengonfirmasi pengembalian kanvas');
+      return redirect('/administrasi/kanvas')->with('successMessage', 'Berhasil mengonfirmasi pengembalian kanvas');
     }
 
     public function getItemKanvasAPI($idStaf){
