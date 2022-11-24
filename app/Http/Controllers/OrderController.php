@@ -482,24 +482,7 @@ class OrderController extends Controller
   //   ]);      
   // }
 
-  public function viewDetail(Order $order){
-    $count_loop = ceil(count(OrderItem::where('id_order','=',$order->id)->get()) / 10);
-    $orderitems = [];
-    for($i = 0; $i<$count_loop; $i++){
-      $data = OrderItem::where('id_order','=',$order->id)->skip($i * 10)->take(10)->get();
-      $total_sub = 0;
-      foreach($data as $dt){
-        $total_sub += $dt->kuantitas * $dt->harga_satuan;
-      }
-
-      array_push($orderitems, [
-        'data' => $data,
-        'total_sub' => $total_sub
-      ]);
-    }
-
-    // dd($orderitems);
-    
+  public function viewDetail(Order $order){    
     $items = OrderItem::where('id_order','=',$order->id)->get();
     $inactiveVehicles = Vehicle::where('is_active',false)->get();
     $activeVehicles = Vehicle::where('is_active',true)->get();

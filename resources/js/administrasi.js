@@ -481,6 +481,7 @@ $(document).on('click', '#perencanaan-kunjungan .delete-all', function (e) {
 // =========================== PDF ===========================
 $("#detail-pesanan-admin .btn-unduh-invoice").click(function () {
   const idOrder = $('#detail-pesanan-admin .btn-unduh-invoice').val();
+  $('#myFrame').remove();
 
   $(`<div class="position-relative"><iframe id="myFrame"
         src="${window.location.origin}/administrasi/pesanan/detail/${idOrder}/cetak-invoice#toolbar=0"
