@@ -168,10 +168,16 @@ class LoginController extends Controller
     }
 
     public function logoutUserAPI(Request $request){
-      if(auth()->user()->linkStaff->linkStaffRole->nama == 'salesman' || auth()->user()->linkStaff->linkStaffRole->nama == 'shipper'){
-        Auth::guard('web')->logout();
-        $request->session()->invalidate();
-        $request->session()->regenerateToken();
+      if(auth()->user() ?? null){
+        if(auth()->user()->linkStaff->linkStaffRole->nama == 'salesman' || auth()->user()->linkStaff->linkStaffRole->nama == 'shipper'){
+          Auth::guard('web')->logout();
+          $request->session()->invalidate();
+          $request->session()->regenerateToken();
+        }
       }
+
+      return response()->json([
+        'status' => 'success',
+      ]);
     }
 }

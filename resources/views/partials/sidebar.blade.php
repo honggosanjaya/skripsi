@@ -74,7 +74,7 @@
         </li>
         <li class="mb-3">
           <a class="{{ Request::is('administrasi/tripsales*') ? 'active' : '' }}" href="/administrasi/tripsales">
-            <span class="iconify fs-3 me-2" data-icon="akar-icons:check-in"></span><span>Trip Sales</span>
+            <i class="bi bi-geo-alt-fill me-2"></i><span>Trip Sales</span>
           </a>
         </li>
         <li class="mb-3">

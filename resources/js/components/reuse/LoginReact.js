@@ -25,12 +25,11 @@ const LoginReact = () => {
       }
     })
       .then(() => {
-
       })
       .catch((error) => {
         console.log(error.message);
       });
-  }, [])
+  }, []);
 
   useEffect(() => {
     if (isAuth === 'true' && token !== null && dataUser) {
@@ -159,7 +158,7 @@ const LoginReact = () => {
           </div>
 
           <button type="submit" className="btn btn-primary w-100 my-4" disabled={isLoading}>MASUK</button>
-          <a href="/login" className="custom-form-input fs-7 text-center d-block">Login sebagai Tenaga Kantor</a>
+          <a href="/logout" className="custom-form-input fs-7 text-center d-block">Login sebagai Tenaga Kantor</a>
         </form>
       </div>
     </main>
