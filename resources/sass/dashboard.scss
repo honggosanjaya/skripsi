@@ -22,7 +22,8 @@ textarea {
     height: 100px;
 }
 
-[data-href] {
+[data-href],
+.cursor-pointer {
     cursor: pointer;
 }
 
@@ -544,10 +545,6 @@ select[readonly] {
             right: 0;
         }
     }
-}
-
-.cursor-pointer {
-    cursor: pointer;
 }
 
 .nav-links {

@@ -399,7 +399,7 @@ class ReportController extends Controller
       if($agent->isMobile()){
         return view('mobile.administrasi.tripsales.index', [
           'input' => $input,
-          'tripssales' => $tripssales->paginate(2)
+          'tripssales' => $tripssales->paginate(10)
         ]);
       }else{
         return view('administrasi.tripsales.index', [
