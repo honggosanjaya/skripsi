@@ -58,3 +58,9 @@ $(document).on('click', '.header-mobile .hamburger', function (e) {
 $(document).on('click', '.sidebar-mobile .closebtn', function (e) {
   $(".sidebar-mobile .overlay").css("width", "0%");
 });
+
+$(document).on('click', '.menu-group', function (e) {
+  if ($('#nav-toggle').is(":checked")) {
+    $('.hamburger_icon').click();
+  }
+})
