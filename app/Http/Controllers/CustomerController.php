@@ -23,6 +23,7 @@ use PDF;
 use SimpleSoftwareIO\QrCode\Facades\QrCode;
 use App\Mail\ConfirmationEmail;
 use Illuminate\Support\Facades\Mail;
+use Jenssegers\Agent\Agent;
 
 class CustomerController extends Controller
 {
@@ -253,10 +254,18 @@ class CustomerController extends Controller
     }
 
     public function administrasiIndex(){
-      return view('administrasi.dataCustomer.index', [
-        'customers' => Customer::orderBy('status_enum','ASC')->orderBy('id','DESC')->get(),
-        "title" => "Data Customer"
-      ]);
+      $customers = Customer::orderBy('status_enum','ASC')->orderBy('id','DESC');
+
+      $agent = new Agent();
+      if($agent->isMobile()){
+        return view('mobile.administrasi.dataCustomer.index', [
+          'customers' => $customers->paginate(10)
+        ]);
+      }else{
+        return view('administrasi.dataCustomer.index', [
+          'customers' => $customers->get()
+        ]);
+      }
     }
 
     public function administrasiSearch(){
@@ -282,14 +291,21 @@ class CustomerController extends Controller
         -1 => 'inactive',
       ];
 
-      return view('administrasi.dataCustomer.create', [
+      $data = [
         'customer_types' => CustomerType::all(),
         'districts' => District::orderBy('nama', 'ASC')->get(),
         'retur_types' => ReturType::all(),
         'statuses' =>  $statuses,
         'tipe_hargas' => $tipe_hargas,
         "title" => "Data Customer - Add"
-      ]);
+      ];
+
+      $agent = new Agent();
+      if($agent->isMobile()){
+        return view('mobile.administrasi.dataCustomer.create', $data);
+      }else{
+        return view('administrasi.dataCustomer.create', $data);
+      }
     }
 
     public function administrasiStore(Request $request){
@@ -413,7 +429,12 @@ class CustomerController extends Controller
         "invoiceJatuhTempo" => $invoiceJatuhTempo
       ];
 
-      return view('administrasi.dataCustomer.detail', $data);
+      $agent = new Agent();
+      if($agent->isMobile()){
+        return view('mobile.administrasi.dataCustomer.detail', $data);
+      }else{
+        return view('administrasi.dataCustomer.detail', $data);
+      }
     }
 
     public function administrasiEdit(Customer $customer){
@@ -428,7 +449,7 @@ class CustomerController extends Controller
         -1 => 'inactive',
       ];
 
-      return view('administrasi.dataCustomer.edit', [
+      $data = [
         'customer' => $customer,
         'customer_types' => CustomerType::all(),
         'districts' => District::orderBy('nama', 'ASC')->get(),
@@ -436,7 +457,14 @@ class CustomerController extends Controller
         'statuses' =>  $statuses,
         'tipe_hargas' => $tipe_hargas,
         "title" => "Data Customer - Edit"
-      ]);
+      ];
+
+      $agent = new Agent();
+      if($agent->isMobile()){
+        return view('mobile.administrasi.dataCustomer.edit', $data);
+      }else{
+        return view('administrasi.dataCustomer.edit', $data);
+      }
     }
 
     public function administrasiUpdate(Request $request, Customer $customer){
@@ -588,9 +616,16 @@ class CustomerController extends Controller
 
     public function generateQRCustomer(Customer $customer)
     {
+      $agent = new Agent();
+      if($agent->isMobile()){
+        return view('mobile.administrasi.dataCustomer.qrCode', [
+          "customer" => $customer
+        ]);
+      }else{
         return view('administrasi.dataCustomer.qrCode', [
           "customer" => $customer
         ]);
+      }
     }
 
     public function cetakQRCustomer(Customer $customer){  

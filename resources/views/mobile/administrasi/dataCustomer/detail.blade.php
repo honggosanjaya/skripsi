@@ -1,4 +1,4 @@
-@extends('layouts/main')
+@extends('layouts.mainmobile')
 @section('breadcrumbs')
   <ol class="breadcrumb">
     <li class="breadcrumb-item"><a href="/administrasi">Dashboard</a></li>
@@ -8,47 +8,67 @@
 @endsection
 
 @section('main_content')
-  <div class="pt-4 px-5">
+  <div class="pt-4 container">
     <h3 class="mb-5">Detail Customer</h3>
     <div class="informasi-list mb_big">
-      <span><b>Nama Customer</b> {{ $customer->nama ?? null }}</span>
-      <span><b>Jenis Customer</b> {{ $customer->linkCustomerType->nama ?? null }}</span>
-      <span><b>Wilayah</b> {{ $customer->linkDistrict->nama ?? null }}</span>
-      <span><b>Email</b> {{ $customer->email ?? null }}</span>
-      <span><b>Alamat</b> {{ $customer->full_alamat ?? null }}</span>
-      <span><b>Koordinat</b> {{ $customer->koordinat ?? null }}</span>
-      <span><b>Telepon</b> {{ $customer->telepon ?? null }}</span>
-      <span><b>Durasi Kunjungan</b> {{ $customer->durasi_kunjungan ?? null . ' hari' }}</span>
+      <span class="d-flex align-items-center"><b>Nama Customer</b>
+        <span>{{ $customer->nama ?? null }}</span>
+      </span>
+      <span class="d-flex align-items-center"><b>Jenis Customer</b>
+        <span>{{ $customer->linkCustomerType->nama ?? null }}</span>
+      </span>
+      <span class="d-flex align-items-center"><b>Wilayah</b>
+        <span>{{ $customer->linkDistrict->nama ?? null }}</span>
+      </span>
+      <span class="d-flex align-items-center"><b>Email</b>
+        <span>{{ $customer->email ?? null }}</span>
+      </span>
+      <span class="d-flex align-items-center"><b>Alamat</b>
+        <span>{{ $customer->full_alamat ?? null }}</span>
+      </span>
+      <span class="d-flex align-items-center"><b>Koordinat</b>
+        <span>{{ $customer->koordinat ?? null }}</span>
+      </span>
+      <span class="d-flex align-items-center"><b>Telepon</b>
+        <span>{{ $customer->telepon ?? null }}</span>
+      </span>
+      <span class="d-flex align-items-center"><b>Durasi Kunjungan</b>
+        <span>{{ $customer->durasi_kunjungan ?? null . ' hari' }}</span>
+      </span>
       <span><b>Counter Effective Call</b>
         {{ $customer->counter_to_effective_call ?? null }}</span>
-      <span><b>Tipe Retur</b> {{ $customer->tipe_retur ?? null }}</span>
-      <span><b>Limit Pembelian</b>
-        {{ $customer->limit_pembelian ?? null }}</span>
-
-      <span><b>Pengajuan Limit Pembelian</b>
+      <span class="d-flex align-items-center"><b>Tipe Retur</b>
+        <span>{{ $customer->tipe_retur ?? null }}</span>
+      </span>
+      <span class="d-flex align-items-center"><b>Limit Pembelian</b>
+        <span>{{ $customer->limit_pembelian ?? null }}</span>
+      </span>
+      <span class="d-flex align-items-center"><b>Pengajuan Limit</b>
         @if ($old_data)
-          {{ $old_data['pengajuan_limit_pembelian'] }}
+          <span>{{ $old_data['pengajuan_limit_pembelian'] }}</span>
         @else
-          {{ $customer->pengajuan_limit_pembelian ?? null }}
+          <span>{{ $customer->pengajuan_limit_pembelian ?? null }}</span>
         @endif
       </span>
 
-      <span><b>Status Limit Pembelian</b>
-        @if ($old_data)
-          {{ $old_data['status_limit_pembelian_enum'] == 1
-              ? 'Disetujui'
-              : ($old_data['status_limit_pembelian_enum'] == -1
-                  ? 'Tidak Disetujui'
-                  : 'Diajukan') }}
-        @else
-          @if ($customer->status_limit_pembelian_enum != null)
-            {{ $customer->status_limit_pembelian_enum == 1
+      <span class="d-flex align-items-center"><b>Status Pengajuan</b>
+        <span>
+          @if ($old_data)
+            {{ $old_data['status_limit_pembelian_enum'] == 1
                 ? 'Disetujui'
-                : ($customer->status_limit_pembelian_enum == -1
+                : ($old_data['status_limit_pembelian_enum'] == -1
                     ? 'Tidak Disetujui'
                     : 'Diajukan') }}
+          @else
+            @if ($customer->status_limit_pembelian_enum != null)
+              {{ $customer->status_limit_pembelian_enum == 1
+                  ? 'Disetujui'
+                  : ($customer->status_limit_pembelian_enum == -1
+                      ? 'Tidak Disetujui'
+                      : 'Diajukan') }}
+            @endif
           @endif
-        @endif
+        </span>
       </span>
 
       @if ($customer->status_enum != null)

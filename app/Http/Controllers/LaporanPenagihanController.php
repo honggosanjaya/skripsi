@@ -10,6 +10,7 @@ use App\Models\District;
 use App\Models\Pembayaran;
 use Illuminate\Http\Request;
 use PDF;
+use Jenssegers\Agent\Agent;
 
 class LaporanPenagihanController extends Controller
 {
@@ -30,13 +31,20 @@ class LaporanPenagihanController extends Controller
     $histories = LaporanPenagihan::orderBy('tanggal', 'DESC')->orderBy('id', 'DESC')->get();
     $districts = District::orderBy('nama', 'ASC')->get();
 
-    return view('administrasi.lp3.index',[
+    $data = [
       'input' => $input,
       'invoices' => $invoices,  
       'staffs' => $staffs,   
       'histories' => $histories,
       'districts' => $districts          
-    ]);
+    ];
+
+    $agent = new Agent();
+    if($agent->isMobile()){
+      return view('mobile.administrasi.lp3.index',$data);
+    }else{
+      return view('administrasi.lp3.index',$data);
+    }
   }
 
   public function storeLp3(Request $request){

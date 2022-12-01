@@ -9,21 +9,16 @@
   </ol>
 @endsection
 @section('main_content')
-  @if (session()->has('addPesananSuccess'))
+  @if (session()->has('successMessage'))
     <div id="hideMeAfter3Seconds">
       <div class="alert alert-success alert-dismissible fade show mt-4" role="alert">
-        {{ session('addPesananSuccess') }}
+        {{ session('successMessage') }}
         <button type="button" class="btn btn-close" data-bs-dismiss="alert"></button>
       </div>
     </div>
   @endif
 
-
   <div class="px-5 pt-4">
-    {{-- <a href="/administrasi/lp3" class="btn btn-primary btn_add-relative">
-      <span class="iconify fs-4 me-1" data-icon="tabler:report-money"></span> Buat LP3
-    </a> --}}
-
     <table class="table table-hover table-sm mt-4" id="table">
       <thead>
         <tr>

@@ -484,8 +484,7 @@ $("#detail-pesanan-admin .btn-unduh-invoice").click(function () {
   $('#myFrame').remove();
 
   $(`<div class="position-relative"><iframe id="myFrame"
-        src="${window.location.origin}/administrasi/pesanan/detail/${idOrder}/cetak-invoice#toolbar=0"
-        style="margin-top:30px;" frameborder="0" width="100%" height="570px">
+        src="${window.location.origin}/administrasi/pesanan/detail/${idOrder}/cetak-invoice#toolbar=0">
       </iframe> <div class="embed-cover"></div></div>`).appendTo("#detail-pesanan-admin .detail-pesanan-admin_action");
 
   setTimeout(() => {

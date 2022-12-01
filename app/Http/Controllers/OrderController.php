@@ -24,6 +24,7 @@ use PDF;
 use Illuminate\Support\Facades\Validator;
 use Intervention\Image\ImageManagerStatic as Image;
 use Illuminate\Support\Facades\Storage;
+use Jenssegers\Agent\Agent;
 
 class OrderController extends Controller
 {
@@ -436,15 +437,73 @@ class OrderController extends Controller
     }
   }
 
-  public function index(){
-    $orders = Order::orderBy('created_at','DESC')->with(['linkOrderTrack'])->where('id_customer','>','0')
-    ->whereHas('linkOrderTrack',function($q) {
-      $q->where('id_staff_pengonfirmasi', auth()->user()->id_users)->orWhere('id_staff_pengonfirmasi', null);
-    })->get();
+  public function index(Request $request){
+    $agent = new Agent();
+    if($agent->isMobile()){
+      $input = [
+        'status_pesanan' => $request->status_pesanan ?? 'default',
+        'nama_customer' => $request->nama_customer ?? null,
+        'nama_salesman' => $request->nama_salesman ?? null,
+        'filter' => $request->filter ?? null
+      ];
 
-    return view('administrasi.pesanan.index',[
-      'orders' => $orders,                      
-    ]);
+      $orders = Order::with(['linkOrderTrack'])->where('id_customer','>','0')
+      ->whereHas('linkOrderTrack', function($q) {
+        $q->where('id_staff_pengonfirmasi', auth()->user()->id_users)->orWhere('id_staff_pengonfirmasi', null);
+      });
+  
+      if($request->nama_salesman ?? null){
+        $orders = $orders->whereHas('linkStaff',function($q) use($request){
+          $q->where(strtolower('nama'),'like','%'.$request->nama_salesman.'%');
+        });
+      }
+
+      if($request->nama_customer ?? null){
+        $orders = $orders->whereHas('linkCustomer',function($q) use($request){
+          $q->where(strtolower('nama'),'like','%'.$request->nama_customer.'%');
+        });
+      }
+
+      if($request->status_pesanan ?? null){
+        if($request->status_pesanan != 'default'){
+          $orders = $orders->whereHas('linkOrderTrack',function($q) use($request){
+            $q->where('status_enum', $request->status_pesanan);
+          });
+        }
+      }
+
+      if($request->filter ?? null){
+        if($request->filter == 'terlama'){
+          $orders = $orders->orderBy('created_at','ASC');
+        }else if($request->filter == 'hargarendah'){
+          $orders = $orders->join('invoices', 'invoices.id_order', '=', 'orders.id')->orderBy('invoices.harga_total', 'ASC')->select('orders.*');
+        }else if($request->filter == 'hargatinggi'){
+          $orders = $orders->join('invoices', 'invoices.id_order', '=', 'orders.id')->orderBy('invoices.harga_total', 'DESC')->select('orders.*');
+        }
+      }else {
+        $orders = $orders->orderBy('created_at','DESC');
+      }
+
+      $orders = $orders->paginate(10);
+
+      // dd($orders);
+
+      return view('mobile.administrasi.pesanan.index',[
+        'orders' => $orders,     
+        'input' => $input,               
+      ]);
+    }
+
+    else{
+      $orders = Order::orderBy('created_at','DESC')->with(['linkOrderTrack'])->where('id_customer','>','0')
+                ->whereHas('linkOrderTrack',function($q) {
+                  $q->where('id_staff_pengonfirmasi', auth()->user()->id_users)->orWhere('id_staff_pengonfirmasi', null);
+                })->get();
+
+      return view('administrasi.pesanan.index',[
+        'orders' => $orders,                      
+      ]);
+    }
   }
 
   // public function search(){
@@ -525,14 +584,21 @@ class OrderController extends Controller
       ]);
     }
 
-    return view('administrasi.pesanan.detailpesanan',[
+    $data = [
       'order' => $order,
       'items' => $completeItems,
       'total_bayar' => $total_bayar,
       'pembayaran_terakhir' => $pembayaran_terakhir,
       'inactiveVehicles' => $inactiveVehicles,
       'activeVehicles' => $activeVehicles
-    ]);
+    ];
+
+    $agent = new Agent();
+    if($agent->isMobile()){
+      return view('mobile.administrasi.pesanan.detailpesanan',$data);
+    }else{
+      return view('administrasi.pesanan.detailpesanan',$data);
+    }
   }
 
   public function viewKapasitas(Order $order){
@@ -681,12 +747,18 @@ class OrderController extends Controller
     // dd($sameVehicle);
 
     $selectedVehicle = OrderTrack::where('id_order', $order->id)->first()->id_vehicle;
+    $dt = [
+      'order' => $order,
+      'datas' => $sameVehicle,
+      'selectedVehicle' => $selectedVehicle
+    ];
 
-    return view('administrasi.pesanan.kapasitaskendaraan',[
-        'order' => $order,
-        'datas' => $sameVehicle,
-        'selectedVehicle' => $selectedVehicle
-    ]);
+    $agent = new Agent();
+    if($agent->isMobile()){
+      return view('mobile.administrasi.pesanan.kapasitaskendaraan',$dt);
+    }else{
+      return view('administrasi.pesanan.kapasitaskendaraan',$dt);
+    }
   }
 
   public function cetakInvoice(Order $order){
@@ -863,7 +935,7 @@ class OrderController extends Controller
 
     if(sizeof($itemYangKurang) > 0){
       return redirect('/administrasi/pesanan/detail/'.$order->id) 
-      ->with('pesanError', 'Tidak dapat menyetujui pesanan jumlah stok kurang');
+      ->with('errorMessage', 'Tidak dapat menyetujui pesanan jumlah stok kurang');
     }
 
     if($i == $jumlahItem){
@@ -907,7 +979,7 @@ class OrderController extends Controller
       $validatedData['waktu_dikonfirmasi'] = now();
       OrderTrack::where('id_order', $order->id)->update($validatedData); 
 
-      return redirect('/administrasi/pesanan/detail/'.$order->id)->with('addPesananSuccess', 'Berhasil menyetujui pesanan');
+      return redirect('/administrasi/pesanan/detail/'.$order->id)->with('successMessage', 'Berhasil menyetujui pesanan');
     } 
   }
 
@@ -920,7 +992,7 @@ class OrderController extends Controller
     ]);
 
 
-    return redirect('/administrasi/pesanan/detail/'.$order->id)->with('addPesananSuccess', 'Berhasil menolak pesanan');
+    return redirect('/administrasi/pesanan/detail/'.$order->id)->with('successMessage', 'Berhasil menolak pesanan');
   }
 
   public function viewPengiriman(order $order){
@@ -943,14 +1015,20 @@ class OrderController extends Controller
     $activeVehicles = Vehicle::where('is_active',true)->get();
     $inactiveVehicles = Vehicle::where('is_active',false)->get();
     $selectedVehicle = OrderTrack::where('id_order', $order->id)->first()->id_vehicle;
-
-    return view('administrasi.pesanan.pengiriman.keberangkatan',[
+    $data = [
       'order' => $order,
       'stafs' => $stafs,
       'activeVehicles' => $activeVehicles,
       'inactiveVehicles' => $inactiveVehicles,
       'selectedVehicle' => $selectedVehicle
-    ]);
+    ];
+
+    $agent = new Agent();
+    if($agent->isMobile()){
+      return view('mobile.administrasi.pesanan.pengiriman.keberangkatan',$data);
+    }else{
+      return view('administrasi.pesanan.pengiriman.keberangkatan',$data);
+    }
   }
 
   public function konfirmasiPengiriman(Request $request, order $order){
@@ -968,7 +1046,7 @@ class OrderController extends Controller
         'is_active' => false
       ]);
 
-      return redirect('/administrasi/pesanan/detail/'.$order->id)->with('addPesananSuccess', 'Berhasil mengonfirmasi keberangkatan pengiriman untuk '.$order->linkCustomer->nama);
+      return redirect('/administrasi/pesanan/detail/'.$order->id)->with('successMessage', 'Berhasil mengonfirmasi keberangkatan pengiriman untuk '.$order->linkCustomer->nama);
     }
 
     if($order->linkOrderTrack->status_enum == '3'){
@@ -1015,7 +1093,7 @@ class OrderController extends Controller
       OrderTrack::where('id_order', $order->id)->update([
         'status_enum' => '6'
       ]);
-      return redirect('/administrasi/pesanan/detail/'.$order->id)->with('addPesananSuccess', 'Pesanan untuk '.$order->linkCustomer->nama.' telah selesai');
+      return redirect('/administrasi/pesanan/detail/'.$order->id)->with('successMessage', 'Pesanan untuk '.$order->linkCustomer->nama.' telah selesai');
     }
   }
 
@@ -1114,8 +1192,7 @@ class OrderController extends Controller
                 ->where(function ($query) {
                   $query->whereNull('default')->orWhereIn('default', ['1', '2']);                  
                 })->get();
-
-    return view('administrasi.pesanan.pembayaran.index',[
+    $dt = [
       'order' => $order,
       'stafs' => $stafs,
       'metodes_pembayaran' => $metodes_pembayaran,
@@ -1123,7 +1200,14 @@ class OrderController extends Controller
       'total_bayar' => $total_bayar,
       'defaultpenjualan' => $defaultpenjualan,
       'listskas' => $listskas
-    ]);
+    ];
+
+    $agent = new Agent();
+    if($agent->isMobile()){
+      return view('mobile.administrasi.pesanan.pembayaran.index',$dt);
+    }else{
+      return view('administrasi.pesanan.pembayaran.index',$dt);
+    }
   }
 
   public function konfirmasiPembayaran(Request $request, order $order){
@@ -1180,7 +1264,7 @@ class OrderController extends Controller
         ]);
       }
       
-      return redirect('/administrasi/pesanan/detail/'.$order->id)->with('addPesananSuccess', 'Berhasil mengonfirmasi pembayaran untuk '.$order->linkCustomer->nama);
+      return redirect('/administrasi/pesanan/detail/'.$order->id)->with('successMessage', 'Berhasil mengonfirmasi pembayaran untuk '.$order->linkCustomer->nama);
   }
 
   public function cetakKeseluruhanMemo(Vehicle $vehicle){
@@ -1211,7 +1295,7 @@ class OrderController extends Controller
     ]);
   
 
-    return redirect('/administrasi/pesanan/detail/'.$order_item->id_order)->with('addPesananSuccess', 'Berhasil mengubah item' );
+    return redirect('/administrasi/pesanan/detail/'.$order_item->id_order)->with('successMessage', 'Berhasil mengubah item' );
   }
 
   public function getInvoiceByIdAPI($id){

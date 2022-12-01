@@ -1,4 +1,4 @@
-@extends('layouts/main')
+@extends('layouts.mainmobile')
 @section('breadcrumbs')
   <ol class="breadcrumb">
     <li class="breadcrumb-item"><a href="/administrasi">Dashboard</a></li>
@@ -13,17 +13,19 @@
 @endsection
 
 @section('main_content')
-  <div class="pt-4 px-5" id="detail-reimbursement">
+  <div class="container pt-4" id="detail-reimbursement">
     <div class="informasi-list mb_big">
-      <span><b>Nama Pengaju</b>{{ $reimbursement->linkStaffPengaju->nama ?? null }}</span>
-      <span><b>Nama Pengonfirmasi</b>{{ $reimbursement->linkStaffPengonfirmas->nama ?? null }}</span>
+      <span class="d-flex"><b>Nama Pengaju</b>
+        {{ $reimbursement->linkStaffPengaju->nama ?? null }}</span>
+      <span class="d-flex"><b>Nama Pengonfirmasi</b>
+        {{ $reimbursement->linkStaffPengonfirmas->nama ?? null }}</span>
 
       @if ($reimbursement->status_enum == '0')
-        <span class="d-flex"><b>Cash Account</b>
+        <span class="d-flex mb-2"><b>Cash Account</b>
           <div class="row">
             <div class="col col-btn-edit">
               {{ $reimbursement->linkCashAccount->nama ?? null }}
-              <button class="btn btn-warning ms-4 btn-sm btn-edit">
+              <button class="btn btn-purple-gradient ms-4 btn-sm btn-edit">
                 <span class="iconify fs-5 me-1" data-icon="eva:edit-2-fill"></span> Edit
               </button>
             </div>
@@ -48,9 +50,13 @@
       @else
         <span class="d-flex"><b>Cash Account</b>{{ $reimbursement->linkCashAccount->nama ?? null }}</span>
       @endif
-      <span><b>Jumlah</b>Rp {{ number_format($reimbursement->jumlah_uang ?? 0, 0, '', '.') }}</span>
-      <span><b>Keterangan Pengajuan</b>{{ $reimbursement->keterangan_pengajuan ?? null }}</span>
-      <span><b>Keterangan Konfirmasi</b>{{ $reimbursement->keterangan_konfirmasi ?? null }}</span>
+
+      <span class="d-flex"><b>Uang</b>
+        Rp {{ number_format($reimbursement->jumlah_uang ?? 0, 0, '', '.') }}</span>
+      <span class="d-flex"><b>Keterangan Pengajuan</b>
+        {{ $reimbursement->keterangan_pengajuan ?? null }}</span>
+      <span class="d-flex"><b>Keterangan Konfirmasi</b>
+        {{ $reimbursement->keterangan_konfirmasi ?? null }}</span>
       @if ($reimbursement->status_enum != null)
         @if ($reimbursement->status_enum == '0')
           <span><b>Status</b>Diajukan</span>
@@ -84,7 +90,7 @@
           @csrf
           <input type="hidden" name="id_cash_account" class="input_id_cash_account">
           <div class="row">
-            <div class="col-6">
+            <div class="col">
               <div class="mb-3">
                 <label for="keterangan_konfirmasi" class="form-label">Keterangan <span
                     class="text-danger">*</span></label>
@@ -117,7 +123,7 @@
           <div class="row">
             <input type="hidden" value="{{ $reimbursement->linkCashAccount->id }}" id="idCashAccount"
               name="idCashAccount">
-            <div class="col-6">
+            <div class="col">
               <div class="mb-3">
                 <label for="kas" class="form-label">Pilih Kas yang Berkurang <span
                     class='text-danger'>*</span></label>

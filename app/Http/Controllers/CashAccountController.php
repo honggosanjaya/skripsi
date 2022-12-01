@@ -9,6 +9,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Storage;
 use Intervention\Image\ImageManagerStatic as Image;
+use Jenssegers\Agent\Agent;
 
 class CashAccountController extends Controller
 {
@@ -330,27 +331,52 @@ class CashAccountController extends Controller
   }
 
   public function adminReimbursementIndex(){
-    $reimbursements = Reimbursement::orderBy("status_enum", "ASC")->get();
-    return view('administrasi.reimbursement.index', [
-      'reimbursements' => $reimbursements,
-    ]);
+    $reimbursements = Reimbursement::orderBy("status_enum", "ASC");
+    $agent = new Agent();
+    if($agent->isMobile()){
+      return view('mobile.administrasi.reimbursement.index', [
+        'reimbursements' => $reimbursements->paginate(10),
+      ]);
+    }else{
+      return view('administrasi.reimbursement.index', [
+        'reimbursements' => $reimbursements->get(),
+      ]);
+    }
   }
 
 
   public function adminReimbursementPengajuan(){
-    $reimbursements = Reimbursement::where('status_enum', '0')->get();
-    return view('administrasi.reimbursement.pengajuanReimbursement', [
-      'reimbursements' => $reimbursements,
-      'type' => 'pengajuan'
-    ]);
+    $reimbursements = Reimbursement::where('status_enum', '0');
+
+    $agent = new Agent();
+    if($agent->isMobile()){
+      return view('mobile.administrasi.reimbursement.pengajuanReimbursement', [
+        'reimbursements' => $reimbursements->paginate(10),
+        'type' => 'pengajuan'
+      ]);
+    }else{
+      return view('administrasi.reimbursement.pengajuanReimbursement', [
+        'reimbursements' => $reimbursements->get(),
+        'type' => 'pengajuan'
+      ]);
+    }
   }
 
   public function adminReimbursementPembayaran(){
-    $reimbursements = Reimbursement::where('status_enum', '1')->get();
-    return view('administrasi.reimbursement.pengajuanReimbursement', [
-      'reimbursements' => $reimbursements,
-      'type' => 'pembayaran'
-    ]);
+    $reimbursements = Reimbursement::where('status_enum', '1');
+
+    $agent = new Agent();
+    if($agent->isMobile()){
+      return view('mobile.administrasi.reimbursement.pengajuanReimbursement', [
+        'reimbursements' => $reimbursements->paginate(10),
+        'type' => 'pembayaran'
+      ]);
+    }else{
+      return view('administrasi.reimbursement.pengajuanReimbursement', [
+        'reimbursements' => $reimbursements->get(),
+        'type' => 'pembayaran'
+      ]);
+    }
   }
   
   public function adminReimbursementPengajuanDetail(Reimbursement $reimbursement){
@@ -392,12 +418,18 @@ class CashAccountController extends Controller
         return $a[0] <=> $b[0];
     });
 
-
-    return view('administrasi.reimbursement.detailReimbursement', [
+    $dt = [
       'reimbursement' => $reimbursement,
       'listskas' => $listskas,
       'cash_accounts' => $temp
-    ]);
+    ];
+
+    $agent = new Agent();
+    if($agent->isMobile()){
+      return view('mobile.administrasi.reimbursement.detailReimbursement', $dt);
+    }else{
+      return view('administrasi.reimbursement.detailReimbursement', $dt);
+    }
   }
 
   public function setujuReimbursement(Request $request, Reimbursement $reimbursement){
@@ -418,7 +450,7 @@ class CashAccountController extends Controller
       ]);
     }
 
-    return redirect('/administrasi/reimbursement') -> with('successMessage', 'Berhasil menyetujui pengajuan' );
+    return redirect('/administrasi/reimbursement')->with('successMessage', 'Berhasil menyetujui pengajuan' );
   }
 
   public function tolakReimbursement(Request $request, Reimbursement $reimbursement){
@@ -439,7 +471,7 @@ class CashAccountController extends Controller
       ]);
     }
 
-    return redirect('/administrasi/reimbursement') -> with('successMessage', 'Berhasil menolak pengajuan' );
+    return redirect('/administrasi/reimbursement')->with('successMessage', 'Berhasil menolak pengajuan' );
   }
 
   public function bayarReimbursement(Request $request, Reimbursement $reimbursement){
@@ -463,6 +495,6 @@ class CashAccountController extends Controller
     Reimbursement::find($reimbursement->id)->update([
       'status_enum' => '2'
     ]);
-    return redirect('/administrasi/reimbursement') -> with('successMessage', 'Berhasil membayar pengajuan' );
+    return redirect('/administrasi/reimbursement')->with('successMessage', 'Berhasil membayar pengajuan' );
   }
 }

@@ -6,28 +6,45 @@ use App\Models\Vehicle;
 use App\Models\Order;
 use App\Models\Invoice;
 use Illuminate\Http\Request;
+use Jenssegers\Agent\Agent;
 
 class VehicleController extends Controller
 {
     public function index(){
         $vehicles = Vehicle::paginate(10);
-        return view ('administrasi.kendaraan.index',[
-            'vehicles' => $vehicles
-        ]);
+
+        $agent = new Agent();
+        if($agent->isMobile()){
+          return view('mobile.administrasi.kendaraan.index', compact('vehicles'));
+        }else{
+          return view('administrasi.kendaraan.index', compact('vehicles'));
+        }
     }
 
     public function search(){
         $vehicles =  Vehicle::where(strtolower('nama'),'like','%'.request('cari').'%')
         ->orWhere(strtolower('kode_kendaraan'),'like','%'.request('cari').'%')
         ->paginate(10);
-       
-        return view('administrasi/kendaraan.index',[
+
+        $agent = new Agent();
+        if($agent->isMobile()){
+          return view ('mobile.administrasi.kendaraan.index',[
             'vehicles' => $vehicles
-        ]);
+          ]);
+        }else{
+          return view ('administrasi.kendaraan.index',[
+            'vehicles' => $vehicles
+          ]);
+        }
     }
 
     public function create(){
+      $agent = new Agent();
+      if($agent->isMobile()){
+        return view('mobile.administrasi.kendaraan.addkendaraan');
+      }else{
         return view('administrasi.kendaraan.addkendaraan');
+      }
     }
 
     public function store(Request $request){
@@ -52,13 +69,20 @@ class VehicleController extends Controller
             'tanggal_pajak' => $request->tanggal_pajak
         ]); 
 
-        return redirect('/administrasi/kendaraan')->with('addKendaraanSuccess','Tambah Kendaraan berhasil');
+        return redirect('/administrasi/kendaraan')->with('successMessage','Tambah Kendaraan berhasil');
     }
 
     public function edit(Vehicle $vehicle){
-        return view ('administrasi/kendaraan.ubahkendaraan',[
-            'vehicle' => $vehicle
+      $agent = new Agent();
+      if($agent->isMobile()){
+        return view ('mobile.administrasi.kendaraan.ubahkendaraan',[
+          'vehicle' => $vehicle
         ]);
+      }else{
+        return view ('administrasi.kendaraan.ubahkendaraan',[
+          'vehicle' => $vehicle
+        ]);
+      }
     }
 
     public function update(Request $request, Vehicle $vehicle){
@@ -84,7 +108,7 @@ class VehicleController extends Controller
         $vehicle->tanggal_pajak = $request->tanggal_pajak;
         $vehicle->save();
         
-        return redirect('/administrasi/kendaraan')->with('updateKendaraanSuccess','Update Kendaraan Berhasil');
+        return redirect('/administrasi/kendaraan')->with('successMessage','Update Kendaraan Berhasil');
     }
 
     public function detail(Vehicle $vehicle){
@@ -96,9 +120,16 @@ class VehicleController extends Controller
       ->with(['linkOrder', 'linkOrder.linkOrderItem', 'linkOrder.linkOrderItem.linkItem'])
       ->get();
 
-      return view ('administrasi.kendaraan.detailkendaraan',[
+      $data = [
         'vehicle' => $vehicle,
         'invoices' => $invoices
-      ]);
+      ];
+
+      $agent = new Agent();
+      if($agent->isMobile()){
+        return view ('mobile.administrasi.kendaraan.detailkendaraan',$data);
+      }else{
+        return view ('administrasi.kendaraan.detailkendaraan',$data);
+      }
     }
 }

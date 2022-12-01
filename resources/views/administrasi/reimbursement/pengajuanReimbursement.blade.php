@@ -39,7 +39,7 @@
               <td>{{ $reimbursement->linkStaffPengaju->nama ?? null }}</td>
               <td>{{ $reimbursement->linkStaffPengonfirmasi->nama ?? null }}</td>
               <td>{{ $reimbursement->linkCashAccount->nama ?? null }}</td>
-              <td>{{ $reimbursement->jumlah_uang ?? null }}</td>
+              <td>{{ number_format($reimbursement->jumlah_uang ?? 0, 0, '', '.') }}</td>
               @if ($reimbursement->status_enum != null)
                 <td class="text-capitalize text-center">
                   <p class="mb-0 badge badge-reimbursement-{{ $reimbursement->status_enum }}">

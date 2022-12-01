@@ -1,6 +1,4 @@
 // const moment = require("moment");
-var screenWidth = (window.innerWidth > 0) ? window.innerWidth : screen.width;
-
 if ($('#report').length > 0) {
   // window.location.hash = window.location.href.split('?')[0]
   var kinerjaSalesChart = document.getElementById("kinerjaSalesChart");
@@ -50,7 +48,7 @@ if ($('#report').length > 0) {
             maxRotation: 90,
             labelOffset: -6,
             padding: 0,
-            display: (screenWidth > 992) ? true : false
+            display: false
           }
         }
       },

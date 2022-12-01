@@ -1,33 +1,21 @@
-@extends('layouts/main')
+@extends('layouts.mainmobile')
+@push('CSS')
+  <link href=" {{ mix('css/administrasi.css') }}" rel="stylesheet">
+@endpush
 @section('breadcrumbs')
-
-  @if (auth()->user()->linkStaff->linkStaffRole->nama ?? null)
-    @if (auth()->user()->linkStaff->linkStaffRole->nama == 'administrasi')
-      <ol class="breadcrumb">
-        <li class="breadcrumb-item"><a href="/{{ auth()->user()->linkStaff->linkStaffRole->nama ?? null }}">Dashboard</a>
-        </li>
-        <li class="breadcrumb-item"><a href="/{{ auth()->user()->linkStaff->linkStaffRole->nama ?? null }}/tripsales">Trip
-            Sales</a>
-        </li>
-        <li class="breadcrumb-item active" aria-current="page">Cek Koordinat</li>
-      </ol>
-    @else
-      <ol class="breadcrumb">
-        <li class="breadcrumb-item"><a href="/{{ auth()->user()->linkStaff->linkStaffRole->nama ?? null }}">Dashboard</a>
-        </li>
-        <li class="breadcrumb-item"><a
-            href="/{{ auth()->user()->linkStaff->linkStaffRole->nama ?? null }}/report/koordinattrip">Koordinat Trip</a>
-        </li>
-        <li class="breadcrumb-item active" aria-current="page">Cek Koordinat</li>
-      </ol>
-    @endif
-  @endif
-
-
+  <ol class="breadcrumb">
+    <li class="breadcrumb-item"><a href="/{{ auth()->user()->linkStaff->linkStaffRole->nama ?? null }}">Dashboard</a>
+    </li>
+    <li class="breadcrumb-item"><a href="/{{ auth()->user()->linkStaff->linkStaffRole->nama ?? null }}/tripsales">Trip
+        Sales</a>
+    </li>
+    <li class="breadcrumb-item active" aria-current="page">Cek Koordinat</li>
+  </ol>
 @endsection
+
 @section('main_content')
-  <div id="cek-koordinat" class="pt-4 px-4">
-    <h1 class="fs-4 mb-4">Perbandingan Koordinat Lokasi Customer dan Sales</h1>
+  <div id="cek-koordinat" class="pt-4 container">
+    <h1 class="fs-5 mb-4">Perbandingan Koordinat Lokasi Customer dan Sales</h1>
     <div id="map"></div>
 
     @if ($trip->koordinat == $trip->linkCustomer->koordinat)
@@ -36,27 +24,36 @@
 
     <hr class="my-4">
     <h1 class="fs-4">Detail Trip</h1>
+
     <div class="informasi-list">
-      <span><b>Nama sales</b> {{ $trip->linkStaff->nama ?? null }}</span>
-      <span><b>Nama customer</b> {{ $trip->linkCUstomer->nama ?? null }}</span>
+      <span class="d-flex align-items-center"><b>Nama sales</b>
+        <span>{{ $trip->linkStaff->nama ?? null }}</span>
+      </span>
+      <span class="d-flex align-items-center"><b>Nama customer</b>
+        <span>{{ $trip->linkCustomer->nama ?? null }}</span>
+      </span>
       @if ($trip->waktu_masuk ?? null)
-        <span><b>Waktu masuk</b>
-          {{ date('j F Y, g:i a', strtotime($trip->waktu_masuk)) }}
+        <span class="d-flex align-items-center"><b>Waktu masuk</b>
+          <span>{{ date('j F Y, g:i a', strtotime($trip->waktu_masuk)) }}</span>
         </span>
       @endif
       @if ($trip->waktu_keluar ?? null)
-        <span><b>Waktu keluar</b>
-          {{ date('j F Y, g:i a', strtotime($trip->waktu_keluar)) }}
+        <span class="d-flex align-items-center"><b>Waktu keluar</b>
+          <span>{{ date('j F Y, g:i a', strtotime($trip->waktu_keluar)) }}</span>
         </span>
       @endif
       @if ($trip->status_enum ?? null)
-        <span><b>Status</b>{{ $trip->status_enum == '1' ? ' Trip' : ' Effective Call' }}</span>
+        <span class="d-flex align-items-center"><b>Status</b>
+          <span>{{ $trip->status_enum == '1' ? ' Trip' : ' Effective Call' }}</span>
+        </span>
+
         @if ($trip->status_enum == '1')
-          <span><b>Alasan penolakan</b> {{ $trip->alasan_penolakan ?? null }}</span>
+          <span class="d-flex align-items-center"><b>Alasan penolakan</b>
+            <span>{{ $trip->alasan_penolakan ?? null }}</span>
+          </span>
         @endif
       @endif
     </div>
-
 
     @push('JS')
       <script>

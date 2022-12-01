@@ -26,13 +26,13 @@
         <small class="d-block mb-0 fw-bold">Pesanan</small>
       </div>
 
-      <div class="alert_retur alert_notif d-flex justify-content-center align-items-center flex-column me-3">
+      {{-- <div class="alert_retur alert_notif d-flex justify-content-center align-items-center flex-column me-3">
         <i class="bi bi-bell-fill fs-3"></i>
         @if (($datadua['jml_retur'] ?? 0) > 0)
           <div class="hasnotif_indicator">{{ $datadua['jml_retur'] }}</div>
         @endif
         <small class="d-block mb-0 fw-bold">Retur</small>
-      </div>
+      </div> --}}
 
       <div class="alert_limit alert_notif d-flex justify-content-center align-items-center flex-column me-3">
         <i class="bi bi-bell-fill fs-3"></i>
@@ -42,21 +42,21 @@
         <small class="d-block mb-0 fw-bold">Limit</small>
       </div>
 
-      <div class="alert_reimbursement alert_notif d-flex justify-content-center align-items-center flex-column me-3">
+      {{-- <div class="alert_reimbursement alert_notif d-flex justify-content-center align-items-center flex-column me-3">
         <i class="bi bi-bell-fill fs-3"></i>
         @if (($datadua['jml_reimbursement'] ?? 0) > 0)
           <div class="hasnotif_indicator">{{ $datadua['jml_reimbursement'] }}</div>
         @endif
         <small class="d-block mb-0 fw-bold">Reimburs</small>
-      </div>
+      </div> --}}
 
-      <div class="alert_pajak alert_notif d-flex justify-content-center align-items-center flex-column me-3">
+      {{-- <div class="alert_pajak alert_notif d-flex justify-content-center align-items-center flex-column me-3">
         <i class="bi bi-bell-fill fs-3"></i>
         @if (($datadua['jml_pajak'] ?? 0) > 0)
           <div class="hasnotif_indicator">{{ $datadua['jml_pajak'] }}</div>
         @endif
         <small class="d-block mb-0 fw-bold text-center">Pajak<br>Kendaraan</small>
-      </div>
+      </div> --}}
 
       <div class="alert_jatuhtempo alert_notif d-flex justify-content-center align-items-center flex-column me-5">
         <i class="bi bi-bell-fill fs-3"></i>

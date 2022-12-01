@@ -80,11 +80,6 @@
             </a>
           </li>
           <li class="mb-3">
-            <a class="{{ Request::is('administrasi/retur*') ? 'active' : '' }}" href="/administrasi/retur">
-              <i class="bi bi-arrow-return-left me-2"></i><span>Retur</span>
-            </a>
-          </li>
-          <li class="mb-3">
             <a class="{{ Request::is('administrasi/stok*') ? 'active' : '' }}" href="/administrasi/stok">
               <i class="bi bi-box me-2"></i><span>Stok</span>
             </a>
@@ -93,16 +88,6 @@
             <a class="{{ Request::is('administrasi/reimbursement*') ? 'active' : '' }}"
               href="/administrasi/reimbursement">
               <i class="bi bi-cash-coin me-2"></i><span>Reimbursement</span>
-            </a>
-          </li>
-          <li class="mb-3">
-            <a class="{{ Request::is('administrasi/kas*') ? 'active' : '' }}" href="/administrasi/kas">
-              <span class="iconify fs-4 me-2" data-icon="healthicons:register-book-outline"></span><span>Kas</span>
-            </a>
-          </li>
-          <li class="mb-3">
-            <a class="{{ Request::is('administrasi/kanvas*') ? 'active' : '' }}" href="/administrasi/kanvas">
-              <i class="bi bi-box me-2"></i><span>Kanvas</span>
             </a>
           </li>
         </ul>
@@ -187,8 +172,7 @@
                 </a>
               </li>
               <li>
-                <a class="{{ Request::is('supervisor/category*') ? 'active-submenu' : '' }}"
-                  href="/supervisor/category">
+                <a class="{{ Request::is('supervisor/category*') ? 'active-submenu' : '' }}" href="/supervisor/category">
                   <i class="bi bi-tags me-2"></i><span>Category Item</span>
                 </a>
               </li>
