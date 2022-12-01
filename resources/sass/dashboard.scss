@@ -219,6 +219,10 @@ main {
             max-height: 40px;
         }
     }
+
+    .select2-selection__rendered {
+        line-height: normal !important;
+    }
 }
 
 .form-label {
@@ -237,6 +241,7 @@ main {
     &.mb_big {
         span b {
             line-height: 1.8;
+            font-size: 1rem;
         }
     }
     span b {
@@ -246,7 +251,7 @@ main {
         margin-right: 1rem;
         line-height: normal;
         font-weight: 500;
-        font-size: 1.1rem;
+        font-size: 1rem;
         &:after {
             content: ":";
             position: absolute;
@@ -689,12 +694,6 @@ select[readonly] {
         font-size: 4rem;
         color: #fff;
         cursor: pointer;
-    }
-
-    .menu-group {
-        a {
-            color: #fff;
-        }
     }
 }
 

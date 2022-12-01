@@ -16,6 +16,7 @@ use App\Models\Customer;
 use App\Models\Invoice;
 use App\Models\Vehicle;
 use App\Models\History;
+use Jenssegers\Agent\Agent;
 
 class ReportController extends Controller
 {
@@ -341,17 +342,23 @@ class ReportController extends Controller
     public function cekKoordinatTrip(Trip $trip){
       $koordinatCustomer = Customer::where('id', $trip->id_customer)->first()->koordinat;      
       $koordinatTrip = $trip->koordinat;
-
       $customers = Customer::all();
 
-      return view('supervisor.report.cekkoordinattrip', [
+      $data = [
         'trip' => $trip,
         'datas' => [
           'koordinatCustomer' => $koordinatCustomer,
           'koordinatTrip' => $koordinatTrip
         ],
         'customers' => $customers
-      ]);
+      ];
+
+      $agent = new Agent();
+      if($agent->isMobile()){
+        return view('mobile.administrasi.tripsales.detail', $data);
+      }else{
+        return view('supervisor.report.cekkoordinattrip', $data);
+      }
     }
 
     public function tripSalesAdmin(Request $request){
@@ -365,7 +372,8 @@ class ReportController extends Controller
         'dateEnd'=>date('Y-m-t'),
         'tripDateStart'=>$request->tripDateStart ?? null,
         'tripDateEnd'=>$request->tripDateEnd ?? null,
-        'tripSalesman'=>$request->tripSalesman ?? null
+        'tripSalesman'=>$request->tripSalesman ?? null,
+        'tripCustomer'=>$request->tripCustomer ?? null,
       ];
   
       $request->tripDateStart=$request->tripDateStart." 00:00:00";
@@ -380,12 +388,24 @@ class ReportController extends Controller
           $q->where(strtolower('nama'),'like','%'.$request->tripSalesman.'%');
         });
       }
+
+      if($request->tripCustomer ?? null){
+        $tripssales = $tripssales->whereHas('linkCustomer',function($q) use($request){
+          $q->where(strtolower('nama'),'like','%'.$request->tripCustomer.'%');
+        });
+      }
   
-      $tripssales = $tripssales->get();
-  
-      return view('administrasi.tripsales.index',[
-        'input' => $input,
-        'tripssales' => $tripssales
-      ]);
+      $agent = new Agent();
+      if($agent->isMobile()){
+        return view('mobile.administrasi.tripsales.index', [
+          'input' => $input,
+          'tripssales' => $tripssales->paginate(2)
+        ]);
+      }else{
+        return view('administrasi.tripsales.index', [
+          'input' => $input,
+          'tripssales' => $tripssales->get()
+        ]);
+      }
     }
 }

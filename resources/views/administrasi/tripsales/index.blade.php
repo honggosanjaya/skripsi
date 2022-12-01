@@ -5,7 +5,7 @@
 @section('breadcrumbs')
   <ol class="breadcrumb">
     <li class="breadcrumb-item"><a href="/administrasi">Dashboard</a></li>
-    <li class="breadcrumb-item active" aria-current="page">Rencana Kunjungan</li>
+    <li class="breadcrumb-item active" aria-current="page">Trip Sales</li>
   </ol>
 @endsection
 @section('main_content')

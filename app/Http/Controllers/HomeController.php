@@ -12,9 +12,11 @@ use App\Models\Event;
 use App\Models\History;
 use App\Models\Reimbursement;
 use Illuminate\Http\Request;
+use Jenssegers\Agent\Agent;
 
 class HomeController extends Controller
 {
+
     public function __construct(){
       if(config('app.enabled_email_confirmation')==true){
         $this->middleware(['auth', 'verified']);
@@ -142,7 +144,7 @@ class HomeController extends Controller
         // dd($jatuhTempo);
 
         $request->session()->increment('count');
-        return view('administrasi.dashboard',[
+        $data1 = [
           'role' => $role,
           'data' => [
             'jumlah_item' => $item,
@@ -152,7 +154,8 @@ class HomeController extends Controller
             'jumlah_customer_aktif' => $customer_aktif,
           ],
           'notifikasi' => $notifikasi
-        ])->with('datadua', [
+        ];
+        $data2 = [
           'lihat_notif' => true,
           'jml_trip' => count($notifikasi['trip']),
           'jml_retur' => count($notifikasi['retur']),
@@ -161,7 +164,14 @@ class HomeController extends Controller
           'jml_reimbursement' => count($notifikasi['reimbursement']),
           'jml_pajak' => count($pajakVehicles),
           'jml_jatuhTempo' => count($jatuhTempo)
-        ]);
+        ];
+
+        $agent = new Agent();
+        if($agent->isMobile()){
+          return view('mobile.administrasi.dashboard',$data1)->with('datadua', $data2);
+        }else{
+          return view('administrasi.dashboard',$data1)->with('datadua', $data2);
+        }
     }
 
     public function indexShipper(){

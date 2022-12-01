@@ -9,23 +9,15 @@
   </ol>
 @endsection
 @section('main_content')
-  @if (session()->has('addKendaraanSuccess'))
+  @if (session()->has('successMessage'))
     <div id="hideMeAfter3Seconds">
       <div class="alert alert-success alert-dismissible fade show mt-4" role="alert">
-        {{ session('addKendaraanSuccess') }}
+        {{ session('successMessage') }}
         <button type="button" class="btn btn-close" data-bs-dismiss="alert"></button>
       </div>
     </div>
   @endif
 
-  @if (session()->has('updateKendaraanSuccess'))
-    <div id="hideMeAfter3Seconds">
-      <div class="alert alert-success alert-dismissible fade show mt-4" role="alert">
-        {{ session('updateKendaraanSuccess') }}
-        <button type="button" class="btn btn-close" data-bs-dismiss="alert"></button>
-      </div>
-    </div>
-  @endif
 
   <div class="px-5 pt-4">
     <div class="d-flex align-items-center justify-content-between">
@@ -42,7 +34,7 @@
           data-icon="dashicons:database-add"></span>Tambah Kendaraan</a>
     </div>
 
-    <div class="table-responsive">
+    <div class="table-responsive mt-4">
       <table class="table table-bordered table-sm">
         <thead>
           <tr>

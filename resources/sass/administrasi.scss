@@ -11,6 +11,12 @@
     }
 }
 
+.word_wrap {
+    width: 100%;
+    max-width: 160px;
+    word-wrap: break-word;
+}
+
 #detail-pesanan-admin {
     .stepper-wrapper {
         margin-top: auto;
@@ -204,4 +210,17 @@
     // .table {
     //     min-height: 100vh;
     // }
+}
+
+#myFrame {
+    margin-top: 30px;
+    width: 100%;
+    height: 570px;
+}
+
+@media screen and (max-width: 576px) {
+    #myFrame {
+        margin-top: 1.5rem;
+        height: 270px;
+    }
 }

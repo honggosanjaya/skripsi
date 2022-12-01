@@ -9,6 +9,7 @@ use App\Models\RencanaTrip;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use PDF;
+use Jenssegers\Agent\Agent;
 
 class RencanaTripController extends Controller
 {
@@ -23,13 +24,20 @@ class RencanaTripController extends Controller
     $histories = RencanaTrip::orderBy('tanggal', 'DESC')->get();
     $districts = District::orderBy('nama', 'ASC')->get();
 
-    return view('administrasi.rencanakunjungan.index',[
+    $data = [
       'input' => $input,
       'customers' => $customers,  
       'staffs' => $staffs,
       'histories' => $histories,
       'districts' => $districts
-    ]);
+    ];
+
+    $agent = new Agent();
+    if($agent->isMobile()){
+      return view('mobile.administrasi.rencanakunjungan.index',$data);
+    }else{
+      return view('administrasi.rencanakunjungan.index',$data);
+    }
   }
 
   public function storeRencana(Request $request){

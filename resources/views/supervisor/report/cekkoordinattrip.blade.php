@@ -6,9 +6,8 @@
       <ol class="breadcrumb">
         <li class="breadcrumb-item"><a href="/{{ auth()->user()->linkStaff->linkStaffRole->nama ?? null }}">Dashboard</a>
         </li>
-        <li class="breadcrumb-item"><a
-            href="/{{ auth()->user()->linkStaff->linkStaffRole->nama ?? null }}/rencanakunjungan?koordinat=true">Rencana
-            Kunjungan</a>
+        <li class="breadcrumb-item"><a href="/{{ auth()->user()->linkStaff->linkStaffRole->nama ?? null }}/tripsales">Trip
+            Sales</a>
         </li>
         <li class="breadcrumb-item active" aria-current="page">Cek Koordinat</li>
       </ol>

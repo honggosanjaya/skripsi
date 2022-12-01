@@ -20,10 +20,10 @@
     </div>
   @endif
 
-  @if (session()->has('pesanError'))
+  @if (session()->has('errorMessage'))
     <div id="hideMeAfter3Seconds">
       <div class="alert alert-danger alert-dismissible fade show" role="alert">
-        {{ session('pesanError') }}
+        {{ session('errorMessage') }}
         <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
       </div>
     </div>

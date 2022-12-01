@@ -22,6 +22,7 @@ use PDF;
 use Illuminate\Database\QueryException;
 use Intervention\Image\ImageManagerStatic as Image;
 use App\FormMultipleUpload;
+use Jenssegers\Agent\Agent;
 
 class ItemController extends Controller
 {
@@ -584,10 +585,16 @@ class ItemController extends Controller
     }
 
     public function indexAdministrasi(){
-        $items = Item::orderBy("status_enum", "ASC")->paginate(10);
-        return view('administrasi.stok.index',[
-            'items' => $items
-        ]);
+        $agent = new Agent();
+        if($agent->isMobile()){
+          return view('mobile.administrasi.stok.index',[
+            'items' => Item::orderBy("status_enum", "ASC")->get()
+          ]);
+        }else{
+          return view('administrasi.stok.index',[
+            'items' => Item::orderBy("status_enum", "ASC")->paginate(10)
+          ]);
+        }
     }
 
     public function cariStok(){

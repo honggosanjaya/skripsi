@@ -48,7 +48,7 @@
       @else
         <span class="d-flex"><b>Cash Account</b>{{ $reimbursement->linkCashAccount->nama ?? null }}</span>
       @endif
-      <span><b>Jumlah</b>{{ $reimbursement->jumlah_uang ?? null }}</span>
+      <span><b>Jumlah</b>Rp {{ number_format($reimbursement->jumlah_uang ?? 0, 0, '', '.') }}</span>
       <span><b>Keterangan Pengajuan</b>{{ $reimbursement->keterangan_pengajuan ?? null }}</span>
       <span><b>Keterangan Konfirmasi</b>{{ $reimbursement->keterangan_konfirmasi ?? null }}</span>
       @if ($reimbursement->status_enum != null)

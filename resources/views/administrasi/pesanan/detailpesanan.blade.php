@@ -14,19 +14,19 @@
 @endsection
 @section('main_content')
   <div id="detail-pesanan-admin">
-    @if (session()->has('addPesananSuccess'))
+    @if (session()->has('successMessage'))
       <div id="hideMeAfter3Seconds">
         <div class="alert alert-success alert-dismissible fade show mt-4" role="alert">
-          {{ session('addPesananSuccess') }}
+          {{ session('successMessage') }}
           <button type="button" class="btn btn-close" data-bs-dismiss="alert"></button>
         </div>
       </div>
     @endif
 
-    @if (session()->has('pesanError'))
+    @if (session()->has('errorMessage'))
       <div id="hideMeAfter3Seconds">
         <div class="alert alert-danger alert-dismissible fade show" role="alert">
-          {{ session('pesanError') }}
+          {{ session('errorMessage') }}
           <button type="button" class="btn btn-close" data-bs-dismiss="alert"></button>
         </div>
       </div>
