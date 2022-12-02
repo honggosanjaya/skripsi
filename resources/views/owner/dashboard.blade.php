@@ -2,25 +2,34 @@
 
 @section('main_content')
   @if (auth()->user()->linkStaff->linkStaffRole->nama == 'supervisor')
-    <div class="limit_notif notif m-fadeOut p-3">
-      @foreach ($customersPengajuanLimit as $customerPengajuanLimit)
-        <div class="card_notif">
-          <a href="/supervisor/datacustomer/pengajuan/{{ $customerPengajuanLimit->id ?? null }}"
-            class="text-black text-decoration-none">
-            <p class="mb-0 fw-bold">Pengajuan Limit Pembelian</p>
-            <p class="mb-0">Pengajuan limit pembeian dari {{ $customerPengajuanLimit->nama ?? null }} </p>
-          </a>
-        </div>
-      @endforeach
-    </div>
+    <div class="all-notification m-fadeOut p-3">
+      <div id="horizontal_scroll" class="mb-3">
+        <button class="btn btn-outline-primary filter-notif active" data-notif="limit">Limit Pembelian
+          ({{ $datadua['jml_pengajuan'] }})</button>
+        <button class="btn btn-outline-primary filter-notif" data-notif="opname">Stok Opname
+          ({{ $datadua['juml_opname'] }})</button>
+      </div>
 
-    <div class="opname_notif notif m-fadeOut p-3">
-      @foreach ($stokOpnamePengajuan as $opname)
-        <div class="card_notif">
-          <p class="mb-0 fw-bold">Pengajuan Stok Opname</p>
-          <p class="mb-0">Pengajuan stok opname dari {{ $opname->linkStaff->nama ?? null }} </p>
-        </div>
-      @endforeach
+      <div class="limit_notif notif">
+        @foreach ($customersPengajuanLimit as $customerPengajuanLimit)
+          <div class="card_notif">
+            <a href="/supervisor/datacustomer/pengajuan/{{ $customerPengajuanLimit->id ?? null }}"
+              class="text-black text-decoration-none">
+              <p class="mb-0 fw-bold">Pengajuan Limit Pembelian</p>
+              <p class="mb-0">Pengajuan limit pembeian dari {{ $customerPengajuanLimit->nama ?? null }} </p>
+            </a>
+          </div>
+        @endforeach
+      </div>
+
+      <div class="opname_notif notif d-none">
+        @foreach ($stokOpnamePengajuan as $opname)
+          <div class="card_notif">
+            <p class="mb-0 fw-bold">Pengajuan Stok Opname</p>
+            <p class="mb-0">Pengajuan stok opname dari {{ $opname->linkStaff->nama ?? null }} </p>
+          </div>
+        @endforeach
+      </div>
     </div>
   @endif
 
