@@ -20,6 +20,28 @@ $(document).ready(function () {
   })
 });
 
+// NOTIFIKASI
+$(".dropdown-toggle").click(function () {
+  $(".alert_notif").removeClass("active");
+  $(".all-notification").addClass("m-fadeOut");
+  $(".all-notification").removeClass("m-fadeIn");
+});
+
+$(".alert_notif").click(function () {
+  $(this).toggleClass("active");
+  $(".all-notification").toggleClass("m-fadeIn m-fadeOut");
+});
+
+$(".filter-notif").click(function () {
+  $(this).addClass("active");
+  $(".filter-notif").not(this).removeClass("active");
+  $(this).blur();
+
+  let type = $(this).data("notif");
+  $(`.${type}_notif`).removeClass('d-none');
+  $('.notif').not(`.${type}_notif`).addClass('d-none');
+});
+
 $(document).ready(function () {
   $(document).on('click', '#event-form .delete_event', function (e) {
     e.preventDefault();

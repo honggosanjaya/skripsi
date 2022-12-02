@@ -50,18 +50,3 @@ if (loginPassword == "12345678" && countt == 2) {
   })
 }
 
-// NOTIFIKASI SUPERVISOR
-$(".alert_limit").click(function () {
-  $(this).toggleClass("active");
-  $(".limit_notif").toggleClass("m-fadeIn m-fadeOut");
-  $(".notif").not(".limit_notif").addClass("m-fadeOut").removeClass("m-fadeIn");
-  $(".alert_notif").not(".alert_limit").removeClass("active");
-});
-
-$(".alert_opname").click(function () {
-  $(this).toggleClass("active");
-  $(".opname_notif").toggleClass("m-fadeIn m-fadeOut");
-  $(".notif").not(".opname_notif").addClass("m-fadeOut").removeClass("m-fadeIn");
-  $(".alert_notif").not(".alert_opname").removeClass("active");
-});
-
