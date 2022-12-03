@@ -22,6 +22,7 @@ use PDF;
 use Illuminate\Database\QueryException;
 use Intervention\Image\ImageManagerStatic as Image;
 use App\FormMultipleUpload;
+use App\Models\ItemPriceList;
 use Jenssegers\Agent\Agent;
 
 class ItemController extends Controller
@@ -320,6 +321,7 @@ class ItemController extends Controller
       'harga1_satuan' => ['required', 'numeric'],
       'harga2_satuan' => ['nullable', 'numeric'],
       'harga3_satuan' => ['nullable', 'numeric'],
+      'hargahpp_satuan' => ['nullable', 'numeric'],
       'deskripsi' => 'nullable',
       'volume' => 'required'
     ]);
@@ -366,9 +368,30 @@ class ItemController extends Controller
         ]);
       }
     }else{
-      Item::insert($validatedData);
+      $item_id = Item::insertGetId($validatedData);
     }
-        
+    
+    // item_price_list
+    for($i = 1; $i<=4; $i++){
+      $tipe_harga = 'harga'.$i.'_satuan';
+      $type = $i;
+      if($i == 4){
+        $tipe_harga = 'hargahpp_satuan';
+        $type = 'hpp';
+      }
+
+      $price = $request->$tipe_harga;
+      if($price !== null){
+        ItemPriceList::insert([
+          'id_item' => $item_id,
+          'price' => $price,
+          'type' => $type,
+          'created_at' => now(),
+          'updated_at' => now()
+        ]);
+      }
+    }
+
     return redirect('/administrasi/stok/produk') -> with('successMessage', 'Produk berhasil ditambahkan' );
   }
 
@@ -435,6 +458,7 @@ class ItemController extends Controller
       'harga1_satuan' => ['required', 'numeric'],
       'harga2_satuan' => ['nullable', 'numeric'],
       'harga3_satuan' => ['nullable', 'numeric'],
+      'hargahpp_satuan' => ['nullable', 'numeric'],
       'deskripsi' => 'nullable',
       'volume' => ['required'],
     ]);
@@ -558,6 +582,33 @@ class ItemController extends Controller
         }else{
           Item::where('id', $idItm)->update([
             'gambar' => null,
+            'updated_at' => now()
+          ]);
+        }
+      }
+    }
+
+    // item_price_list
+    $item = Item::find($id);
+
+    for($i = 1; $i<=4; $i++){
+      $tipe_harga = 'harga'.$i.'_satuan';
+      $type = $i;
+      if($i == 4){
+        $tipe_harga = 'hargahpp_satuan';
+        $type = 'hpp';
+      }
+      
+      $pricelist_harga =  ItemPriceList::where('id_item', $id)->where('type', $type)->latest()->first();
+      $price = $item->$tipe_harga;
+
+      if(($pricelist_harga == null && $price != null) || ($pricelist_harga->price ?? null) !== $price){
+        if($price !== null){
+          ItemPriceList::insert([
+            'id_item' => $id,
+            'price' => $price,
+            'type' => $type,
+            'created_at' => now(),
             'updated_at' => now()
           ]);
         }
