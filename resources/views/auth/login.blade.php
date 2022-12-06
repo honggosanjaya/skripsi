@@ -72,9 +72,9 @@
             </a>
           @endif
 
-          <a class="underline text-sm text-gray-600 hover:text-gray-900 logout-link mt-3" href="/logout">
+          {{-- <a class="underline text-sm text-gray-600 hover:text-gray-900 logout-link mt-3" href="/logout">
             {{ __('Logout') }}
-          </a>
+          </a> --}}
         </div>
 
         <x-button class="ml-3">
