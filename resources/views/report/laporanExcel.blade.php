@@ -38,8 +38,12 @@
         </div>
       </div>
 
-      <button class="btn btn-success mt-3 mt-sm-0 download-report" data-excel="penjualan-sales" type="button">
+      <button class="btn btn-success mt-3 mt-sm-0 download-report me-3" data-excel="penjualan-sales" type="button">
         <i class="bi bi-download px-1 me-1"></i>Laporan Aktivitas Penjualan
+      </button>
+
+      <button class="btn btn-success mt-3 mt-sm-0 download-report" data-excel="penjualan-bersih" type="button">
+        <i class="bi bi-download px-1 me-1"></i>Rekap Penjualan Bersih
       </button>
     </form>
   </div>

@@ -282,6 +282,7 @@ Route::prefix('administrasi')->middleware('administrasi')->group(function() {
   // Laporan Excel
   Route::get('/laporan-excel', [ReportController::class, 'laporanExcel']);
   Route::get('/excel/penjualan-sales', [ExcelController::class, 'penjualanSalesExport']);
+  Route::get('/excel/penjualan-bersih', [ExcelController::class, 'penjualanBersihExport']);
 });
 
 
