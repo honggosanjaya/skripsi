@@ -14,6 +14,7 @@ use App\Http\Controllers\OrderController;
 use App\Http\Controllers\VehicleController;
 use App\Http\Controllers\ReturController;
 use App\Http\Controllers\Controller;
+use App\Http\Controllers\ExcelController;
 use App\Http\Controllers\Api\LoginController;
 use App\Http\Controllers\Auth\RegisteredUserController;
 use App\Http\Controllers\CashAccountController;
@@ -277,6 +278,10 @@ Route::prefix('administrasi')->middleware('administrasi')->group(function() {
   // trip sales
   Route::get('/tripsales', [ReportController::class, 'tripSalesAdmin']);
   Route::get('/tripsales/{trip:id}', [ReportController::class,'cekKoordinatTrip']);
+
+  // Laporan Excel
+  Route::get('/laporan-excel', [ReportController::class, 'laporanExcel']);
+  Route::get('/excel/penjualan-sales', [ExcelController::class, 'penjualanSalesExport']);
 });
 
 
