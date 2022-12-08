@@ -603,7 +603,7 @@ class ItemController extends Controller
       $price = $item->$tipe_harga;
 
       if(($pricelist_harga == null && $price != null) || ($pricelist_harga->price ?? null) !== $price){
-        if($price !== null){
+        // if($price !== null){
           ItemPriceList::insert([
             'id_item' => $id,
             'price' => $price,
@@ -611,7 +611,7 @@ class ItemController extends Controller
             'created_at' => now(),
             'updated_at' => now()
           ]);
-        }
+        // }
       }
     }
 

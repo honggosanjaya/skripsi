@@ -16,7 +16,7 @@ class CreateItemPriceListsTable extends Migration
         Schema::create('item_price_lists', function (Blueprint $table) {
             $table->id();
             $table->bigInteger('id_item');
-            $table->double('price');
+            $table->double('price')->nullable();
             $table->enum('type',['1','2','3','hpp'])->comment('1:harga1, 2:harga2, 3:harga3, hpp:hargahpp');
             $table->timestamps();
         });
