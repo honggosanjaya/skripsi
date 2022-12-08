@@ -16,6 +16,7 @@ use App\Models\Customer;
 use App\Models\Invoice;
 use App\Models\Vehicle;
 use App\Models\History;
+use App\Models\CashAccount;
 use Jenssegers\Agent\Agent;
 
 class ReportController extends Controller
@@ -415,6 +416,11 @@ class ReportController extends Controller
         'dateEnd' => date('Y-m-t')
       ];
 
-      return view('report.laporanExcel', compact('input'));
+      $bukuKas = CashAccount::where('account', '<=', 100)
+                ->where(function ($query) {
+                  $query->whereNull('default')->orWhereIn('default', ['1', '2']);                  
+                })->get();
+
+      return view('report.laporanExcel', compact('input', 'bukuKas'));
     }
 }

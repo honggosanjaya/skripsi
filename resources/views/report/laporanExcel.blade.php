@@ -21,7 +21,7 @@
 
   <div class="px-5 pt-4">
     <form action="" method="get">
-      <div class="row mb-5">
+      <div class="row">
         <div class="col">
           <div class="mb-3">
             <label class="form-label">Date Start</label>
@@ -38,13 +38,20 @@
         </div>
       </div>
 
-      <button class="btn btn-success mt-3 mt-sm-0 download-report me-3" data-excel="penjualan-sales" type="button">
+      <button class="btn btn-success mt-3 download-report me-3" data-excel="penjualan-sales" type="button">
         <i class="bi bi-download px-1 me-1"></i>Laporan Aktivitas Penjualan
       </button>
 
-      <button class="btn btn-success mt-3 mt-sm-0 download-report" data-excel="penjualan-bersih" type="button">
+      <button class="btn btn-success mt-3 download-report me-3" data-excel="penjualan-bersih" type="button">
         <i class="bi bi-download px-1 me-1"></i>Rekap Penjualan Bersih
       </button>
+
+      @foreach ($bukuKas as $kas)
+        <button class="btn btn-success mt-3 download-report me-3" data-excel="rincian-kas/{{ $kas->id }}"
+          data-id="{{ $kas->id }}" type="button">
+          <i class="bi bi-download px-1 me-1"></i>Rincian Kas {{ $kas->nama }}
+        </button>
+      @endforeach
     </form>
   </div>
 
@@ -57,6 +64,11 @@
         const url = new URL(`https://example.com?${data}`);
         const params = new URLSearchParams(url.search);
         params.delete('_token');
+
+        const data_id = $(this).data('id');
+        if (data_id !== undefined) {
+          params.append('id', data_id);
+        }
 
         location.href = window.location.origin + "/administrasi/excel/" + $(this).data('excel') + "?" + params
           .toString()
