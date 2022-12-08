@@ -9,6 +9,7 @@ use App\Models\OrderItem;
 use App\Models\Retur;
 use App\Models\CategoryItem;
 use App\Models\GaleryItem;
+use App\Models\ItemPriceList;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
@@ -46,5 +47,9 @@ class Item extends Model
 
     public function linkGaleryItem(){
       return $this->hasMany(GaleryItem::class,'id_item','id');
+    }
+
+    public function linkItemPriceList(){
+      return $this->hasMany(ItemPriceList::class,'id_item','id');
     }
 }

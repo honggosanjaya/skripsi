@@ -107,6 +107,11 @@
             <i class="bi bi-box me-2"></i><span>Kanvas</span>
           </a>
         </li>
+        <li class="mb-3">
+          <a class="{{ Request::is('administrasi/laporan-excel*') ? 'active' : '' }}" href="/administrasi/laporan-excel">
+            <span class="iconify fs-4 me-2" data-icon="icon-park-solid:excel"></span><span>Laporan Excel</span>
+          </a>
+        </li>
       </ul>
     @endcan
 

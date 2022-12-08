@@ -7,6 +7,7 @@
     <li class="breadcrumb-item active" aria-current="page">Ubah</li>
   </ol>
 @endsection
+
 @section('main_content')
   <div id="data-produk">
     <div class="px-5 pt-4">
@@ -155,6 +156,9 @@
               @enderror
             </div>
           </div>
+        </div>
+
+        <div class="row">
           <div class="col">
             <div class="mb-3">
               <label for="harga3_satuan" class="form-label">Harga3 Satuan</label>
@@ -164,6 +168,22 @@
                   id="harga3_satuan" name="harga3_satuan" value="{{ old('harga3_satuan', $item->harga3_satuan) }}">
               </div>
               @error('harga3_satuan')
+                <div class="invalid-feedback">
+                  {{ $message }}
+                </div>
+              @enderror
+            </div>
+          </div>
+          <div class="col">
+            <div class="mb-3">
+              <label for="hargahpp_satuan" class="form-label">Harga Satuan HPP</label>
+              <div class="input-group">
+                <span class="input-group-text" id="basic-addon1">Rp.</span>
+                <input type="text" class="form-control @error('hargahpp_satuan') is-invalid @enderror"
+                  id="hargahpp_satuan" name="hargahpp_satuan"
+                  value="{{ old('hargahpp_satuan', $item->hargahpp_satuan) }}">
+              </div>
+              @error('hargahpp_satuan')
                 <div class="invalid-feedback">
                   {{ $message }}
                 </div>

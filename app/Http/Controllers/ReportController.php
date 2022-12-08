@@ -16,14 +16,15 @@ use App\Models\Customer;
 use App\Models\Invoice;
 use App\Models\Vehicle;
 use App\Models\History;
+use App\Models\CashAccount;
 use Jenssegers\Agent\Agent;
 
 class ReportController extends Controller
 {
-  public function __construct()
-  {
-    $this->middleware(['auth', 'verified']);
-  }
+    public function __construct()
+    {
+      $this->middleware(['auth', 'verified']);
+    }
 
     public function penjualan(Request $request){
       if (!$request->dateStart??null) {
@@ -407,5 +408,19 @@ class ReportController extends Controller
           'tripssales' => $tripssales->get()
         ]);
       }
+    }
+
+    public function laporanExcel(Request $request){
+      $input = [
+        'dateStart' => date('Y-m-01'),
+        'dateEnd' => date('Y-m-t')
+      ];
+
+      $bukuKas = CashAccount::where('account', '<=', 100)
+                ->where(function ($query) {
+                  $query->whereNull('default')->orWhereIn('default', ['1', '2']);                  
+                })->get();
+
+      return view('report.laporanExcel', compact('input', 'bukuKas'));
     }
 }
