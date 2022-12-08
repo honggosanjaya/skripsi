@@ -34,10 +34,7 @@ class ReportRincianKasExport implements FromView, ShouldAutoSize
           $dateEnd = $this->request->dateEnd;  
       }
 
-      $dateStart = $dateStart." 00:00:00";
-      $dateEnd = $dateEnd." 23:59:59";
-
-      $kas = Kas::where('kas', $this->request->id)->where('debit_kredit', '-1')->with(['linkCashAccount'])->get();
+      $kas = Kas::where('kas', $this->request->id)->where('debit_kredit', '-1')->whereBetween('tanggal', [$dateStart, $dateEnd])->with(['linkCashAccount'])->get();
 
       return view('excel.rincian_kas',[
         'dateStart' => $dateStart,
