@@ -10,6 +10,7 @@ use App\Http\Controllers\Controller;
 use App\Exports\ReportPenjualanSalesExport;
 use App\Exports\ReportPenjualanBersihExport;
 use App\Exports\ReportRincianKasExport;
+use App\Exports\ReportPenerimaanPelanggan;
 
 use App\Models\CashAccount;
 
@@ -31,4 +32,10 @@ class ExcelController extends Controller
         $nama_kas = str_replace(" ", "-", strtolower($kas->nama));
         return (new ReportRincianKasExport($request))->download('rincian-kas-'.$nama_kas.'.xlsx');
     }
+
+    public function penerimaanPelangganExport(Request $request) 
+    {
+        return (new ReportPenerimaanPelanggan($request))->download('penerimaan-pelanggan.xlsx');
+    }
+    
 }

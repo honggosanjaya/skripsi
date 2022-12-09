@@ -29,7 +29,7 @@
         <td style="border:1px solid black;">
           {{ $data->keterangan_1 ?? null }} {{ $data->keterangan_2 ?? null }}
         </td>
-        <td style="text-align: right; border:1px solid black; text-align: right;">{{ $data->uang ?? null }}</td>
+        <td style="border:1px solid black; text-align: right;">{{ $data->uang ?? null }}</td>
       </tr>
     @endforeach
   </tbody>
