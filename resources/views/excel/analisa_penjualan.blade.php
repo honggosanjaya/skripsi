@@ -24,7 +24,7 @@
   </thead>
   <tbody>
     @foreach ($customers as $customer)
-      <tr style="border:1px solid black;">
+      <tr>
         <td style="border:1px solid black; text-align: right;">{{ $customer->nama ?? null }}</td>
         {{-- {{ dd($data['bulan-0']) }} --}}
 
@@ -39,8 +39,8 @@
 
           @foreach ($data['bulan-' . $i] as $dt)
             @if ($customer->id == $dt['id'])
-              @if ($dt['link_order'] != [])
-                @foreach ($dt['link_order'] as $order)
+              @if ($dt['link_order_report_analisa'] != [])
+                @foreach ($dt['link_order_report_analisa'] as $order)
                   @php
                     $totalInvBulanan += $order['link_invoice']['harga_total'];
                     $totalInv += $order['link_invoice']['harga_total'];
@@ -58,8 +58,16 @@
           @endforeach
         @endfor
 
-        <td>{{ $totalInv }}</td>
+        <td style="border:1px solid black;">{{ $totalInv }}</td>
       </tr>
     @endforeach
+
+    <tr>
+      <td style="border:1px solid black;"></td>
+      @for ($i = 5; $i >= 0; $i--)
+        <td style="border:1px solid black;">{{ $total['bulan-' . $i] }}</td>
+      @endfor
+      <td style="border:1px solid black;">{{ $total['allTotal'] }}</td>
+    </tr>
   </tbody>
 </table>

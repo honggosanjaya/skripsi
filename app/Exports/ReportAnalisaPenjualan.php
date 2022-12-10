@@ -25,28 +25,40 @@ class ReportAnalisaPenjualan implements FromView, ShouldAutoSize
   public function view(): View
   {
     $data = [];
+    $total = [];
+    $allTotal = 0;
 
     for ($i = 5; $i >= 0; $i--){
       $dateStart = date("Y-m-01", strtotime("-".$i." months"))." 00:00:00";
       $dateEnd = date("Y-m-t", strtotime("-".$i." months"))." 23:59:59";
       $customers = Customer::select('id','nama')->where('status_enum', '1')->with([
-        'linkOrder' => function($q) use($dateStart, $dateEnd){
+        'linkOrderReportAnalisa' => function($q) use($dateStart, $dateEnd){
               $q->whereHas('linkInvoice', function($q) use($dateStart, $dateEnd){
                 $q->whereBetween('created_at', [$dateStart, $dateEnd]);
               });
           }])->get()->toArray();
-     
       $data['bulan-'.$i] = $customers;
-      array_merge($data, $data['bulan-'.$i]);
+
+      $total['bulan-'.$i] = Invoice::whereBetween('created_at', [$dateStart, $dateEnd])->whereHas('linkOrder', function($q) {
+        $q->whereHas('linkOrderTrack', function($q) {
+          $q->whereIn('status_enum', ['4','5','6']);
+        });
+      })
+      ->select(\DB::raw('SUM(harga_total) as total'))
+      ->get()->sum('total');
+
+      $allTotal += $total['bulan-'.$i];
     }
 
-    // dd($data);
+    $total['allTotal'] = $allTotal;
+    // dd($total);
 
     return view('excel.analisa_penjualan',[
       'dateStart' => $dateStart,
       'dateEnd' => $dateEnd,
       'customers' => Customer::where('status_enum', '1')->get(),
-      'data' => $data
+      'data' => $data,
+      'total' => $total
     ]);
   }
 
