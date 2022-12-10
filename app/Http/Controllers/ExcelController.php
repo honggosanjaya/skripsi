@@ -11,6 +11,7 @@ use App\Exports\ReportPenjualanSalesExport;
 use App\Exports\ReportPenjualanBersihExport;
 use App\Exports\ReportRincianKasExport;
 use App\Exports\ReportPenerimaanPelanggan;
+use App\Exports\ReportAnalisaPenjualan;
 
 use App\Models\CashAccount;
 
@@ -36,6 +37,11 @@ class ExcelController extends Controller
     public function penerimaanPelangganExport(Request $request) 
     {
         return (new ReportPenerimaanPelanggan($request))->download('penerimaan-pelanggan.xlsx');
+    }
+    
+    public function analisaPenjualanExport(Request $request) 
+    {
+        return (new ReportAnalisaPenjualan($request))->download('analisa-penjualan.xlsx');
     }
     
 }

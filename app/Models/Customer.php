@@ -52,7 +52,7 @@ class Customer extends Model
     }
 
     public function linkOrder(){
-        return $this->hasMany(Order::class,'id_customer','id');
+        return $this->hasMany(Order::class,'id_customer','id')->with(['linkInvoice']);
     }
 
     public function linkRencanaTrip(){
