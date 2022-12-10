@@ -70,4 +70,10 @@ class Customer extends Model
     {
         return asset('storage/customer/'.$this->foto);
     }
+
+    public function linkOrderReportAnalisa(){
+      return $this->hasMany(Order::class,'id_customer','id')->whereHas('linkOrderTrack',function($q) {
+          $q->whereIn('status_enum', ['4','5','6']);
+      })->with(['linkInvoice']);
+    }
 }

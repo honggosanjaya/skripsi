@@ -1,7 +1,7 @@
 <table>
   <thead>
     <tr>
-      <td style="text-align: right;">{{ date('d-M-y') }}</td>
+      <td>{{ date('d-M-y') }}</td>
     </tr>
     <tr>
       <td>UD SURYA</td>

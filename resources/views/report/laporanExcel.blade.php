@@ -52,6 +52,14 @@
           <i class="bi bi-download px-1 me-1"></i>Rincian Kas {{ $kas->nama }}
         </button>
       @endforeach
+
+      <button class="btn btn-success mt-3 download-report me-3" data-excel="penerimaan-pelanggan" type="button">
+        <i class="bi bi-download px-1 me-1"></i>Rekap Penerimaan Pelanggan
+      </button>
+
+      <button class="btn btn-success mt-3 download-report me-3" data-excel="analisa-penjualan" type="button">
+        <i class="bi bi-download px-1 me-1"></i>Analisa Penjualan Pelanggan
+      </button>
     </form>
   </div>
 
