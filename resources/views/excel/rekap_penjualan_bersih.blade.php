@@ -7,7 +7,7 @@
       <td colspan="3">REKAP PENJUALAN BERSIH</td>
     </tr>
     <tr>
-      <td colspan="3">Dari {{ date('d-M-y', strtotime($dateStart)) }} s/d {{ date('d-M-y', strtotime($dateEnd)) }}
+      <td colspan="3">Dari {{ date('d-m-Y', strtotime($dateStart)) }} s/d {{ date('d-m-Y', strtotime($dateEnd)) }}
       </td>
     </tr>
     <tr>

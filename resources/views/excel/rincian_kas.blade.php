@@ -7,7 +7,7 @@
       <td colspan="3">Rincian Pembayaran Lain per Bank</td>
     </tr>
     <tr>
-      <td colspan="3">Dari {{ date('d-M-y', strtotime($dateStart)) }} s/d {{ date('d-M-y', strtotime($dateEnd)) }}
+      <td colspan="3">Dari {{ date('d-m-Y', strtotime($dateStart)) }} s/d {{ date('d-m-Y', strtotime($dateEnd)) }}
       </td>
     </tr>
     <tr>
@@ -21,8 +21,12 @@
   </thead>
   <tbody>
     @foreach ($kas as $data)
-      <tr style="border:1px solid black;">
-        <td style="border:1px solid black; text-align: right;">{{ $data->tanggal ?? null }}</td>
+      <tr>
+        @if ($data->tanggal ?? null)
+          <td style="border:1px solid black; text-align: right;">{{ date('d-m-Y', strtotime($data->tanggal)) }}</td>
+        @else
+          <td style="border:1px solid black; text-align: right;"></td>
+        @endif
         <td style="border:1px solid black; text-align: right;">{{ $data->no_bukti ?? null }}</td>
         <td style="border:1px solid black; text-align: right;">{{ $data->kas ?? null }}</td>
         <td style="border:1px solid black;">{{ $data->linkCashAccount->nama ?? null }}</td>
@@ -32,5 +36,12 @@
         <td style="border:1px solid black; text-align: right;">{{ $data->uang ?? null }}</td>
       </tr>
     @endforeach
+    <tr>
+      <td colspan="2" style="border:1px solid black;">Total dari IDR</td>
+      <td style="border:1px solid black;"></td>
+      <td style="border:1px solid black;"></td>
+      <td style="border:1px solid black;"></td>
+      <td style="border:1px solid black;">{{ $total_kas }}</td>
+    </tr>
   </tbody>
 </table>

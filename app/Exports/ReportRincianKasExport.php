@@ -35,11 +35,13 @@ class ReportRincianKasExport implements FromView, ShouldAutoSize
       }
 
       $kas = Kas::where('kas', $this->request->id)->where('debit_kredit', '-1')->whereBetween('tanggal', [$dateStart, $dateEnd])->with(['linkCashAccount'])->get();
+      $total_kas = Kas::where('kas', $this->request->id)->where('debit_kredit', '-1')->whereBetween('tanggal', [$dateStart, $dateEnd])->select(\DB::raw('SUM(uang) as total_kas'))->get()->sum('total_kas');
 
       return view('excel.rincian_kas',[
         'dateStart' => $dateStart,
         'dateEnd' => $dateEnd,
-        'kas' => $kas
+        'kas' => $kas,
+        'total_kas' => $total_kas
       ]);
   }
 }
