@@ -322,6 +322,7 @@ class CustomerController extends Controller
         'status_enum' => ['required'],
         'foto' => ['image', 'file', 'max:1024'],
         'status_telepon' => ['nullable', 'string', 'max:255'],
+        'kode_customer' => ['nullable', 'string', 'max:255']
       ];
 
       if($request->email){
@@ -481,6 +482,7 @@ class CustomerController extends Controller
         'status_enum' => ['required'],
         'foto' => 'image|file|max:1024',
         'status_telepon' => ['nullable', 'string', 'max:255'],
+        'kode_customer' => ['nullable', 'string', 'max:255']
       ];
 
       if($request->email!=null && $request->email !== $customer->email){

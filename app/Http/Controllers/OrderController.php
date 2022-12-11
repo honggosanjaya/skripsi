@@ -1211,14 +1211,20 @@ class OrderController extends Controller
   }
 
   public function konfirmasiPembayaran(Request $request, order $order){
-    $sisa = (double) $request->sisatagihan;
-     $rules = [
+      $sisa = (double) $request->sisatagihan;
+      $rules = [
         'id_invoice' => ['required'],
         'id_staff_penagih' => ['required'],
         'tanggal' => ['required'],
         'jumlah_pembayaran' => 'required|numeric|max:'.$sisa,
         'metode_pembayaran' => ['required']
       ];
+
+      if($request->metode_pembayaran == '2'){
+        $rules['no_bg'] = ['required'];
+      }else{
+        $rules['no_bg'] = ['nullable'];
+      }
 
       $validatedData = $request->validate($rules);
       $validatedData['created_at'] = now();

@@ -16,7 +16,7 @@
   <div class="px-5 pt-4">
     <h1 class="fs-4 my-4">Riwayat Pembayaran Customer</h1>
     <div class="row">
-      <div class="col-6">
+      <div class="col-lg-6">
         <div class="informasi-list d-flex flex-column">
           <span><b>Nama Customer</b> {{ $order->linkCustomer->nama ?? null }}</span>
           <span><b>Nomor Invoice</b> {{ $order->linkInvoice->nomor_invoice ?? null }}</span>
@@ -27,22 +27,19 @@
         </div>
       </div>
     </div>
-    <table class="table table-hover table-sm mt-4" id="table">
-      <thead>
-        <tr>
-          <th scope="col" class="text-center">No</th>
-          <th scope="col" class="text-center">Nama Penagih</th>
-          <th scope="col" class="text-center">Jumlah Pembayaran</th>
-          <th scope="col" class="text-center">Tanggal</th>
-          <th scope="col" class="text-center">Metode Pembayaran</th>
-        </tr>
-      </thead>
-      <tbody>
-        @if (count($histories) == 0)
+
+    <div class="table-responsive mt-4">
+      <table class="table table-hover table-sm" id="table">
+        <thead>
           <tr>
-            <td colspan="5" class="text-center text-danger mb-0">Tidak Ada Data</td>
+            <th scope="col" class="text-center">No</th>
+            <th scope="col" class="text-center">Nama Penagih</th>
+            <th scope="col" class="text-center">Jumlah Pembayaran</th>
+            <th scope="col" class="text-center">Tanggal</th>
+            <th scope="col" class="text-center">Metode Pembayaran</th>
           </tr>
-        @else
+        </thead>
+        <tbody>
           @foreach ($histories as $history)
             <tr>
               <th scope="row" class="text-center">{{ $loop->iteration }}</th>
@@ -58,9 +55,9 @@
               @endif
             </tr>
           @endforeach
-        @endif
-      </tbody>
-    </table>
+        </tbody>
+      </table>
+    </div>
 
     <hr class="my-5">
 
@@ -133,31 +130,48 @@
 
           <input type="hidden" value="{{ $order->linkInvoice->harga_total - $total_bayar }}" name="sisatagihan">
         </div>
+
         <div class="col">
           <div class="mb-3">
             <label class="form-label">Metode Pembayaran <span class='text-danger'>*</span></label>
-            <select class="form-select" name="metode_pembayaran">
+            <select class="form-select" name="metode_pembayaran" id="metode_pembayaran">
               @foreach ($metodes_pembayaran as $key => $val)
-                @if ($order->linkInvoice->metode_pembayaran != null)
+                @if (old('metode_pembayaran') ?? null)
+                  @if (old('metode_pembayaran') == $key)
+                    <option value="{{ $key }}" selected>{{ $val }}</option>
+                  @else
+                    <option value="{{ $key }}">{{ $val }}</option>
+                  @endif
+                @elseif ($order->linkInvoice->metode_pembayaran ?? null)
                   @if ($order->linkInvoice->metode_pembayaran == $key)
                     <option value="{{ $key }}" selected>{{ $val }}</option>
                   @else
                     <option value="{{ $key }}">{{ $val }}</option>
                   @endif
                 @else
-                  @if (old('metode_pembayaran') == $key)
-                    <option value="{{ $key }}" selected>{{ $val }}</option>
-                  @else
-                    <option value="{{ $key }}">{{ $val }}</option>
-                  @endif
+                  <option value="{{ $key }}">{{ $val }}</option>
                 @endif
               @endforeach
             </select>
           </div>
         </div>
       </div>
-      @if ($defaultpenjualan ?? null)
-        <div class="row">
+
+      <div class="row">
+        <div class="col-6">
+          <div class="mb-3">
+            <label class="form-label">Nomor BG</label>
+            <input type="text" class="form-control @error('no_bg') is-invalid @enderror" name="no_bg"
+              id="no_bg" disabled="true" value="{{ old('no_bg') }}">
+            @error('no_bg')
+              <div class="invalid-feedback">
+                {{ $message }}
+              </div>
+            @enderror
+          </div>
+        </div>
+
+        @if ($defaultpenjualan ?? null)
           <div class="col-6">
             <div class="mb-3">
               <label for="kas" class="form-label">Pilih Kas yang Bertambah <span
@@ -173,8 +187,8 @@
               </select>
             </div>
           </div>
-        </div>
-      @endif
+        @endif
+      </div>
 
       <div class="row justify-content-end mt-4">
         <div class="col-3 d-flex justify-content-end">
@@ -183,4 +197,24 @@
       </div>
     </form>
   </div>
+
+  @push('JS')
+    <script>
+      if ($('#metode_pembayaran').val() == 2) {
+        $('#no_bg').prop("disabled", false);
+      } else {
+        $('#no_bg').prop("disabled", true);
+        $('#no_bg').val("");
+      }
+
+      $('#metode_pembayaran').change(function(e) {
+        if (e.target.value == '2') {
+          $('#no_bg').prop("disabled", false);
+        } else {
+          $('#no_bg').prop("disabled", true);
+          $('#no_bg').val("");
+        }
+      });
+    </script>
+  @endpush
 @endsection

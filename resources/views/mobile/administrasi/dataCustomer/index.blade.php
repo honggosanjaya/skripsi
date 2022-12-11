@@ -32,6 +32,9 @@
         <div class="d-flex justify-content-between align-items-start mb-4">
           <div>
             <h1 class="fs-5 mb-0 title">{{ $customer->nama ?? null }}</h1>
+            @if ($customer->kode_customer ?? null)
+              <span class="text-secondary">{{ $customer->kode_customer }}</span> <br>
+            @endif
             @if (($customer->telepon ?? null) && ($customer->status_telepon ?? null))
               @if (str_contains($customer->status_telepon, 'WA') || str_contains($customer->status_telepon, 'WhatsApp'))
                 <span class="iconify fs-5 me-1" data-icon="logos:whatsapp-icon"></span>

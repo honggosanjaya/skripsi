@@ -40,27 +40,21 @@
           </tr>
         </thead>
         <tbody>
-          @if (count($histories) == 0)
+          @foreach ($histories as $history)
             <tr>
-              <td colspan="5" class="text-center text-danger mb-0">Tidak Ada Data</td>
-            </tr>
-          @else
-            @foreach ($histories as $history)
-              <tr>
-                <th scope="row" class="text-center">{{ $loop->iteration }}</th>
-                <td>{{ $history->linkStaffPenagih->nama ?? null }}</td>
-                <td class="text-center">{{ number_format($history->jumlah_pembayaran ?? 0, 0, '', '.') ?? null }}</td>
-                <td class="text-center" data-order="{{ date('Y-m-d', strtotime($history->tanggal ?? '-')) }}">
-                  {{ date('d M Y', strtotime($history->tanggal ?? '-')) }}
+              <th scope="row" class="text-center">{{ $loop->iteration }}</th>
+              <td>{{ $history->linkStaffPenagih->nama ?? null }}</td>
+              <td class="text-center">{{ number_format($history->jumlah_pembayaran ?? 0, 0, '', '.') ?? null }}</td>
+              <td class="text-center" data-order="{{ date('Y-m-d', strtotime($history->tanggal ?? '-')) }}">
+                {{ date('d M Y', strtotime($history->tanggal ?? '-')) }}
+              </td>
+              @if ($history->metode_pembayaran !== null)
+                <td>
+                  {{ $history->metode_pembayaran == '1' ? 'Tunai' : ($history->metode_pembayaran == '2' ? 'Giro' : 'Transfer') }}
                 </td>
-                @if ($history->metode_pembayaran !== null)
-                  <td>
-                    {{ $history->metode_pembayaran == '1' ? 'Tunai' : ($history->metode_pembayaran == '2' ? 'Giro' : 'Transfer') }}
-                  </td>
-                @endif
-              </tr>
-            @endforeach
-          @endif
+              @endif
+            </tr>
+          @endforeach
         </tbody>
       </table>
     </div>
@@ -71,6 +65,7 @@
     <form class="form-submit" method="POST" action="/administrasi/pesanan/detail/{{ $order->id }}/dibayar">
       @csrf
       <input type="hidden" value="{{ $order->linkInvoice->id ?? null }}" name="id_invoice">
+
       <div class="row">
         <div class="col-12">
           <div class="mb-3">
@@ -92,6 +87,7 @@
           </div>
         </div>
       </div>
+
       <div class="row">
         <div class="col-12">
           <div class="mb-3">
@@ -116,8 +112,9 @@
           </div>
         </div>
       </div>
+
       <div class="row">
-        <div class="col-12">
+        <div class="col">
           <div class="mb-3">
             <label class="form-label">Jumlah Pembayaran <span class='text-danger'>*</span></label>
             <div class="input-group">
@@ -136,26 +133,46 @@
 
           <input type="hidden" value="{{ $order->linkInvoice->harga_total - $total_bayar }}" name="sisatagihan">
         </div>
-        <div class="col-12">
+      </div>
+
+      <div class="row">
+        <div class="col">
           <div class="mb-3">
             <label class="form-label">Metode Pembayaran <span class='text-danger'>*</span></label>
-            <select class="form-select" name="metode_pembayaran">
+            <select class="form-select" name="metode_pembayaran" id="metode_pembayaran">
               @foreach ($metodes_pembayaran as $key => $val)
-                @if ($order->linkInvoice->metode_pembayaran != null)
+                @if (old('metode_pembayaran') ?? null)
+                  @if (old('metode_pembayaran') == $key)
+                    <option value="{{ $key }}" selected>{{ $val }}</option>
+                  @else
+                    <option value="{{ $key }}">{{ $val }}</option>
+                  @endif
+                @elseif ($order->linkInvoice->metode_pembayaran ?? null)
                   @if ($order->linkInvoice->metode_pembayaran == $key)
                     <option value="{{ $key }}" selected>{{ $val }}</option>
                   @else
                     <option value="{{ $key }}">{{ $val }}</option>
                   @endif
                 @else
-                  @if (old('metode_pembayaran') == $key)
-                    <option value="{{ $key }}" selected>{{ $val }}</option>
-                  @else
-                    <option value="{{ $key }}">{{ $val }}</option>
-                  @endif
+                  <option value="{{ $key }}">{{ $val }}</option>
                 @endif
               @endforeach
             </select>
+          </div>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col">
+          <div class="mb-3">
+            <label class="form-label">Nomor BG</label>
+            <input type="text" class="form-control @error('no_bg') is-invalid @enderror" name="no_bg"
+              id="no_bg" disabled="true" value="{{ old('no_bg') }}">
+            @error('no_bg')
+              <div class="invalid-feedback">
+                {{ $message }}
+              </div>
+            @enderror
           </div>
         </div>
       </div>
@@ -186,4 +203,24 @@
       </div>
     </form>
   </div>
+
+  @push('JS')
+    <script>
+      if ($('#metode_pembayaran').val() == 2) {
+        $('#no_bg').prop("disabled", false);
+      } else {
+        $('#no_bg').prop("disabled", true);
+        $('#no_bg').val("");
+      }
+
+      $('#metode_pembayaran').change(function(e) {
+        if (e.target.value == '2') {
+          $('#no_bg').prop("disabled", false);
+        } else {
+          $('#no_bg').prop("disabled", true);
+          $('#no_bg').val("");
+        }
+      });
+    </script>
+  @endpush
 @endsection

@@ -11,15 +11,34 @@
   <div class="container pt-4" id="data-customer">
     <form method="POST" id='data-form' action="/administrasi/datacustomer/tambahcustomer" enctype="multipart/form-data">
       @csrf
-      <div class="mb-3">
-        <label for="nama" class="form-label">Nama <span class="text-danger">*</span></label>
-        <input type="text" class="form-control @error('nama') is-invalid @enderror" id="nama" name="nama"
-          value="{{ old('nama') }}">
-        @error('nama')
-          <div class="invalid-feedback">
-            {{ $message }}
+      <div class="row">
+        <div class="col">
+          <div class="mb-3">
+            <label for="nama" class="form-label">Nama <span class="text-danger">*</span></label>
+            <input type="text" class="form-control @error('nama') is-invalid @enderror" id="nama" name="nama"
+              value="{{ old('nama') }}">
+            @error('nama')
+              <div class="invalid-feedback">
+                {{ $message }}
+              </div>
+            @enderror
           </div>
-        @enderror
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col">
+          <div class="mb-3">
+            <label for="kode_customer" class="form-label">Kode Customer <span class="text-danger">*</span></label>
+            <input type="text" class="form-control @error('kode_customer') is-invalid @enderror" id="kode_customer"
+              name="kode_customer" value="{{ old('kode_customer') }}">
+            @error('kode_customer')
+              <div class="invalid-feedback">
+                {{ $message }}
+              </div>
+            @enderror
+          </div>
+        </div>
       </div>
 
       <div class="row">

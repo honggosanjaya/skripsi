@@ -13,15 +13,34 @@
       enctype="multipart/form-data">
       @method('put')
       @csrf
-      <div class="mb-3">
-        <label for="nama" class="form-label">Nama <span class="text-danger">*</span></label>
-        <input type="text" class="form-control @error('nama') is-invalid @enderror" id="nama" name="nama"
-          value="{{ old('nama', $customer->nama ?? null) }}">
-        @error('nama')
-          <div class="invalid-feedback">
-            {{ $message }}
+      <div class="row">
+        <div class="col">
+          <div class="mb-3">
+            <label for="nama" class="form-label">Nama <span class="text-danger">*</span></label>
+            <input type="text" class="form-control @error('nama') is-invalid @enderror" id="nama" name="nama"
+              value="{{ old('nama', $customer->nama ?? null) }}">
+            @error('nama')
+              <div class="invalid-feedback">
+                {{ $message }}
+              </div>
+            @enderror
           </div>
-        @enderror
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col">
+          <div class="mb-3">
+            <label for="kode_customer" class="form-label">Kode Customer <span class="text-danger">*</span></label>
+            <input type="text" class="form-control @error('kode_customer') is-invalid @enderror" id="kode_customer"
+              name="kode_customer" value="{{ old('kode_customer', $customer->kode_customer ?? null) }}">
+            @error('kode_customer')
+              <div class="invalid-feedback">
+                {{ $message }}
+              </div>
+            @enderror
+          </div>
+        </div>
       </div>
 
       <div class="row">
@@ -242,7 +261,7 @@
       </div>
 
       <div class="row justify-content-end mt-4">
-        <div class="col-3 d-flex justify-content-end">
+        <div class="col d-flex justify-content-end">
           <button type="submit" class="btn btn-warning btn-submit"><span class="iconify fs-5 me-1"
               data-icon="eva:edit-2-fill"></span>Edit Data</button>
         </div>
