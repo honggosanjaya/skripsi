@@ -47,5 +47,14 @@
         </td>
       </tr>
     @endforeach
+    <tr>
+      <td style="border:1px solid black;"></td>
+      <td style="border:1px solid black;"></td>
+      <td style="border:1px solid black;"></td>
+      <td style="border:1px solid black;"></td>
+      <td style="border:1px solid black;"></td>
+      <td style="border:1px solid black;"></td>
+      <td style="border:1px solid black;">{{ $total_pembayaran }}</td>
+    </tr>
   </tbody>
 </table>
