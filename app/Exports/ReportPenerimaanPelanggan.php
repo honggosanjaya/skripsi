@@ -36,7 +36,7 @@ class ReportPenerimaanPelanggan implements FromView, ShouldAutoSize
         $dateStart = $dateStart." 00:00:00";
         $dateEnd = $dateEnd." 23:59:59";
 
-        $pembayarans = Pembayaran::whereBetween('created_at', [$dateStart, $dateEnd])->with(['linkInvoice'])->get();
+        $pembayarans = Pembayaran::whereBetween('created_at', [$dateStart, $dateEnd])->with(['linkInvoice'])->orderBy('tanggal', 'ASC')->get();
         $first_pembayaran = Pembayaran::orderBy('created_at', 'ASC')->first();
         $total_pembayaran = Pembayaran::whereBetween('created_at', [$dateStart, $dateEnd])->select(\DB::raw('SUM(jumlah_pembayaran) as total_pembayaran'))->get()->sum('total_pembayaran');
 
