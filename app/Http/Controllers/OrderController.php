@@ -1217,17 +1217,13 @@ class OrderController extends Controller
         'id_staff_penagih' => ['required'],
         'tanggal' => ['required'],
         'jumlah_pembayaran' => 'required|numeric|max:'.$sisa,
-        'metode_pembayaran' => ['required']
+        'metode_pembayaran' => ['required'],
+        'no_bg' => ['nullable']
       ];
-
-      if($request->metode_pembayaran == '2'){
-        $rules['no_bg'] = ['required'];
-      }else{
-        $rules['no_bg'] = ['nullable'];
-      }
 
       $validatedData = $request->validate($rules);
       $validatedData['created_at'] = now();
+      $validatedData['updated_at'] = now();
       Pembayaran::insert($validatedData);
       $invoice = Invoice::where('id_order','=',$order->id)->first();
 

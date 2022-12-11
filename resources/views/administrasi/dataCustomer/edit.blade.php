@@ -28,7 +28,7 @@
           </div>
           <div class="col-5">
             <div class="mb-3">
-              <label for="kode_customer" class="form-label">Kode Customer <span class="text-danger">*</span></label>
+              <label for="kode_customer" class="form-label">Kode Customer</label>
               <input type="text" class="form-control @error('kode_customer') is-invalid @enderror" id="kode_customer"
                 name="kode_customer" value="{{ old('kode_customer', $customer->kode_customer ?? null) }}">
               @error('kode_customer')
