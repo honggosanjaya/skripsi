@@ -23,7 +23,7 @@
   </thead>
   <tbody>
     @foreach ($fakturs as $data)
-      <tr style="border:1px solid black;">
+      <tr>
         <td style="border:1px solid black;">
           {{ $data['nama_customer'] ?? null }}
         </td>
@@ -49,5 +49,25 @@
         <td style="text-align: right; border:1px solid black;">blm</td>
       </tr>
     @endforeach
+
+    <tr>
+      <td style="border:1px solid black;"></td>
+      <td style="border:1px solid black;"></td>
+      <td style="border:1px solid black;">
+        {{ ($total['total_faktur'] ?? 0) + ($total['total_retur'] ?? 0) }}
+      </td>
+      <td style="border:1px solid black;">
+        {{ $total['total_retur'] ?? null }}
+      </td>
+      <td style="border:1px solid black;">
+        {{ $total['total_faktur'] ?? null }}
+      </td>
+      <td style="border:1px solid black;">
+      </td>
+      <td style="border:1px solid black;">
+      </td>
+      <td style="border:1px solid black;">
+      </td>
+    </tr>
   </tbody>
 </table>
