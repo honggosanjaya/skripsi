@@ -12,6 +12,7 @@ use App\Exports\ReportPenjualanBersihExport;
 use App\Exports\ReportRincianKasExport;
 use App\Exports\ReportPenerimaanPelanggan;
 use App\Exports\ReportAnalisaPenjualan;
+use App\Exports\ReportPiutangUmur;
 
 use App\Models\CashAccount;
 
@@ -43,5 +44,9 @@ class ExcelController extends Controller
     {
         return (new ReportAnalisaPenjualan($request))->download('analisa-penjualan.xlsx');
     }
-    
+
+    public function piutangUmurPiutangExport(Request $request) 
+    {
+        return (new ReportPiutangUmur($request))->download('piutang-umur-piutang.xlsx');
+    }    
 }
