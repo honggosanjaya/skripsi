@@ -32,30 +32,26 @@
           </tr>
         </thead>
         <tbody>
-          @if (sizeof($customers) > 0)
-            @foreach ($customers as $customer)
-              <tr>
-                <th scope="row" class="text-center">{{ $loop->iteration }}</th>
-                <td class="text-center">
-                  @if ($customer->foto != null)
-                    <img src="{{ asset('storage/customer/' . $customer->foto) }}" class="img-fluid" width="40">
-                  @else
-                    <img src="{{ asset('images/default_fototoko.png') }}" class="img-fluid" width="40">
-                  @endif
-                </td>
-                <td class="text-center">{{ $customer->nama ?? null }}</td>
-                <td class="text-center">{{ $customer->full_alamat ?? null }}</td>
-                <td class="text-center"> {{ number_format($customer->limit_pembelian ?? 0, 0, '', '.') }}</td>
-                <td class="text-center">{{ number_format($customer->pengajuan_limit_pembelian ?? 0, 0, '', '.') }}</td>
-                <td class="text-center">
-                  <a href="/supervisor/datacustomer/pengajuan/{{ $customer->id ?? null }}" class="btn btn-primary"><span
-                      class="iconify fs-4 me-1" data-icon="fluent:apps-list-detail-24-filled"></span>Detail</a>
-                </td>
-              </tr>
-            @endforeach
-          @else
-            <p class="text-danger tecxt-center">Tidak ada data pengajuan limit pembelian</p>
-          @endif
+          @foreach ($customers as $customer)
+            <tr>
+              <th scope="row" class="text-center">{{ $loop->iteration }}</th>
+              <td class="text-center">
+                @if ($customer->foto != null)
+                  <img src="{{ asset('storage/customer/' . $customer->foto) }}" class="img-fluid" width="40">
+                @else
+                  <img src="{{ asset('images/default_fototoko.png') }}" class="img-fluid" width="40">
+                @endif
+              </td>
+              <td class="text-center">{{ $customer->nama ?? null }}</td>
+              <td class="text-center">{{ $customer->full_alamat ?? null }}</td>
+              <td class="text-center"> {{ number_format($customer->limit_pembelian ?? 0, 0, '', '.') }}</td>
+              <td class="text-center">{{ number_format($customer->pengajuan_limit_pembelian ?? 0, 0, '', '.') }}</td>
+              <td class="text-center">
+                <a href="/supervisor/datacustomer/pengajuan/{{ $customer->id ?? null }}" class="btn btn-primary"><span
+                    class="iconify fs-4 me-1" data-icon="fluent:apps-list-detail-24-filled"></span>Detail</a>
+              </td>
+            </tr>
+          @endforeach
         </tbody>
       </table>
     </div>

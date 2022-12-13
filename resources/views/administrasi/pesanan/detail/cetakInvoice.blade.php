@@ -174,12 +174,14 @@
         </tr>
 
         <tr>
+          {{-- tgl order --}}
           <td class="td-medium">
             @if ($order->linkOrderTrack->waktu_order ?? null)
               <p class="margin0 center-text">{{ date('d M Y', strtotime($order->linkOrderTrack->waktu_order)) }}
               </p>
             @endif
           </td>
+          {{-- tgl faktur --}}
           <td class="td-medium">
             @if ($order->linkOrderTrack->waktu_berangkat ?? null)
               <p class="margin0 center-text">{{ date('d M Y', strtotime($order->linkOrderTrack->waktu_berangkat)) }}

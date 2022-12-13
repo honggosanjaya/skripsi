@@ -10,6 +10,7 @@ use Maatwebsite\Excel\Concerns\ShouldAutoSize;
 
 use App\Models\Invoice;
 use App\Models\Order;
+use App\Models\Retur;
 
 class ReportPenjualanBersihExport implements FromView, ShouldAutoSize
 {
@@ -43,14 +44,26 @@ class ReportPenjualanBersihExport implements FromView, ShouldAutoSize
             $q->whereIn('status_enum', ['4','5','6'])->whereBetween('waktu_sampai', [$dateStart, $dateEnd]);
           });
         });
+
         $id_invoices = $data->pluck('id');
+
+        $total_faktur = $data->select(\DB::raw('SUM(harga_total) as total'))
+                        ->get()->sum('total');
+
+        $total_retur = Retur::where('status_enum','1')->where('tipe_retur',1)->whereHas('linkInvoice', function($q) use($dateStart, $dateEnd) {
+          $q->whereBetween('created_at', [$dateStart, $dateEnd])->whereHas('linkOrder', function($q) use($dateStart, $dateEnd) {
+            $q->whereHas('linkOrderTrack', function($q) use($dateStart, $dateEnd){
+              $q->whereIn('status_enum', ['4','5','6'])->whereBetween('waktu_sampai', [$dateStart, $dateEnd]);
+            });
+          });
+        })->select(\DB::raw('SUM(kuantitas*harga_satuan) as total_retur'))->get()->sum('total_retur');
         
         foreach($id_invoices as $dt){
           $returs = Invoice::find($dt)->linkRetur ?? null;
           $totalRetur = 0;
           if ($returs != null) {
             foreach ($returs as $retur) {
-              if ($retur->status_enum == '1' && $retur->tipe_retur == '2') {
+              if ($retur->status_enum == '1' && $retur->tipe_retur == 1) {
                 $totalRetur += $retur->kuantitas * $retur->harga_satuan;
               }
             }
@@ -79,24 +92,17 @@ class ReportPenjualanBersihExport implements FromView, ShouldAutoSize
             $groupfakturs[$key]['jumlah_retur'] = $groupfakturs[$key]['jumlah_retur'] + $dt['jumlah_retur'];
           }
         }
-    
+
         // dd($groupfakturs);
-
-        // $invoices = Invoice::whereBetween('invoices.created_at', [$dateStart, $dateEnd])
-        // ->join('orders','invoices.id_order','=','orders.id')
-        // // ->join('returs','invoices.id','=','returs.id_invoice')
-        // ->whereHas('linkOrder', function($q) {
-        //   $q->whereHas('linkOrderTrack', function($q) {
-        //     $q->whereIn('status_enum',['4','5','6']);
-        //   });
-        // })
-        // ->select('orders.id_customer', \DB::raw('SUM(invoices.harga_total) as nilai_faktur'))
-        // ->groupBy('orders.id_customer')->get();
-
+    
         return view('excel.rekap_penjualan_bersih',[
           'dateStart' => $dateStart,
           'dateEnd' => $dateEnd,
-          'fakturs' => $groupfakturs
+          'fakturs' => $groupfakturs,
+          'total' => [
+            'total_faktur' => $total_faktur,
+            'total_retur' => $total_retur
+          ]
         ]);
     }
 }

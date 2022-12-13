@@ -12,6 +12,7 @@
     <h3 class="mb-5">Detail Customer</h3>
     <div class="informasi-list mb_big">
       <span><b>Nama Customer</b> {{ $customer->nama ?? null }}</span>
+      <span><b>Kode Customer</b> {{ $customer->kode_customer ?? null }}</span>
       <span><b>Jenis Customer</b> {{ $customer->linkCustomerType->nama ?? null }}</span>
       <span><b>Wilayah</b> {{ $customer->linkDistrict->nama ?? null }}</span>
       <span><b>Email</b> {{ $customer->email ?? null }}</span>

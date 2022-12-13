@@ -1,7 +1,7 @@
 <table>
   <thead>
     <tr>
-      <td>{{ date('d-M-y') }}</td>
+      <td>{{ date('d-m-Y') }}</td>
     </tr>
     <tr>
       <td>UD SURYA</td>
@@ -10,7 +10,7 @@
       <td colspan="3">REKAP PENERIMAAN PELANGGAN</td>
     </tr>
     <tr>
-      <td colspan="3">Dari {{ date('d-M-y', strtotime($dateStart)) }} s/d {{ date('d-M-y', strtotime($dateEnd)) }}
+      <td colspan="3">Dari {{ date('d-m-Y', strtotime($dateStart)) }} s/d {{ date('d-m-Y', strtotime($dateEnd)) }}
       </td>
     </tr>
     <tr>
@@ -29,13 +29,13 @@
         <td style="border:1px solid black; text-align: right;">{{ $previous_pembayarans_count + $loop->iteration }}</td>
         <td style="border:1px solid black">
           @if ($data->created_at ?? null)
-            {{ date('d M Y', strtotime($data->created_at)) }}
+            {{ date('d-m-Y', strtotime($data->created_at)) }}
           @endif
         </td>
         <td style="border:1px solid black;"></td>
         <td style="border:1px solid black;">
           @if ($data->tanggal ?? null)
-            {{ date('d M Y', strtotime($data->tanggal)) }}
+            {{ date('d-m-Y', strtotime($data->tanggal)) }}
           @endif
         </td>
         <td style="border:1px solid black;"></td>
@@ -47,5 +47,14 @@
         </td>
       </tr>
     @endforeach
+    <tr>
+      <td style="border:1px solid black;"></td>
+      <td style="border:1px solid black;"></td>
+      <td style="border:1px solid black;"></td>
+      <td style="border:1px solid black;"></td>
+      <td style="border:1px solid black;"></td>
+      <td style="border:1px solid black;"></td>
+      <td style="border:1px solid black;">{{ $total_pembayaran }}</td>
+    </tr>
   </tbody>
 </table>

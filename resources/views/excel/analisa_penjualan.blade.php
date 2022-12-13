@@ -1,7 +1,7 @@
 <table>
   <thead>
     <tr>
-      <td>{{ date('d-M-y') }}</td>
+      <td>{{ date('d-m-Y') }}</td>
     </tr>
     <tr>
       <td>UD SURYA</td>
@@ -10,7 +10,7 @@
       <td colspan="4">Analisa Penjualan Pelanggan 6 Bulan Terakhir</td>
     </tr>
     <tr>
-      <td colspan="2">Per Tgl. {{ date('d M Y') }}</td>
+      <td colspan="2">Per Tgl. {{ date('d-m-Y') }}</td>
     </tr>
     <tr>
       <th style="border:1px solid black; font-weight:bold;">Nama Pelanggan</th>

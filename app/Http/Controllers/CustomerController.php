@@ -322,6 +322,7 @@ class CustomerController extends Controller
         'status_enum' => ['required'],
         'foto' => ['image', 'file', 'max:1024'],
         'status_telepon' => ['nullable', 'string', 'max:255'],
+        'kode_customer' => ['nullable', 'string', 'max:255', 'unique:customers']
       ];
 
       if($request->email){
@@ -480,11 +481,15 @@ class CustomerController extends Controller
         'tipe_harga' => ['required', 'integer'],
         'status_enum' => ['required'],
         'foto' => 'image|file|max:1024',
-        'status_telepon' => ['nullable', 'string', 'max:255'],
+        'status_telepon' => ['nullable', 'string', 'max:255']
       ];
 
       if($request->email!=null && $request->email !== $customer->email){
         $rules['email'] = 'string|email|max:255|unique:users';
+      }
+
+      if($request->kode_customer!=null && $request->kode_customer !== $customer->kode_customer){
+        $rules['kode_customer'] = 'string|max:255|unique:customers';
       }
 
       $validatedData = $request->validate($rules);

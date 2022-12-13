@@ -9,6 +9,8 @@ use Maatwebsite\Excel\Concerns\FromView;
 use Maatwebsite\Excel\Concerns\ShouldAutoSize;
 
 use App\Models\Invoice;
+use App\Models\Pembayaran;
+use App\Models\Retur;
 
 class ReportPenjualanSalesExport implements FromView, ShouldAutoSize
 {
@@ -36,18 +38,42 @@ class ReportPenjualanSalesExport implements FromView, ShouldAutoSize
         $dateStart = $dateStart." 00:00:00";
         $dateEnd = $dateEnd." 23:59:59";
 
-        $fakturs = Invoice::whereBetween('created_at', [$dateStart, $dateEnd])->whereHas('linkOrder', function($q) use($dateStart, $dateEnd) {
+        $invoice = Invoice::whereBetween('created_at', [$dateStart, $dateEnd])->whereHas('linkOrder', function($q) use($dateStart, $dateEnd) {
                       $q->whereHas('linkOrderTrack', function($q) use($dateStart, $dateEnd){
                         $q->whereIn('status_enum', ['4','5','6'])->whereBetween('waktu_sampai', [$dateStart, $dateEnd]);
                       });
-                    })->with(['linkRetur'])->get();
+                    });
 
-        // $fakturs = Invoice::whereBetween('created_at', [$dateStart, $dateEnd])->with(['linkRetur'])->get();
+        $fakturs = $invoice->with(['linkRetur', 'linkPembayaran'])->get();
+
+        $total_faktur = $invoice->select(\DB::raw('SUM(harga_total) as total'))
+                        ->get()->sum('total');
+
+        $total_pembayaran = Pembayaran::whereHas('linkInvoice', function($q) use($dateStart, $dateEnd) {
+          $q->whereBetween('created_at', [$dateStart, $dateEnd])->whereHas('linkOrder', function($q) use($dateStart, $dateEnd) {
+            $q->whereHas('linkOrderTrack', function($q) use($dateStart, $dateEnd){
+              $q->whereIn('status_enum', ['4','5','6'])->whereBetween('waktu_sampai', [$dateStart, $dateEnd]);
+            });
+          });
+        })->select(\DB::raw('SUM(jumlah_pembayaran) as total_pembayaran'))->get()->sum('total_pembayaran');
+
+        $total_retur = Retur::where('status_enum','1')->where('tipe_retur','1')->whereHas('linkInvoice', function($q) use($dateStart, $dateEnd) {
+          $q->whereBetween('created_at', [$dateStart, $dateEnd])->whereHas('linkOrder', function($q) use($dateStart, $dateEnd) {
+            $q->whereHas('linkOrderTrack', function($q) use($dateStart, $dateEnd){
+              $q->whereIn('status_enum', ['4','5','6'])->whereBetween('waktu_sampai', [$dateStart, $dateEnd]);
+            });
+          });
+        })->select(\DB::raw('SUM(kuantitas*harga_satuan) as total_retur'))->get()->sum('total_retur');
 
         return view('excel.penjualan_per_sales',[
           'dateStart' => $dateStart,
           'dateEnd' => $dateEnd,
-          'fakturs' => $fakturs
+          'fakturs' => $fakturs,
+          'total' => [
+            'total_faktur' => $total_faktur,
+            'total_retur' => $total_retur,
+            'total_hutang' => $total_faktur - $total_pembayaran,
+          ]
         ]);
     }
 }

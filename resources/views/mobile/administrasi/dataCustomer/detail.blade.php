@@ -14,6 +14,9 @@
       <span class="d-flex align-items-center"><b>Nama Customer</b>
         <span>{{ $customer->nama ?? null }}</span>
       </span>
+      <span class="d-flex align-items-center"><b>Kode Customer</b>
+        <span>{{ $customer->kode_customer ?? null }}</span>
+      </span>
       <span class="d-flex align-items-center"><b>Jenis Customer</b>
         <span>{{ $customer->linkCustomerType->nama ?? null }}</span>
       </span>
