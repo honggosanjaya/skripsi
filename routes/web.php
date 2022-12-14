@@ -287,6 +287,7 @@ Route::prefix('administrasi')->middleware('administrasi')->group(function() {
   Route::get('/excel/penerimaan-pelanggan', [ExcelController::class, 'penerimaanPelangganExport']);
   Route::get('/excel/analisa-penjualan', [ExcelController::class, 'analisaPenjualanExport']);
   Route::get('/excel/piutang-umur', [ExcelController::class, 'piutangUmurPiutangExport']);
+  Route::get('/excel/laba-rugi', [ExcelController::class, 'labaRugiExport']);
 });
 
 

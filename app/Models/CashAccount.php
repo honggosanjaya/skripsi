@@ -23,4 +23,8 @@ class CashAccount extends Model
     public function linkKas(){
       return $this->hasMany(Kas::class,'id_cash_account','id');
     }
+
+    public function linkCashAccount(){
+      return $this->belongsTo(CashAccount::class,'account_parent','account');
+    }
 }
