@@ -32,13 +32,13 @@ class KasController extends Controller
     }
 
     $saldoKas = [];
-    $bukuKas = Kas::where('kas', $cashaccount->id)
+    $bukuKas = Kas::where('kas', $cashaccount->id)->whereDate('tanggal', '<=', now())
               ->where(function ($query) {
                 $query->where('status_pengajuan','0')->orWhere('status_pengajuan','-1')->orWhereNull('status_pengajuan');                  
               })
               ->orderBy('tanggal','ASC')->orderBy('created_at','ASC')->get();
 
-    $saldoDebitKas = Kas::where('kas', $cashaccount->id)
+    $saldoDebitKas = Kas::where('kas', $cashaccount->id)->whereDate('tanggal', '<=', now())
                       ->where('debit_kredit', '1')
                       ->where(function ($query) {
                         $query->where('status','1')->orWhereNull('status');                   
@@ -49,7 +49,7 @@ class KasController extends Controller
                       ->select(\DB::raw('SUM(uang) as saldo_debit'))
                       ->get()->sum('saldo_debit');
 
-    $saldoKreditKas = Kas::where('kas', $cashaccount->id)
+    $saldoKreditKas = Kas::where('kas', $cashaccount->id)->whereDate('tanggal', '<=', now())
                       ->where('debit_kredit', '-1')
                       ->where(function ($query) {
                         $query->where('status','1')->orWhereNull('status');                  
