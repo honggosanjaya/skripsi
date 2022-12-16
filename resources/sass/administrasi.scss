@@ -224,3 +224,15 @@
         height: 270px;
     }
 }
+
+.detailOrder_rincianRetur {
+    border-bottom: 1px solid gray;
+    padding: 10px 0;
+    &:first-child {
+        padding-top: 0;
+    }
+    &:last-child {
+        border-bottom: 0;
+        padding-bottom: 0;
+    }
+}
