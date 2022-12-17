@@ -1170,4 +1170,33 @@ class ItemController extends Controller
         ],
       ]); 
     }
+
+    public function readPriceList(Request $request){
+      $input = [
+        'tipe_harga'=>$request->tipe_harga ?? '1'
+      ];
+
+      $tipe_harga = $request->tipe_harga ?? '1';
+      $get_date = ItemPriceList::where('type', $tipe_harga)
+                  ->select(DB::raw('DATE(created_at) as tgl'))->distinct()
+                  ->orderBy('id', 'DESC')->get()->toArray();
+
+      $date = array_column($get_date, 'tgl');
+      $date_now = date('Y-m-d');
+      $tanggal = array_diff( $date, [$date_now] );
+      $pricetgl = [];
+
+      foreach($tanggal as $tgl){
+        $pricetgl[$tgl] = ItemPriceList::where('type', $tipe_harga)->whereDate('created_at', $tgl)->get();
+      }
+
+      // dd($pricetgl);
+
+      return view('administrasi.stok.pricelist.index', [
+        "input" => $input,
+        "tanggal" => $tanggal,
+        "items" => Item::all(),
+        "pricetgl" => $pricetgl
+      ]);
+    }
 }
