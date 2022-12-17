@@ -19,6 +19,7 @@ use App\Models\History;
 use App\Models\Kas;
 use App\Models\RencanaTrip;
 use App\Models\Kanvas;
+use App\Models\Retur;
 use Illuminate\Support\Facades\DB;
 use PDF;
 use Illuminate\Support\Facades\Validator;
@@ -547,6 +548,8 @@ class OrderController extends Controller
     $activeVehicles = Vehicle::where('is_active',true)->get();
     $invoice = Invoice::where('id_order','=',$order->id)->first();
     $completeItems = [];
+    $total_retur = 0;
+    $total_bayar = 0;
 
     if($invoice != null){
       $total_bayar = Invoice::where('invoices.id', $invoice->id)
@@ -558,19 +561,24 @@ class OrderController extends Controller
       })
       ->select('pembayarans.id_invoice', \DB::raw('SUM(pembayarans.jumlah_pembayaran) as total_bayar'))
       ->groupBy('pembayarans.id_invoice')->get()->sum('total_bayar');
-    
-      $pembayaran_terakhir = Pembayaran::where('id_invoice',$invoice->id)
-      ->orderBy('id', 'DESC')->first();
-    }
 
-    if($invoice != null && $total_bayar==null || $invoice == null){
-      $total_bayar = 0;
-    } 
-    
-    if($invoice == null){
-      $pembayaran_terakhir = null;
-    }
+      $total_retur = Invoice::where('invoices.id', $invoice->id)
+      ->join('returs','invoices.id','=','returs.id_invoice')
+      ->whereHas('linkOrder', function($q) {
+        $q->whereHas('linkOrderTrack', function($q) {
+          $q->whereIn('status_enum',['4','5','6']);
+        });
+      })
+      ->whereHas('linkRetur', function($q) {
+        $q->where('status_enum','1')->where('tipe_retur',1);
+      })
+      ->select('returs.id_invoice', \DB::raw('SUM(returs.kuantitas * returs.harga_satuan) as total_retur'))
+      ->groupBy('returs.id_invoice')->get()->sum('total_retur');
 
+      $pembayaran_terakhir = Pembayaran::where('id_invoice',$invoice->id)->orderBy('id', 'DESC')->first();
+      $returs = Retur::where('id_invoice',$invoice->id)->where('status_enum','1')->get()->groupBy('no_retur');
+    }
+    
     foreach($items as $item){
       $itemSerupa = Item::where('link_item', $item->linkItem->link_item)
               ->where('harga1_satuan', $item->linkItem->harga1_satuan)
@@ -588,9 +596,11 @@ class OrderController extends Controller
       'order' => $order,
       'items' => $completeItems,
       'total_bayar' => $total_bayar,
-      'pembayaran_terakhir' => $pembayaran_terakhir,
+      'total_retur' => $total_retur,
+      'pembayaran_terakhir' => $pembayaran_terakhir ?? null,
       'inactiveVehicles' => $inactiveVehicles,
-      'activeVehicles' => $activeVehicles
+      'activeVehicles' => $activeVehicles,
+      'returs' => $returs ?? null
     ];
 
     $agent = new Agent();

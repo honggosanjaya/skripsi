@@ -64,6 +64,10 @@
       <button class="btn btn-success mt-3 download-report me-3" data-excel="piutang-umur" type="button">
         <i class="bi bi-download px-1 me-1"></i>Pitang & Umur Piutang
       </button>
+
+      <button class="btn btn-success mt-3 download-report me-3" data-excel="laba-rugi" type="button">
+        <i class="bi bi-download px-1 me-1"></i>Laba Rugi
+      </button>
     </form>
   </div>
 

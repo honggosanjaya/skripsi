@@ -196,10 +196,11 @@ Route::prefix('administrasi')->middleware('administrasi')->group(function() {
     Route::get('/riwayat/detail/{pengadaan:no_pengadaan}', [ItemController::class, 'cariRiwayatDetail']);
     Route::get('/riwayat/detail/{pengadaan:no_pengadaan}/cetak-pdf', [ItemController::class, 'cetakPDF']);
     
-    //Route untuk pengadaan
+    Route::get('/produk/pricelist', [ItemController::class, 'readPriceList']);
     Route::resource('/produk', ItemController::class);
     Route::post('/produk/ubahstatus/{item:id}', [ItemController::class, 'administrasiEditStatusItem']);
-
+    
+    //Route untuk pengadaan
     Route::get('/pengadaan', [ItemController::class, 'productList'])->name('products.list');
     Route::get('/pengadaan/cart', [CartController::class, 'cartList'])->name('cart.list');
     Route::post('/pengadaan/cart', [CartController::class, 'addToCart'])->name('cart.store');
@@ -287,6 +288,7 @@ Route::prefix('administrasi')->middleware('administrasi')->group(function() {
   Route::get('/excel/penerimaan-pelanggan', [ExcelController::class, 'penerimaanPelangganExport']);
   Route::get('/excel/analisa-penjualan', [ExcelController::class, 'analisaPenjualanExport']);
   Route::get('/excel/piutang-umur', [ExcelController::class, 'piutangUmurPiutangExport']);
+  Route::get('/excel/laba-rugi', [ExcelController::class, 'labaRugiExport']);
 });
 
 

@@ -20,9 +20,13 @@
     </div>
   @endif
 
-  <div class="px-5">
-    <a href="/administrasi/stok/produk/create" class="btn btn-primary btn_add-relative">
+  <div class="px-5 pt-4">
+    <a href="/administrasi/stok/produk/create" class="btn btn-primary me-3">
       <span class="iconify fs-3 me-2" data-icon="dashicons:database-add"></span> Tambah Produk
+    </a>
+
+    <a href="/administrasi/stok/produk/pricelist" class="btn btn-success">
+      <span class="iconify fs-3 me-2" data-icon="material-symbols:price-change-outline"></span> Price List
     </a>
 
     <div class="table-responsive mt-3">

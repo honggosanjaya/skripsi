@@ -179,7 +179,7 @@
             <tr>
               <td colspan="4" class="text-center fw-bold">Total (Setelah event & diskon jenis Cust) : </td>
               @if ($order->linkInvoice->harga_total ?? null)
-                <td>{{ number_format($order->linkInvoice->harga_total, 0, '', '.') }}</td>
+                <td>{{ number_format($order->linkInvoice->harga_total + $total_retur, 0, '', '.') }}</td>
               @else
                 <td>menunggu pesanan dikonfirmasi</td>
               @endif
@@ -189,6 +189,10 @@
               <tr>
                 <td colspan="4" class="text-center fw-bold">Total Pembayaran : </td>
                 <td>{{ number_format($total_bayar, 0, '', '.') }}</td>
+              </tr>
+              <tr>
+                <td colspan="4" class="text-center fw-bold">Total Retur : </td>
+                <td>{{ number_format($total_retur, 0, '', '.') }}</td>
               </tr>
             @endif
 
@@ -322,6 +326,85 @@
           </div>
         @elseif($order->linkOrderTrack->status_enum == '4')
           <div class="float-end">
+            @if ($returs ?? null)
+              @if (count($returs) > 0)
+                <button type="button" class="btn btn-warning mt-3 me-2" data-bs-toggle="modal"
+                  data-bs-target="#returModal">
+                  <span class="iconify fs-4 me-1" data-icon="tabler:truck-return"></span>Lihat Retur Terkait
+                </button>
+
+                <div class="modal fade" id="returModal" tabindex="-1" aria-labelledby="returModalLabel"
+                  aria-hidden="true">
+                  <div class="modal-dialog">
+                    <div class="modal-content">
+                      <div class="modal-header">
+                        <h1 class="modal-title fs-5" id="returModalLabel">Rincian Retur
+                          {{ $order->linkInvoice->nomor_invoice ?? null }}</h1>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                      </div>
+                      <div class="modal-body">
+                        @foreach ($returs as $retur)
+                          <div class="detailOrder_rincianRetur">
+                            <div>
+                              <p class="mb-0">{{ $retur[0]->no_retur ?? null }}</p>
+                              @if ($retur[0]->tipe_retur ?? null)
+                                <p class="mb-0">Tipe: {{ $retur[0]->tipe_retur == 1 ? 'Potongan' : 'Tukar Guling' }}
+                                </p>
+                              @endif
+
+                              @php
+                                $subtotal_retur = 0;
+                              @endphp
+
+                              <div class="table-responsive">
+                                <table class="table table-bordered mt-2">
+                                  <thead>
+                                    <tr>
+                                      <th scope="col" class="text-center">Nama Item</th>
+                                      <th scope="col" class="text-center">Kuantitas</th>
+                                      <th scope="col" class="text-center">Harga Satuan</th>
+                                      <th scope="col" class="text-center">Subtotal</th>
+                                    </tr>
+                                  </thead>
+                                  <tbody>
+                                    @foreach ($retur as $dt)
+                                      @php
+                                        if ($retur[0]->tipe_retur == 1) {
+                                            $subtotal_retur += ($dt->kuantitas ?? 0) * ($dt->harga_satuan ?? 0);
+                                        }
+                                      @endphp
+                                      <tr>
+                                        <td>{{ $dt->linkItem->nama ?? null }}</td>
+                                        <td>{{ $dt->kuantitas ?? null }}</td>
+                                        @if ($dt->harga_satuan ?? null)
+                                          <td>{{ number_format($dt->harga_satuan, 0, '', '.') }}</td>
+                                        @else
+                                          <td></td>
+                                        @endif
+                                        <td class="text-end">
+                                          {{ number_format(($dt->kuantitas ?? 0) * ($dt->harga_satuan ?? 0), 0, '', '.') }}
+                                        </td>
+                                      </tr>
+                                    @endforeach
+                                    @if ($retur[0]->tipe_retur == 1)
+                                      <tr>
+                                        <td colspan="3" class="text-center"><b>Total Retur</b></td>
+                                        <td class="text-end">{{ number_format($subtotal_retur, 0, '', '.') }}</td>
+                                      </tr>
+                                    @endif
+                                  </tbody>
+                                </table>
+                              </div>
+                            </div>
+                          </div>
+                        @endforeach
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              @endif
+            @endif
+
             <a class="btn btn-primary mt-3" href="/administrasi/pesanan/detail/{{ $order->id }}/pembayaran">
               <i class="bi bi-cash-coin me-2"></i>Pembayaran
             </a>

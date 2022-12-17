@@ -287,6 +287,7 @@
         @php
           $diskon = $order->linkInvoice->linkEvent->diskon ?? null;
           $potongan = $order->linkInvoice->linkEvent->potongan ?? null;
+          $returs = $order->linkInvoice->linkRetur ?? null;
           
           if ($diskon ?? null) {
               $totaldiskon = (($orderitems[$key]['total_sub'] ?? 0) / 100) * $diskon;
@@ -299,6 +300,15 @@
           }
           
           $total_faktur = ($orderitems[$key]['total_sub'] ?? 0) - ($totaldiskon ?? 0);
+          $total_retur = 0;
+          
+          if ($returs ?? null) {
+              foreach ($returs as $retur) {
+                  if ($retur->status_enum == '1' && $retur->tipe_retur == 1) {
+                      $total_retur += ($retur->harga_satuan ?? 0) * ($retur->kuantitas ?? 0);
+                  }
+              }
+          }
         @endphp
 
         <tr class="order-item-big">
@@ -314,10 +324,10 @@
         </tr>
 
         <tr>
-          <td rowspan="3" colspan="3" class="relative-position">
+          <td rowspan="4" colspan="3" class="relative-position">
             <p class="margin0 absolute-top-left">&nbsp;Keterangan :</p>
           </td>
-          <td rowspan="3" colspan="3">
+          <td rowspan="4" colspan="3">
             <p class="margin0 center-text">Diterima Oleh</p>
             <br>
             <hr width="50%">
@@ -340,9 +350,18 @@
 
         <tr>
           <td colspan="2" align="right">
+            <p class="margin0 font-bold">Total Retur :</p>
+          </td>
+          <td align="right" class="font-bold">
+            {{ number_format($total_retur ?? 0, 0, '', '.') }}
+          </td>
+        </tr>
+
+        <tr>
+          <td colspan="2" align="right">
             <p class="margin0 font-bold">Total Faktur :</p>
           </td>
-          <td align="right" class="font-bold">{{ number_format($total_faktur ?? 0, 0, '', '.') }}</td>
+          <td align="right" class="font-bold">{{ number_format($total_faktur - $total_retur, 0, '', '.') }}</td>
         </tr>
       </table>
     </div>

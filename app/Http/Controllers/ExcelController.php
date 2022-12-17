@@ -13,6 +13,8 @@ use App\Exports\ReportRincianKasExport;
 use App\Exports\ReportPenerimaanPelanggan;
 use App\Exports\ReportAnalisaPenjualan;
 use App\Exports\ReportPiutangUmur;
+use App\Exports\ReportLabaRugi;
+
 
 use App\Models\CashAccount;
 
@@ -49,4 +51,10 @@ class ExcelController extends Controller
     {
         return (new ReportPiutangUmur($request))->download('piutang-umur-piutang.xlsx');
     }    
+
+    public function labaRugiExport(Request $request) 
+    {
+        return (new ReportLabaRugi($request))->download('laba-rugi.xlsx');
+    }    
+    
 }

@@ -204,8 +204,8 @@
 }
 
 .table-panel {
-    min-height: 100vh;
-    max-height: 100vh;
+    min-height: 60vh;
+    max-height: 60vh;
     overflow-y: auto;
     // .table {
     //     min-height: 100vh;
@@ -222,5 +222,17 @@
     #myFrame {
         margin-top: 1.5rem;
         height: 270px;
+    }
+}
+
+.detailOrder_rincianRetur {
+    border-bottom: 1px solid gray;
+    padding: 10px 0;
+    &:first-child {
+        padding-top: 0;
+    }
+    &:last-child {
+        border-bottom: 0;
+        padding-bottom: 0;
     }
 }
