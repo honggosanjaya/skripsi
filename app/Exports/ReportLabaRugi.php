@@ -23,15 +23,15 @@ class ReportLabaRugi implements FromView, ShouldAutoSize
 
   public function view(): View
   {
-      if (!$this->request->dateStart ?? null) {
+      if (!$this->request->dateStartLabaRugi ?? null) {
           $dateStart = date('Y-m-01');  
       }else {
-          $dateStart = $this->request->dateStart;  
+          $dateStart = $this->request->dateStartLabaRugi;  
       }
-      if (!$this->request->dateEnd ?? null) {
+      if (!$this->request->dateEndLabaRugi ?? null) {
           $dateEnd = date('Y-m-t'); 
       }else {
-          $dateEnd = $this->request->dateEnd;  
+          $dateEnd = $this->request->dateEndLabaRugi;  
       }
 
       // $dateStart = $dateStart." 00:00:00";
@@ -69,12 +69,11 @@ class ReportLabaRugi implements FromView, ShouldAutoSize
       }
 
       $grouped_data = _group_by($data, 'account_parent');
-      dd($grouped_data);
+      // dd($grouped_data);
 
       return view('excel.laba_rugi',[
         'dateStart' => $dateStart,
         'dateEnd' => $dateEnd,
-        'parent_account_ids' => $parent_account_ids,
         'grouped_data' => $grouped_data
       ]);
   }

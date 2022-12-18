@@ -22,15 +22,15 @@ class ReportPenerimaanPelanggan implements FromView, ShouldAutoSize
 
     public function view(): View
     {
-        if (!$this->request->dateStart ?? null) {
+        if (!$this->request->dateStartPenerimaanPelanggan ?? null) {
             $dateStart = date('Y-m-01');  
         }else {
-            $dateStart = $this->request->dateStart;  
+            $dateStart = $this->request->dateStartPenerimaanPelanggan;  
         }
-        if (!$this->request->dateEnd ?? null) {
+        if (!$this->request->dateEndPenerimaanPelanggan ?? null) {
             $dateEnd = date('Y-m-t'); 
         }else {
-            $dateEnd = $this->request->dateEnd;  
+            $dateEnd = $this->request->dateEndPenerimaanPelanggan;  
         }
 
         $dateStart = $dateStart." 00:00:00";

@@ -24,15 +24,15 @@ class ReportPenjualanSalesExport implements FromView, ShouldAutoSize
 
     public function view(): View
     {
-        if (!$this->request->dateStart ?? null) {
+        if (!$this->request->dateStartPenjualanSales ?? null) {
             $dateStart = date('Y-m-01');  
         }else {
-            $dateStart = $this->request->dateStart;  
+            $dateStart = $this->request->dateStartPenjualanSales;  
         }
-        if (!$this->request->dateEnd ?? null) {
+        if (!$this->request->dateEndPenjualanSales ?? null) {
             $dateEnd = date('Y-m-t'); 
         }else {
-            $dateEnd = $this->request->dateEnd;  
+            $dateEnd = $this->request->dateEndPenjualanSales;  
         }
 
         $dateStart = $dateStart." 00:00:00";

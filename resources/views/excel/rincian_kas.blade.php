@@ -28,7 +28,7 @@
           <td style="border:1px solid black; text-align: right;"></td>
         @endif
         <td style="border:1px solid black; text-align: right;">{{ $data->no_bukti ?? null }}</td>
-        <td style="border:1px solid black; text-align: right;">{{ $data->kas ?? null }}</td>
+        <td style="border:1px solid black; text-align: right;">{{ $data->id_cash_account ?? null }}</td>
         <td style="border:1px solid black;">{{ $data->linkCashAccount->nama ?? null }}</td>
         <td style="border:1px solid black;">
           {{ $data->keterangan_1 ?? null }} {{ $data->keterangan_2 ?? null }}

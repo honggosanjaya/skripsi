@@ -411,16 +411,11 @@ class ReportController extends Controller
     }
 
     public function laporanExcel(Request $request){
-      $input = [
-        'dateStart' => date('Y-m-01'),
-        'dateEnd' => date('Y-m-t')
-      ];
-
       $bukuKas = CashAccount::where('account', '<=', 100)
                 ->where(function ($query) {
                   $query->whereNull('default')->orWhereIn('default', ['1', '2']);                  
                 })->get();
 
-      return view('report.laporanExcel', compact('input', 'bukuKas'));
+      return view('report.laporanExcel', compact('bukuKas'));
     }
 }
