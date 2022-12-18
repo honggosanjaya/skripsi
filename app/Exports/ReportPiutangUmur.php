@@ -23,15 +23,15 @@ class ReportPiutangUmur implements FromView, ShouldAutoSize
 
   public function view(): View
   {
-      if (!$this->request->dateStart ?? null) {
+      if (!$this->request->dateStartPiutangUmur ?? null) {
           $dateStart = date('Y-m-01');  
       }else {
-          $dateStart = $this->request->dateStart;  
+          $dateStart = $this->request->dateStartPiutangUmur;  
       }
-      if (!$this->request->dateEnd ?? null) {
+      if (!$this->request->dateEndPiutangUmur ?? null) {
           $dateEnd = date('Y-m-t'); 
       }else {
-          $dateEnd = $this->request->dateEnd;  
+          $dateEnd = $this->request->dateEndPiutangUmur;  
       }
 
       $dateStart = $dateStart." 00:00:00";

@@ -30,9 +30,9 @@ class ExcelController extends Controller
         return (new ReportPenjualanBersihExport($request))->download('rekap-penjualan-bersih.xlsx');
     }
 
-    public function rincianKasExport(Request $request, $id) 
+    public function rincianKasExport(Request $request) 
     {
-        $kas = CashAccount::find($id);
+        $kas = CashAccount::find($request->kas);
         $nama_kas = str_replace(" ", "-", strtolower($kas->nama));
         return (new ReportRincianKasExport($request))->download('rincian-kas-'.$nama_kas.'.xlsx');
     }

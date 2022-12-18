@@ -24,15 +24,15 @@ class ReportPenjualanBersihExport implements FromView, ShouldAutoSize
 
     public function view(): View
     {
-        if (!$this->request->dateStart ?? null) {
+        if (!$this->request->dateStartPenjualanBersih ?? null) {
             $dateStart = date('Y-m-01');  
         }else {
-            $dateStart = $this->request->dateStart;  
+            $dateStart = $this->request->dateStartPenjualanBersih;  
         }
-        if (!$this->request->dateEnd ?? null) {
+        if (!$this->request->dateEndPenjualanBersih ?? null) {
             $dateEnd = date('Y-m-t'); 
         }else {
-            $dateEnd = $this->request->dateEnd;  
+            $dateEnd = $this->request->dateEndPenjualanBersih;  
         }
         $dateStart = $dateStart." 00:00:00";
         $dateEnd = $dateEnd." 23:59:59";
@@ -94,7 +94,6 @@ class ReportPenjualanBersihExport implements FromView, ShouldAutoSize
         }
 
         // dd($groupfakturs);
-    
         return view('excel.rekap_penjualan_bersih',[
           'dateStart' => $dateStart,
           'dateEnd' => $dateEnd,

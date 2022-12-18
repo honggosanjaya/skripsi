@@ -22,22 +22,22 @@ class ReportRincianKasExport implements FromView, ShouldAutoSize
 
   public function view(): View
   {
-      if (!$this->request->dateStart ?? null) {
+      if (!$this->request->dateStartRincianKas ?? null) {
           $dateStart = date('Y-m-01');  
       }else {
-          $dateStart = $this->request->dateStart;  
+          $dateStart = $this->request->dateStartRincianKas;  
       }
-      if (!$this->request->dateEnd ?? null) {
+      if (!$this->request->dateEndRincianKas ?? null) {
           $dateEnd = date('Y-m-t'); 
       }else {
-          $dateEnd = $this->request->dateEnd;  
+          $dateEnd = $this->request->dateEndRincianKas;  
       }
 
       // $dateStart = $dateStart." 00:00:00";
       // $dateEnd = $dateEnd." 23:59:59";
 
-      $kas = Kas::where('kas', $this->request->id)->where('debit_kredit', '-1')->whereBetween('tanggal', [$dateStart, $dateEnd])->with(['linkCashAccount'])->get();
-      $total_kas = Kas::where('kas', $this->request->id)->where('debit_kredit', '-1')->whereBetween('tanggal', [$dateStart, $dateEnd])->select(\DB::raw('SUM(uang) as total_kas'))->get()->sum('total_kas');
+      $kas = Kas::where('kas', $this->request->kas)->where('debit_kredit', '-1')->whereBetween('tanggal', [$dateStart, $dateEnd])->with(['linkCashAccount'])->get();
+      $total_kas = Kas::where('kas', $this->request->kas)->where('debit_kredit', '-1')->whereBetween('tanggal', [$dateStart, $dateEnd])->select(\DB::raw('SUM(uang) as total_kas'))->get()->sum('total_kas');
 
       return view('excel.rincian_kas',[
         'dateStart' => $dateStart,
