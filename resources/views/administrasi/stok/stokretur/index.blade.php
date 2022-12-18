@@ -12,16 +12,17 @@
     <link href=" {{ mix('css/administrasi.css') }}" rel="stylesheet">
   @endpush
 
-  @if (session()->has('successMessage'))
-    <div id="hideMeAfter3Seconds">
-      <div class="alert alert-success alert-dismissible fade show" role="alert">
-        {{ session('successMessage') }}
-        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-      </div>
-    </div>
-  @endif
 
   <div id="stokretur">
+    @if (session()->has('successMessage'))
+      <div id="hideMeAfter3Seconds">
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+          {{ session('successMessage') }}
+          <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+      </div>
+    @endif
+
     <div class="loading-indicator d-none">
       <div class="spinner-grow spinner-grow-sm" role="status">
         <span class="visually-hidden">Loading...</span>
@@ -64,7 +65,7 @@
                 <td>{{ number_format($product->stok ?? 0, 0, '', '.') }}</td>
                 <td>{{ number_format($product->stok_retur ?? 0, 0, '', '.') }}</td>
                 @if ($product->id ?? null)
-                  <td>
+                  <td class="px-3">
                     <form>
                       <input type="hidden" value="{{ $product->id }}" name="id"
                         class="input-idcart-{{ $product->id }}">
@@ -79,22 +80,19 @@
                       <input type="hidden" value="{{ $product->stok_retur }}" name="stok_retur"
                         class="input-stokreturcart-{{ $product->id }}">
 
-                      @if ($cartItem = \Cart::session(auth()->user()->id . 'stokretur')->get($product->id))
-                        <div class="d-flex justify-content-between">
-                          <div>jumlah</div>
+                      <div class="d-flex justify-content-between align-items-center">
+                        <label>jumlah</label>
+                        @if ($cartItem = \Cart::session(auth()->user()->id . 'stokretur')->get($product->id))
                           <input data-iditem="{{ $product->id }}" type="number"
                             class="form-control input-quantitycart-{{ $product->id }}" style="width: 300px"
                             id="quantity" name="quantity" min="0" max="{{ $product->stok_retur }}"
                             value="{{ $cartItem->quantity ?? null }}">
-                        </div>
-                      @else
-                        <div class="d-flex justify-content-between">
-                          <div>jumlah</div>
+                        @else
                           <input data-iditem="{{ $product->id }}" type="number"
                             class="form-control input-quantitycart-{{ $product->id }}" style="width: 300px"
                             id="quantity" name="quantity" min="0" max="{{ $product->stok_retur }}">
-                        </div>
-                      @endif
+                        @endif
+                      </div>
 
                       {{-- @if ($cartItem2 = \Cart::session(auth()->user()->id . 'stokretur')->get($product->id))
                         <div class="d-flex justify-content-between">
