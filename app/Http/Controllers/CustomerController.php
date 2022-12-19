@@ -170,17 +170,30 @@ class CustomerController extends Controller
         if($request->koordinat == null){
           $request->koordinat = "0@0";
         }
-        
-        Trip::create([
-          'id_customer' => $id_customer,
-          'id_staff' => $request->id_staff,
-          'alasan_penolakan' => $request->alasan_penolakan,
-          'koordinat' => $request->koordinat,
-          'waktu_masuk' => date('Y-m-d H:i:s', $request->jam_masuk),
-          'waktu_keluar' => now(),
-          'status_enum' => '1',
-          'created_at'=> now()
-        ]);
+
+        $today_trip = Trip::where('id_customer', $id_customer)->where('id_staff', $request->id_staff)
+                      ->whereDate('waktu_masuk', date('Y-m-d'))->latest()->first();
+
+        if($today_trip ?? null){
+          $today_trip->update([
+            'alasan_penolakan' => $request->alasan_penolakan,
+            'koordinat' => $request->koordinat,
+            'waktu_keluar' => now(),
+            'updated_at'=> now()
+          ]);
+        }else{
+          Trip::create([
+            'id_customer' => $id_customer,
+            'id_staff' => $request->id_staff,
+            'alasan_penolakan' => $request->alasan_penolakan,
+            'koordinat' => $request->koordinat,
+            'waktu_masuk' => date('Y-m-d H:i:s', $request->jam_masuk),
+            'waktu_keluar' => now(),
+            'status_enum' => '1',
+            'created_at'=> now()
+          ]);
+        }
+
         Customer::find($id_customer)->update(['updated_at'=> now()]);
 
         $date = date("Y-m-d");
