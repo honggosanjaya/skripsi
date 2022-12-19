@@ -1041,12 +1041,12 @@ class ItemController extends Controller
       $listItems = [];
 
       foreach($activeKanvas as $kanvas){
-        array_push($listIdItems, $kanvas->id_item);
+        array_push($listIdItems, $kanvas->id_item ?? null);
 
         array_push($listItems, [
-          "id_item" => $kanvas->id_item,
-          "nama_item" => $kanvas->linkItem->nama,
-          "sisa_stok" => $kanvas->sisa_stok
+          "id_item" => $kanvas->id_item ?? null,
+          "nama_item" => $kanvas->linkItem->nama ?? null,
+          "sisa_stok" => $kanvas->sisa_stok ?? null
         ]);
       }
 

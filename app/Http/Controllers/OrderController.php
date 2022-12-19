@@ -367,7 +367,11 @@ class OrderController extends Controller
     // }
     // Customer::update(['updated_at'=> now()]);
 
-    $trip=Trip::where('id_customer',$id_customer)->orderby('id','desc')->first();
+    $trip = Trip::where('id_customer', $id_customer)->where('id_staff', $request->idStaff)
+                  ->whereDate('waktu_masuk', date('Y-m-d'))->latest()->first();
+
+    // dd($trip);
+
     $trip_data = [
       'id_customer' => $id_customer,
       'id_staff' => $id_staff,
@@ -379,10 +383,6 @@ class OrderController extends Controller
       'created_at'=> now()
     ];
     if($trip == null){
-      $tripOrder = Trip::insertGetId($trip_data);
-      $id_trip = $tripOrder;
-    }
-    else if ($trip->waktu_keluar!=null) {
       $tripOrder = Trip::insertGetId($trip_data);
       $id_trip = $tripOrder;
     }else{
