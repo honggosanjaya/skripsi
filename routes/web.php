@@ -156,8 +156,6 @@ Route::prefix('supervisor')->middleware('supervisor')->group(function() {
 Route::prefix('administrasi')->middleware('administrasi')->group(function() {
   Route::get('/', [HomeController::class, 'indexAdministrasi']);
   Route::get('/pesanan', [OrderController::class, 'index']);
-  // Route::get('/pesanan/cari', [OrderController::class, 'search']);
-  // Route::get('/pesanan/filter', [OrderController::class, 'filter']);
   Route::get('/pesanan/detail/{order:id}', [OrderController::class, 'viewDetail']);
   Route::get('/pesanan/detail/{order:id}/kapasitas', [OrderController::class, 'viewKapasitas']);
   Route::get('/pesanan/detail/{order:id}/cetak-memo', [OrderController::class, 'cetakMemo']);
@@ -196,7 +194,14 @@ Route::prefix('administrasi')->middleware('administrasi')->group(function() {
     Route::get('/riwayat/detail/{pengadaan:no_pengadaan}', [ItemController::class, 'cariRiwayatDetail']);
     Route::get('/riwayat/detail/{pengadaan:no_pengadaan}/cetak-pdf', [ItemController::class, 'cetakPDF']);
     
-    Route::get('/produk/pricelist', [ItemController::class, 'readPriceList']);
+    Route::prefix('produk/pricelist')->group(function(){
+      Route::get('/', [ItemController::class, 'readPriceList']);
+      Route::get('/edit', [ItemController::class, 'editPriceList']);
+      Route::post('/cart', [CartController::class, 'addToCart']);
+      Route::get('/clearcart', [CartController::class, 'clearAllCart']);
+      Route::get('/submit', [ItemController::class, 'storePriceList']);
+    });
+    
     Route::resource('/produk', ItemController::class);
     Route::post('/produk/ubahstatus/{item:id}', [ItemController::class, 'administrasiEditStatusItem']);
     
