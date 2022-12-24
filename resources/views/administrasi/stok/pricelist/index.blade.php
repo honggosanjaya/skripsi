@@ -22,7 +22,6 @@
   @endif
 
   <div class="px-5 pt-4">
-
     <form action="/administrasi/stok/produk/pricelist" method="get" class="mb-5">
       <div class="row">
         <div class="col-4">
@@ -33,9 +32,15 @@
             <option value="hpp" {{ $input['tipe_harga'] == 'hpp' ? 'selected' : '' }}>HPP</option>
           </select>
         </div>
-
-        <div class="col-8">
-          <button type="submit" class="btn btn-primary">Filter</button>
+        <div class="col-5">
+          <button type="submit" class="btn btn-primary"><span class="iconify fs-4 me-1"
+              data-icon="ic:baseline-filter-alt"></span>Filter</button>
+        </div>
+        <div class="col-3">
+          <div class="float-end">
+            <a href="/administrasi/stok/produk/pricelist/edit" class="btn btn-warning"><span class="iconify fs-5 me-1"
+                data-icon="eva:edit-2-fill"></span>Edit Price List</a>
+          </div>
         </div>
       </div>
     </form>

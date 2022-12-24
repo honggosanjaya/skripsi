@@ -1199,4 +1199,47 @@ class ItemController extends Controller
         "pricetgl" => $pricetgl
       ]);
     }
+
+    public function editPriceList(Request $request){
+      $input = [
+        'tipe_harga'=>$request->tipe_harga ?? '1'
+      ];
+
+      return view('administrasi.stok.pricelist.edit', [
+        "input" => $input,
+        "items" => Item::all()
+      ]);
+    }
+
+    public function storePriceList(){
+      $cartItems = \Cart::session(auth()->user()->id.'pricelist')->getContent();
+      $data = [];
+
+      foreach($cartItems as $item){
+        array_push($data,[
+          'id_item' => $item->id,
+          'price' => $item->attributes->perubahan_harga,
+          'type' => $item->attributes->tipe_harga,
+          'created_at' =>  now(),
+          'updated_at' =>  now()
+        ]);
+
+        $product = Item::find($item->id);
+        if($item->attributes->tipe_harga == 1){
+          $product->harga1_satuan = $item->attributes->perubahan_harga;
+        }elseif($item->attributes->tipe_harga == 2){
+          $product->harga2_satuan = $item->attributes->perubahan_harga;
+        }elseif($item->attributes->tipe_harga == 3){
+          $product->harga3_satuan = $item->attributes->perubahan_harga;
+        }elseif($item->attributes->tipe_harga == 'hpp'){
+          $product->hargahpp_satuan = $item->attributes->perubahan_harga;
+        }
+        $product->save();
+      }
+      
+      ItemPriceList::insert($data);
+      \Cart::session(auth()->user()->id.'pricelist')->clear();
+      return redirect('/administrasi/stok/produk/pricelist')->with('successMessage', 'Berhasil menyimpan perubahan pricelist ke database');
+    }
+
 }

@@ -45,7 +45,9 @@ class CartController extends Controller
 
   public function addToCart(Request $request)
   {
-    $cartItem = \Cart::session(auth()->user()->id.$request->route)->get($request->id);
+    if ($request->route!="pricelist"){
+      $cartItem = \Cart::session(auth()->user()->id.$request->route)->get($request->id);
+    }
 
     if ($request->route=="pengadaan") {
       if($cartItem !== null){
@@ -196,6 +198,25 @@ class CartController extends Controller
         'status' => 'success',
         'message' => 'Produk berhasil ditambahkan ke keranjang'
       ]);
+    }elseif($request->route == 'pricelist'){
+      foreach($request->id as $key=>$id){
+        if($request->perubahan_harga[$key] != null){
+          \Cart::session(auth()->user()->id.'pricelist')->add([
+            'id' => $id,
+            'quantity' => 1,
+            'name' => $request->nama[$key],
+            'price' => 0,
+            'attributes' => array(
+              'perubahan_harga' => $request->perubahan_harga[$key],
+              'tipe_harga' => $request->tipe_harga[$key],
+              'price' => $request->harga_satuan[$key]
+            )
+          ]);
+        }
+      }
+
+      $cartItems = \Cart::session(auth()->user()->id.'pricelist')->getContent();
+      return view('administrasi.stok.pricelist.final', compact('cartItems'));
     }
   }
 
@@ -265,6 +286,8 @@ class CartController extends Controller
         $cartItems = \Cart::session(auth()->user()->id.$request->route)->getContent();
         return redirect('/administrasi/stok/stokretur/cart?route=stokretur');
         // return view('administrasi.stok.stokretur.cart', compact('cartItems'));
+      }elseif($request->route=="pricelist") {
+        return redirect('/administrasi/stok/produk/pricelist/edit')->with('successMessage', 'Berhasil menghapus semua item dalam cart');
       }
   }
 }
