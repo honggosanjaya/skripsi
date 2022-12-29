@@ -46,8 +46,12 @@
       <i class="bi bi-download px-1 me-1"></i>Pitang & Umur Piutang
     </button>
 
-    <button type="button" class="btn btn-info me-3 mt-3" data-bs-toggle="modal" data-bs-target="#labaRugi">
+    <button type="button" class="btn btn-warning me-3 mt-3" data-bs-toggle="modal" data-bs-target="#labaRugi">
       <i class="bi bi-download px-1 me-1"></i>Laba Rugi
+    </button>
+
+    <button type="button" class="btn btn-warning me-3 mt-3" data-bs-toggle="modal" data-bs-target="#aktivitasKunjungan">
+      <i class="bi bi-download px-1 me-1"></i>Laporan Aktivitas Kunjungan
     </button>
 
     <div class="modal fade" id="aktivitasPenjualan" tabindex="-1" aria-labelledby="aktivitasPenjualanLabel"
@@ -287,6 +291,47 @@
             </div>
             <div class="modal-footer">
               <button class="btn btn-success download-report" data-excel="laba-rugi" type="button">
+                <i class="bi bi-download px-1 me-1"></i>Download
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <div class="modal fade" id="aktivitasKunjungan" tabindex="-1" aria-labelledby="aktivitasKunjunganLabel"
+      aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h1 class="modal-title fs-5" id="aktivitasKunjunganLabel">Laporan Aktivitas Kunjungan</h1>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <form action="" method="get">
+            <div class="modal-body">
+              <div class="row">
+                <div class="col">
+                  <div class="mb-3">
+                    <label class="form-label">Date Start</label>
+                    <input type="date" name="dateTrip" class="form-control" value="{{ date('Y-m-d') }}">
+                  </div>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col">
+                  <div class="mb-3">
+                    <label class="form-label">Nama Sales</label>
+                    <select class="form-select" name="salesmanAktivitasKunjungan">
+                      @foreach ($staff as $sales)
+                        <option value="{{ $sales->id }}">{{ $sales->nama }}</option>
+                      @endforeach
+                    </select>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="modal-footer">
+              <button class="btn btn-success download-report" data-excel="aktivitas-kunjungan" type="button">
                 <i class="bi bi-download px-1 me-1"></i>Download
               </button>
             </div>
