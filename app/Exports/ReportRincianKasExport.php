@@ -8,6 +8,7 @@ use Illuminate\Contracts\View\View;
 use Maatwebsite\Excel\Concerns\FromView;
 use Maatwebsite\Excel\Concerns\ShouldAutoSize;
 
+use App\Models\CashAccount;
 use App\Models\Kas;
 
 class ReportRincianKasExport implements FromView, ShouldAutoSize
@@ -37,21 +38,22 @@ class ReportRincianKasExport implements FromView, ShouldAutoSize
       // $dateEnd = $dateEnd." 23:59:59";
 
       $all_kas = Kas::where('kas', $this->request->kas)->whereBetween('tanggal', [$dateStart, $dateEnd])
-      ->with(['linkCashAccount'])->get()->groupBy('id_cash_account');
+      ->orderBy('tanggal', 'ASC')->with(['linkCashAccount'])->get();
       
-      $total_perkas = Kas::where('kas', $this->request->kas)->whereBetween('tanggal', [$dateStart, $dateEnd])->select('id_cash_account', \DB::raw('SUM(uang) as total_kas'))->groupBy('id_cash_account')
-      ->get()->groupBy('id_cash_account');
+      $total_kredit = Kas::where('kas', $this->request->kas)->where('debit_kredit', '-1')
+      ->whereBetween('tanggal', [$dateStart, $dateEnd])
+      ->select(\DB::raw('SUM(uang) as total_kredit'))->get()->sum('total_kredit');
 
-      $total_kas = Kas::where('kas', $this->request->kas)->whereBetween('tanggal', [$dateStart, $dateEnd])->select(\DB::raw('SUM(uang) as total_kas'))->get()->sum('total_kas');
-
-      // dd($total_perkas);
+      $total_debit = Kas::where('kas', $this->request->kas)->where('debit_kredit', '1')
+      ->whereBetween('tanggal', [$dateStart, $dateEnd])
+      ->select(\DB::raw('SUM(uang) as total_debit'))->get()->sum('total_debit');
 
       return view('excel.rincian_kas',[
         'dateStart' => $dateStart,
         'dateEnd' => $dateEnd,
         'all_kas' => $all_kas,
-        'total_perkas' => $total_perkas,
-        'total_kas' => $total_kas
+        'total_kas' => $total_debit - $total_kredit,
+        'nama_kas' => CashAccount::find($this->request->kas)->nama
       ]);
   }
 }
