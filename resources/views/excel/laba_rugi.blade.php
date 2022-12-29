@@ -1,148 +1,60 @@
 <table>
-  <tr>
-    <td colspan="5">{{ date('d-m-Y') }}</td>
-  </tr>
-  <tr>
-    <td colspan="11" style="font-size: 15px; text-align:center;">UD SURYA</td>
-  </tr>
-  <tr>
-    <td colspan="11" style="font-size: 15px; color:#800000; text-align:center;">Laba/Rugi (Standar)</td>
-  </tr>
-  <tr>
-    <td colspan="11" style="font-size: 13px; font-weight: bold; text-align:center;">Dari
-      {{ date('d-m-Y', strtotime($dateStart)) }} s/d
-      {{ date('d-m-Y', strtotime($dateEnd)) }}
-    </td>
-  </tr>
-  <tr>
-    <td colspan="11" style="text-align:right;">Filtered by: Dari Tanggal, s/d Tanggal</td>
-  </tr>
-  <tr>
-    <td colspan="6" style="font-weight:bold; color:#151361;">Keterangan</td>
-    <td></td>
-    <td style="font-weight:bold; text-align:right; color:#151361;">Saldo</td>
-  </tr>
-
-  <tr>
-    <td colspan="6" style="font-weight:bold;">Pendapatan</td>
-  </tr>
-
-  <tr>
-    <td></td>
-    <td colspan="5" style="font-weight:bold;">Omset Penjualan Bersih</td>
-    <td></td>
-    <td style="text-align: right;">0</td>
-  </tr>
-
-  <tr>
-    <td></td>
-    <td></td>
-    <td colspan="4">Penjualan</td>
-    <td></td>
-    <td style="text-align: right;">0</td>
-  </tr>
-
-  <tr>
-    <td></td>
-    <td></td>
-    <td colspan="4">Retur Penjualan</td>
-    <td></td>
-    <td style="text-align: right;">0</td>
-  </tr>
-
-  <tr>
-    <td></td>
-    <td></td>
-    <td colspan="4">Potongan Reguler</td>
-    <td></td>
-    <td style="text-align: right;">0</td>
-  </tr>
-
-  <tr>
-    <td></td>
-    <td></td>
-    <td colspan="4">Potongan Faktur</td>
-    <td></td>
-    <td style="text-align: right;">0</td>
-  </tr>
-
-  <tr>
-    <td colspan="6" style="font-weight:bold;">Jumlah Pendapatan</td>
-    <td></td>
-    <td></td>
-    <td colspan="2" style="text-align: right; font-weight: bold;">0</td>
-  </tr>
-
-  <tr>
-    <td colspan="6" style="font-weight:bold;">Beban Pokok Penjualan</td>
-  </tr>
-
-  <tr>
-    <td></td>
-    <td colspan="5">COGS</td>
-    <td></td>
-    <td style="text-align: right;">0</td>
-  </tr>
-
-  <tr>
-    <td colspan="6" style="font-weight: bold;">Jumlah Beban Pokok Penjualan</td>
-    <td></td>
-    <td></td>
-    <td colspan="2" style="text-align: right; font-weight: bold;">0</td>
-  </tr>
-
-  <tr>
-    <td colspan="6" style="font-weight: bold;">LABA KOTOR</td>
-    <td></td>
-    <td></td>
-    <td colspan="2" style="text-align: right; font-weight: bold;">0</td>
-  </tr>
-
-  <tr>
-    <td colspan="6" style="font-weight: bold;">Beban Operasi</td>
-  </tr>
-
-  <tr>
-    <td></td>
-    <td colspan="5" style="font-weight: bold;">TOTAL BIAYA</td>
-    <td></td>
-    <td style="text-align: right; font-weight: bold;">0</td>
-  </tr>
-
-  <tr>
-    <td></td>
-    <td></td>
-    <td colspan="4" style="font-weight: bold;">BIAYA PEMASARAN</td>
-    <td></td>
-    <td style="text-align: right; font-weight: bold;">0</td>
-  </tr>
-
-  @foreach ($grouped_data as $data)
-    @php
-      $total_pengeluaran = 0;
-      foreach ($data as $dt) {
-          $total_pengeluaran += $dt['pengeluaran'];
-      }
-    @endphp
-
+  <thead>
     <tr>
-      <td></td>
-      <td></td>
-      <td></td>
-      <td colspan="3" style="font-weight:bold;">{{ $data[0]['nama_account_parent'] ?? null }}</td>
-      <td></td>
-      <td style="text-align: right; font-weight:bold;">{{ $total_pengeluaran ?? null }}</td>
+      <td>UD SURYA</td>
     </tr>
-    @foreach ($data as $dt)
+    <tr>
+      <td colspan="3">Laba/Rugi (Standar)</td>
+    </tr>
+    <tr>
+      <td colspan="3">Dari {{ date('d-m-Y', strtotime($dateStart)) }} s/d {{ date('d-m-Y', strtotime($dateEnd)) }}
+      </td>
+    </tr>
+    <tr>
+      <th style="border:1px solid black; font-weight:bold;">No. Akun</th>
+      <th style="border:1px solid black; font-weight:bold;">Nama Akun</th>
+      <th style="border:1px solid black; font-weight:bold;">Tanggal</th>
+      <th style="border:1px solid black; font-weight:bold;">Catatan</th>
+      <th style="border:1px solid black; font-weight:bold;">Nilai Rupiah</th>
+    </tr>
+  </thead>
+  <tbody>
+    {{-- {{ dd($total) }} --}}
+    @foreach ($all_kas as $kas)
+      @foreach ($kas as $data)
+        <tr>
+          <td style="border:1px solid black; text-align: right;">{{ $data->id_cash_account ?? null }}</td>
+          <td style="border:1px solid black;">{{ $data->linkCashAccount->nama ?? null }}</td>
+          @if ($data->tanggal ?? null)
+            <td style="border:1px solid black;">{{ date('d-m-Y', strtotime($data->tanggal)) }}</td>
+          @else
+            <td style="border:1px solid black;"></td>
+          @endif
+          <td style="border:1px solid black;">
+            {{ $data->keterangan_1 ?? null }} {{ $data->keterangan_2 ? ',' . $data->keterangan_2 : null }}
+          </td>
+          <td style="border:1px solid black; text-align: right;">
+            {{ $data->debit_kredit == -1 ? '-' : '' }}{{ $data->uang ?? null }}
+          </td>
+        </tr>
+      @endforeach
+
       <tr>
-        <td></td>
-        <td></td>
-        <td></td>
-        <td></td>
-        <td colspan="2">{{ $dt['nama_account'] ?? null }}</td>
-        <td></td>
-        <td style="text-align: right;">{{ $dt['pengeluaran'] ?? null }}</td>
+        <td style="border:1px solid black;"></td>
+        <td style="border:1px solid black;"></td>
+        <td style="border:1px solid black;"></td>
+        <td style="border:1px solid black;">Total dari IDR</td>
+        <td style="border:1px solid black; text-align:right;">
+          {{ ($total['total_debit_perkas'][$data->id_cash_account ?? null][0]['total_debit_perkas'] ?? 0) - ($total['total_kredit_perkas'][$data->id_cash_account ?? null][0]['total_kredit_perkas'] ?? 0) }}
+        </td>
       </tr>
     @endforeach
-  @endforeach
+
+    <tr>
+      <td colspan="2" style="border:1px solid black;">Total dari IDR</td>
+      <td style="border:1px solid black;"></td>
+      <td style="border:1px solid black;"></td>
+      <td style="border:1px solid black; text-align:right;">{{ $total['total_allkas'] ?? null }}</td>
+    </tr>
+  </tbody>
 </table>
