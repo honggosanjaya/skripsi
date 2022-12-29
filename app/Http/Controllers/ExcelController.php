@@ -14,7 +14,7 @@ use App\Exports\ReportPenerimaanPelanggan;
 use App\Exports\ReportAnalisaPenjualan;
 use App\Exports\ReportPiutangUmur;
 use App\Exports\ReportLabaRugi;
-
+use App\Exports\ReportAktivitasKunjungan;
 
 use App\Models\CashAccount;
 
@@ -56,5 +56,9 @@ class ExcelController extends Controller
     {
         return (new ReportLabaRugi($request))->download('laba-rugi.xlsx');
     }    
-    
+
+    public function aktivitasKunjunganExport(Request $request) 
+    {
+        return (new ReportAktivitasKunjungan($request))->download('aktivitas-kunjungan.xlsx');
+    }    
 }

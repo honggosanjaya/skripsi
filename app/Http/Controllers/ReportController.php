@@ -415,7 +415,9 @@ class ReportController extends Controller
                 ->where(function ($query) {
                   $query->whereNull('default')->orWhereIn('default', ['1', '2']);                  
                 })->get();
+      
+      $staff = Staff::where('role', 3)->get();
 
-      return view('report.laporanExcel', compact('bukuKas'));
+      return view('report.laporanExcel', compact('bukuKas', 'staff'));
     }
 }
