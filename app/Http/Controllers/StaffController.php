@@ -206,7 +206,8 @@ class StaffController extends Controller
       }else if($status === '-1'){
         Staff::where('id', $staf->id)->update(['status_enum' => '1']);
         if($request->route == 'editstatussupervisor'){
-          if (Staff::where('role',2)->where('status_enum','1')->count()>1) {
+          // if (Staff::where('role',2)->where('status_enum','1')->count()>1) {
+          if (Staff::where('role',2)->where('status_enum','1')->count()>2) {
             $inactive=Staff::where('role',2)->where('status_enum','1')->where('id','!=',$staf->id)->first();
             $inactive->status_enum='-1';
             $inactive->save();
