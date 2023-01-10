@@ -113,15 +113,18 @@
       <div class="col-12 col-sm-6 col-lg-5">
         <div class="data-list">
           <h1 class="fs-5 fw-bold mb-2">Total Omzet</h1>
-          <span>Rp. {{ number_format($data['omzet']->total ?? 0, 0, '', '.') }}</span>
+          <span>Rp. {{ number_format($data['total_omzet'] ?? 0, 0, '', '.') }}</span>
           <h1 class="fs-5 fw-bold mb-2 mt-4">Total Pengeluaran</h1>
-          <span>Rp. {{ number_format(($data['pembelian'] ?? 0) - ($data['retur'] ?? 0), 0, '', '.') }}</span>
+          <span>Rp. {{ number_format(($data['pembelian'] ?? 0) - ($data['total_retur'] ?? 0), 0, '', '.') }}</span>
           <h1 class="fs-5 fw-bold mb-2 mt-4">Total Untung/Rugi</h1>
           <span>Rp.
-            {{ number_format(($data['omzet']->total ?? 0) - ($data['pembelian'] ?? 0) + ($data['retur'] ?? 0), 0, '', '.') }}</span>
-          {{-- <button class="btn btn-primary d-block mx-auto mt-4">View Detail</button> --}}
+            {{ number_format(($data['total_omzet'] ?? 0) - ($data['pembelian'] ?? 0) + ($data['total_retur'] ?? 0), 0, '', '.') }}</span>
           <h1 class="fs-5 fw-bold mb-2 mt-4">Total Retur</h1>
-          <span>Rp. {{ number_format($data['totalReturInvoice'] ?? 0, 0, '', '.') }}</span>
+          <span>Rp. {{ number_format($data['total_retur'] ?? 0, 0, '', '.') }}</span>
+          <h1 class="fs-5 fw-bold mb-2 mt-4">Total Piutang</h1>
+          <span>Rp. {{ number_format($data['total_piutang'] ?? 0, 0, '', '.') }}</span>
+          <h1 class="fs-5 fw-bold mb-2 mt-4">Total HPP</h1>
+          <span>Rp. {{ number_format($data['total_hpp'] ?? 0, 0, '', '.') }}</span>
         </div>
       </div>
 

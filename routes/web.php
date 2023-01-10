@@ -56,7 +56,7 @@ Route::prefix('owner')->middleware('owner')->group(function() {
   Route::get('/report/koordinattrip', [ReportController::class,'koordinattrip']);
   Route::get('/report/koordinattrip/{trip:id}', [ReportController::class,'cekKoordinatTrip']);
 
-  Route::get('/', [ReportController::class, 'index']);
+  Route::get('/', [ReportController::class, 'indexNew']);
   // Route::post('/', [ReportController::class, 'index']);
   Route::get('/profil', [HomeController::class, 'lihatProfil']);
   Route::get('/datasupervisor', [StaffController::class, 'datasupervisor']);
@@ -80,7 +80,7 @@ Route::prefix('owner')->middleware('owner')->group(function() {
 
 // ============ SUPERVISOR ==============
 Route::prefix('supervisor')->middleware('supervisor')->group(function() {
-  Route::get('/', [ReportController::class, 'index']);
+  Route::get('/', [ReportController::class, 'indexNew']);
   Route::get('/profil', [HomeController::class, 'lihatProfil']);
   Route::get('/profil/ubahpassword', [HomeController::class, 'lihatPassword']);
   Route::post('/profil/check/{user:id_users}', [AuthController::class, 'check']);

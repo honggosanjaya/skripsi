@@ -1259,6 +1259,10 @@ class OrderController extends Controller
         OrderTrack::where('id_order', $order->id)->update([
           'status_enum' => '5'
         ]);
+
+        $invoice->update([
+          'status' => '1'
+        ]);
       }
 
       $cashaccount = CashAccount::where('default', '2')->first();

@@ -43,7 +43,7 @@
     </button>
 
     <button type="button" class="btn btn-success me-3 mt-3" data-bs-toggle="modal" data-bs-target="#piutangUmur">
-      <i class="bi bi-download px-1 me-1"></i>Pitang & Umur Piutang
+      <i class="bi bi-download px-1 me-1"></i>Piutang & Umur Piutang
     </button>
 
     <button type="button" class="btn btn-warning me-3 mt-3" data-bs-toggle="modal" data-bs-target="#labaRugi">
@@ -234,7 +234,7 @@
       <div class="modal-dialog">
         <div class="modal-content">
           <div class="modal-header">
-            <h1 class="modal-title fs-5" id="piutangUmurLabel">Pitang & Umur Piutang</h1>
+            <h1 class="modal-title fs-5" id="piutangUmurLabel">Piutang & Umur Piutang</h1>
             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
           </div>
           <form action="" method="get">

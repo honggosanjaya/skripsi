@@ -272,14 +272,9 @@
           @for ($i = 0; $i < 10 - count($orderitems[$key]['data']); $i++)
             <tr class="order-item">
               <td class="text-white">#</td>
-              <td></td>
-              <td></td>
-              <td></td>
-              <td></td>
-              <td></td>
-              <td></td>
-              <td></td>
-              <td></td>
+              @for ($i = 0; $i < 8; $i++)
+                <td></td>
+              @endfor
             </tr>
           @endfor
         @endif
@@ -312,15 +307,9 @@
         @endphp
 
         <tr class="order-item-big">
-          <td></td>
-          <td></td>
-          <td></td>
-          <td></td>
-          <td></td>
-          <td></td>
-          <td></td>
-          <td></td>
-          <td></td>
+          @for ($i = 0; $i < 9; $i++)
+            <td></td>
+          @endfor
         </tr>
 
         <tr>
