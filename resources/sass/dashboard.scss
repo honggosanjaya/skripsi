@@ -448,17 +448,8 @@ main {
     box-shadow: rgba(149, 157, 165, 0.2) 0px 8px 24px;
 
     h1 {
-        background: linear-gradient(
-            to right,
-            #051937,
-            #004d7a,
-            #008793,
-            #00bf72,
-            #a8eb12
-        );
-        background-clip: text;
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
+        color: #003a7b;
+        font-weight: bold;
     }
     .sales {
         border-bottom: 1px solid rgb(196, 195, 195);
@@ -484,14 +475,6 @@ main {
     .data-list {
         margin-top: 1.5rem;
         padding: 1rem;
-
-        h1 {
-            font-size: 1rem !important;
-        }
-
-        .sales {
-            padding: 0.5rem;
-        }
     }
 
     .mt-4 {

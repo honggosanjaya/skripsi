@@ -18,6 +18,7 @@ use App\Models\Vehicle;
 use App\Models\History;
 use App\Models\CashAccount;
 use App\Models\Pembayaran;
+use App\Models\Kas;
 use Jenssegers\Agent\Agent;
 
 class ReportController extends Controller
@@ -419,7 +420,8 @@ class ReportController extends Controller
         'dateEnd'=>$request->dateEnd,
         'year'=>date('Y', strtotime($request->dateEnd)),
         'month'=>date('m', strtotime($request->dateEnd)),
-        'count'=>$request->count??5
+        'count'=>$request->count??5,
+        'kas'=>$request->kas ?? null
       ];
       $request->dateStart = $request->dateStart." 00:00:00";
       $request->dateEnd = $request->dateEnd." 23:59:59";
@@ -586,6 +588,94 @@ class ReportController extends Controller
         $customersPengajuanLimit = Customer::where('status_limit_pembelian_enum', '0')->get();
         $stokOpnamePengajuan = Order::where('id_customer',0)->where('status_enum','-1')->get();
         $request->session()->increment('count');
+
+        $data['kas'] = CashAccount::where('account', '<=', 100)
+                        ->where(function ($query) {
+                          $query->whereNull('default')->orWhereIn('default', ['1', '2']);                  
+                        })->get();
+        
+        if($request->kas ?? null){
+          $prev_date = date('Y-m-d', strtotime($request->dateStart .' -1 day'));
+
+          $debit_awal = Kas::where('kas', $request->kas)
+              ->where(function ($query) {
+                $query->where('status_pengajuan','0')->orWhere('status_pengajuan','-1')->orWhereNull('status_pengajuan');                  
+              })
+              ->where(function ($query) {
+                $query->where('status','1')->orWhereNull('status');                  
+              })->where('tanggal', '<=', $prev_date)
+              ->where('debit_kredit','1')
+              ->select(\DB::raw('SUM(uang) as debit')) 
+              ->get()
+              ->sum('debit');
+
+          $kredit_awal = Kas::where('kas', $request->kas)
+              ->where(function ($query) {
+                $query->where('status_pengajuan','0')->orWhere('status_pengajuan','-1')->orWhereNull('status_pengajuan');                  
+              })
+              ->where(function ($query) {
+                $query->where('status','1')->orWhereNull('status');                  
+              })->where('tanggal', '<=', $prev_date)
+              ->where('debit_kredit','-1')
+              ->select(\DB::raw('SUM(uang) as kredit')) 
+              ->get()
+              ->sum('kredit');
+          $data['hitungkas']['saldo_awal'] = $debit_awal - $kredit_awal;
+
+
+          $debit_akhir = Kas::where('kas', $request->kas)
+              ->where(function ($query) {
+                $query->where('status_pengajuan','0')->orWhere('status_pengajuan','-1')->orWhereNull('status_pengajuan');                  
+              })
+              ->where(function ($query) {
+                $query->where('status','1')->orWhereNull('status');                  
+              })->where('tanggal', '<=', $request->dateEnd)
+              ->where('debit_kredit','1')
+              ->select(\DB::raw('SUM(uang) as debit')) 
+              ->get()
+              ->sum('debit');
+
+          $kredit_akhir = Kas::where('kas', $request->kas)
+              ->where(function ($query) {
+                $query->where('status_pengajuan','0')->orWhere('status_pengajuan','-1')->orWhereNull('status_pengajuan');                  
+              })
+              ->where(function ($query) {
+                $query->where('status','1')->orWhereNull('status');                  
+              })->where('tanggal', '<=', $request->dateEnd)
+              ->where('debit_kredit','-1')
+              ->select(\DB::raw('SUM(uang) as kredit')) 
+              ->get()
+              ->sum('kredit');
+          $data['hitungkas']['saldo_akhir'] = $debit_akhir - $kredit_akhir;
+
+
+          $pemasukan = Kas::where('kas', $request->kas)
+              ->where(function ($query) {
+                $query->where('status_pengajuan','0')->orWhere('status_pengajuan','-1')->orWhereNull('status_pengajuan');                  
+              })
+              ->where(function ($query) {
+                $query->where('status','1')->orWhereNull('status');                  
+              })->whereBetween('tanggal', [$request->dateStart, $request->dateEnd])
+              ->where('debit_kredit','1')
+              ->select(\DB::raw('SUM(uang) as pemasukan')) 
+              ->get()
+              ->sum('pemasukan');
+          $data['hitungkas']['pemasukan'] = $pemasukan;
+          
+
+          $pengeluaran = Kas::where('kas', $request->kas)
+          ->where(function ($query) {
+            $query->where('status_pengajuan','0')->orWhere('status_pengajuan','-1')->orWhereNull('status_pengajuan');                  
+          })
+          ->where(function ($query) {
+            $query->where('status','1')->orWhereNull('status');                  
+          })->whereBetween('tanggal', [$request->dateStart, $request->dateEnd])
+          ->where('debit_kredit','-1')
+          ->select(\DB::raw('SUM(uang) as pengeluaran')) 
+          ->get()
+          ->sum('pengeluaran');
+          $data['hitungkas']['pengeluaran'] = $pengeluaran;
+        }
 
         return view('owner.dashboard',[
           'data' => $data,
