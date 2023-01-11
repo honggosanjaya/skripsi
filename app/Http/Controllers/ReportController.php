@@ -405,7 +405,7 @@ class ReportController extends Controller
                   $query->whereNull('default')->orWhereIn('default', ['1', '2']);                  
                 })->get();
       
-      $staff = Staff::where('role', 3)->get();
+      $staff = Staff::where('role', 3)->where('status_enum','1')->get();
 
       return view('report.laporanExcel', compact('bukuKas', 'staff'));
     }

@@ -4,7 +4,7 @@
 @endpush
 @section('breadcrumbs')
   <ol class="breadcrumb">
-    <li class="breadcrumb-item"><a href="/administrasi">Dashboard</a></li>
+    <li class="breadcrumb-item"><a href="/{{ auth()->user()->linkStaff->linkSTaffRole->nama }}">Dashboard</a></li>
     <li class="breadcrumb-item active" aria-current="page">Laporan Excel</li>
   </ol>
 @endsection
@@ -19,7 +19,7 @@
     </div>
   @endif
 
-  <div class="px-5 pt-4">
+  <div class="px-4 pt-4 px-sm-5">
     <h1 class="fs-5 mb-4">Laporan - Laporan</h1>
 
     <button type="button" class="btn btn-primary me-3 mt-3" data-bs-toggle="modal" data-bs-target="#aktivitasPenjualan">
@@ -38,7 +38,7 @@
       <i class="bi bi-download px-1 me-1"></i>Rekap Penerimaan Pelanggan
     </button>
 
-    <button type="button" class="btn btn-success me-3 mt-3" data-bs-toggle="modal" data-bs-target="#analisaPenjualan">
+    <button type="button" class="btn btn-success me-3 mt-3 download-report" data-excel="analisa-penjualan">
       <i class="bi bi-download px-1 me-1"></i>Analisa Penjualan Pelanggan
     </button>
 
@@ -356,7 +356,7 @@
           params.append('id', data_id);
         }
 
-        location.href = window.location.origin + "/administrasi/excel/" + $(this).data('excel') + "?" + params
+        location.href = window.location.origin + "/excel/" + $(this).data('excel') + "?" + params
           .toString()
       });
     </script>
