@@ -121,11 +121,33 @@
           <canvas id="kinerjaSalesChart" data-label="{{ json_encode($produk_laris['item_name']) }}"
             data-value="{{ json_encode($produk_laris['item_total']) }}">
         </div>
+
+        <div class="data-list">
+          <h1>Produk Slow Moving</h1>
+          <div class="sales-container">
+            @foreach ($data['produk_slow'] as $item)
+              <div class="sales row">
+                <h3 class="fs-6 col-4 text-capitalize">{{ $item->linkItem->nama ?? null }} </h3>
+                <h3 class="fs-6 col-4">{{ $item->count ?? null }} kali trasaksi</h3>
+                <h3 class="fs-6 col-4">{{ $item->total ?? null }} item terjual</h3>
+              </div>
+            @endforeach
+          </div>
+        </div>
+
+        <div class="data-list">
+          <h1>Produk Tidak Terjual</h1>
+          <div class="sales-container">
+            @foreach ($data['produk_tidak_terjual'] as $item)
+              <h3 class="fs-6 fw-normal">{{ $loop->iteration }}. {{ $item->nama ?? null }}</h3>
+            @endforeach
+          </div>
+        </div>
       </div>
 
       <div class="col-12 col-sm-6 col-lg-5">
         <div class="data-list">
-          <h1 class="fs-5">Total</h1>
+          <h1>Total</h1>
           <div class="informasi-list">
             <span class="d-flex align-items-center">
               <b>Omzet</b>
@@ -154,8 +176,9 @@
             </span>
           </div>
         </div>
+
         <div class="data-list">
-          <h1 class="fs-5">Kas</h1>
+          <h1>Kas</h1>
           @if ($input['kas'] ?? null)
             <div class="informasi-list">
               <span class="d-flex align-items-center">
@@ -179,32 +202,18 @@
             <small class="text-danger d-block text-center">pilih kas terlebih dahulu</small>
           @endif
         </div>
-      </div>
-    </div>
 
-    <div class="row">
-      <div class="col-12 col-sm-6">
         <div class="data-list">
-          <h1 class="fs-5 fw-bold mb-3">Produk Slow Moving</h1>
-          <div class="sales-container">
-            @foreach ($data['produk_slow'] as $item)
-              <div class="sales row">
-                <h3 class="fs-6 col-4 text-capitalize">{{ $item->linkItem->nama ?? null }} </h3>
-                <h3 class="fs-6 col-4">{{ $item->count ?? null }} kali trasaksi</h3>
-                <h3 class="fs-6 col-4">{{ $item->total ?? null }} item terjual</h3>
-              </div>
-            @endforeach
-          </div>
-        </div>
-      </div>
-
-      <div class="col-12 col-sm-6">
-        <div class="data-list">
-          <h1 class="fs-5 fw-bold mb-3">Produk Tidak Terjual</h1>
-          <div class="sales-container">
-            @foreach ($data['produk_tidak_terjual'] as $item)
-              <h3 class="fs-6 fw-normal">{{ $loop->iteration }}. {{ $item->nama ?? null }}</h3>
-            @endforeach
+          <h1>Total Pengadaan & Penjualan</h1>
+          <div class="informasi-list">
+            <span class="d-flex align-items-center">
+              <b>Total Pengadaan</b>
+              <span>Rp. {{ number_format($data['total_pengadaan'] ?? 0, 0, '', '.') }}</span>
+            </span>
+            <span class="d-flex align-items-center">
+              <b>Total Penjualan</b>
+              <span>Rp. {{ number_format($data['total_penjualan'] ?? 0, 0, '', '.') }}</span>
+            </span>
           </div>
         </div>
       </div>

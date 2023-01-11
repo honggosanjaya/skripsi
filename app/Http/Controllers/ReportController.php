@@ -593,7 +593,7 @@ class ReportController extends Controller
                         ->where(function ($query) {
                           $query->whereNull('default')->orWhereIn('default', ['1', '2']);                  
                         })->get();
-        
+
         if($request->kas ?? null){
           $prev_date = date('Y-m-d', strtotime($request->dateStart .' -1 day'));
 
@@ -676,6 +676,19 @@ class ReportController extends Controller
           ->sum('pengeluaran');
           $data['hitungkas']['pengeluaran'] = $pengeluaran;
         }
+
+        $data['total_pengadaan'] = Pengadaan::whereBetween('created_at', [$request->dateStart, $request->dateEnd])
+            ->select(\DB::raw('SUM(harga_total) as total_pengadaan')) 
+            ->get()
+            ->sum('total_pengadaan');
+        
+        $data['total_penjualan'] = Invoice::whereHas('linkOrder',function($q) use($request) {
+              $q->whereHas('linkOrderTrack', function($q) use($request) {
+                  $q->whereIn('status_enum', ['4','5','6'])->whereBetween('waktu_sampai', [$request->dateStart, $request->dateEnd]);
+              });
+            })->select(\DB::raw('SUM(harga_total) as total_penjualan'))
+            ->get()
+            ->sum('total_penjualan');
 
         return view('owner.dashboard',[
           'data' => $data,
