@@ -90,6 +90,12 @@
               <i class="bi bi-cash-coin me-2"></i><span>Reimbursement</span>
             </a>
           </li>
+          <li class="mb-3">
+            <a class="{{ Request::is('administrasi/laporan-excel*') ? 'active' : '' }}"
+              href="/administrasi/laporan-excel">
+              <span class="iconify fs-4 me-2" data-icon="icon-park-solid:excel"></span><span>Laporan Excel</span>
+            </a>
+          </li>
         </ul>
       @endcan
 
@@ -172,7 +178,8 @@
                 </a>
               </li>
               <li>
-                <a class="{{ Request::is('supervisor/category*') ? 'active-submenu' : '' }}" href="/supervisor/category">
+                <a class="{{ Request::is('supervisor/category*') ? 'active-submenu' : '' }}"
+                  href="/supervisor/category">
                   <i class="bi bi-tags me-2"></i><span>Category Item</span>
                 </a>
               </li>
@@ -198,6 +205,11 @@
           <li class="mb-3">
             <a class="{{ Request::is('supervisor/panduan*') ? 'active' : '' }}" href="/supervisor/panduan">
               <span class="iconify fs-4 me-2" data-icon="mdi:television-guide"></span><span>Panduan</span>
+            </a>
+          </li>
+          <li class="mb-3">
+            <a class="{{ Request::is('supervisor/laporan-excel*') ? 'active' : '' }}" href="/supervisor/laporan-excel">
+              <span class="iconify fs-4 me-2" data-icon="icon-park-solid:excel"></span><span>Laporan Excel</span>
             </a>
           </li>
         </ul>
@@ -238,16 +250,19 @@
               </li>
             </ul>
           </li>
-
           <li class="mb-3">
             <a class="{{ Request::is('owner/datasupervisor*') ? 'active' : '' }}" href="/owner/datasupervisor">
               <i class="bi bi-people-fill me-2"></i><span>Data Supervisor</span>
             </a>
           </li>
-
           <li class="mb-3">
             <a class="{{ Request::is('owner/panduan*') ? 'active' : '' }}" href="/owner/panduan">
               <span class="iconify fs-4 me-2" data-icon="mdi:television-guide"></span><span>Panduan</span>
+            </a>
+          </li>
+          <li class="mb-3">
+            <a class="{{ Request::is('owner/laporan-excel*') ? 'active' : '' }}" href="/owner/laporan-excel">
+              <span class="iconify fs-4 me-2" data-icon="icon-park-solid:excel"></span><span>Laporan Excel</span>
             </a>
           </li>
         </ul>

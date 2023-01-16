@@ -62,18 +62,10 @@
     <table class="table table-bordered mt-4">
       <thead>
         <tr>
-          <th scope="col">
-            <p class="mb-0">Kode Barang</p>
-          </th>
-          <th scope="col">
-            <p class="mb-0">Nama Barang</p>
-          </th>
-          <th scope="col">
-            <p class="mb-0">Kuantitas</p>
-          </th>
-          <th scope="col">
-            <p class="mb-0">Keterangan</p>
-          </th>
+          <th scope="col">Kode Barang</th>
+          <th scope="col">Nama Barang</th>
+          <th scope="col">Kuantitas</th>
+          <th scope="col">Keterangan</th>
         </tr>
       </thead>
       <tbody>

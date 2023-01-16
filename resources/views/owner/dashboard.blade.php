@@ -65,6 +65,19 @@
             <input type="number" class="form-control" name="count" value="{{ $input['count'] ?? 5 }}">
           </div>
         </div>
+        <div class="col-12 col-sm-6 col-md-3 mt-3 mt-md-0">
+          <div class="input-group mb-3">
+            <span class="input-group-text">Kas</span>
+            <select class="form-select" name="kas">
+              <option value>-- Pilih Kas --</option>
+              @foreach ($data['kas'] as $kas)
+                <option {{ $kas->id == $input['kas'] ? 'selected' : '' }} value={{ $kas->id }}>
+                  {{ $kas->nama }}
+                </option>
+              @endforeach
+            </select>
+          </div>
+        </div>
       </div>
 
       <div class="row">
@@ -108,26 +121,9 @@
           <canvas id="kinerjaSalesChart" data-label="{{ json_encode($produk_laris['item_name']) }}"
             data-value="{{ json_encode($produk_laris['item_total']) }}">
         </div>
-      </div>
 
-      <div class="col-12 col-sm-6 col-lg-5">
         <div class="data-list">
-          <h1 class="fs-5 fw-bold mb-2">Total Omzet</h1>
-          <span>Rp. {{ number_format($data['omzet']->total ?? 0, 0, '', '.') }}</span>
-          <h1 class="fs-5 fw-bold mb-2 mt-4">Total Pengeluaran</h1>
-          <span>Rp. {{ number_format(($data['pembelian'] ?? 0) - ($data['retur'] ?? 0), 0, '', '.') }}</span>
-          <h1 class="fs-5 fw-bold mb-2 mt-4">Total Untung/Rugi</h1>
-          <span>Rp.
-            {{ number_format(($data['omzet']->total ?? 0) - ($data['pembelian'] ?? 0) + ($data['retur'] ?? 0), 0, '', '.') }}</span>
-          {{-- <button class="btn btn-primary d-block mx-auto mt-4">View Detail</button> --}}
-          <h1 class="fs-5 fw-bold mb-2 mt-4">Total Retur</h1>
-          <span>Rp. {{ number_format($data['totalReturInvoice'] ?? 0, 0, '', '.') }}</span>
-        </div>
-      </div>
-
-      <div class="col-12 col-sm-6">
-        <div class="data-list">
-          <h1 class="fs-5 fw-bold mb-3">Produk Slow Moving</h1>
+          <h1>Produk Slow Moving</h1>
           <div class="sales-container">
             @foreach ($data['produk_slow'] as $item)
               <div class="sales row">
@@ -138,15 +134,86 @@
             @endforeach
           </div>
         </div>
-      </div>
 
-      <div class="col-12 col-sm-6">
         <div class="data-list">
-          <h1 class="fs-5 fw-bold mb-3">Produk Tidak Terjual</h1>
+          <h1>Produk Tidak Terjual</h1>
           <div class="sales-container">
             @foreach ($data['produk_tidak_terjual'] as $item)
               <h3 class="fs-6 fw-normal">{{ $loop->iteration }}. {{ $item->nama ?? null }}</h3>
             @endforeach
+          </div>
+        </div>
+      </div>
+
+      <div class="col-12 col-sm-6 col-lg-5">
+        <div class="data-list">
+          <h1>Total</h1>
+          <div class="informasi-list">
+            <span class="d-flex align-items-center">
+              <b>Omzet</b>
+              <span>Rp. {{ number_format($data['total_omzet'] ?? 0, 0, '', '.') }}</span>
+            </span>
+            {{-- <span class="d-flex align-items-center">
+            <b>Pengeluaran</b>
+            <span>Rp. {{ number_format(($data['pembelian'] ?? 0) - ($data['total_retur'] ?? 0), 0, '', '.') }}</span>
+          </span>
+          <span class="d-flex align-items-center">
+            <b>Untung/Rugi</b>
+            <span>Rp.
+              {{ number_format(($data['total_omzet'] ?? 0) - ($data['pembelian'] ?? 0) + ($data['total_retur'] ?? 0), 0, '', '.') }}</span>
+          </span> --}}
+            <span class="d-flex align-items-center">
+              <b>Piutang</b>
+              <span>Rp. {{ number_format($data['total_piutang'] ?? 0, 0, '', '.') }}</span>
+            </span>
+            <span class="d-flex align-items-center">
+              <b>Retur</b>
+              <span>Rp. {{ number_format($data['total_retur'] ?? 0, 0, '', '.') }}</span>
+            </span>
+            <span class="d-flex align-items-center">
+              <b>HPP</b>
+              <span>Rp. {{ number_format($data['total_hpp'] ?? 0, 0, '', '.') }}</span>
+            </span>
+          </div>
+        </div>
+
+        <div class="data-list">
+          <h1>Kas</h1>
+          @if ($input['kas'] ?? null)
+            <div class="informasi-list">
+              <span class="d-flex align-items-center">
+                <b>Saldo Awal</b>
+                <span>Rp. {{ number_format($data['hitungkas']['saldo_awal'] ?? 0, 0, '', '.') }}</span>
+              </span>
+              <span class="d-flex align-items-center">
+                <b>Saldo Akhir</b>
+                <span>Rp. {{ number_format($data['hitungkas']['saldo_akhir'] ?? 0, 0, '', '.') }}</span>
+              </span>
+              <span class="d-flex align-items-center">
+                <b>Pengeluaran</b>
+                <span>Rp. {{ number_format($data['hitungkas']['pengeluaran'] ?? 0, 0, '', '.') }}</span>
+              </span>
+              <span class="d-flex align-items-center">
+                <b>Pemasukan</b>
+                <span>Rp. {{ number_format($data['hitungkas']['pemasukan'] ?? 0, 0, '', '.') }}</span>
+              </span>
+            </div>
+          @else
+            <small class="text-danger d-block text-center">pilih kas terlebih dahulu</small>
+          @endif
+        </div>
+
+        <div class="data-list">
+          <h1>Total Pengadaan & Penjualan</h1>
+          <div class="informasi-list">
+            <span class="d-flex align-items-center">
+              <b>Total Pengadaan</b>
+              <span>Rp. {{ number_format($data['total_pengadaan'] ?? 0, 0, '', '.') }}</span>
+            </span>
+            <span class="d-flex align-items-center">
+              <b>Total Penjualan</b>
+              <span>Rp. {{ number_format($data['total_penjualan'] ?? 0, 0, '', '.') }}</span>
+            </span>
           </div>
         </div>
       </div>

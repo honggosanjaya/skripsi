@@ -128,7 +128,8 @@
               {{ number_format($order->linkInvoice->harga_total - $total_bayar ?? 0, 0, '', '.') ?? null }}</small>
           </div>
 
-          <input type="hidden" value="{{ $order->linkInvoice->harga_total - $total_bayar }}" name="sisatagihan">
+          <input type="hidden" value="{{ ($order->linkInvoice->harga_total ?? 0) - ($total_bayar ?? 0) }}"
+            name="sisatagihan">
         </div>
 
         <div class="col">

@@ -56,7 +56,7 @@ Route::prefix('owner')->middleware('owner')->group(function() {
   Route::get('/report/koordinattrip', [ReportController::class,'koordinattrip']);
   Route::get('/report/koordinattrip/{trip:id}', [ReportController::class,'cekKoordinatTrip']);
 
-  Route::get('/', [ReportController::class, 'index']);
+  Route::get('/', [ReportController::class, 'indexNew']);
   // Route::post('/', [ReportController::class, 'index']);
   Route::get('/profil', [HomeController::class, 'lihatProfil']);
   Route::get('/datasupervisor', [StaffController::class, 'datasupervisor']);
@@ -75,12 +75,13 @@ Route::prefix('owner')->middleware('owner')->group(function() {
   Route::post('/profil/gantipassword/{user:id}', [AuthController::class, 'gantiPassword']);
 
   Route::get('/panduan', [ReportController::class, 'panduanPelaporan']);
+  Route::get('/laporan-excel', [ReportController::class, 'laporanExcel']);
 });
 
 
 // ============ SUPERVISOR ==============
 Route::prefix('supervisor')->middleware('supervisor')->group(function() {
-  Route::get('/', [ReportController::class, 'index']);
+  Route::get('/', [ReportController::class, 'indexNew']);
   Route::get('/profil', [HomeController::class, 'lihatProfil']);
   Route::get('/profil/ubahpassword', [HomeController::class, 'lihatPassword']);
   Route::post('/profil/check/{user:id_users}', [AuthController::class, 'check']);
@@ -149,6 +150,7 @@ Route::prefix('supervisor')->middleware('supervisor')->group(function() {
   Route::post('/perubahankas/tolak/{kas:id}', [KasController::class, 'tolakPerubahanKasSpv']);
 
   Route::get('/panduan', [ReportController::class, 'panduanPelaporan']);
+  Route::get('/laporan-excel', [ReportController::class, 'laporanExcel']);
 });
 
 
@@ -287,14 +289,6 @@ Route::prefix('administrasi')->middleware('administrasi')->group(function() {
 
   // Laporan Excel
   Route::get('/laporan-excel', [ReportController::class, 'laporanExcel']);
-  Route::get('/excel/penjualan-sales', [ExcelController::class, 'penjualanSalesExport']);
-  Route::get('/excel/penjualan-bersih', [ExcelController::class, 'penjualanBersihExport']);
-  Route::get('/excel/rincian-kas', [ExcelController::class, 'rincianKasExport']);
-  Route::get('/excel/penerimaan-pelanggan', [ExcelController::class, 'penerimaanPelangganExport']);
-  Route::get('/excel/analisa-penjualan', [ExcelController::class, 'analisaPenjualanExport']);
-  Route::get('/excel/piutang-umur', [ExcelController::class, 'piutangUmurPiutangExport']);
-  Route::get('/excel/laba-rugi', [ExcelController::class, 'labaRugiExport']);
-  Route::get('/excel/aktivitas-kunjungan', [ExcelController::class, 'aktivitasKunjunganExport']);
 });
 
 
@@ -317,6 +311,18 @@ Route::prefix('customer')->middleware('customer')->group(function() {
   Route::post('/profil/gantipassword/{user:id}', [AuthController::class, 'gantiPassword']);
   Route::post('/historyorder/hapus/{order:id}', [OrderController::class, 'hapusKodeCustomer']);
 });
+
+Route::prefix('excel')->middleware('supervisor-owner-administrasi')->group(function() {
+  Route::get('/penjualan-sales', [ExcelController::class, 'penjualanSalesExport']);
+  Route::get('/penjualan-bersih', [ExcelController::class, 'penjualanBersihExport']);
+  Route::get('/rincian-kas', [ExcelController::class, 'rincianKasExport']);
+  Route::get('/penerimaan-pelanggan', [ExcelController::class, 'penerimaanPelangganExport']);
+  Route::get('/analisa-penjualan', [ExcelController::class, 'analisaPenjualanExport']);
+  Route::get('/piutang-umur', [ExcelController::class, 'piutangUmurPiutangExport']);
+  Route::get('/laba-rugi', [ExcelController::class, 'labaRugiExport']);
+  Route::get('/aktivitas-kunjungan', [ExcelController::class, 'aktivitasKunjunganExport']);
+});
+
 
 // Route::prefix('salesman')->middleware('salesman')->group(function() {
 //   Route::get('/', [HomeController::class, 'indexSalesman']);
