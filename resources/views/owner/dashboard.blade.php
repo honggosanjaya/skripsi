@@ -5,13 +5,13 @@
     <div class="all-notification m-fadeOut p-3">
       <div id="horizontal_scroll" class="mb-3">
         <button class="btn btn-outline-primary filter-notif active" data-notif="limit">Limit Pembelian
-          ({{ $datadua['jml_pengajuan'] }})</button>
+          ({{ $datadua['jumlah']['pengajuanLimitPembelian'] }})</button>
         <button class="btn btn-outline-primary filter-notif" data-notif="opname">Stok Opname
-          ({{ $datadua['juml_opname'] }})</button>
+          ({{ $datadua['jumlah']['pengajuanStokOpname'] }})</button>
       </div>
 
       <div class="limit_notif notif">
-        @foreach ($customersPengajuanLimit as $customerPengajuanLimit)
+        @foreach ($data['pengajuanLimitPembelian'] as $customerPengajuanLimit)
           <div class="card_notif">
             <a href="/supervisor/datacustomer/pengajuan/{{ $customerPengajuanLimit->id ?? null }}"
               class="text-black text-decoration-none">
@@ -23,7 +23,7 @@
       </div>
 
       <div class="opname_notif notif d-none">
-        @foreach ($stokOpnamePengajuan as $opname)
+        @foreach ($data['pengajuanOpname'] as $opname)
           <div class="card_notif">
             <p class="mb-0 fw-bold">Pengajuan Stok Opname</p>
             <p class="mb-0">Pengajuan stok opname dari {{ $opname->linkStaff->nama ?? null }} </p>
@@ -173,6 +173,20 @@
             <span class="d-flex align-items-center">
               <b>HPP</b>
               <span>Rp. {{ number_format($data['total_hpp'] ?? 0, 0, '', '.') }}</span>
+            </span>
+          </div>
+        </div>
+
+        <div class="data-list">
+          <h1>Piutang</h1>
+          <div class="informasi-list">
+            <span class="d-flex align-items-center">
+              <b>Total Piutang</b>
+              <span>Rp. {{ number_format($data['total_piutang'] ?? 0, 0, '', '.') }}</span>
+            </span>
+            <span class="d-flex align-items-center mt-2">
+              <b>Jumlah Invoice <br> Belum Bayar</b>
+              <span>{{ $data['jumlah_invoice_blmlunas'] }}</span>
             </span>
           </div>
         </div>

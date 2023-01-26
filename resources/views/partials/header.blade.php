@@ -20,7 +20,7 @@
     @if (auth()->user()->linkStaff->linkStaffRole->nama == 'supervisor')
       @if (!empty($datadua['lihat_notif_spv']))
         @php
-          $jmlh_notif_spv = ($datadua['jml_pengajuan'] ?? 0) + ($datadua['juml_opname'] ?? 0);
+          $jmlh_notif_spv = ($datadua['jumlah']['pengajuanLimitPembelian'] ?? 0) + ($datadua['jumlah']['pengajuanStokOpname'] ?? 0);
         @endphp
 
         <div class="alert_notif d-flex justify-content-center align-items-center flex-column me-3">
