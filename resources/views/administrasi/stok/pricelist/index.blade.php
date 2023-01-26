@@ -85,7 +85,7 @@
                   @foreach ($pricetgl[$tgl] as $price)
                     @if ($price->id_item == $item->id)
                       @if ($price->price ?? null)
-                        {{ number_format($price->price, 0, '', '.') }} <br>
+                        &nbsp; &nbsp; {{ number_format($price->price, 0, '', '.') }}
                       @endif
                     @endif
                   @endforeach
