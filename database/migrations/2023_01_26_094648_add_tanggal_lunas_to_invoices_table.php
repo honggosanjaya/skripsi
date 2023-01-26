@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class AddStatusToInvoicesTable extends Migration
+class AddTanggalLunasToInvoicesTable extends Migration
 {
     /**
      * Run the migrations.
@@ -14,7 +14,7 @@ class AddStatusToInvoicesTable extends Migration
     public function up()
     {
         Schema::table('invoices', function (Blueprint $table) {
-          $table->enum('status',['0','1'])->comment('0:belum lunas, 1:lunas')->default('0');
+          $table->date('tanggal_lunas')->nullable();
         });
     }
 
@@ -26,7 +26,7 @@ class AddStatusToInvoicesTable extends Migration
     public function down()
     {
         Schema::table('invoices', function (Blueprint $table) {
-          $table->dropColumn('status');
+          $table->dropColumn('tanggal_lunas');
         });
     }
 }

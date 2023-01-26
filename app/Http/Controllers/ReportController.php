@@ -454,7 +454,7 @@ class ReportController extends Controller
         ->get()
         ->sum('omzet');
 
-      $invoice_blmlunas = Invoice::where('status', '0')
+      $invoice_blmlunas = Invoice::where('tanggal_lunas', null)
         ->whereHas('linkOrder', function($q) {
           $q->whereHas('linkOrderTrack', function($q) {
             $q->whereIn('status_enum',['4','5','6']);
