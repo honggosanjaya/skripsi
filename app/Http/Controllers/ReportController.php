@@ -691,6 +691,60 @@ class ReportController extends Controller
             ->get()
             ->sum('total_penjualan');
 
+        // statistik kecepatan
+        $kecepatan_pembayaran = 0;
+        $kecepatan_proses = 0;
+        $inv_lunas = Invoice::where('tanggal_lunas', '!=', null)
+                  ->whereBetween('tanggal_lunas', [$request->dateStart, $request->dateEnd])
+                  ->with('linkOrder.linkOrderTrack')->get();
+        
+        foreach($inv_lunas as $inv){
+          $tgl_sampai = date('Y-m-d', strtotime($inv->linkOrder->linkOrderTrack->waktu_sampai));
+          $tgl_lunas = $inv->tanggal_lunas;
+          $kecepatan_pembayaran += (int)date_diff(date_create($tgl_sampai), date_create($tgl_lunas))->format("%a");
+        }
+        
+        $order_sampai = OrderTrack::whereIn('status_enum', ['4','5','6'])
+                        ->whereBetween('waktu_sampai', [$request->dateStart, $request->dateEnd])
+                        ->get();
+
+        foreach($order_sampai as $ordtrck){
+          $tgl_konfirmasi = date('Y-m-d', strtotime($ordtrck->waktu_dikonfirmasi));
+          $tgl_sampai = date('Y-m-d', strtotime($ordtrck->waktu_sampai));
+          $kecepatan_proses += (int)date_diff(date_create($tgl_konfirmasi), date_create($tgl_sampai))->format("%a");
+        }
+
+        $data['avg_pembayaran'] = $kecepatan_pembayaran/count($inv_lunas);
+        $data['avg_pemrosesan'] = $kecepatan_proses/count($order_sampai);
+
+        //  Total EC dan Kunjungan
+        $data['total_EC'] = 0;
+        $data['total_kunjungan'] = 0;
+        $staffs =Staff::where('status_enum','1')->where('role',3)
+                  ->with([
+                  'linkTrip'=>function($q) use($request){
+                        $q->whereBetween('created_at', [$request->dateStart, $request->dateEnd]);
+                    }
+                  ,'linkTripEc'=>function($q) use($request){
+                        $q->whereBetween('created_at', [$request->dateStart, $request->dateEnd]);
+                    }
+                  ,'linkTripEcF'=>function($q) use($request){
+                      $q->whereBetween('created_at', [$request->dateStart, $request->dateEnd])
+                      ->whereHas('linkCustomer',function($q) use($request) {
+                          $q->whereBetween('time_to_effective_call', [$request->dateStart, $request->dateEnd]);
+                      });}
+                  ,'linkOrder'=>function($q) use($request){
+                      $q->whereBetween('invoices.created_at', [$request->dateStart, $request->dateEnd])
+                      ->join('invoices','orders.id','=','invoices.id_order')->select('id_staff', \DB::raw('SUM(harga_total) as total'))
+                      ->groupBy('id_staff')->pluck('total','id_staff');
+                    }])
+                  ->get();
+
+        foreach($staffs as $sales){
+          $data['total_EC'] += $sales->linkTripEc->count() ?? 0;
+          $data['total_kunjungan'] += $sales->linkTrip->count() ?? 0;
+        }
+
         return view('owner.dashboard',[
           'data' => $data,
           'input' => $input,
