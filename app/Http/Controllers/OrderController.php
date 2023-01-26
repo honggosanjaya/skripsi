@@ -1261,7 +1261,7 @@ class OrderController extends Controller
         ]);
 
         $invoice->update([
-          'status' => '1'
+          'tanggal_lunas' => date("Y-m-d")
         ]);
       }
 

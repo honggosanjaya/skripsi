@@ -5,13 +5,13 @@
     <div class="all-notification m-fadeOut p-3">
       <div id="horizontal_scroll" class="mb-3">
         <button class="btn btn-outline-primary filter-notif active" data-notif="limit">Limit Pembelian
-          ({{ $datadua['jml_pengajuan'] }})</button>
+          ({{ $datadua['jumlah']['pengajuanLimitPembelian'] }})</button>
         <button class="btn btn-outline-primary filter-notif" data-notif="opname">Stok Opname
-          ({{ $datadua['juml_opname'] }})</button>
+          ({{ $datadua['jumlah']['pengajuanStokOpname'] }})</button>
       </div>
 
       <div class="limit_notif notif">
-        @foreach ($customersPengajuanLimit as $customerPengajuanLimit)
+        @foreach ($data['pengajuanLimitPembelian'] as $customerPengajuanLimit)
           <div class="card_notif">
             <a href="/supervisor/datacustomer/pengajuan/{{ $customerPengajuanLimit->id ?? null }}"
               class="text-black text-decoration-none">
@@ -23,7 +23,7 @@
       </div>
 
       <div class="opname_notif notif d-none">
-        @foreach ($stokOpnamePengajuan as $opname)
+        @foreach ($data['pengajuanOpname'] as $opname)
           <div class="card_notif">
             <p class="mb-0 fw-bold">Pengajuan Stok Opname</p>
             <p class="mb-0">Pengajuan stok opname dari {{ $opname->linkStaff->nama ?? null }} </p>
@@ -123,97 +123,155 @@
         </div>
 
         <div class="data-list">
-          <h1>Produk Slow Moving</h1>
-          <div class="sales-container">
-            @foreach ($data['produk_slow'] as $item)
-              <div class="sales row">
-                <h3 class="fs-6 col-4 text-capitalize">{{ $item->linkItem->nama ?? null }} </h3>
-                <h3 class="fs-6 col-4">{{ $item->count ?? null }} kali trasaksi</h3>
-                <h3 class="fs-6 col-4">{{ $item->total ?? null }} item terjual</h3>
-              </div>
-            @endforeach
+          <div class="data-content">
+            <h1>Produk Slow Moving</h1>
+            <div class="sales-container">
+              @foreach ($data['produk_slow'] as $item)
+                <div class="sales row">
+                  <h3 class="fs-6 col-4 text-capitalize">{{ $item->linkItem->nama ?? null }} </h3>
+                  <h3 class="fs-6 col-4">{{ $item->count ?? null }} kali trasaksi</h3>
+                  <h3 class="fs-6 col-4">{{ $item->total ?? null }} item terjual</h3>
+                </div>
+              @endforeach
+            </div>
           </div>
         </div>
 
         <div class="data-list">
-          <h1>Produk Tidak Terjual</h1>
-          <div class="sales-container">
-            @foreach ($data['produk_tidak_terjual'] as $item)
-              <h3 class="fs-6 fw-normal">{{ $loop->iteration }}. {{ $item->nama ?? null }}</h3>
-            @endforeach
+          <div class="data-content">
+            <h1>Produk Tidak Terjual</h1>
+            <div class="sales-container">
+              @foreach ($data['produk_tidak_terjual'] as $item)
+                <h3 class="fs-6 fw-normal">{{ $loop->iteration }}. {{ $item->nama ?? null }}</h3>
+              @endforeach
+            </div>
           </div>
         </div>
       </div>
 
       <div class="col-12 col-sm-6 col-lg-5">
         <div class="data-list">
-          <h1>Total</h1>
-          <div class="informasi-list">
-            <span class="d-flex align-items-center">
-              <b>Omzet</b>
-              <span>Rp. {{ number_format($data['total_omzet'] ?? 0, 0, '', '.') }}</span>
-            </span>
-            {{-- <span class="d-flex align-items-center">
-            <b>Pengeluaran</b>
-            <span>Rp. {{ number_format(($data['pembelian'] ?? 0) - ($data['total_retur'] ?? 0), 0, '', '.') }}</span>
-          </span>
-          <span class="d-flex align-items-center">
-            <b>Untung/Rugi</b>
-            <span>Rp.
-              {{ number_format(($data['total_omzet'] ?? 0) - ($data['pembelian'] ?? 0) + ($data['total_retur'] ?? 0), 0, '', '.') }}</span>
-          </span> --}}
-            <span class="d-flex align-items-center">
-              <b>Piutang</b>
-              <span>Rp. {{ number_format($data['total_piutang'] ?? 0, 0, '', '.') }}</span>
-            </span>
-            <span class="d-flex align-items-center">
-              <b>Retur</b>
-              <span>Rp. {{ number_format($data['total_retur'] ?? 0, 0, '', '.') }}</span>
-            </span>
-            <span class="d-flex align-items-center">
-              <b>HPP</b>
-              <span>Rp. {{ number_format($data['total_hpp'] ?? 0, 0, '', '.') }}</span>
-            </span>
+          <div class="data-content">
+            <h1>Total</h1>
+            <div class="informasi-list">
+              <span class="d-flex align-items-center">
+                <b>Omzet</b>
+                <span>Rp. {{ number_format($data['total_omzet'] ?? 0, 0, '', '.') }}</span>
+              </span>
+              {{-- <span class="d-flex align-items-center">
+    <b>Pengeluaran</b>
+    <span>Rp. {{ number_format(($data['pembelian'] ?? 0) - ($data['total_retur'] ?? 0), 0, '', '.') }}</span>
+  </span>
+  <span class="d-flex align-items-center">
+    <b>Untung/Rugi</b>
+    <span>Rp.
+      {{ number_format(($data['total_omzet'] ?? 0) - ($data['pembelian'] ?? 0) + ($data['total_retur'] ?? 0), 0, '', '.') }}</span>
+  </span> --}}
+              <span class="d-flex align-items-center">
+                <b>Piutang</b>
+                <span>Rp. {{ number_format($data['total_piutang'] ?? 0, 0, '', '.') }}</span>
+              </span>
+              <span class="d-flex align-items-center">
+                <b>Retur</b>
+                <span>Rp. {{ number_format($data['total_retur'] ?? 0, 0, '', '.') }}</span>
+              </span>
+              <span class="d-flex align-items-center">
+                <b>HPP</b>
+                <span>Rp. {{ number_format($data['total_hpp'] ?? 0, 0, '', '.') }}</span>
+              </span>
+            </div>
           </div>
         </div>
 
         <div class="data-list">
-          <h1>Kas</h1>
-          @if ($input['kas'] ?? null)
+          <div class="data-content">
+            <h1>Piutang</h1>
             <div class="informasi-list">
               <span class="d-flex align-items-center">
-                <b>Saldo Awal</b>
-                <span>Rp. {{ number_format($data['hitungkas']['saldo_awal'] ?? 0, 0, '', '.') }}</span>
+                <b>Total Piutang</b>
+                <span>Rp. {{ number_format($data['total_piutang'] ?? 0, 0, '', '.') }}</span>
               </span>
-              <span class="d-flex align-items-center">
-                <b>Saldo Akhir</b>
-                <span>Rp. {{ number_format($data['hitungkas']['saldo_akhir'] ?? 0, 0, '', '.') }}</span>
-              </span>
-              <span class="d-flex align-items-center">
-                <b>Pengeluaran</b>
-                <span>Rp. {{ number_format($data['hitungkas']['pengeluaran'] ?? 0, 0, '', '.') }}</span>
-              </span>
-              <span class="d-flex align-items-center">
-                <b>Pemasukan</b>
-                <span>Rp. {{ number_format($data['hitungkas']['pemasukan'] ?? 0, 0, '', '.') }}</span>
+              <span class="d-flex align-items-center mt-2">
+                <b>Jumlah Invoice <br> Belum Bayar</b>
+                <span>{{ $data['jumlah_invoice_blmlunas'] }}</span>
               </span>
             </div>
-          @else
-            <small class="text-danger d-block text-center">pilih kas terlebih dahulu</small>
-          @endif
+          </div>
         </div>
 
         <div class="data-list">
-          <h1>Total Pengadaan & Penjualan</h1>
-          <div class="informasi-list">
-            <span class="d-flex align-items-center">
-              <b>Total Pengadaan</b>
-              <span>Rp. {{ number_format($data['total_pengadaan'] ?? 0, 0, '', '.') }}</span>
-            </span>
-            <span class="d-flex align-items-center">
-              <b>Total Penjualan</b>
-              <span>Rp. {{ number_format($data['total_penjualan'] ?? 0, 0, '', '.') }}</span>
-            </span>
+          <div class="data-content">
+            <h1>Kas</h1>
+            @if ($input['kas'] ?? null)
+              <div class="informasi-list">
+                <span class="d-flex align-items-center">
+                  <b>Saldo Awal</b>
+                  <span>Rp. {{ number_format($data['hitungkas']['saldo_awal'] ?? 0, 0, '', '.') }}</span>
+                </span>
+                <span class="d-flex align-items-center">
+                  <b>Saldo Akhir</b>
+                  <span>Rp. {{ number_format($data['hitungkas']['saldo_akhir'] ?? 0, 0, '', '.') }}</span>
+                </span>
+                <span class="d-flex align-items-center">
+                  <b>Pengeluaran</b>
+                  <span>Rp. {{ number_format($data['hitungkas']['pengeluaran'] ?? 0, 0, '', '.') }}</span>
+                </span>
+                <span class="d-flex align-items-center">
+                  <b>Pemasukan</b>
+                  <span>Rp. {{ number_format($data['hitungkas']['pemasukan'] ?? 0, 0, '', '.') }}</span>
+                </span>
+              </div>
+            @else
+              <small class="text-danger d-block text-center">pilih kas terlebih dahulu</small>
+            @endif
+          </div>
+        </div>
+
+        <div class="data-list">
+          <div class="data-content">
+            <h1>Total Pengadaan & Penjualan</h1>
+            <div class="informasi-list">
+              <span class="d-flex align-items-center">
+                <b>Total Pengadaan</b>
+                <span>Rp. {{ number_format($data['total_pengadaan'] ?? 0, 0, '', '.') }}</span>
+              </span>
+              <span class="d-flex align-items-center">
+                <b>Total Penjualan</b>
+                <span>Rp. {{ number_format($data['total_penjualan'] ?? 0, 0, '', '.') }}</span>
+              </span>
+            </div>
+          </div>
+        </div>
+
+        <div class="data-list">
+          <div class="data-content">
+            <h1>Statistik</h1>
+            <div class="informasi-list">
+              <span class="d-flex align-items-center">
+                <b>Rata<sup>2</sup> Kecepatan <br> Pembayaran</b>
+                <span>{{ round($data['avg_pembayaran'], 3) }} hari</span>
+              </span>
+              <span class="d-flex align-items-center mt-2">
+                <b>Rata<sup>2</sup> Kecepatan <br> Pemrosesan Pesanan</b>
+                <span>{{ round($data['avg_pemrosesan'], 3) }} hari</span>
+              </span>
+            </div>
+          </div>
+        </div>
+
+        <div class="data-list">
+          <div class="data-content">
+            <h1>EC dan Kunjungan</h1>
+            <div class="informasi-list">
+              <span class="d-flex align-items-center">
+                <b>Total EC</b>
+                <span>{{ $data['total_EC'] }}</span>
+              </span>
+              <span class="d-flex align-items-center mt-2">
+                <b>Total Kunjungan</b>
+                <span>{{ $data['total_kunjungan'] }}</span>
+              </span>
+            </div>
           </div>
         </div>
       </div>

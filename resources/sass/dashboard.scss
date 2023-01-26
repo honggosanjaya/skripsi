@@ -257,6 +257,8 @@ main {
             content: ":";
             position: absolute;
             right: 0;
+            top: 50%;
+            transform: translateY(-50%);
         }
     }
 }
@@ -422,9 +424,9 @@ main {
     padding: 30px;
     border-radius: 10px;
     transition: ease-in-out 0.4s;
-    box-shadow: rgba(50, 50, 93, 0.25) 0px 50px 100px -20px,
-        rgba(0, 0, 0, 0.3) 0px 30px 60px -30px,
-        rgba(10, 37, 64, 0.35) 0px -2px 6px 0px inset;
+    // box-shadow: rgba(50, 50, 93, 0.25) 0px 50px 100px -20px,
+    //     rgba(0, 0, 0, 0.3) 0px 30px 60px -30px,
+    //     rgba(10, 37, 64, 0.35) 0px -2px 6px 0px inset;
     height: auto;
 
     canvas {
@@ -441,11 +443,21 @@ main {
 }
 
 .data-list {
-    background-color: #fff;
+    background-color: #ebecf0;
     margin-top: 2.75rem;
-    border-radius: 10px;
-    padding: 1.5rem;
-    box-shadow: rgba(149, 157, 165, 0.2) 0px 8px 24px;
+    border-radius: 0.5rem;
+    padding: 0.5rem;
+    box-shadow: rgba(173, 175, 177, 0.2) 0px 8px 24px;
+
+    &:hover {
+        background-color: #ccccce;
+    }
+
+    .data-content {
+        background-color: #fff;
+        padding: 0.9rem;
+        border-radius: 0.5rem;
+    }
 
     h1 {
         color: #003a7b;

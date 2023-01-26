@@ -83,168 +83,168 @@ class ReportController extends Controller
       return view('supervisor.report.penjualan',compact('data','input','invoiceJatuhTempo'));
     }
 
-    public function index(Request $request){
-      if (!$request->dateStart??null) {
-        request()->request->add(['dateStart'=>date('Y-m-01')]);  
-        request()->request->add(['dateEnd'=>date('Y-m-t')]);  
-      }
-      $input=[
-        'dateStart'=>$request->dateStart,
-        'dateEnd'=>$request->dateEnd,
-        'year'=>date('Y', strtotime($request->dateEnd)),
-        'month'=>date('m', strtotime($request->dateEnd)),
-        'count'=>$request->count??5
-      ];
-      $request->dateStart=$request->dateStart." 00:00:00";
-      $request->dateEnd=$request->dateEnd." 23:59:59";
+    // public function index(Request $request){
+    //   if (!$request->dateStart??null) {
+    //     request()->request->add(['dateStart'=>date('Y-m-01')]);  
+    //     request()->request->add(['dateEnd'=>date('Y-m-t')]);  
+    //   }
+    //   $input=[
+    //     'dateStart'=>$request->dateStart,
+    //     'dateEnd'=>$request->dateEnd,
+    //     'year'=>date('Y', strtotime($request->dateEnd)),
+    //     'month'=>date('m', strtotime($request->dateEnd)),
+    //     'count'=>$request->count??5
+    //   ];
+    //   $request->dateStart=$request->dateStart." 00:00:00";
+    //   $request->dateEnd=$request->dateEnd." 23:59:59";
 
-        // Perhitungan Uang Retur 
-        $returInvoices = Retur::where('status_enum', '1')->where('tipe_retur', 1)
-        ->whereHas('linkInvoice', function($q) use($request){
-          $q->whereHas('linkOrder', function($q) use($request){
-            $q->whereHas('linkOrderTrack', function($q) use($request){
-              $q->whereIn('status_enum', ['4','5','6'])->whereBetween('waktu_sampai', [$request->dateStart, $request->dateEnd]);
-            });
-          });
-        })
-        ->select('id_item', \DB::raw('SUM(kuantitas*harga_satuan) as total_retur'))
-        ->groupBy('id_item')->get()->sum('total_retur');
+    //     // Perhitungan Uang Retur 
+    //     $returInvoices = Retur::where('status_enum', '1')->where('tipe_retur', 1)
+    //     ->whereHas('linkInvoice', function($q) use($request){
+    //       $q->whereHas('linkOrder', function($q) use($request){
+    //         $q->whereHas('linkOrderTrack', function($q) use($request){
+    //           $q->whereIn('status_enum', ['4','5','6'])->whereBetween('waktu_sampai', [$request->dateStart, $request->dateEnd]);
+    //         });
+    //       });
+    //     })
+    //     ->select('id_item', \DB::raw('SUM(kuantitas*harga_satuan) as total_retur'))
+    //     ->groupBy('id_item')->get()->sum('total_retur');
 
-        $item =OrderItem::
-          whereHas('linkOrder',function($q) use($request){
-              $q->whereHas('linkOrderTrack',function($q) use($request) {
-                  $q->whereIn('status_enum', ['4','5','6'])->whereBetween('waktu_sampai', [$request->dateStart, $request->dateEnd]);
-              });
-          })
-          ->whereHas('linkItem',function($q) use($request){
-              $q->where('status_enum','1');
-          })
-          ->select('id_item', \DB::raw('SUM(kuantitas) as total'))
-          ->groupBy('id_item')->with('linkItem');
-        $data=[];
-        $data['produk_laris'] = $item->orderBy('total', 'DESC')->take(10)->get();
+    //     $item =OrderItem::
+    //       whereHas('linkOrder',function($q) use($request){
+    //           $q->whereHas('linkOrderTrack',function($q) use($request) {
+    //               $q->whereIn('status_enum', ['4','5','6'])->whereBetween('waktu_sampai', [$request->dateStart, $request->dateEnd]);
+    //           });
+    //       })
+    //       ->whereHas('linkItem',function($q) use($request){
+    //           $q->where('status_enum','1');
+    //       })
+    //       ->select('id_item', \DB::raw('SUM(kuantitas) as total'))
+    //       ->groupBy('id_item')->with('linkItem');
+    //     $data=[];
+    //     $data['produk_laris'] = $item->orderBy('total', 'DESC')->take(10)->get();
 
 
-        $data['produk_tidak_terjual'] = $item->pluck('id_item')->toArray();
-        $data['produk_tidak_terjual'] = Item::where('status_enum','1')->whereNotIn('id',$data['produk_tidak_terjual'])->get();
+    //     $data['produk_tidak_terjual'] = $item->pluck('id_item')->toArray();
+    //     $data['produk_tidak_terjual'] = Item::where('status_enum','1')->whereNotIn('id',$data['produk_tidak_terjual'])->get();
 
-        //produk jual dikit
-        // $data['produk_slow'] = array_keys($item->orderBy('total', 'ASC')->get()->groupBy('total')->take(5)->toArray());
+    //     //produk jual dikit
+    //     // $data['produk_slow'] = array_keys($item->orderBy('total', 'ASC')->get()->groupBy('total')->take(5)->toArray());
 
-        // $data['produk_slow'] = $item->orderBy('total', 'ASC')->get()->whereIn('total',  $data['produk_slow']);
+    //     // $data['produk_slow'] = $item->orderBy('total', 'ASC')->get()->whereIn('total',  $data['produk_slow']);
         
-        $data['omzet'] = Invoice::whereHas('linkOrder',function($q) use($request) {
-          $q->whereHas('linkOrderTrack',function($q) use($request) {
-              $q->whereIn('status_enum', ['4', '5'])->whereBetween('waktu_sampai', [$request->dateStart, $request->dateEnd]);
-          });
-        })->select(\DB::raw('SUM(harga_total) as total'))->first();
+    //     $data['omzet'] = Invoice::whereHas('linkOrder',function($q) use($request) {
+    //       $q->whereHas('linkOrderTrack',function($q) use($request) {
+    //           $q->whereIn('status_enum', ['4', '5'])->whereBetween('waktu_sampai', [$request->dateStart, $request->dateEnd]);
+    //       });
+    //     })->select(\DB::raw('SUM(harga_total) as total'))->first();
 
         
-        // $data['pembelian'] = Pengadaan::whereBetween('created_at',[$request->dateStart,$request->dateEnd])
-        // ->select(\DB::raw('SUM(harga_total) as total'))->first();
+    //     // $data['pembelian'] = Pengadaan::whereBetween('created_at',[$request->dateStart,$request->dateEnd])
+    //     // ->select(\DB::raw('SUM(harga_total) as total'))->first();
 
-        $data['pembelian'] = Pengadaan::
-        // whereBetween('created_at',[$request->dateStart,$request->dateEnd])->
-        select('id_item', \DB::raw('SUM(harga_total)/SUM(kuantitas) as harga_item'))
-        ->groupBy('id_item');
+    //     $data['pembelian'] = Pengadaan::
+    //     // whereBetween('created_at',[$request->dateStart,$request->dateEnd])->
+    //     select('id_item', \DB::raw('SUM(harga_total)/SUM(kuantitas) as harga_item'))
+    //     ->groupBy('id_item');
 
-        $data['pembelian'] = OrderItem::
-          whereHas('linkOrder',function($q) use($request){
-            $q->whereHas('linkOrderTrack',function($q) use($request) {
-                $q->whereIn('status_enum', ['4','5','6'])->whereBetween('waktu_sampai', [$request->dateStart, $request->dateEnd]);
-            });
-          })
-          ->whereHas('linkItem',function($q) use($request){
-            $q->where('status_enum','1');
-          })
-          ->joinSub($data['pembelian'], 'harga_beli', function ($join) {
-            $join->on('order_items.id_item', '=', 'harga_beli.id_item');
-          })
-          ->select('order_items.id_item', \DB::raw('SUM(kuantitas*harga_item) as total_price'))
-          ->groupBy('id_item')
-          // ->select(\DB::raw('SUM(total_price) as total'))
-          ->get()
-          ->sum('total_price');
+    //     $data['pembelian'] = OrderItem::
+    //       whereHas('linkOrder',function($q) use($request){
+    //         $q->whereHas('linkOrderTrack',function($q) use($request) {
+    //             $q->whereIn('status_enum', ['4','5','6'])->whereBetween('waktu_sampai', [$request->dateStart, $request->dateEnd]);
+    //         });
+    //       })
+    //       ->whereHas('linkItem',function($q) use($request){
+    //         $q->where('status_enum','1');
+    //       })
+    //       ->joinSub($data['pembelian'], 'harga_beli', function ($join) {
+    //         $join->on('order_items.id_item', '=', 'harga_beli.id_item');
+    //       })
+    //       ->select('order_items.id_item', \DB::raw('SUM(kuantitas*harga_item) as total_price'))
+    //       ->groupBy('id_item')
+    //       // ->select(\DB::raw('SUM(total_price) as total'))
+    //       ->get()
+    //       ->sum('total_price');
 
-        $data['retur'] = Retur::whereBetween('created_at', [$request->dateStart, $request->dateEnd])->where('status_enum','1')
-          ->select('id_item', \DB::raw('SUM(kuantitas*harga_satuan) as total_price'))
-          ->groupBy('id_item')->get()->sum('total_price');
+    //     $data['retur'] = Retur::whereBetween('created_at', [$request->dateStart, $request->dateEnd])->where('status_enum','1')
+    //       ->select('id_item', \DB::raw('SUM(kuantitas*harga_satuan) as total_price'))
+    //       ->groupBy('id_item')->get()->sum('total_price');
             
 
-        $data['produk_slow'] = OrderItem::
-          whereHas('linkOrder',function($q) use($request){
-              $q->whereHas('linkOrderTrack',function($q) use($request) {
-                  $q->whereIn('status_enum', ['4','5','6'])->whereBetween('waktu_sampai', [$request->dateStart, $request->dateEnd]);
-              });
-          })
-          ->whereHas('linkItem',function($q) use($request){
-              $q->where('status_enum','1');
-          })
-          ->select('id_item', \DB::raw('SUM(kuantitas) as total'), \DB::raw('count(*) as count'))
-        ->groupBy('id_item')->with('linkItem')->orderBy('count', 'ASC')->take($request->count??5)->get();
+    //     $data['produk_slow'] = OrderItem::
+    //       whereHas('linkOrder',function($q) use($request){
+    //           $q->whereHas('linkOrderTrack',function($q) use($request) {
+    //               $q->whereIn('status_enum', ['4','5','6'])->whereBetween('waktu_sampai', [$request->dateStart, $request->dateEnd]);
+    //           });
+    //       })
+    //       ->whereHas('linkItem',function($q) use($request){
+    //           $q->where('status_enum','1');
+    //       })
+    //       ->select('id_item', \DB::raw('SUM(kuantitas) as total'), \DB::raw('count(*) as count'))
+    //     ->groupBy('id_item')->with('linkItem')->orderBy('count', 'ASC')->take($request->count??5)->get();
 
 
-        $data['pp'] = OrderItem::
-          whereHas('linkOrder',function($q) use($request){
-              $q->whereHas('linkOrderTrack',function($q) use($request) {
-                  $q->whereIn('status_enum', ['4','5','6'])->whereBetween('waktu_sampai', [$request->dateStart, $request->dateEnd]);
-              });
-          })
-          ->whereHas('linkItem',function($q) use($request){
-              $q->where('status_enum','1');
-          })
-          ->select('order_items.id_item', \DB::raw('SUM(kuantitas*harga_satuan) as total_price'))
-          ->groupBy('id_item')
-          ->get()
-          ->sum('total_price');
+    //     $data['pp'] = OrderItem::
+    //       whereHas('linkOrder',function($q) use($request){
+    //           $q->whereHas('linkOrderTrack',function($q) use($request) {
+    //               $q->whereIn('status_enum', ['4','5','6'])->whereBetween('waktu_sampai', [$request->dateStart, $request->dateEnd]);
+    //           });
+    //       })
+    //       ->whereHas('linkItem',function($q) use($request){
+    //           $q->where('status_enum','1');
+    //       })
+    //       ->select('order_items.id_item', \DB::raw('SUM(kuantitas*harga_satuan) as total_price'))
+    //       ->groupBy('id_item')
+    //       ->get()
+    //       ->sum('total_price');
 
-        $data['rtrd']=Retur::whereBetween('created_at', [$request->dateStart, $request->dateEnd])->where('status_enum','1')
-            ->select('id_invoice', \DB::raw('SUM(kuantitas*harga_satuan) as total_price'))
-            ->groupBy('id_invoice')->with('linkInvoice')->get()->pluck('total_price','linkInvoice.id_order')->toArray();
+    //     $data['rtrd']=Retur::whereBetween('created_at', [$request->dateStart, $request->dateEnd])->where('status_enum','1')
+    //         ->select('id_invoice', \DB::raw('SUM(kuantitas*harga_satuan) as total_price'))
+    //         ->groupBy('id_invoice')->with('linkInvoice')->get()->pluck('total_price','linkInvoice.id_order')->toArray();
         
-        $data['ppd'] = OrderItem::
-          whereHas('linkOrder',function($q) use($request){
-              $q->whereHas('linkOrderTrack',function($q) use($request) {
-                  $q->whereIn('status_enum', ['4','5','6'])->whereBetween('waktu_sampai', [$request->dateStart, $request->dateEnd]);
-              });
-          })
-          ->whereHas('linkItem',function($q) use($request){
-              $q->where('status_enum','1');
-          })
-          ->select('id_order', \DB::raw('SUM(kuantitas*harga_satuan) as total_price'))
-          ->groupBy('id_order')
-          ->get()->pluck('total_price','id_order')->toArray();
+    //     $data['ppd'] = OrderItem::
+    //       whereHas('linkOrder',function($q) use($request){
+    //           $q->whereHas('linkOrderTrack',function($q) use($request) {
+    //               $q->whereIn('status_enum', ['4','5','6'])->whereBetween('waktu_sampai', [$request->dateStart, $request->dateEnd]);
+    //           });
+    //       })
+    //       ->whereHas('linkItem',function($q) use($request){
+    //           $q->where('status_enum','1');
+    //       })
+    //       ->select('id_order', \DB::raw('SUM(kuantitas*harga_satuan) as total_price'))
+    //       ->groupBy('id_order')
+    //       ->get()->pluck('total_price','id_order')->toArray();
 
-        $data['ppd-rtrd'] = [];
-        foreach ($data['ppd'] as $a => $val){
-          array_push( $data['ppd-rtrd'],[$a => $val-(array_key_exists($a, $data['rtrd'])?$data['rtrd'][$a]:0)]);
-        }
+    //     $data['ppd-rtrd'] = [];
+    //     foreach ($data['ppd'] as $a => $val){
+    //       array_push( $data['ppd-rtrd'],[$a => $val-(array_key_exists($a, $data['rtrd'])?$data['rtrd'][$a]:0)]);
+    //     }
 
-        $data['invd'] = Invoice::whereHas('linkOrder',function($q) use($request) {
-                          $q->whereHas('linkOrderTrack',function($q) use($request) {
-                              $q->whereIn('status_enum', ['4','5','6'])->whereBetween('waktu_sampai', [$request->dateStart, $request->dateEnd]);
-                          });
-                        })->get()->pluck('harga_total','id_order')->toArray();
+    //     $data['invd'] = Invoice::whereHas('linkOrder',function($q) use($request) {
+    //                       $q->whereHas('linkOrderTrack',function($q) use($request) {
+    //                           $q->whereIn('status_enum', ['4','5','6'])->whereBetween('waktu_sampai', [$request->dateStart, $request->dateEnd]);
+    //                       });
+    //                     })->get()->pluck('harga_total','id_order')->toArray();
 
-        $data['totalReturInvoice'] = $returInvoices;
-        //ceking aja
-        // dd($data);
+    //     $data['totalReturInvoice'] = $returInvoices;
+    //     //ceking aja
+    //     // dd($data);
 
-        $customersPengajuanLimit = Customer::where('status_limit_pembelian_enum', '0')->get();
-        $stokOpnamePengajuan = Order::where('id_customer',0)->where('status_enum','-1')->get();
-        $request->session()->increment('count');
+    //     $customersPengajuanLimit = Customer::where('status_limit_pembelian_enum', '0')->get();
+    //     $stokOpnamePengajuan = Order::where('id_customer',0)->where('status_enum','-1')->get();
+    //     $request->session()->increment('count');
 
-        return view('owner.dashboard',[
-          'data' => $data,
-          'input' => $input,
-          'customersPengajuanLimit' => $customersPengajuanLimit,
-          'stokOpnamePengajuan' => $stokOpnamePengajuan
-        ])->with('datadua', [
-          'lihat_notif_spv' => true,
-          'jml_pengajuan' => count($customersPengajuanLimit),
-          'juml_opname' => count($stokOpnamePengajuan)
-        ]);
-    }
+    //     return view('owner.dashboard',[
+    //       'data' => $data,
+    //       'input' => $input,
+    //       'customersPengajuanLimit' => $customersPengajuanLimit,
+    //       'stokOpnamePengajuan' => $stokOpnamePengajuan
+    //     ])->with('datadua', [
+    //       'lihat_notif_spv' => true,
+    //       'jml_pengajuan' => count($customersPengajuanLimit),
+    //       'juml_opname' => count($stokOpnamePengajuan)
+    //     ]);
+    // }
     
     public function kinerja(Request $request){
       if (!$request->dateStart??null) {
@@ -411,73 +411,74 @@ class ReportController extends Controller
     }
 
     public function indexNew(Request $request){
-      if (!$request->dateStart??null) {
-        request()->request->add(['dateStart'=>date('Y-m-01')]);  
-        request()->request->add(['dateEnd'=>date('Y-m-t')]);  
-      }
-      $input=[
-        'dateStart'=>$request->dateStart,
-        'dateEnd'=>$request->dateEnd,
-        'year'=>date('Y', strtotime($request->dateEnd)),
-        'month'=>date('m', strtotime($request->dateEnd)),
-        'count'=>$request->count??5,
-        'kas'=>$request->kas ?? null
-      ];
-      $request->dateStart = $request->dateStart." 00:00:00";
-      $request->dateEnd = $request->dateEnd." 23:59:59";
+        if (!$request->dateStart??null) {
+          request()->request->add(['dateStart'=>date('Y-m-01')]);  
+          request()->request->add(['dateEnd'=>date('Y-m-t')]);  
+        }
+        $input=[
+          'dateStart'=>$request->dateStart,
+          'dateEnd'=>$request->dateEnd,
+          'year'=>date('Y', strtotime($request->dateEnd)),
+          'month'=>date('m', strtotime($request->dateEnd)),
+          'count'=>$request->count??5,
+          'kas'=>$request->kas ?? null
+        ];
+        $request->dateStart = $request->dateStart." 00:00:00";
+        $request->dateEnd = $request->dateEnd." 23:59:59";
 
-      $item = OrderItem::whereHas('linkOrder',function($q) use($request){
-          $q->whereHas('linkOrderTrack',function($q) use($request) {
-              $q->whereIn('status_enum', ['4','5','6'])->whereBetween('waktu_sampai', [$request->dateStart, $request->dateEnd]);
-          });
-        })
-        ->whereHas('linkItem',function($q) use($request){
-          $q->where('status_enum','1');
-        })
-        ->select('id_item', \DB::raw('SUM(kuantitas) as total'))
-        ->groupBy('id_item')->with('linkItem');
-
-      $data = [];
-      $data['produk_laris'] = $item->orderBy('total', 'DESC')->take(10)->get();
-      $data['produk_tidak_terjual'] = $item->pluck('id_item')->toArray();
-      $data['produk_tidak_terjual'] = Item::where('status_enum','1')->whereNotIn('id',$data['produk_tidak_terjual'])->get();
-
-      $data['total_omzet'] = Pembayaran::whereHas('linkInvoice', function($q) use($request) {
-          $q->whereHas('linkOrder', function($q) use($request) {
-            $q->whereHas('linkOrderTrack', function($q) use($request) {
-              $q->whereIn('status_enum', ['4','5','6']);
+        $item = OrderItem::whereHas('linkOrder',function($q) use($request){
+            $q->whereHas('linkOrderTrack',function($q) use($request) {
+                $q->whereIn('status_enum', ['4','5','6'])->whereBetween('waktu_sampai', [$request->dateStart, $request->dateEnd]);
             });
-          });
-        })->whereBetween('tanggal', [$request->dateStart, $request->dateEnd])
-        ->select('id_invoice', \DB::raw('SUM(jumlah_pembayaran) as omzet'))
-        ->groupBy('id_invoice')
-        ->get()
-        ->sum('omzet');
+          })
+          ->whereHas('linkItem',function($q) use($request){
+            $q->where('status_enum','1');
+          })
+          ->select('id_item', \DB::raw('SUM(kuantitas) as total'))
+          ->groupBy('id_item')->with('linkItem');
 
-      $invoice_blmlunas = Invoice::where('status', '0')
-        ->whereHas('linkOrder', function($q) {
-          $q->whereHas('linkOrderTrack', function($q) {
-            $q->whereIn('status_enum',['4','5','6']);
-          });
-        })
-        ->where('invoices.created_at', '<=', $request->dateEnd);
-      $total_invoice = $invoice_blmlunas->select(\DB::raw('SUM(harga_total) as total'))->get()->sum('total');
-      $total_dibayar = $invoice_blmlunas->join('pembayarans','invoices.id','=','pembayarans.id_invoice')
-        ->select('pembayarans.id_invoice', \DB::raw('SUM(pembayarans.jumlah_pembayaran) as total'))
-        ->groupBy('pembayarans.id_invoice')->get()->sum('total');
-      
-      $data['total_piutang'] = $total_invoice - $total_dibayar;
+        $data = [];
+        $data['produk_laris'] = $item->orderBy('total', 'DESC')->take(10)->get();
+        $data['produk_tidak_terjual'] = $item->pluck('id_item')->toArray();
+        $data['produk_tidak_terjual'] = Item::where('status_enum','1')->whereNotIn('id',$data['produk_tidak_terjual'])->get();
 
-      $data['total_retur'] = Retur::where('status_enum', '1')->where('tipe_retur', '1')
-        ->whereHas('linkInvoice', function($q) use($request){
-          $q->whereHas('linkOrder', function($q) use($request){
-            $q->whereHas('linkOrderTrack', function($q) use($request){
-              $q->whereIn('status_enum', ['4','5','6'])->whereBetween('waktu_sampai', [$request->dateStart, $request->dateEnd]);
+        $data['total_omzet'] = Pembayaran::whereHas('linkInvoice', function($q) use($request) {
+            $q->whereHas('linkOrder', function($q) use($request) {
+              $q->whereHas('linkOrderTrack', function($q) use($request) {
+                $q->whereIn('status_enum', ['4','5','6']);
+              });
             });
-          });
-        })
-        ->select('id_item', \DB::raw('SUM(kuantitas*harga_satuan) as total_retur'))
-        ->groupBy('id_item')->get()->sum('total_retur');
+          })->whereBetween('tanggal', [$request->dateStart, $request->dateEnd])
+          ->select('id_invoice', \DB::raw('SUM(jumlah_pembayaran) as omzet'))
+          ->groupBy('id_invoice')
+          ->get()
+          ->sum('omzet');
+
+        $invoice_blmlunas = Invoice::where('tanggal_lunas', null)
+          ->whereHas('linkOrder', function($q) {
+            $q->whereHas('linkOrderTrack', function($q) {
+              $q->whereIn('status_enum',['4','5','6']);
+            });
+          })
+          ->where('invoices.created_at', '<=', $request->dateEnd);
+        $total_invoice = $invoice_blmlunas->select(\DB::raw('SUM(harga_total) as total'))->get()->sum('total');
+        $total_dibayar = $invoice_blmlunas->join('pembayarans','invoices.id','=','pembayarans.id_invoice')
+          ->select('pembayarans.id_invoice', \DB::raw('SUM(pembayarans.jumlah_pembayaran) as total'))
+          ->groupBy('pembayarans.id_invoice')->get()->sum('total');
+        
+        $data['jumlah_invoice_blmlunas'] = $invoice_blmlunas->get()->count();
+        $data['total_piutang'] = $total_invoice - $total_dibayar;
+
+        $data['total_retur'] = Retur::where('status_enum', '1')->where('tipe_retur', '1')
+          ->whereHas('linkInvoice', function($q) use($request){
+            $q->whereHas('linkOrder', function($q) use($request){
+              $q->whereHas('linkOrderTrack', function($q) use($request){
+                $q->whereIn('status_enum', ['4','5','6'])->whereBetween('waktu_sampai', [$request->dateStart, $request->dateEnd]);
+              });
+            });
+          })
+          ->select('id_item', \DB::raw('SUM(kuantitas*harga_satuan) as total_retur'))
+          ->groupBy('id_item')->get()->sum('total_retur');
 
     
         $total1_hpp = OrderItem::whereHas('linkOrder', function($q) use($request){
@@ -585,8 +586,8 @@ class ReportController extends Controller
                           });
                         })->get()->pluck('harga_total','id_order')->toArray();
 
-        $customersPengajuanLimit = Customer::where('status_limit_pembelian_enum', '0')->get();
-        $stokOpnamePengajuan = Order::where('id_customer',0)->where('status_enum','-1')->get();
+        $data['pengajuanLimitPembelian'] = Customer::where('status_limit_pembelian_enum', '0')->get();
+        $data['pengajuanOpname'] = Order::where('id_customer',0)->where('status_enum','-1')->get();
         $request->session()->increment('count');
 
         $data['kas'] = CashAccount::where('account', '<=', 100)
@@ -690,15 +691,69 @@ class ReportController extends Controller
             ->get()
             ->sum('total_penjualan');
 
+        // statistik kecepatan
+        $kecepatan_pembayaran = 0;
+        $kecepatan_proses = 0;
+        $inv_lunas = Invoice::where('tanggal_lunas', '!=', null)
+                  ->whereBetween('tanggal_lunas', [$request->dateStart, $request->dateEnd])
+                  ->with('linkOrder.linkOrderTrack')->get();
+        
+        foreach($inv_lunas as $inv){
+          $tgl_sampai = date('Y-m-d', strtotime($inv->linkOrder->linkOrderTrack->waktu_sampai));
+          $tgl_lunas = $inv->tanggal_lunas;
+          $kecepatan_pembayaran += (int)date_diff(date_create($tgl_sampai), date_create($tgl_lunas))->format("%a");
+        }
+        
+        $order_sampai = OrderTrack::whereIn('status_enum', ['4','5','6'])
+                        ->whereBetween('waktu_sampai', [$request->dateStart, $request->dateEnd])
+                        ->get();
+
+        foreach($order_sampai as $ordtrck){
+          $tgl_konfirmasi = date('Y-m-d', strtotime($ordtrck->waktu_dikonfirmasi));
+          $tgl_sampai = date('Y-m-d', strtotime($ordtrck->waktu_sampai));
+          $kecepatan_proses += (int)date_diff(date_create($tgl_konfirmasi), date_create($tgl_sampai))->format("%a");
+        }
+
+        $data['avg_pembayaran'] = $kecepatan_pembayaran/count($inv_lunas);
+        $data['avg_pemrosesan'] = $kecepatan_proses/count($order_sampai);
+
+        //  Total EC dan Kunjungan
+        $data['total_EC'] = 0;
+        $data['total_kunjungan'] = 0;
+        $staffs =Staff::where('status_enum','1')->where('role',3)
+                  ->with([
+                  'linkTrip'=>function($q) use($request){
+                        $q->whereBetween('created_at', [$request->dateStart, $request->dateEnd]);
+                    }
+                  ,'linkTripEc'=>function($q) use($request){
+                        $q->whereBetween('created_at', [$request->dateStart, $request->dateEnd]);
+                    }
+                  ,'linkTripEcF'=>function($q) use($request){
+                      $q->whereBetween('created_at', [$request->dateStart, $request->dateEnd])
+                      ->whereHas('linkCustomer',function($q) use($request) {
+                          $q->whereBetween('time_to_effective_call', [$request->dateStart, $request->dateEnd]);
+                      });}
+                  ,'linkOrder'=>function($q) use($request){
+                      $q->whereBetween('invoices.created_at', [$request->dateStart, $request->dateEnd])
+                      ->join('invoices','orders.id','=','invoices.id_order')->select('id_staff', \DB::raw('SUM(harga_total) as total'))
+                      ->groupBy('id_staff')->pluck('total','id_staff');
+                    }])
+                  ->get();
+
+        foreach($staffs as $sales){
+          $data['total_EC'] += $sales->linkTripEc->count() ?? 0;
+          $data['total_kunjungan'] += $sales->linkTrip->count() ?? 0;
+        }
+
         return view('owner.dashboard',[
           'data' => $data,
           'input' => $input,
-          'customersPengajuanLimit' => $customersPengajuanLimit,
-          'stokOpnamePengajuan' => $stokOpnamePengajuan
         ])->with('datadua', [
           'lihat_notif_spv' => true,
-          'jml_pengajuan' => count($customersPengajuanLimit),
-          'juml_opname' => count($stokOpnamePengajuan)
+          'jumlah' => [
+            'pengajuanLimitPembelian' => count($data['pengajuanLimitPembelian']),
+            'pengajuanStokOpname' => count($data['pengajuanOpname']),
+          ]
         ]);
     }
 }
