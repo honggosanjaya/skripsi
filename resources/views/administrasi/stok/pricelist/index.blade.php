@@ -46,7 +46,7 @@
     </form>
 
     <div class="table-responsive">
-      <table class="table table-hover table-sm" id="table">
+      <table class="table table-hover table-sm table-top" id="table">
         <thead>
           <tr>
             <th scope="col" class="text-center">No</th>
@@ -60,8 +60,10 @@
         <tbody>
           @foreach ($items as $item)
             <tr>
-              <td class="text-center">{{ $loop->iteration }}</td>
-              <td class="{{ $item->status_enum == '1' ? 'text-success' : 'text-danger' }}">{{ $item->nama ?? null }}
+              <td class="text-center" style="vertical-align: middle !important;">{{ $loop->iteration }}</td>
+              <td class="{{ $item->status_enum == '1' ? 'text-success' : 'text-danger' }}"
+                style="vertical-align: middle !important;">
+                {{ $item->nama ?? null }}
               </td>
 
               @if ($input['tipe_harga'] ?? null)
@@ -85,7 +87,7 @@
                   @foreach ($pricetgl[$tgl] as $price)
                     @if ($price->id_item == $item->id)
                       @if ($price->price ?? null)
-                        &nbsp; &nbsp; {{ number_format($price->price, 0, '', '.') }}
+                        {{ number_format($price->price, 0, '', '.') }} <br>
                       @endif
                     @endif
                   @endforeach

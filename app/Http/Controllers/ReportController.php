@@ -704,18 +704,18 @@ class ReportController extends Controller
           $kecepatan_pembayaran += (int)date_diff(date_create($tgl_sampai), date_create($tgl_lunas))->format("%a");
         }
         
-        $order_sampai = OrderTrack::whereIn('status_enum', ['4','5','6'])
-                        ->whereBetween('waktu_sampai', [$request->dateStart, $request->dateEnd])
+        $order_berangkat = OrderTrack::whereIn('status_enum', ['3','4','5','6'])
+                        ->whereBetween('waktu_berangkat', [$request->dateStart, $request->dateEnd])
                         ->get();
 
-        foreach($order_sampai as $ordtrck){
-          $tgl_konfirmasi = date('Y-m-d', strtotime($ordtrck->waktu_dikonfirmasi));
-          $tgl_sampai = date('Y-m-d', strtotime($ordtrck->waktu_sampai));
-          $kecepatan_proses += (int)date_diff(date_create($tgl_konfirmasi), date_create($tgl_sampai))->format("%a");
+        foreach($order_berangkat as $ordtrck){
+          $tgl_order = date('Y-m-d', strtotime($ordtrck->waktu_order));
+          $tgl_berangkat = date('Y-m-d', strtotime($ordtrck->waktu_berangkat));
+          $kecepatan_proses += (int)date_diff(date_create($tgl_order), date_create($tgl_berangkat))->format("%a");
         }
 
         $data['avg_pembayaran'] = $kecepatan_pembayaran/count($inv_lunas);
-        $data['avg_pemrosesan'] = $kecepatan_proses/count($order_sampai);
+        $data['avg_pemrosesan'] = $kecepatan_proses/count($order_berangkat);
 
         //  Total EC dan Kunjungan
         $data['total_EC'] = 0;
