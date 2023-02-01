@@ -60,7 +60,7 @@
         <tbody>
           @foreach ($items as $item)
             <tr>
-              <td class="text-center">{{ $loop->iteration }}</td>
+              <td class="text-center" style="vertical-align: middle !important;">{{ $loop->iteration }}</td>
               <td class="{{ $item->status_enum == '1' ? 'text-success' : 'text-danger' }}"
                 style="vertical-align: middle !important;">
                 {{ $item->nama ?? null }}
