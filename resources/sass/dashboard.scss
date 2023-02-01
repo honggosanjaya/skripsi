@@ -271,12 +271,6 @@ table.dataTable thead td {
     vertical-align: middle !important;
 }
 
-table.dataTable tbody td,
-table.dataTable tbody th {
-    vertical-align: middle !important;
-    border: 1px solid lavender;
-}
-
 table th {
     vertical-align: middle !important;
 }
@@ -284,7 +278,11 @@ table th {
 table tbody td,
 table tbody th {
     vertical-align: middle !important;
-    border: 1px solid lavender;
+    border: 1px solid #dee2e6;
+}
+
+table.table-top td {
+    vertical-align: top !important;
 }
 
 .dataTables_wrapper .dataTables_filter {
