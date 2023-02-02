@@ -20,6 +20,7 @@ use App\Models\CashAccount;
 use App\Models\Pembayaran;
 use App\Models\Kas;
 use Jenssegers\Agent\Agent;
+use DateTime;
 
 class ReportController extends Controller
 {
@@ -699,9 +700,9 @@ class ReportController extends Controller
                   ->with('linkOrder.linkOrderTrack')->get();
         
         foreach($inv_lunas as $inv){
-          $tgl_sampai = date('Y-m-d', strtotime($inv->linkOrder->linkOrderTrack->waktu_sampai));
-          $tgl_lunas = $inv->tanggal_lunas;
-          $kecepatan_pembayaran += (int)date_diff(date_create($tgl_sampai), date_create($tgl_lunas))->format("%a");
+          $waktu_sampai = new DateTime($inv->linkOrder->linkOrderTrack->waktu_sampai); 
+          $waktu_lunas = new DateTime($inv->tanggal_lunas." 23:59:59"); 
+          $kecepatan_pembayaran += $waktu_sampai->diff($waktu_lunas)->days; 
         }
         
         $order_berangkat = OrderTrack::whereIn('status_enum', ['3','4','5','6'])
@@ -709,13 +710,35 @@ class ReportController extends Controller
                         ->get();
 
         foreach($order_berangkat as $ordtrck){
-          $tgl_order = date('Y-m-d', strtotime($ordtrck->waktu_order));
-          $tgl_berangkat = date('Y-m-d', strtotime($ordtrck->waktu_berangkat));
-          $kecepatan_proses += (int)date_diff(date_create($tgl_order), date_create($tgl_berangkat))->format("%a");
+          $waktu_order = new DateTime($ordtrck->waktu_order); 
+          $waktu_berangkat = new DateTime($ordtrck->waktu_berangkat); 
+          $kecepatan_proses += $waktu_order->diff($waktu_berangkat)->days; 
         }
 
-        $data['avg_pembayaran'] = $kecepatan_pembayaran/count($inv_lunas);
-        $data['avg_pemrosesan'] = $kecepatan_proses/count($order_berangkat);
+        $data['avg_pembayaran'] = count($inv_lunas) ? $kecepatan_pembayaran/count($inv_lunas) : 0;
+        $data['avg_pemrosesan'] = count($order_berangkat) ? $kecepatan_proses/count($order_berangkat) : 0;
+
+        // Rata2 Lama Perjalanan
+        $lama_perjalanan_hari = 0;
+        $lama_perjalanan_jam = 0;
+        $lama_perjalanan_menit = 0;
+
+        $order_sampai = OrderTrack::whereIn('status_enum', ['4','5','6'])
+                        ->whereBetween('waktu_sampai', [$request->dateStart, $request->dateEnd])
+                        ->get();
+
+        foreach($order_sampai as $ordtrck){
+          $waktu_berangkat = new DateTime($ordtrck->waktu_berangkat); 
+          $waktu_sampai = new DateTime($ordtrck->waktu_sampai); 
+          $interval = $waktu_berangkat->diff($waktu_sampai); 
+          $lama_perjalanan_hari += $interval->days;
+          $lama_perjalanan_jam += $interval->h;
+          $lama_perjalanan_menit += $interval->i;
+        }
+
+        $data['avg_perjalanan_hari'] = count($order_sampai) ? $lama_perjalanan_hari/count($order_sampai) : 0;
+        $data['avg_perjalanan_jam'] = count($order_sampai) ? $lama_perjalanan_jam/count($order_sampai) : 0;
+        $data['avg_perjalanan_menit'] = count($order_sampai) ? $lama_perjalanan_menit/count($order_sampai) : 0;
 
         //  Total EC dan Kunjungan
         $data['total_EC'] = 0;
