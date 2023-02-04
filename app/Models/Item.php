@@ -57,4 +57,8 @@ class Item extends Model
     public function linkGroupItem(){
       return $this->hasMany(GroupItem::class,'id_item','id');
     }
+
+    public function linkGroupingItem(){
+      return $this->hasMany(GroupItem::class,'id_group_item','id');
+    }
 }

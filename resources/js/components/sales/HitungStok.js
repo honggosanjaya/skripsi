@@ -3,7 +3,7 @@ import urlAsset from '../../config';
 import { HitungStokContext } from '../../contexts/HitungStokContext';
 import { convertPrice } from "../reuse/HelperFunction";
 
-const HitungStok = ({ tipeHarga, historyItem, checkifexist, handleValueChange, handleTambahJumlah, handleKurangJumlah, handleSubmitStokTerakhir, jumlahOrderRealTime }) => {
+const HitungStok = ({ tipeHarga, historyItem, checkifexist, handleValueChange, handleTambahJumlah, handleKurangJumlah, handleSubmitStokTerakhir, jumlahOrderRealTime, jumlahGroupingItemStok }) => {
   const { newHistoryItem, setNewHistoryItem } = useContext(HitungStokContext);
 
   useEffect(() => {
@@ -43,9 +43,8 @@ const HitungStok = ({ tipeHarga, historyItem, checkifexist, handleValueChange, h
         <div className={`card_historyItem position-relative p-3`} key={index}>
           {item.link_item.stok < 10 && item.link_item.stok > 0 && item.link_item.status_enum != '-1' && item.link_item.stok > item.link_item.min_stok && <span className="badge badge_stok">Stok Menipis</span>}
 
-          {(item.link_item.status_enum == '-1' || item.link_item.stok == 0 || item.link_item.stok <= item.link_item.min_stok) &&
-            <span className="badge badge_stok">Tidak Tersedia</span>
-          }
+          {(item.link_item.stok != null) && (item.link_item.status_enum == '-1' || item.link_item.stok == 0 || item.link_item.stok <= item.link_item.min_stok) &&
+            <span className="badge badge_stok">Tidak Tersedia</span>}
 
           <div className="row">
             <div className="col-2">
@@ -112,15 +111,15 @@ const HitungStok = ({ tipeHarga, historyItem, checkifexist, handleValueChange, h
                 </thead>
                 <tbody>
                   <tr>
-                    {item.link_item.stok ? <td>{item.link_item.stok - (jumlahOrderRealTime[item.link_item.id] ?? 0)} / {item.link_item.satuan ?? null}</td> : <td></td>}
-                    {item.link_item.stok ? <td>{item.link_item.stok} / {item.link_item.satuan ?? null}</td> : <td></td>}
+                    {<td>{(item.link_item.stok ?? 0 + jumlahGroupingItemStok[item.link_item.id] ?? 0) - (jumlahOrderRealTime[item.link_item.id] ?? 0)} / {item.link_item.satuan ?? null}</td>}
+                    {<td>{(item.link_item.stok ?? 0 + jumlahGroupingItemStok[item.link_item.id] ?? 0)} / {item.link_item.satuan ?? null}</td>}
                   </tr>
                 </tbody>
               </table>
             </div>
           </div>
 
-          {(item.link_item.status_enum != '-1' && item.link_item.stok != 0 && item.link_item.stok > item.link_item.min_stok) &&
+          {(item.link_item.status_enum != '-1' && ((item.link_item.stok != 0 && item.link_item.stok > item.link_item.min_stok) || item.link_item.stok == null)) &&
             <div className="d-flex justify-content-between mt-2 w-75 mx-auto">
               <button className="btn btn-sm btn-primary" onClick={() => handleKurangJumlah(item.link_item)}>
                 -
@@ -129,9 +128,15 @@ const HitungStok = ({ tipeHarga, historyItem, checkifexist, handleValueChange, h
                 value={checkifexist(item.link_item)}
                 onChange={(e) => handleValueChange(item.link_item, e.target.value)}
               />
-              <button className="btn btn-sm btn-primary" onClick={() => handleTambahJumlah(item.link_item)}>
-                +
-              </button>
+
+              {item.link_item.stok == null ?
+                <button className="btn btn-sm btn-primary" onClick={() => handleTambahJumlah(item.link_item, false, jumlahGroupingItemStok[item.link_item.id] ?? 0)}>
+                  +
+                </button>
+                :
+                <button className="btn btn-sm btn-primary" onClick={() => handleTambahJumlah(item.link_item)}>
+                  +
+                </button>}
             </div>
           }
         </div>

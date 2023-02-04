@@ -203,6 +203,14 @@ Route::prefix('administrasi')->middleware('administrasi')->group(function() {
       Route::get('/clearcart', [CartController::class, 'clearAllCart']);
       Route::get('/submit', [ItemController::class, 'storePriceList']);
     });
+
+    Route::prefix('produk/grouplist')->group(function(){
+      Route::get('/', [ItemController::class, 'readGroupList']);
+      Route::post('/create', [ItemController::class, 'storeGroupList']);
+      Route::get('/add', [ItemController::class, 'createGroupList']);
+      Route::get('/edit/{id}', [ItemController::class, 'editGroupList']);
+      Route::put('/update/{id}', [ItemController::class, 'updateGroupList']);
+    });
     
     Route::resource('/produk', ItemController::class);
     Route::post('/produk/ubahstatus/{item:id}', [ItemController::class, 'administrasiEditStatusItem']);

@@ -20,7 +20,7 @@ const Pemesanan = ({ location }) => {
   const { idCust } = useParams();
   const [urlApi, setUrlApi] = useState(`api/salesman/listitems/${idCust}`);
   const [filterBy, setFilterBy] = useState(null);
-  const { page, setPage, erorFromInfinite, paginatedData, isReachedEnd, orderRealTime } = useInfinite(`${urlApi}`, 4);
+  const { page, setPage, erorFromInfinite, paginatedData, isReachedEnd, orderRealTime, groupingItemStok } = useInfinite(`${urlApi}`, 4);
   const { token } = useContext(AuthContext);
   const { dataUser } = useContext(UserContext);
   const history = useHistory();
@@ -43,6 +43,7 @@ const Pemesanan = ({ location }) => {
   const [jmlItem, setJmlItem] = useState(null);
   let jumlahProdukKeranjang = 0;
   const [jumlahOrderRealTime, setJumlahOrderRealTime] = useState([]);
+  const [jumlahGroupingItemStok, setJumlahGroupingItemStok] = useState([]);
   const [isHandleKodeCust, setIsHandleKodeCust] = useState(false);
   const [shouldKeepOrder, setShouldKeepOrder] = useState(false);
   const [diskon, setDiskon] = useState(0);
@@ -145,6 +146,7 @@ const Pemesanan = ({ location }) => {
         console.log('history produk', response.data);
         setHistoryItem(response.data.data.history);
         setJumlahOrderRealTime(response.data.orderRealTime);
+        setJumlahGroupingItemStok(response.data.groupingItemStok);
       })
       .catch((error) => {
         console.log(error.message);
@@ -409,7 +411,8 @@ const Pemesanan = ({ location }) => {
       });
   }
 
-  const handleTambahJumlah = (item, keep) => {
+  const handleTambahJumlah = (item, keep, maxStok) => {
+    console.log('hahahah');
     let inStokKanvas = idItemKanvas.includes(item.id);
     let sisaStok = 0;
     let canStokKanvas = false;
@@ -423,8 +426,8 @@ const Pemesanan = ({ location }) => {
 
     const exist = produks.find((x) => x.id === item.id);
 
-    if (exist && item.stok > 0) {
-      if (exist.jumlah < item.stok) {
+    if ((exist && maxStok != undefined) || (exist && item.stok > 0)) {
+      if ((exist.jumlah < item.stok) || (exist.jumlah < maxStok)) {
         if (inStokKanvas && sisaStok >= exist.jumlah + 1) {
           canStokKanvas = true;
         }
@@ -439,19 +442,19 @@ const Pemesanan = ({ location }) => {
         nama: item.nama,
         orderId: orderId ? parseInt(orderId) : 'belum ada',
         customer: parseInt(idCust),
-        jumlah: exist.jumlah < item.stok ? exist.jumlah + 1 : exist.jumlah,
+        jumlah: exist.jumlah < (item.stok ?? maxStok) ? exist.jumlah + 1 : exist.jumlah,
         gambar: item.gambar,
-        stok: item.stok,
+        stok: item.stok ?? maxStok,
         canStokKanvas: canStokKanvas
       };
       checkTipeHarga(produk, item);
       KeranjangDB.updateProduk(produk);
       getAllProduks();
-      if (exist.jumlah == item.stok) {
+      if (exist.jumlah == (item.stok ?? maxStok)) {
         alert('maksimal stok di keranjang');
       }
     }
-    else if (!exist && item.stok > 0) {
+    else if ((!exist && maxStok > 0) || (!exist && item.stok > 0)) {
       if (inStokKanvas && sisaStok >= 1) {
         canStokKanvas = true;
       }
@@ -463,7 +466,7 @@ const Pemesanan = ({ location }) => {
         customer: parseInt(idCust),
         jumlah: 1,
         gambar: item.gambar,
-        stok: item.stok,
+        stok: item.stok ?? maxStok,
         canStokKanvas: canStokKanvas
       };
       checkTipeHarga(produk, item);
@@ -695,7 +698,7 @@ const Pemesanan = ({ location }) => {
         <HitungStok historyItem={historyItem} handleTambahJumlah={handleTambahJumlah}
           checkifexist={checkifexist} handleValueChange={handleValueChange}
           handleKurangJumlah={handleKurangJumlah} handleSubmitStokTerakhir={handleSubmitStokTerakhir}
-          jumlahOrderRealTime={jumlahOrderRealTime} tipeHarga={customer.tipe_harga} />
+          jumlahOrderRealTime={jumlahOrderRealTime} jumlahGroupingItemStok={jumlahGroupingItemStok} tipeHarga={customer.tipe_harga} />
 
         <KeluarToko handleShow={handleShow} alasanPenolakan={alasanPenolakan}
           setAlasanPenolakan={setAlasanPenolakan} handleClose={handleClose}
@@ -734,6 +737,7 @@ const Pemesanan = ({ location }) => {
               <ProductSales listItems={paginatedData} handleTambahJumlah={handleTambahJumlah}
                 checkifexist={checkifexist} handleValueChange={handleValueChange}
                 handleKurangJumlah={handleKurangJumlah} orderRealTime={orderRealTime}
+                groupingItemStok={groupingItemStok}
                 produkDlmKeranjang={produks} isHandleKodeCust={isHandleKodeCust}
                 shouldKeepOrder={shouldKeepOrder} diskonTypeCust={diskon} tipeHarga={customer.tipe_harga}
               />

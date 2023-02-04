@@ -13,6 +13,7 @@ use App\Models\History;
 use App\Models\Staff;
 use App\Models\Customer;
 use App\Models\GaleryItem;
+use App\Models\GroupItem;
 use App\Models\Kanvas;
 use Barryvdh\DomPDF\Facade\Pdf as FacadePdf;
 use Barryvdh\DomPDF\PDF as DomPDFPDF;
@@ -34,7 +35,9 @@ class ItemController extends Controller
   public function getListAllProductAPI($id){
     $history = History::where('id_customer',$id)->with('linkItem')->get();
     $items = $history->pluck('id_item');
-    $items = Item::orderBy("status_enum", "ASC")->whereNotIn('id',$items->toArray())->paginate(4);
+    $group_items = GroupItem::pluck('id_item')->toArray();
+    $items = Item::orderBy("status_enum", "ASC")->whereNotIn('id',$items->toArray())
+             ->whereNotIn('id',array_unique($group_items))->with(['linkGroupingItem'])->paginate(4);
 
     $orderItemUnconfirmed=OrderItem::
     whereHas('linkOrder',function($q) {
@@ -47,11 +50,29 @@ class ItemController extends Controller
     })
     ->select('id_item', DB::raw('SUM(kuantitas) as jumlah_blmkonfirmasi'))      
     ->groupBy('id_item')->pluck('jumlah_blmkonfirmasi','id_item')->all();
+
+
+    $groupItems = GroupItem::whereHas('linkItem', function($q) {
+      $q->where('status_enum', '1')->where('stok','>',0);
+    })->get()->groupBy('id_group_item');
+    $groupingStok = [];
+    $groupingItemStok = [];
+    foreach($groupItems as $groupItems){
+      foreach($groupItems as $group){
+        $item = Item::find($group->id_item);
+        $groupStok = floor(($item->stok / ($group->value_item / $group->value)));
+        array_push($groupingStok, (int)$groupStok);
+      }
+
+      $groupingItemStok[$groupItems[0]->id_group_item] = min($groupingStok);
+      $groupingStok = [];
+    }
   
     return response()->json([
       "status" => 'success',
       "data" => $items,
-      "orderRealTime" => $orderItemUnconfirmed
+      "orderRealTime" => $orderItemUnconfirmed,
+      "groupingItemStok" => $groupingItemStok
     ], 200);
   }
 
@@ -92,6 +113,22 @@ class ItemController extends Controller
     ->groupBy('id_item')->pluck('jumlah_blmkonfirmasi','id_item')->all();
 
 
+    $groupItems = GroupItem::whereHas('linkItem', function($q) {
+      $q->where('status_enum', '1')->where('stok','>',0);
+    })->get()->groupBy('id_group_item');
+    $groupingStok = [];
+    $groupingItemStok = [];
+    foreach($groupItems as $groupItems){
+      foreach($groupItems as $group){
+        $item = Item::find($group->id_item);
+        $groupStok = floor(($item->stok / ($group->value_item / $group->value)));
+        array_push($groupingStok, (int)$groupStok);
+      }
+
+      $groupingItemStok[$groupItems[0]->id_group_item] = min($groupingStok);
+      $groupingStok = [];
+    }
+
     return response()->json([
       "status" => "success",
       "data" => [
@@ -99,7 +136,8 @@ class ItemController extends Controller
         "customer" => $customer,
         "latestOrderItems" => $latestOrderItem
       ],
-      "orderRealTime" => $orderItemUnconfirmed
+      "orderRealTime" => $orderItemUnconfirmed,
+      "groupingItemStok" => $groupingItemStok
     ], 200);
   }
 
@@ -113,7 +151,8 @@ class ItemController extends Controller
 
   //pengadaan
   public function productList(Request $request){
-      $products = Item::orderBy("status_enum", "ASC")->get();
+      $group_items = GroupItem::pluck('id_group_item')->toArray();
+      $products = Item::whereNotIn('id',array_unique($group_items))->orderBy("status_enum", "ASC")->get();
       $counter = $request->session()->increment('counterPengadaan');
       $pageWasRefreshed = isset($_SERVER['HTTP_CACHE_CONTROL']) && $_SERVER['HTTP_CACHE_CONTROL'] === 'max-age=0';
 
@@ -134,7 +173,8 @@ class ItemController extends Controller
 
   //opname
   public function productListOpname(Request $request){
-      $products = Item::orderBy("status_enum", "ASC")->get();
+      $group_items = GroupItem::pluck('id_group_item')->toArray();
+      $products = Item::whereNotIn('id',array_unique($group_items))->orderBy("status_enum", "ASC")->get();
       $counter = $request->session()->increment('counterOpname');
       $pageWasRefreshed = isset($_SERVER['HTTP_CACHE_CONTROL']) && $_SERVER['HTTP_CACHE_CONTROL'] === 'max-age=0';
 
@@ -763,7 +803,11 @@ class ItemController extends Controller
     public function searchProductAPI($id, $name){
       $history = History::where('id_customer',$id)->with('linkItem')->get();
       $items = $history->pluck('id_item');
-      $items = Item::orderBy("status_enum", "ASC")->whereNotIn('id',$items->toArray())->where(strtolower('nama'), 'like', '%'.$name.'%')->paginate(4);
+
+      $group_items = GroupItem::pluck('id_item')->toArray();
+      $items = Item::orderBy("status_enum", "ASC")->whereNotIn('id',$items->toArray())
+                ->whereNotIn('id',array_unique($group_items))
+                ->where(strtolower('nama'), 'like', '%'.$name.'%')->paginate(4);
   
       $orderItemUnconfirmed=OrderItem::
       whereHas('linkOrder',function($q) {
@@ -776,11 +820,28 @@ class ItemController extends Controller
       })
       ->select('id_item', DB::raw('SUM(kuantitas) as jumlah_blmkonfirmasi'))      
       ->groupBy('id_item')->pluck('jumlah_blmkonfirmasi','id_item')->all();
+
+      $groupItems = GroupItem::whereHas('linkItem', function($q) {
+        $q->where('status_enum', '1')->where('stok','>',0);
+      })->get()->groupBy('id_group_item');
+      $groupingStok = [];
+      $groupingItemStok = [];
+      foreach($groupItems as $groupItems){
+        foreach($groupItems as $group){
+          $item = Item::find($group->id_item);
+          $groupStok = floor(($item->stok / ($group->value_item / $group->value)));
+          array_push($groupingStok, (int)$groupStok);
+        }
+  
+        $groupingItemStok[$groupItems[0]->id_group_item] = min($groupingStok);
+        $groupingStok = [];
+      }
   
       return response()->json([
         "status" => "success",
         "data" => $items,
-        "orderRealTime" => $orderItemUnconfirmed
+        "orderRealTime" => $orderItemUnconfirmed,
+        "groupingItemStok" => $groupingItemStok
       ], 200);
     }
 
@@ -788,7 +849,8 @@ class ItemController extends Controller
       $customer = Customer::find($id);
       $history = History::where('id_customer',$id)->with('linkItem')->get();
       $items = $history->pluck('id_item');
-      $items = Item::orderBy("status_enum", "ASC")->whereNotIn('id', $items->toArray());
+      $group_items = GroupItem::pluck('id_item')->toArray();
+      $items = Item::orderBy("status_enum", "ASC")->whereNotIn('id', $items->toArray())->whereNotIn('id',array_unique($group_items));
 
       $orderItemUnconfirmed=OrderItem::
       whereHas('linkOrder',function($q) {
@@ -812,10 +874,27 @@ class ItemController extends Controller
         $items=$items->orderBy('nama','DESC')->paginate(4);
       }
 
+      $groupItems = GroupItem::whereHas('linkItem', function($q) {
+        $q->where('status_enum', '1')->where('stok','>',0);
+      })->get()->groupBy('id_group_item');
+      $groupingStok = [];
+      $groupingItemStok = [];
+      foreach($groupItems as $groupItems){
+        foreach($groupItems as $group){
+          $item = Item::find($group->id_item);
+          $groupStok = floor(($item->stok / ($group->value_item / $group->value)));
+          array_push($groupingStok, (int)$groupStok);
+        }
+  
+        $groupingItemStok[$groupItems[0]->id_group_item] = min($groupingStok);
+        $groupingStok = [];
+      }
+
       return response()->json([
         "status" => "success",
         "data" => $items,
-        "orderRealTime" => $orderItemUnconfirmed
+        "orderRealTime" => $orderItemUnconfirmed,
+        "groupingItemStok" => $groupingItemStok
       ], 200);
     }
 
@@ -1242,4 +1321,87 @@ class ItemController extends Controller
       return redirect('/administrasi/stok/produk/pricelist')->with('successMessage', 'Berhasil menyimpan perubahan pricelist ke database');
     }
 
+    public function readGroupList(){
+      $items_group = GroupItem::with(['linkItem'])->get()->groupBy('id_group_item');
+      return view('administrasi.stok.grouplist.index', [
+        "items_group" => $items_group
+      ]);
+    }
+
+    public function createGroupList(){
+      $group_items = GroupItem::pluck('id_group_item')->toArray();
+      $items_group = Item::where('status_enum',1)->where('stok',null)->whereNotIn('id',array_unique($group_items))->get();
+      $items = Item::where('status_enum',1)->whereNotNull('stok')->get();
+      return view('administrasi.stok.grouplist.add', [
+        "items_group" => $items_group,
+        "items" => $items
+      ]);
+    }
+
+    public function storeGroupList(Request $request){
+      $request->validate([
+        'id_group_item' => ['required'],
+        'value' => ['required','integer','min:1'],
+        'id_item.*' => ['required'],
+        'value_item.*' => ['required','integer','min:1'],
+      ]);
+    
+      foreach($request->id_item as $index => $id_item){
+        GroupItem::insert([
+          'id_group_item' => $request->id_group_item,
+          'value' => $request->value,
+          'id_item' => $id_item,
+          'value_item' => $request->value_item[$index],
+          'created_at' => now(),
+          'updated_at' => now()
+        ]);
+      }
+      return redirect('/administrasi/stok/produk/grouplist')->with('successMessage','Berhasil menambah data group list'); 
+    }
+
+    public function editGroupList(Request $request, $id){   
+      $group_items = GroupItem::where('id_group_item','!=',$id)->pluck('id_group_item')->toArray();
+      $items_group = Item::where('status_enum',1)->where('stok',null)->whereNotIn('id',array_unique($group_items))->get();
+      $items = Item::where('status_enum',1)->whereNotNull('stok')->get();
+
+      $groupitems = GroupItem::where('id_group_item', $id)->get();
+    
+      $selected_id_item = [];
+      foreach($groupitems as $item){
+        array_push($selected_id_item,[
+          $item->id_item
+        ]);
+      }
+    
+      return view('administrasi.stok.grouplist.edit', [
+        "id_group_item" => $id,
+        "groupitems" => $groupitems,
+        "items_group" => $items_group,
+        "items" => $items,
+        "selected_id_item" => $selected_id_item
+      ]);
+    }
+
+    public function updateGroupList(Request $request, $id){
+      $request->validate([
+        'id_group_item' => ['required'],
+        'value' => ['required','integer','min:1'],
+        'id_item.*' => ['required'],
+        'value_item.*' => ['required','integer','min:1'],
+      ]);
+    
+      GroupItem::where('id_group_item', $id)->delete();
+      foreach($request->id_item as $index => $id_item){
+        GroupItem::insert([
+          'id_group_item' => $request->id_group_item,
+          'value' => $request->value,
+          'id_item' => $id_item,
+          'value_item' => $request->value_item[$index],
+          'created_at' => now(),
+          'updated_at' => now()
+        ]);
+      }
+    
+      return redirect('/administrasi/stok/produk/grouplist')->with('successMessage','Berhasil mengubah data group list'); 
+    }
 }
