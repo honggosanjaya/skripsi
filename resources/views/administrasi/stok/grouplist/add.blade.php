@@ -45,6 +45,8 @@
               </div>
             @enderror
           </div>
+
+          <small><b>nb: </b><span class="text-danger">stok item yang ingin dijadikan group item harus null</span></small>
         </div>
         <div class="col">
           @if (old('id_item'))

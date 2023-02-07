@@ -72,7 +72,8 @@
               {{ ($items->currentPage() - 1) * $items->perPage() + $loop->iteration }}</th>
             <td class="text-center">{{ $item->kode_barang ?? null }}</td>
             <td>{{ $item->nama ?? null }}</td>
-            <td class="text-center">{{ number_format($item->stok ?? 0, 0, '', '.') }}</td>
+            <td class="text-center">
+              {{ number_format(($item->stok ?? 0) + ($groupingItemStok[$item->id] ?? 0), 0, '', '.') }}</td>
             <td class="text-center">{{ $item->satuan ?? null }}</td>
             <td class="text-center">{{ number_format($item->min_stok ?? 0, 0, '', '.') }}</td>
             <td class="text-center">{{ number_format($item->max_stok ?? 0, 0, '', '.') }}</td>

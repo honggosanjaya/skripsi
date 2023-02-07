@@ -677,13 +677,32 @@ class ItemController extends Controller
 
     public function indexAdministrasi(){
         $agent = new Agent();
+
+        $groupItems = GroupItem::whereHas('linkItem', function($q) {
+          $q->where('status_enum', '1')->where('stok','>',0);
+        })->get()->groupBy('id_group_item');
+        $groupingStok = [];
+        $groupingItemStok = [];
+        foreach($groupItems as $groupItems){
+          foreach($groupItems as $group){
+            $item = Item::find($group->id_item);
+            $groupStok = floor(($item->stok / ($group->value_item / $group->value)));
+            array_push($groupingStok, (int)$groupStok);
+          }
+    
+          $groupingItemStok[$groupItems[0]->id_group_item] = min($groupingStok);
+          $groupingStok = [];
+        }
+
         if($agent->isMobile()){
           return view('mobile.administrasi.stok.index',[
-            'items' => Item::orderBy("status_enum", "ASC")->get()
+            'items' => Item::orderBy("status_enum", "ASC")->get(),
+            'groupingItemStok' => $groupingItemStok
           ]);
         }else{
           return view('administrasi.stok.index',[
-            'items' => Item::orderBy("status_enum", "ASC")->paginate(10)
+            'items' => Item::orderBy("status_enum", "ASC")->paginate(10),
+            'groupingItemStok' => $groupingItemStok
           ]);
         }
     }
@@ -922,8 +941,25 @@ class ItemController extends Controller
         }
       }
 
+      $groupItems = GroupItem::whereHas('linkItem', function($q) {
+        $q->where('status_enum', '1')->where('stok','>',0);
+      })->get()->groupBy('id_group_item');
+      $groupingStok = [];
+      $groupingItemStok = [];
+      foreach($groupItems as $groupItems){
+        foreach($groupItems as $group){
+          $item = Item::find($group->id_item);
+          $groupStok = floor(($item->stok / ($group->value_item / $group->value)));
+          array_push($groupingStok, (int)$groupStok);
+        }
+  
+        $groupingItemStok[$groupItems[0]->id_group_item] = min($groupingStok);
+        $groupingStok = [];
+      }
+
       return view('administrasi.stok.stokretur.index', [
         "products" => $products,
+        "groupingItemStok" => $groupingItemStok
       ]);
     }
 
@@ -958,9 +994,21 @@ class ItemController extends Controller
             ]);
           }
         }else{
-          $stok->stok += $item->quantity;
-          $stok->stok_retur -= $item->quantity;
-          $stok->save();
+          if($stok->stok == null){
+            // group item
+            $groupItems = GroupItem::where('id_group_item',$item->id)->get();
+            foreach($groupItems as $groupItem){
+              $itemgrp = Item::find($groupItem->id_item);
+              $itemgrp->stok += (($groupItem->value_item / $groupItem->value) * $item->quantity);
+              $itemgrp->save();
+            }
+            $stok->stok_retur -= $item->quantity;
+            $stok->save();
+          }else{
+            $stok->stok += $item->quantity;
+            $stok->stok_retur -= $item->quantity;
+            $stok->save();
+          }
         }
       }
   
@@ -1403,5 +1451,10 @@ class ItemController extends Controller
       }
     
       return redirect('/administrasi/stok/produk/grouplist')->with('successMessage','Berhasil mengubah data group list'); 
+    }
+
+    public function deleteGroupList($id){
+      GroupItem::where('id_group_item', $id)->delete();
+      return redirect('/administrasi/stok/produk/grouplist')->with('successMessage','Berhasil menghapus data group list'); 
     }
 }

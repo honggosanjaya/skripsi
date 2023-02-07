@@ -210,6 +210,7 @@ Route::prefix('administrasi')->middleware('administrasi')->group(function() {
       Route::get('/add', [ItemController::class, 'createGroupList']);
       Route::get('/edit/{id}', [ItemController::class, 'editGroupList']);
       Route::put('/update/{id}', [ItemController::class, 'updateGroupList']);
+      Route::delete('/delete/{id}', [ItemController::class, 'deleteGroupList']);
     });
     
     Route::resource('/produk', ItemController::class);

@@ -47,7 +47,7 @@
               <td class="text-center">{{ $group[0]->value ?? null }}</td>
               <td class="text-center">{{ $group[0]->linkItemGroup->satuan ?? null }}</td>
               <td class="d-flex justify-content-center">
-                <button type="button" class="btn btn-primary me-2" data-bs-toggle="modal"
+                <button type="button" class="btn btn-primary" data-bs-toggle="modal"
                   data-bs-target="#exampleModal{{ $group[0]->id_group_item }}">
                   <span class="iconify fs-4" data-icon="fluent:apps-list-detail-24-filled"></span> Detail
                 </button>
@@ -95,9 +95,17 @@
                 </div>
 
                 <a href="/administrasi/stok/produk/grouplist/edit/{{ $group[0]->id_group_item }}"
-                  class="btn btn-warning">
+                  class="btn btn-warning mx-2">
                   <span class="iconify fs-4" data-icon="ant-design:edit-filled"></span> Edit
                 </a>
+
+                <form action="/administrasi/stok/produk/grouplist/delete/{{ $group[0]->id_group_item }}" method="post">
+                  @method('delete')
+                  @csrf
+                  <button class="btn btn-danger">
+                    <span class="iconify fs-4" data-icon="bi:trash"></span>Hapus
+                  </button>
+                </form>
               </td>
             </tr>
           @endforeach
