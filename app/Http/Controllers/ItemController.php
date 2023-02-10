@@ -991,9 +991,9 @@ class ItemController extends Controller
             ]);
           }
         }else{
-          if($stok->stok == null){
+          $groupItems = GroupItem::where('id_group_item',$item->id)->get();
+          if($groupItems??null){
             // group item
-            $groupItems = GroupItem::where('id_group_item',$item->id)->get();
             foreach($groupItems as $groupItem){
               $itemgrp = Item::find($groupItem->id_item);
               $itemgrp->stok += (($groupItem->value_item / $groupItem->value) * $item->quantity);
@@ -1010,7 +1010,6 @@ class ItemController extends Controller
       }
   
       \Cart::session(auth()->user()->id.$request->route)->clear();
-  
       return redirect('/administrasi/stok/stokretur')->with('successMessage', 'Stok retur tercatat ke database');
     }
 

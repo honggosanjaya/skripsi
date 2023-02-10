@@ -13,6 +13,7 @@ use App\Models\Order;
 use App\Models\OrderTrack;
 use App\Models\Invoice;
 use App\Models\OrderItem;
+use App\Models\GroupItem;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
@@ -104,11 +105,24 @@ class ReturController extends Controller
       } elseif ($request->tipe_retur == 2){
         // tukar guling
         foreach($retur->get() as $r){
-          $item=item::find($r->id_item);
+          $item = Item::find($r->id_item);
           $item->update([
-            "stok" => ($item->stok - $r->kuantitas),
             "stok_retur" => ($item->stok_retur + $r->kuantitas)
           ]);
+
+          $groupItems = GroupItem::where('id_group_item', $r->id_item)->get();
+          if($groupItems ?? null){
+            foreach($groupItems as $groupItem){
+              $item_pembentuk = Item::find($groupItem->id_item);
+              $item_pembentuk->update([
+                "stok" => $item_pembentuk->stok - (($groupItem->value_item/$groupItem->value) * $r->kuantitas),
+              ]);
+            }
+          }else{
+            $item->update([
+              "stok" => ($item->stok - $r->kuantitas),
+            ]);
+          }
         }
       }
 
