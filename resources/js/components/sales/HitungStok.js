@@ -4,7 +4,16 @@ import { HitungStokContext } from '../../contexts/HitungStokContext';
 import { convertPrice } from "../reuse/HelperFunction";
 
 const HitungStok = ({ tipeHarga, historyItem, checkifexist, handleValueChange, handleTambahJumlah, handleKurangJumlah, handleSubmitStokTerakhir, jumlahOrderRealTime, jumlahGroupingItemStok }) => {
+  // const HitungStok = ({ realTimeItems, tipeHarga, historyItem, checkifexist, handleValueChange, handleTambahJumlah, handleKurangJumlah, handleSubmitStokTerakhir, jumlahOrderRealTime, jumlahGroupingItemStok, getAllGroupProduks }) => {
   const { newHistoryItem, setNewHistoryItem } = useContext(HitungStokContext);
+
+  // useEffect(() => {
+  //   getAllGroupProduks();
+  // }, [])
+
+  // useEffect(() => {
+  //   console.log('jumlahGroupingItemStok', jumlahGroupingItemStok);
+  // }, [jumlahGroupingItemStok])
 
   useEffect(() => {
     setNewHistoryItem(historyItem);
@@ -34,6 +43,18 @@ const HitungStok = ({ tipeHarga, historyItem, checkifexist, handleValueChange, h
         }));
     }
   }
+
+  // const findRealTime = (item) => {
+  //   let obj = realTimeItems.find(realTimeItem => realTimeItem.id === item.id);
+
+  //   if (obj != undefined) {
+  //     const stok_rtime = (obj.realTerpengaruh ?? 0) - (jumlahOrderRealTime[item.id] ?? 0);
+  //     return `${stok_rtime} / ${item.satuan ?? null}`
+  //   } else {
+  //     const stok_rtime = (item.stok ?? 0 + jumlahGroupingItemStok[item.id] ?? 0) - (jumlahOrderRealTime[item.id] ?? 0);
+  //     return `${stok_rtime} / ${item.satuan ?? null}`
+  //   }
+  // }
 
   return (
     <div className="history-item mt-4">
@@ -112,6 +133,10 @@ const HitungStok = ({ tipeHarga, historyItem, checkifexist, handleValueChange, h
                 <tbody>
                   <tr>
                     {<td>{(item.link_item.stok ?? 0 + jumlahGroupingItemStok[item.link_item.id] ?? 0) - (jumlahOrderRealTime[item.link_item.id] ?? 0)} / {item.link_item.satuan ?? null}</td>}
+                    {/* {item.link_item.link_grouping_item.length > 0 ? <td>{findRealTime(item.link_item)}</td>
+                      :
+                      <td>{(item.link_item.stok ?? 0 + jumlahGroupingItemStok[item.link_item.id] ?? 0) - (jumlahOrderRealTime[item.link_item.id] ?? 0)} / {item.link_item.satuan ?? null}</td>
+                    } */}
                     {<td>{(item.link_item.stok ?? 0 + jumlahGroupingItemStok[item.link_item.id] ?? 0)} / {item.link_item.satuan ?? null}</td>}
                   </tr>
                 </tbody>

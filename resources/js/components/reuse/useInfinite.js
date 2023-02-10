@@ -18,7 +18,7 @@ const useInfinite = (url, per_page) => {
       },
     })
       .then((response) => {
-        console.log('infinite item', response.data);
+        // console.log('infinite item', response.data);
         setOrderRealTime(response.data.orderRealTime);
         setGroupingItemStok(response.data.groupingItemStok);
         return response.data.data.data;

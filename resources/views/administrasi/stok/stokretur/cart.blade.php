@@ -20,7 +20,7 @@
             <th scope="col" class="text-center">Nama</th>
             <th scope="col" class="text-center">Satuan</th>
             <th scope="col" class="text-center">Pengurangan<br>Stok Retur</th>
-            <th scope="col" class="text-center">Penambahan<br>Stok Retur</th>
+            <th scope="col" class="text-center">Penambahan<br>Stok</th>
             {{-- <th scope="col">Metode</th> --}}
           </tr>
         </thead>

@@ -32,6 +32,13 @@ class ItemController extends Controller
   protected $error = null;
   protected $data = null;
 
+  public function getAllItemAPI(){
+    return response()->json([
+      "status" => "success",
+      "data" => Item::where('status_enum',1)->with('linkGroupingItem')->get()
+    ], 200);
+  }
+
   public function getListAllProductAPI($id){
     $history = History::where('id_customer',$id)->with('linkItem')->get();
     $items = $history->pluck('id_item');
@@ -55,17 +62,15 @@ class ItemController extends Controller
     $groupItems = GroupItem::whereHas('linkItem', function($q) {
       $q->where('status_enum', '1')->where('stok','>',0);
     })->get()->groupBy('id_group_item');
-    $groupingStok = [];
     $groupingItemStok = [];
-    foreach($groupItems as $groupItems){
-      foreach($groupItems as $group){
+    foreach($groupItems as $groupItem){
+      $groupingStok = [];
+      foreach($groupItem as $group){
         $item = Item::find($group->id_item);
         $groupStok = floor(($item->stok / ($group->value_item / $group->value)));
         array_push($groupingStok, (int)$groupStok);
       }
-
-      $groupingItemStok[$groupItems[0]->id_group_item] = min($groupingStok);
-      $groupingStok = [];
+      $groupingItemStok[$groupItem[0]->id_group_item] = min($groupingStok);
     }
   
     return response()->json([
@@ -77,7 +82,7 @@ class ItemController extends Controller
   }
 
   public function getListHistoryProductAPI($id){
-    $history = History::where('id_customer',$id)->with(['linkItem'])->get();
+    $history = History::where('id_customer',$id)->with(['linkItem', 'linkItem.linkGroupingItem'])->get();
     $customer = Customer::where('id',$id)->with('linkCustomerType')->first();
 
     $latestOrderItem = [];
@@ -116,17 +121,16 @@ class ItemController extends Controller
     $groupItems = GroupItem::whereHas('linkItem', function($q) {
       $q->where('status_enum', '1')->where('stok','>',0);
     })->get()->groupBy('id_group_item');
-    $groupingStok = [];
+
     $groupingItemStok = [];
-    foreach($groupItems as $groupItems){
-      foreach($groupItems as $group){
+    foreach($groupItems as $groupItem){
+      $groupingStok = [];
+      foreach($groupItem as $group){
         $item = Item::find($group->id_item);
         $groupStok = floor(($item->stok / ($group->value_item / $group->value)));
         array_push($groupingStok, (int)$groupStok);
       }
-
-      $groupingItemStok[$groupItems[0]->id_group_item] = min($groupingStok);
-      $groupingStok = [];
+      $groupingItemStok[$groupItem[0]->id_group_item] = min($groupingStok);
     }
 
     return response()->json([
@@ -681,17 +685,15 @@ class ItemController extends Controller
         $groupItems = GroupItem::whereHas('linkItem', function($q) {
           $q->where('status_enum', '1')->where('stok','>',0);
         })->get()->groupBy('id_group_item');
-        $groupingStok = [];
         $groupingItemStok = [];
-        foreach($groupItems as $groupItems){
-          foreach($groupItems as $group){
+        foreach($groupItems as $groupItem){
+          $groupingStok = [];
+          foreach($groupItem as $group){
             $item = Item::find($group->id_item);
             $groupStok = floor(($item->stok / ($group->value_item / $group->value)));
             array_push($groupingStok, (int)$groupStok);
           }
-    
-          $groupingItemStok[$groupItems[0]->id_group_item] = min($groupingStok);
-          $groupingStok = [];
+          $groupingItemStok[$groupItem[0]->id_group_item] = min($groupingStok);
         }
 
         if($agent->isMobile()){
@@ -820,13 +822,14 @@ class ItemController extends Controller
     // }
 
     public function searchProductAPI($id, $name){
-      $history = History::where('id_customer',$id)->with('linkItem')->get();
+      $history = History::where('id_customer',$id)->with(['linkItem', 'linkItem.linkGroupingItem'])->get();
       $items = $history->pluck('id_item');
 
       $group_items = GroupItem::pluck('id_item')->toArray();
       $items = Item::orderBy("status_enum", "ASC")->whereNotIn('id',$items->toArray())
                 ->whereNotIn('id',array_unique($group_items))
-                ->where(strtolower('nama'), 'like', '%'.$name.'%')->paginate(4);
+                ->where(strtolower('nama'), 'like', '%'.$name.'%')
+                ->with('linkGroupingItem')->paginate(4);
   
       $orderItemUnconfirmed=OrderItem::
       whereHas('linkOrder',function($q) {
@@ -843,17 +846,15 @@ class ItemController extends Controller
       $groupItems = GroupItem::whereHas('linkItem', function($q) {
         $q->where('status_enum', '1')->where('stok','>',0);
       })->get()->groupBy('id_group_item');
-      $groupingStok = [];
       $groupingItemStok = [];
-      foreach($groupItems as $groupItems){
-        foreach($groupItems as $group){
+      foreach($groupItems as $groupItem){
+        $groupingStok = [];
+        foreach($groupItem as $group){
           $item = Item::find($group->id_item);
           $groupStok = floor(($item->stok / ($group->value_item / $group->value)));
           array_push($groupingStok, (int)$groupStok);
         }
-  
-        $groupingItemStok[$groupItems[0]->id_group_item] = min($groupingStok);
-        $groupingStok = [];
+        $groupingItemStok[$groupItem[0]->id_group_item] = min($groupingStok);
       }
   
       return response()->json([
@@ -865,11 +866,11 @@ class ItemController extends Controller
     }
 
     public function filterProductAPI($id, $filterby){
-      $customer = Customer::find($id);
-      $history = History::where('id_customer',$id)->with('linkItem')->get();
+      $history = History::where('id_customer',$id)->with(['linkItem', 'linkItem.linkGroupingItem'])->get();
       $items = $history->pluck('id_item');
       $group_items = GroupItem::pluck('id_item')->toArray();
-      $items = Item::orderBy("status_enum", "ASC")->whereNotIn('id', $items->toArray())->whereNotIn('id',array_unique($group_items));
+      $items = Item::orderBy("status_enum", "ASC")->whereNotIn('id', $items->toArray())
+                ->whereNotIn('id',array_unique($group_items))->with('linkGroupingItem');
 
       $orderItemUnconfirmed=OrderItem::
       whereHas('linkOrder',function($q) {
@@ -896,17 +897,15 @@ class ItemController extends Controller
       $groupItems = GroupItem::whereHas('linkItem', function($q) {
         $q->where('status_enum', '1')->where('stok','>',0);
       })->get()->groupBy('id_group_item');
-      $groupingStok = [];
       $groupingItemStok = [];
-      foreach($groupItems as $groupItems){
-        foreach($groupItems as $group){
+      foreach($groupItems as $groupItem){
+        $groupingStok = [];
+        foreach($groupItem as $group){
           $item = Item::find($group->id_item);
           $groupStok = floor(($item->stok / ($group->value_item / $group->value)));
           array_push($groupingStok, (int)$groupStok);
         }
-  
-        $groupingItemStok[$groupItems[0]->id_group_item] = min($groupingStok);
-        $groupingStok = [];
+        $groupingItemStok[$groupItem[0]->id_group_item] = min($groupingStok);
       }
 
       return response()->json([
@@ -944,17 +943,15 @@ class ItemController extends Controller
       $groupItems = GroupItem::whereHas('linkItem', function($q) {
         $q->where('status_enum', '1')->where('stok','>',0);
       })->get()->groupBy('id_group_item');
-      $groupingStok = [];
       $groupingItemStok = [];
-      foreach($groupItems as $groupItems){
-        foreach($groupItems as $group){
+      foreach($groupItems as $groupItem){
+        $groupingStok = [];
+        foreach($groupItem as $group){
           $item = Item::find($group->id_item);
           $groupStok = floor(($item->stok / ($group->value_item / $group->value)));
           array_push($groupingStok, (int)$groupStok);
         }
-  
-        $groupingItemStok[$groupItems[0]->id_group_item] = min($groupingStok);
-        $groupingStok = [];
+        $groupingItemStok[$groupItem[0]->id_group_item] = min($groupingStok);
       }
 
       return view('administrasi.stok.stokretur.index', [
@@ -1456,5 +1453,12 @@ class ItemController extends Controller
     public function deleteGroupList($id){
       GroupItem::where('id_group_item', $id)->delete();
       return redirect('/administrasi/stok/produk/grouplist')->with('successMessage','Berhasil menghapus data group list'); 
+    }
+
+    public function getGroupItemAPI(){
+      return response()->json([
+        "status" => 'success',
+        "data" => GroupItem::with('linkItem')->get(),
+      ], 200);
     }
 }
