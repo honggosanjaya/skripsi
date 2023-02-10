@@ -612,3 +612,46 @@ $(document).on('click', '#kanvas .btn-submit', function () {
     }
   })
 });
+
+
+// === MULTIPLE SELECT ===
+let countMultiple = 0;
+
+function addMultipleSelect(idSelector) {
+  let value = $(this).parents(`${idSelector} .form-input`).find('.select-multiple option:selected').val();
+  $('.select-multiple option[value="' + value + '"]').addClass('disabled-option');
+  $(`${idSelector} .form-input`).last().clone().appendTo(`${idSelector} .form-group`);
+  $(`${idSelector} .form-input`).find('.remove-form').removeClass('d-none');
+  $(`${idSelector} .form-input`).last().find('.select-multiple').val('');
+  $(`${idSelector} .form-input`).last().find('input').val('');
+}
+
+function changeMultipleSelect(idSelector) {
+  $('.select-multiple option').removeClass('disabled-option');
+  const elements = document.querySelectorAll(`${idSelector} .select-multiple`);
+  Array.from(elements).forEach((element, index) => {
+    $('.select-multiple option[value="' + element.value + '"]').addClass('disabled-option');
+  });
+}
+
+$(document).on('click', '#multiple-select .add-form', function (e) {
+  countMultiple++;
+  addMultipleSelect('#multiple-select');
+  if (countMultiple == 0) {
+    $(`${idSelector} .form-input`).find('.remove-form').addClass('d-none');
+  }
+});
+
+$(document).on('click', '#multiple-select .remove-form', function (e) {
+  countMultiple--;
+  let value = $(this).parents('#multiple-select .form-input').find('.select-multiple option:selected').val();
+  $('.select-multiple option[value="' + value + '"]').removeClass('disabled-option');
+  $(this).parents('#multiple-select .form-input').remove();
+  if (countMultiple == 0) {
+    $('#multiple-select .form-input').find('.remove-form').addClass('d-none');
+  }
+});
+
+$(document).on('change', '#multiple-select .select-multiple', function (e) {
+  changeMultipleSelect('#multiple-select');
+});

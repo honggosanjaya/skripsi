@@ -62,8 +62,10 @@
                 <td>{{ $product->kode_barang ?? null }}</td>
                 <td>{{ $product->nama ?? null }}</td>
                 <td>{{ $product->satuan ?? null }}</td>
-                <td>{{ number_format($product->stok ?? 0, 0, '', '.') }}</td>
-                <td>{{ number_format($product->stok_retur ?? 0, 0, '', '.') }}</td>
+                <td class="text-center">
+                  {{ number_format(($product->stok ?? 0) + ($groupingItemStok[$product->id] ?? 0), 0, '', '.') }}
+                </td>
+                <td class="text-center">{{ number_format($product->stok_retur ?? 0, 0, '', '.') }}</td>
                 @if ($product->id ?? null)
                   <td class="px-3">
                     <form>

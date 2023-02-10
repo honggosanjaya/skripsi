@@ -6,6 +6,7 @@ import axios from 'axios';
 const useInfinite = (url, per_page) => {
   const { token } = useContext(AuthContext);
   const [orderRealTime, setOrderRealTime] = useState([]);
+  const [groupingItemStok, setGroupingItemStok] = useState([]);
 
   const fetcher = (url) =>
     axios({
@@ -17,8 +18,9 @@ const useInfinite = (url, per_page) => {
       },
     })
       .then((response) => {
-        console.log('infinite item', response.data);
+        // console.log('infinite item', response.data);
         setOrderRealTime(response.data.orderRealTime);
+        setGroupingItemStok(response.data.groupingItemStok);
         return response.data.data.data;
       })
 
@@ -42,7 +44,8 @@ const useInfinite = (url, per_page) => {
     erorFromInfinite,
     paginatedData,
     isReachedEnd,
-    orderRealTime
+    orderRealTime,
+    groupingItemStok
   };
 }
 

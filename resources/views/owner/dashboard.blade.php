@@ -249,11 +249,18 @@
             <div class="informasi-list">
               <span class="d-flex align-items-center">
                 <b>Rata<sup>2</sup> Kecepatan <br> Pembayaran</b>
-                <span>{{ round($data['avg_pembayaran'], 3) }} hari</span>
+                <span>{{ round($data['avg_pembayaran'], 2) }} hari</span>
               </span>
               <span class="d-flex align-items-center mt-2">
                 <b>Rata<sup>2</sup> Kecepatan <br> Pemrosesan Pesanan</b>
-                <span>{{ round($data['avg_pemrosesan'], 3) }} hari</span>
+                <span>{{ round($data['avg_pemrosesan'], 2) }} hari</span>
+              </span>
+              <span class="d-flex align-items-center mt-2">
+                <b>Rata<sup>2</sup> Lama <br> Perjalanan</b>
+                <span></span>
+                <span>{{ round($data['avg_perjalanan_hari'], 2) }} hari
+                  {{ round($data['avg_perjalanan_jam'], 0) }} Jam
+                  {{ round($data['avg_perjalanan_menit'], 0) }} Menit</span>
               </span>
             </div>
           </div>

@@ -20,6 +20,7 @@ use App\Models\Kas;
 use App\Models\RencanaTrip;
 use App\Models\Kanvas;
 use App\Models\Retur;
+use App\Models\GroupItem;
 use Illuminate\Support\Facades\DB;
 use PDF;
 use Illuminate\Support\Facades\Validator;
@@ -927,19 +928,30 @@ class OrderController extends Controller
     $order = Order::find($order->id);
     $totalHarga = 0;
     $orderItems = OrderItem::where('id_order', $order->id)->get();
-    $jumlahItem = $orderItems->count();
-    $i = 0;
+    // $jumlahItem = $orderItems->count();
+    // $i = 0;
     $itemYangKurang = [];
 
     foreach($orderItems as $orderItem){
       $item = Item::find($orderItem->id_item);
-      $item->stok -= $orderItem->kuantitas;
-      if($item->stok >= 0){
-        $i += 1;
+      if($item->stok == null){
+        $groupItems = GroupItem::where('id_group_item',$orderItem->id_item)->get();
+        foreach($groupItems as $groupItem){
+          $partItem = Item::find($groupItem->id_item);
+          $partItem->stok -= $groupItem->value_item;
+          if($partItem->stok < 0){
+            array_push($itemYangKurang,
+              $partItem->nama,
+            );
+          }
+        }
       }else{
-        array_push($itemYangKurang,
-          $item->nama,
-        );
+        $item->stok -= $orderItem->kuantitas;
+        if($item->stok < 0){
+          array_push($itemYangKurang,
+            $item->nama,
+          );
+        }
       }
     }
 
@@ -948,16 +960,24 @@ class OrderController extends Controller
       ->with('errorMessage', 'Tidak dapat menyetujui pesanan jumlah stok kurang');
     }
 
-    if($i == $jumlahItem){
+    // if($i == $jumlahItem){
       foreach($orderItems as $orderItem){
         $item = Item::find($orderItem->id_item);
         $totalHarga = $totalHarga + ($orderItem->kuantitas * $orderItem->harga_satuan);
-        $item->stok -= $orderItem->kuantitas;
-        $item->save();
-
+        if($item->stok == null){
+          $groupItems = GroupItem::where('id_group_item',$orderItem->id_item)->get();
+          foreach($groupItems as $groupItem){
+            $partItem = Item::find($groupItem->id_item);
+            $partItem->stok -= $groupItem->value_item;
+            $partItem->save();
+          }
+        }else{
+          $item->stok -= $orderItem->kuantitas;
+          $item->save();
+        }
+        
         $stokMaksimalTerakhir = History::where("id_item", $item->id)->orderBy("id", "DESC")->first()->stok_maksimal_customer ?? 0;
         $stokSekarang = (History::where("id_item", $item->id)->orderBy("id", "DESC")->first()->stok_terakhir_customer ?? 0) + $orderItem->kuantitas;
-
 
         if($stokSekarang > $stokMaksimalTerakhir){
           History::updateOrCreate(
@@ -990,7 +1010,7 @@ class OrderController extends Controller
       OrderTrack::where('id_order', $order->id)->update($validatedData); 
 
       return redirect('/administrasi/pesanan/detail/'.$order->id)->with('successMessage', 'Berhasil menyetujui pesanan');
-    } 
+    // } 
   }
 
   public function tolakPesanan(Order $order){

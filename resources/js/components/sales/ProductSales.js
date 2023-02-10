@@ -2,7 +2,7 @@ import React, { Component, useEffect, useState } from 'react';
 import { convertPrice } from "../reuse/HelperFunction";
 import urlAsset from '../../config';
 
-const ProductSales = ({ tipeHarga, listItems, handleTambahJumlah, checkifexist, handleValueChange, handleKurangJumlah, orderRealTime, produkDlmKeranjang, isHandleKodeCust, shouldKeepOrder, diskonTypeCust }) => {
+const ProductSales = ({ tipeHarga, listItems, handleTambahJumlah, checkifexist, handleValueChange, handleKurangJumlah, orderRealTime, groupingItemStok, produkDlmKeranjang, isHandleKodeCust, shouldKeepOrder, diskonTypeCust }) => {
   const [orderItems, setOrderItems] = useState([]);
 
   useEffect(() => {
@@ -32,10 +32,10 @@ const ProductSales = ({ tipeHarga, listItems, handleTambahJumlah, checkifexist, 
   return (
     <div className="productCard_wrapper">
       {(isHandleKodeCust || shouldKeepOrder) && orderItems.map((item) => (
-        <div className={`card product_card ${(item.status_enum == '-1' || item.stok == 0 || item.stok <= item.min_stok) ? 'inactive_product' : ''}`} key={item.id}>
+        <div className={`card product_card ${(item.stok != null) && (item.status_enum == '-1' || item.stok == 0 || item.stok <= item.min_stok) ? 'inactive_product' : ''}`} key={item.id}>
           {item.stok < 10 && item.stok > 0 && item.status_enum != '-1' && item.stok > item.min_stok && <span className="badge badge_stok">Stok Menipis</span>}
 
-          {(item.status_enum == '-1' || item.stok == 0 || item.stok <= item.min_stok) &&
+          {(item.stok != null) && (item.status_enum == '-1' || item.stok == 0 || item.stok <= item.min_stok) &&
             <div className='inactive_sign'>
               <p className='mb-0'>Tidak Tersedia</p>
             </div>}
@@ -66,8 +66,8 @@ const ProductSales = ({ tipeHarga, listItems, handleTambahJumlah, checkifexist, 
               </thead>
               <tbody>
                 <tr>
-                  <td>{item.stok - (orderRealTime[item.id] ?? 0)} {item.satuan}</td>
-                  <td>{item.stok} {item.satuan}</td>
+                  <td>{(item.stok ?? 0) + (groupingItemStok[item.id] ?? 0) - (orderRealTime[item.id] ?? 0)} {item.satuan}</td>
+                  <td>{(item.stok ?? 0) + (groupingItemStok[item.id] ?? 0)} {item.satuan}</td>
                 </tr>
               </tbody>
             </table>
@@ -80,18 +80,24 @@ const ProductSales = ({ tipeHarga, listItems, handleTambahJumlah, checkifexist, 
                 value={checkifexist(item)}
                 onChange={(e) => handleValueChange(item, e.target.value, true)}
               />
-              <button className="btn btn-sm btn-primary" onClick={() => handleTambahJumlah(item, true)}>
-                +
-              </button>
+
+              {item.stok == null ?
+                <button className="btn btn-sm btn-primary" onClick={() => handleTambahJumlah(item, true, groupingItemStok[item.id] ?? 0)}>
+                  +
+                </button>
+                :
+                <button className="btn btn-sm btn-primary" onClick={() => handleTambahJumlah(item, true)}>
+                  +
+                </button>}
             </div>
           </div>
         </div>
       ))}
 
       {(!isHandleKodeCust && !shouldKeepOrder) && listItems.map((item) => (
-        <div className={`card product_card ${(item.status_enum == '-1' || item.stok == 0 || item.stok <= item.min_stok) ? 'inactive_product' : ''}`} key={item.id}>
+        <div className={`card product_card ${(item.stok != null) && (item.status_enum == '-1' || item.stok == 0 || item.stok <= item.min_stok) ? 'inactive_product' : ''}`} key={item.id}>
           {item.stok < 10 && item.stok > 0 && item.status_enum != '-1' && item.stok > item.min_stok && <span className="badge badge_stok">Stok Menipis</span>}
-          {(item.status_enum == '-1' || item.stok == 0 || item.stok <= item.min_stok) &&
+          {(item.stok != null) && (item.status_enum == '-1' || item.stok == 0 || item.stok <= item.min_stok) &&
             <div className='inactive_sign'>
               <p className='mb-0'>Tidak Tersedia</p>
             </div>}
@@ -123,8 +129,8 @@ const ProductSales = ({ tipeHarga, listItems, handleTambahJumlah, checkifexist, 
               </thead>
               <tbody>
                 <tr>
-                  <td>{item.stok - (orderRealTime[item.id] ?? 0)} {item.satuan}</td>
-                  <td>{item.stok} {item.satuan}</td>
+                  <td>{(item.stok ?? 0) + (groupingItemStok[item.id] ?? 0) - (orderRealTime[item.id] ?? 0)} {item.satuan}</td>
+                  <td>{(item.stok ?? 0) + (groupingItemStok[item.id] ?? 0)} {item.satuan}</td>
                 </tr>
               </tbody>
             </table>
@@ -137,9 +143,14 @@ const ProductSales = ({ tipeHarga, listItems, handleTambahJumlah, checkifexist, 
                 value={checkifexist(item)}
                 onChange={(e) => handleValueChange(item, e.target.value)}
               />
-              <button className="btn btn-sm btn-primary" onClick={() => handleTambahJumlah(item)}>
-                +
-              </button>
+              {item.stok == null ?
+                <button className="btn btn-sm btn-primary" onClick={() => handleTambahJumlah(item, false, groupingItemStok[item.id] ?? 0)}>
+                  +
+                </button>
+                :
+                <button className="btn btn-sm btn-primary" onClick={() => handleTambahJumlah(item)}>
+                  +
+                </button>}
             </div>
           </div>
         </div>

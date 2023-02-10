@@ -1,6 +1,8 @@
 import React, { useContext, useEffect, useState, createContext, Fragment } from 'react';
 import { useParams } from 'react-router-dom';
 import KeranjangDB from '../reuse/KeranjangDB';
+// import GroupItemDB from '../reuse/GroupItemDB';
+// import RealTimeDB from '../reuse/RealTimeDB';
 import { Link, useHistory } from "react-router-dom";
 import { convertPrice } from "../reuse/HelperFunction";
 import { KeranjangSalesContext } from '../../contexts/KeranjangSalesContext';
@@ -18,6 +20,7 @@ const KeranjangSales = ({ location }) => {
   const history = useHistory();
   const { idCust } = useParams();
   const { produks, setProduks, getAllProduks, setIsBelanjaLagi, canOrderKanvas } = useContext(KeranjangSalesContext);
+  // const { produks, setProduks, getAllProduks, groupProduks, setGroupProduks, getAllGroupProduks, setIsBelanjaLagi, canOrderKanvas, dataGroupItem } = useContext(KeranjangSalesContext);
   const [errorMessage, setErrorMessage] = useState(null);
   const [successMessage, setSuccessMessage] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
@@ -199,6 +202,20 @@ const KeranjangSales = ({ location }) => {
     setKodeEvent('');
     setErrorKodeEvent(null);
     setHargaPromo(null);
+
+    // const groupProduks = GroupItemDB.getAllProduks();
+    // groupProduks.then((response) => {
+    //   response.map((produk) => {
+    //     GroupItemDB.deleteProduk(produk.id);
+    //   })
+    // })
+
+    // const realTimeItems = RealTimeDB.getAllProduks();
+    // realTimeItems.then((response) => {
+    //   response.map((produk) => {
+    //     RealTimeDB.deleteProduk(produk.id);
+    //   })
+    // })
   }
 
   const handleHapusSemuaProduk = () => {
@@ -212,13 +229,7 @@ const KeranjangSales = ({ location }) => {
       confirmButtonText: 'Ya, Hapus!'
     }).then((result) => {
       if (result.isConfirmed) {
-        produks.map((produk) => {
-          KeranjangDB.deleteProduk(produk.id);
-          getAllProduks();
-        })
-        setKodeEvent('');
-        setErrorKodeEvent(null);
-        setHargaPromo(null);
+        hapusSemuaProduk();
         Swal.fire(
           'Berhasil Dihapus!',
           'Seluruh item telah dihapus',

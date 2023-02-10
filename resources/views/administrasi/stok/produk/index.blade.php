@@ -21,12 +21,14 @@
   @endif
 
   <div class="px-5 pt-4">
-    <a href="/administrasi/stok/produk/create" class="btn btn-primary me-3">
+    <a href="/administrasi/stok/produk/create" class="btn btn-primary me-2">
       <span class="iconify fs-3 me-2" data-icon="dashicons:database-add"></span> Tambah Produk
     </a>
-
-    <a href="/administrasi/stok/produk/pricelist" class="btn btn-success">
+    <a href="/administrasi/stok/produk/pricelist" class="btn btn-success me-2">
       <span class="iconify fs-3 me-2" data-icon="material-symbols:price-change-outline"></span> Price List
+    </a>
+    <a href="/administrasi/stok/produk/grouplist" class="btn btn-danger">
+      <span class="iconify fs-3 me-2" data-icon="fluent-mdl2:engineering-group"></span> Group List
     </a>
 
     <div class="table-responsive mt-3">
@@ -96,7 +98,6 @@
           @endforeach
         </tbody>
       </table>
-      {{-- {{ $items->links() }} --}}
     </div>
 
     @push('JS')

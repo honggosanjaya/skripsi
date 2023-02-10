@@ -13,7 +13,7 @@ const UserContextProvider = (props) => {
   const location = useLocation();
 
   const forceLogout = () => {
-    console.log('dari user context logout paksa');
+    // console.log('dari user context logout paksa');
     axios({
       method: "get",
       url: `${window.location.origin}/api/forceLogout`,
@@ -44,7 +44,7 @@ const UserContextProvider = (props) => {
       })
         .then((response) => {
           if (!unmounted) {
-            console.log("user context:", response.data.data);
+            // console.log("user context:", response.data.data);
             setLoadingDataUser(false);
             if (response.data.status === 'success') {
               setDataUser(response.data.data);

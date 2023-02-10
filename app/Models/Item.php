@@ -10,6 +10,7 @@ use App\Models\Retur;
 use App\Models\CategoryItem;
 use App\Models\GaleryItem;
 use App\Models\ItemPriceList;
+use App\Models\GroupItem;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
@@ -51,5 +52,13 @@ class Item extends Model
 
     public function linkItemPriceList(){
       return $this->hasMany(ItemPriceList::class,'id_item','id');
+    }
+
+    public function linkGroupItem(){
+      return $this->hasMany(GroupItem::class,'id_item','id');
+    }
+
+    public function linkGroupingItem(){
+      return $this->hasMany(GroupItem::class,'id_group_item','id');
     }
 }

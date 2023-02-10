@@ -54,6 +54,8 @@ Route::get('/logoutUser', [LoginController::class, 'logoutUserAPI']);
 Route::post('/cariCustomer', [CustomerController::class, 'cariCustomerApi']);
 Route::get('/dataFormTrip', [CustomerController::class, 'dataFormTripApi']);
 Route::prefix('salesman')->group(function() {
+  Route::get('/allitems', [ItemController::class, 'getAllItemAPI']);
+  Route::get('/groupItem', [ItemController::class, 'getGroupItemAPI']);
   Route::get('/listitems/{id}', [ItemController::class, 'getListAllProductAPI']);
   Route::get('/historyitems/{id}', [ItemController::class, 'getListHistoryProductAPI']);
   Route::post('/updateStock', [ItemController::class, 'updateStockCustomer']);

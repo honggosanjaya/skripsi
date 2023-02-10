@@ -283,7 +283,6 @@
         @if ($order->linkOrderTrack->status_enum == '1')
           <div class="row justify-content-end mt-5">
             <div class="col-12">
-
               <form action="/administrasi/pesanan/setuju/{{ $order->id }}" method="POST" class="d-inline"
                 id="terimapesanan">
                 @csrf

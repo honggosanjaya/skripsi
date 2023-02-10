@@ -16,30 +16,32 @@
       <table class="table table-hover table-sm">
         <thead>
           <tr>
-            <th scope="col">Kode Barang</th>
-            <th scope="col">Nama</th>
-            <th scope="col">Satuan</th>
-            <th scope="col">Pengurangan Stok Retur</th>
-            <th scope="col">Penambahan Stok</th>
+            <th scope="col" class="text-center">Kode Barang</th>
+            <th scope="col" class="text-center">Nama</th>
+            <th scope="col" class="text-center">Satuan</th>
+            <th scope="col" class="text-center">Pengurangan<br>Stok Retur</th>
+            <th scope="col" class="text-center">Penambahan<br>Stok</th>
             {{-- <th scope="col">Metode</th> --}}
           </tr>
         </thead>
         <tbody>
           @foreach ($cartItems as $item)
             <tr>
-              <td>{{ $item->attributes->kode_barang ?? null }}</td>
+              <td class="text-center">{{ $item->attributes->kode_barang ?? null }}</td>
               <td>{{ $item->name ?? null }}</td>
-              <td>{{ $item->attributes->satuan ?? null }}</td>
-              <td>{{ $item->quantity ?? null }}</td>
-              @if ($item->attributes->metode ?? null)
-                @if ($item->attributes->metode == 'tukarguling')
-                  <td>{{ $item->quantity ?? null }}</td>
+              <td class="text-center">{{ $item->attributes->satuan ?? null }}</td>
+              <td class="text-center">{{ $item->quantity ?? null }}</td>
+              <td class="text-center">
+                @if ($item->attributes->metode ?? null)
+                  @if ($item->attributes->metode == 'tukarguling')
+                    {{ $item->quantity ?? null }}
+                  @else
+                    0
+                  @endif
                 @else
-                  <td>0</td>
+                  {{ $item->attributes->stok ?? null }}
                 @endif
-              @else
-                <td>{{ $item->attributes->stok ?? null }}</td>
-              @endif
+              </td>
 
               {{-- <td>{{ $item->attributes->metode ?? null }}</td> --}}
             </tr>
@@ -48,9 +50,9 @@
       </table>
 
 
-      <hr class="mt-5 mb-4">
+      {{-- <hr class="mt-5 mb-4"> --}}
       <form method="POST" id='data-form' action="/administrasi/stok/stokretur/tambahstokretur?route=stokretur"
-        enctype="multipart/form-data">
+        enctype="multipart/form-data" class="mt-5">
         @csrf
 
         @if ($shouldShowKas == true)

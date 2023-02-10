@@ -65,10 +65,6 @@ const HistoryInvoice = () => {
     });
 
     return totalItem;
-
-    // return items.reduce(function (a, b) {
-    //   return a + b[prop];
-    // }, 0);
   }
 
   const handleClickInvoice = (idInvoice) => {
@@ -79,7 +75,6 @@ const HistoryInvoice = () => {
 
     setDetailInvoice(filteredInvoice[0]);
     setDetailItem(filteredInvoice[0].link_order.link_order_item);
-    // console.log('det', filteredInvoice[0]);
   }
 
   const handleCloseModal = () => {
