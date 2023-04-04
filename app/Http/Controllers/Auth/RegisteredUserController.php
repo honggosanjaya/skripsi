@@ -14,6 +14,7 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rules;
 use App\Mail\ConfirmationEmail;
 use Illuminate\Support\Facades\Mail;
+use Util;
 
 class RegisteredUserController extends Controller
 {
@@ -71,8 +72,11 @@ class RegisteredUserController extends Controller
             $file= $request->file('foto_profil');
             $nama_staff = str_replace(" ", "-", $request->nama);
             $filename = 'STF-' . $nama_staff . '-' .date_format(now(),"YmdHis"). '.' . $file->getClientOriginalExtension();
+            Image::make($request->file('foto_profil'))->resize(350, null, function ($constraint) {
+              $constraint->aspectRatio();
+            })->save(public_path('storage/staff/') . $filename);
             $request->foto_profil= $filename;
-            $file=$request->file('foto_profil')->storeAs('staff', $filename);
+            Util::backupFile(storage_path('storage/staff/'.$filename),'salesman-surya/storage/staff/');
         }
        
         $staff= Staff::insertGetId([
