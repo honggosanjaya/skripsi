@@ -27,9 +27,10 @@ use Illuminate\Support\Facades\Validator;
 use Intervention\Image\ImageManagerStatic as Image;
 use Illuminate\Support\Facades\Storage;
 use Jenssegers\Agent\Agent;
+use Util;
 
 class OrderController extends Controller
-{
+{  
   public function simpanDataOrderSalesmanAPI(Request $request){    
     $validator = Validator::make($request->all(), [
       'keranjang' => ['required'],
@@ -1089,6 +1090,8 @@ class OrderController extends Controller
       Image::make($request->file('foto'))->resize(350, null, function ($constraint) {
         $constraint->aspectRatio();
       })->save(public_path('storage/pengiriman/') . $file_name);
+
+      Util::backupFile(public_path('storage/pengiriman/'.$file_name),'salesman-surya/storage/pengiriman/');
       $validatedData['foto_pengiriman'] = $file_name;
       $validatedData['status_enum'] = '4';
       $validatedData['waktu_sampai'] = now();

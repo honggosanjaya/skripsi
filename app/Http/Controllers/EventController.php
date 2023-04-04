@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Validation\Rules;
 use Intervention\Image\ImageManagerStatic as Image;
+use Util;
 
 class EventController extends Controller
 {
@@ -70,6 +71,8 @@ class EventController extends Controller
       Image::make($request->file('gambar'))->resize(350, null, function ($constraint) {
         $constraint->aspectRatio();
       })->save(public_path('storage/event/') . $filename);
+
+      Util::backupFile(public_path('storage/event/'.$filename),'salesman-surya/storage/event/');
     }
 
     if($request->event_pilih_isian == "potongan"){
@@ -160,6 +163,8 @@ class EventController extends Controller
         Image::make($request->file('gambar'))->resize(350, null, function ($constraint) {
           $constraint->aspectRatio();
         })->save(public_path('storage/event/') . $filename);
+
+        Util::backupFile(public_path('storage/event/'.$filename),'salesman-surya/storage/event/');
       }
       else{
         $foto = $request->oldGambar;

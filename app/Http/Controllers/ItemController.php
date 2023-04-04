@@ -25,6 +25,7 @@ use Intervention\Image\ImageManagerStatic as Image;
 use App\FormMultipleUpload;
 use App\Models\ItemPriceList;
 use Jenssegers\Agent\Agent;
+use Util;
 
 class ItemController extends Controller
 {
@@ -386,7 +387,7 @@ class ItemController extends Controller
     $validatedData['link_item'] = $request->link_item;
     $validatedData['max_pengadaan'] = ($request->max_stok??0) - ($request->min_stok??0);
     $validatedData['created_at'] = now();
-        
+   
     if ($request->hasfile('gambar')) {
       $images = $request->file('gambar');
       $nama_item = str_replace(" ", "-", $request->nama);
@@ -395,6 +396,8 @@ class ItemController extends Controller
       Image::make($images[0])->resize(350, null, function ($constraint) {
         $constraint->aspectRatio();
       })->save(public_path('storage/item/') . $file_name);
+
+      Util::backupFile(public_path('storage/item/'.$file_name),'salesman-surya/storage/item/');
 
       $item_id = Item::insertGetId($validatedData);
 
@@ -405,6 +408,7 @@ class ItemController extends Controller
           $constraint->aspectRatio();
         })->save(public_path('storage/item/') . $file_name);
 
+        Util::backupFile(public_path('storage/item/'.$file_name),'salesman-surya/storage/item/');
         GaleryItem::create([
           'image' => $file_name,
           'id_item' => $item_id,
@@ -528,6 +532,8 @@ class ItemController extends Controller
       Image::make($images[0])->resize(350, null, function ($constraint) {
         $constraint->aspectRatio();
       })->save(public_path('storage/item/') . $file_name);
+
+      Util::backupFile(public_path('storage/item/'.$file_name),'salesman-surya/storage/item/');
     }    
 
     Item::where('id', $id)->update($validatedData);
@@ -552,6 +558,7 @@ class ItemController extends Controller
           $constraint->aspectRatio();
         })->save(public_path('storage/item/') . $file_name);
 
+        Util::backupFile(public_path('storage/item/'.$file_name),'salesman-surya/storage/item/');
         array_push($listGalery, [
           'image' => $file_name
         ]);

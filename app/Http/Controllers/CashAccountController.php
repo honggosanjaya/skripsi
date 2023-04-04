@@ -10,9 +10,10 @@ use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Storage;
 use Intervention\Image\ImageManagerStatic as Image;
 use Jenssegers\Agent\Agent;
+use Util;
 
 class CashAccountController extends Controller
-{
+{  
   public function cashAccountIndex(){
       $cashaccounts = CashAccount::orderBy('account', 'ASC')->get();
       return view('supervisor.cashaccount.index',[
@@ -308,6 +309,8 @@ class CashAccountController extends Controller
         $constraint->aspectRatio();
       })->save(public_path('storage/reimbursement/') . $file_name);
       $reimbursement->foto = $file_name;
+
+      Util::backupFile(public_path('storage/reimbursement/'.$file_name),'salesman-surya/storage/reimbursement/');
     }
         
     $reimbursement->update();

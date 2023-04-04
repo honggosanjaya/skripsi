@@ -13,6 +13,7 @@ use Illuminate\Validation\Rules;
 use Intervention\Image\ImageManagerStatic as Image;
 use App\Mail\ConfirmationEmail;
 use Illuminate\Support\Facades\Mail;
+use Util;
 
 class StaffController extends Controller
 {
@@ -85,6 +86,8 @@ class StaffController extends Controller
         Image::make($request->file('foto_profil'))->resize(350, null, function ($constraint) {
           $constraint->aspectRatio();
         })->save(public_path('storage/staff/') . $filename);
+
+        Util::backupFile(public_path('storage/staff/'.$filename),'salesman-surya/storage/staff/');
         $request->foto_profil= $filename;
       }
 
@@ -180,6 +183,8 @@ class StaffController extends Controller
           $constraint->aspectRatio();
         })->save(public_path('storage/staff/') . $file_name);
         $validatedData['foto_profil'] = $file_name;
+
+        Util::backupFile(public_path('storage/staff/'.$file_name),'salesman-surya/storage/staff/');
       }    
       
       Staff::where('id', $id)->update($validatedData);

@@ -24,9 +24,10 @@ use SimpleSoftwareIO\QrCode\Facades\QrCode;
 use App\Mail\ConfirmationEmail;
 use Illuminate\Support\Facades\Mail;
 use Jenssegers\Agent\Agent;
+use Util;
 
 class CustomerController extends Controller
-{
+{  
     public function cariCustomerApi(Request $request){
       $customer=Customer::where(strtolower('nama'),'like','%'.$request->nama.'%')
               ->where(strtolower('alamat_utama'),'like','%'.$request->alamat_utama.'%')
@@ -255,6 +256,8 @@ class CustomerController extends Controller
           $constraint->aspectRatio();
         })->save(public_path('storage/customer/') . $file_name);
         $customer->foto = $file_name;
+
+        Util::backupFile(public_path('storage/customer/'.$file_name),'salesman-surya/storage/customer/');
       }
           
       $customer->update();
@@ -366,6 +369,8 @@ class CustomerController extends Controller
           $constraint->aspectRatio();
         })->save(public_path('storage/customer/') . $file_name);
         $validatedData['foto'] = $file_name;
+
+        Util::backupFile(public_path('storage/customer/'.$file_name),'salesman-surya/storage/customer/');
       }    
 
       $customer = Customer::insertGetId($validatedData);
@@ -521,6 +526,8 @@ class CustomerController extends Controller
           $constraint->aspectRatio();
         })->save(public_path('storage/customer/') . $file_name);
         $validatedData['foto'] = $file_name;
+
+        Util::backupFile(public_path('storage/customer/'.$file_name),'salesman-surya/storage/customer/');
       }
       
       if ($request->pengajuan_limit_pembelian!=null){
