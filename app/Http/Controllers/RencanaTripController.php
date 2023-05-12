@@ -6,6 +6,7 @@ use App\Models\Customer;
 use App\Models\District;
 use App\Models\Trip;
 use App\Models\RencanaTrip;
+use App\Models\LaporanPenagihan;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use PDF;
@@ -83,28 +84,45 @@ class RencanaTripController extends Controller
   }
 
   public function datakunjunganAPI(Request $request, $id){
-    $date = $request->date;
+    $date = $request->date ?? date('Y-m-d');
 
-    $allrencanas = RencanaTrip::where('id_staff', $id)
-    ->with(['linkCustomer', 'linkCustomer.linkDistrict'])
-    ->get();
+    $rencana = RencanaTrip::where('rencana_trips.id_staff', $id)
+                ->whereDate('tanggal', '=', $date)
+                ->join('customers','customers.id','=','rencana_trips.id_customer')
+                ->join('districts','customers.id_wilayah','=','districts.id')
+                ->selectRaw('rencana_trips.id as id_rencana, rencana_trips.status_enum as status_rencana, 
+                              rencana_trips.estimasi_nominal, customers.id as id_customer,
+                              customers.nama as nama_customer, districts.nama as nama_wilayah')
+                ->orderBy('customers.nama', 'ASC')
+                ->get()->toArray();
 
-    $daterencanas = RencanaTrip::where('id_staff', $id)
-    ->whereDate('tanggal', '=', $date)
-    ->with(['linkCustomer', 'linkCustomer.linkDistrict'])
-    ->get();
+    $tagihan = LaporanPenagihan::where('id_staff_penagih',$id)
+                ->whereDate('tanggal', '=', $date)
+                ->join('invoices','invoices.id','=','laporan_penagihans.id_invoice')
+                ->join('orders','orders.id','=','invoices.id_order')
+                ->join('customers','customers.id','=','orders.id_customer')
+                ->join('districts','customers.id_wilayah','=','districts.id')
+                ->selectRaw('laporan_penagihans.id as id_tagihan, laporan_penagihans.id_invoice, 
+                              laporan_penagihans.status_enum as status_penagihan, customers.nama as nama_customer, 
+                              districts.nama as nama_wilayah')
+                ->orderBy('customers.nama', 'ASC')
+                ->get()->toArray();
 
-    if($date == null){
-      return response()->json([
-        'data' => $allrencanas,
-        'status' => 'success'
-      ]);
-    }else{
-      return response()->json([
-        'data' => $daterencanas,
-        'status' => 'success'
-      ]);
+    $data = array_merge($rencana, $tagihan);
+
+    function sort_array_by_key($array, $sort_key){
+      $key_array = array_column($array, $sort_key);
+      array_multisort($key_array, SORT_ASC, $array);
+      return $array;
     }
+    $sorted_data = sort_array_by_key($data, 'nama_customer');
+    // dd($sorted_data);
+
+    return response()->json([
+      'data' => $sorted_data,
+      'data_tagihan' => $tagihan,
+      'status' => 'success'
+    ]);
   }
 
   public function cetakRAK(Request $request){

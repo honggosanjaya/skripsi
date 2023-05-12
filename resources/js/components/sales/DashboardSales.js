@@ -11,6 +11,7 @@ import Button from 'react-bootstrap/Button';
 import { useHistory } from "react-router";
 import QrReader from 'react-qr-reader';
 import LoadingIndicator from '../reuse/LoadingIndicator';
+import { convertPrice } from '../reuse/HelperFunction';
 
 let source;
 const DashboardSales = () => {
@@ -20,11 +21,16 @@ const DashboardSales = () => {
   const [alamatUtama, setAlamatUtama] = useState('');
   const [listCustomer, setListCustomer] = useState([]);
   const [listRencanaKunjungan, setListRencanaKunjungan] = useState([]);
+  const [detailTagihan, setDetailTagihan] = useState(null);
   const [addButton, setAddButton] = useState('');
   const [dataShow, setDataShow] = useState('inactive');
+
   const [showModal, setShowModal] = useState(false);
   const [showModalRencana, setShowModalRencana] = useState(false);
+  const [showDetailModalTagihan, setShowDetailModalTagihan] = useState(false);
+  const [showDetailModalKunjungan, setShowDetailModalKunjungan] = useState(false);
   const [showModalQR, setShowModalQR] = useState(false);
+
   const [isOrder, setIsOrder] = useState();
   const [isLoading, setIsLoading] = useState(false);
   const _isMounted = useRef(true);
@@ -34,6 +40,30 @@ const DashboardSales = () => {
   var todayDate = new Date().toISOString().slice(0, 10);
   const [tanggal, setTanggal] = useState(todayDate);
   const [linkQR, setLinkQR] = useState(null);
+  const [detailKunjungan, setDetailKunjungan] = useState(null);
+
+  const getDataRencana = () => {
+    axios({
+      method: "post",
+      url: `${window.location.origin}/api/getrencanakunjungan/${dataUser.id_staff}`,
+      headers: {
+        Accept: "application/json",
+        Authorization: "Bearer " + token,
+      },
+      data: {
+        date: tanggal
+      },
+    })
+      .then(response => {
+        setIsLoading(false);
+        // console.log('rencana', response.data.data);
+        setListRencanaKunjungan(response.data.data);
+      })
+      .catch(error => {
+        setIsLoading(false);
+        console.log(error.message);
+      });
+  }
 
   useEffect(() => {
     const modal = document.querySelector('.swal2-popup.swal2-icon-success');
@@ -78,26 +108,7 @@ const DashboardSales = () => {
 
   useEffect(() => {
     setIsLoading(true);
-    axios({
-      method: "post",
-      url: `${window.location.origin}/api/getrencanakunjungan/${dataUser.id_staff}`,
-      headers: {
-        Accept: "application/json",
-        Authorization: "Bearer " + token,
-      },
-      data: {
-        date: tanggal
-      },
-    })
-      .then(response => {
-        setIsLoading(false);
-        // console.log('rencana', response.data.data);
-        setListRencanaKunjungan(response.data.data);
-      })
-      .catch(error => {
-        setIsLoading(false);
-        console.log(error.message);
-      });
+    getDataRencana();
   }, [tanggal, dataUser])
 
   const cariCustomer = (e) => {
@@ -156,6 +167,20 @@ const DashboardSales = () => {
     setShowModal(true);
   }
 
+  const handleCloseDetailModalTagihan = () => {
+    setShowModalQR(false);
+    setShowModal(false);
+    setShowDetailModalTagihan(false);
+    setShowModalRencana(true);
+  }
+
+  const handleCloseDetailModalKunjungan = () => {
+    setShowModalQR(false);
+    setShowModal(false);
+    setShowDetailModalKunjungan(false);
+    setShowModalRencana(true);
+  }
+
   const handleShowModalRencana = () => {
     setShowModalRencana(true);
     setShowModalQR(false);
@@ -169,21 +194,72 @@ const DashboardSales = () => {
   }
 
   const handleCloseModalQR = () => {
-    console.log('ya');
     setShowModalRencana(false);
     setShowModalQR(false);
     setShowModal(true);
   }
 
   const handleScanQR = (data) => {
-    if (data) {
-      setLinkQR(data);
-    }
+    if (data) setLinkQR(data);
   };
 
   const handleErrorQR = (error) => {
     console.log(error);
   };
+
+  const handleClickDetailRencana = (idInvoice = 0, idRencana = 0) => {
+    if (idInvoice != 0) {
+      setShowDetailModalTagihan(true);
+      setShowModalRencana(false);
+      setIsLoading(true);
+      axios({
+        method: "get",
+        url: `${window.location.origin}/api/administrasi/detailpenagihan/${idInvoice}`,
+        headers: {
+          Accept: "application/json",
+        },
+      })
+        .then(response => {
+          setIsLoading(false);
+          setDetailTagihan(response.data.data);
+        })
+        .catch(error => {
+          setIsLoading(false);
+        });
+    } else {
+      setShowDetailModalKunjungan(true);
+      setShowModalRencana(false);
+      const result = listRencanaKunjungan.find(obj => {
+        return obj.id_rencana === idRencana
+      })
+      setDetailKunjungan(result);
+    }
+  }
+
+  const onSudahTagih = (idLp3) => {
+    setIsLoading(true);
+    axios({
+      method: "get",
+      url: `${window.location.origin}/api/lapangan/handlepenagihan/${idLp3}`,
+      headers: {
+        Accept: "application/json",
+      },
+    })
+      .then(response => {
+        getDataRencana();
+        setIsLoading(false);
+        setShowDetailModalTagihan(false);
+        setShowModalRencana(true);
+        setSuccessMessage(response.data.message);
+        setTimeout(() => {
+          setSuccessMessage('');
+        }, 2000)
+      })
+      .catch(error => {
+        setIsLoading(false);
+        console.log(error.message);
+      });
+  }
 
   return (
     <main className="page_main">
@@ -271,7 +347,6 @@ const DashboardSales = () => {
             </Modal.Body>
           </Modal>
 
-
           <Modal show={showModalRencana} onHide={handleCloseModalRencana} centered={true}>
             <Modal.Header closeButton>
               <Modal.Title>Rencana Kunjungan</Modal.Title>
@@ -297,32 +372,107 @@ const DashboardSales = () => {
                         <tr>
                           <th scope="col" className='text-center'>Nama Toko</th>
                           <th scope="col" className='text-center'>Wilayah</th>
-                          <th scope="col" className='text-center'>Estimasi Nominal</th>
                           <th scope="col" className='text-center'>Status</th>
                         </tr>
                       </thead>
                       <tbody>
-                        {listRencanaKunjungan.map((data) => (
-                          <tr key={data.id}>
-                            <td>{data.link_customer.nama ?? null}</td>
-                            <td>{data.link_customer.link_district.nama ?? null}</td>
-                            {data.estimasi_nominal ?
-                              <td>{data.estimasi_nominal.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".")}</td>
-                              : <td></td>
-                            }
-                            {data.status_enum ? <td className='text-center'>{data.status_enum == '1' ? <p className='text-success'>Sudah Dikunjungi</p> : <p className='text-danger'>Belum Dikunjungi</p>}</td> : <td></td>}
+                        {listRencanaKunjungan.map((data, index) => (
+                          <tr key={index} onClick={() => handleClickDetailRencana(data.id_invoice, data.id_rencana)}>
+                            <td>{data.nama_customer ?? null}</td>
+                            <td>{data.nama_wilayah ?? null}</td>
+                            {(data.status_rencana ?? null) &&
+                              <td className='text-center'>{data.status_rencana == '1' ? <p className='text-success'>Sudah Dikunjungi</p> : <p className='text-danger'>Belum Dikunjungi</p>}</td>}
+                            {(data.status_penagihan ?? null) &&
+                              <td className='text-center'>{data.status_penagihan == '1' ? <p className='text-success'>Sudah Ditagih</p> : <p className='text-danger'>Belum Ditagih</p>}</td>}
                           </tr>
                         ))}
                       </tbody>
                     </table>
                   </div>
-                </Fragment>
-
-              }
+                </Fragment>}
             </Modal.Body>
           </Modal>
 
-          <Modal show={showModalQR} onHide={handleCloseModalQR} centered={true}>
+          {detailTagihan && <Modal show={showDetailModalTagihan} onHide={handleCloseDetailModalTagihan} centered={true}>
+            <Modal.Header closeButton>
+              <Modal.Title>Detail Rencana Tagihan</Modal.Title>
+            </Modal.Header>
+            <Modal.Body>
+              <div className='info-2column'>
+                <span className='d-flex'>
+                  <b>No. Invoice</b>
+                  <p className='mb-0 word_wrap'>{detailTagihan.invoice.nomor_invoice ?? null}</p>
+                </span>
+
+                <span className='d-flex'>
+                  <b>Customer</b>
+                  <p className='mb-0 word_wrap'>{detailTagihan.customer.nama ?? null}</p>
+                </span>
+
+                <span className='d-flex'>
+                  <b>Telepon</b>
+                  <p className='mb-0 word_wrap'>{detailTagihan.customer.telepon ?? null}</p>
+                </span>
+
+                <span className='d-flex'>
+                  <b>Alamat</b>
+                  {detailTagihan.customer.koordinat && <a target="_blank" href={`https://www.google.com/maps/search/?api=1&query=${detailTagihan.customer.koordinat.replace("@", ",")}`}>
+                    <p className='mb-0 word_wrap'>{detailTagihan.customer.full_alamat ?? null}</p></a>}
+                  {detailTagihan.customer.koordinat == null && <p className='mb-0 word_wrap'>{detailTagihan.customer.full_alamat ?? null}</p>}
+                </span>
+
+                <span className='d-flex'>
+                  <b>Total Penagihan</b>
+                  {detailTagihan.tagihan && <p className='mb-0 word_wrap'>{convertPrice(detailTagihan.tagihan)}</p>}
+                </span>
+              </div>
+            </Modal.Body>
+            <Modal.Footer>
+              <Link to={`/salesman/trip/${detailTagihan.customer.id}`} className="btn btn-primary">
+                <span className="iconify fs-3 me-1" data-icon="bx:trip"></span>Trip
+              </Link>
+              {detailTagihan.lp3 !== null && <Button variant="success" onClick={() => onSudahTagih(detailTagihan.lp3.id)} disabled={isLoading}>
+                <span className="iconify fs-3 me-1" data-icon="icon-park-outline:doc-success"></span>Sudah Ditagih
+              </Button>}
+              <Button variant="danger" onClick={handleCloseDetailModalTagihan}>
+                <span className="iconify fs-3 me-1" data-icon="carbon:close-outline"></span>Tutup
+              </Button>
+            </Modal.Footer>
+          </Modal>}
+
+          {detailKunjungan && <Modal show={showDetailModalKunjungan} onHide={handleCloseDetailModalKunjungan} centered={true}>
+            <Modal.Header closeButton>
+              <Modal.Title>Detail Rencana Kunjungan</Modal.Title>
+            </Modal.Header>
+            <Modal.Body>
+              <div className='info-2column'>
+                <span className='d-flex'>
+                  <b>Nama Toko</b>
+                  <p className='mb-0 word_wrap'>{detailKunjungan.nama_customer ?? null}</p>
+                </span>
+
+                <span className='d-flex'>
+                  <b>Wilayah</b>
+                  <p className='mb-0 word_wrap'>{detailKunjungan.nama_wilayah ?? null}</p>
+                </span>
+
+                <span className='d-flex'>
+                  <b>Estimasi Nominal</b>
+                  {detailKunjungan.estimasi_nominal && <p className='mb-0 word_wrap'>{convertPrice(detailKunjungan.estimasi_nominal)}</p>}
+                </span>
+              </div>
+            </Modal.Body>
+            <Modal.Footer>
+              <Link to={`/salesman/trip/${detailKunjungan.id_customer}`} className="btn btn-primary">
+                <span className="iconify fs-3 me-1" data-icon="bx:trip"></span>Trip
+              </Link>
+              <Button className='btn btn-danger' variant="danger" onClick={handleCloseDetailModalKunjungan}>
+                <span className="iconify fs-3 me-1" data-icon="carbon:close-outline"></span>Tutup
+              </Button>
+            </Modal.Footer>
+          </Modal>}
+
+          <Modal Modal show={showModalQR} onHide={handleCloseModalQR} centered={true}>
             <Modal.Header closeButton>
               <Modal.Title>Scan Kode QR</Modal.Title>
             </Modal.Header>
