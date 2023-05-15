@@ -58,19 +58,19 @@ class AppServiceProvider extends ServiceProvider
         if (str_contains($url, 'suralaya.')) {
             if (str_contains($url, 'salesman-dev.')) {
                 $this->app->bind('path.public', function() {
-                    return base_path().'/../public_html/salesman-dev';
+                    return base_path().'/../../public_html/project/salesman-dev';
                 });
             }else if (str_contains($url, 'salesman-jtrg.')) {
                 $this->app->bind('path.public', function() {
-                    return base_path().'/../public_html/salesman-jtrg';
+                    return base_path().'/../../public_html/project/salesman-jtrg';
                 });
             }else if (str_contains($url, 'salesman-surya.')) {
                 $this->app->bind('path.public', function() {
-                    return base_path().'/../public_html/salesman-surya';
+                    return base_path().'/../../public_html/project/salesman-surya';
                 });
             }else if (str_contains($url, 'salesman-mandiri.')) {
                 $this->app->bind('path.public', function() {
-                    return base_path().'/../public_html/salesman-mandiri';
+                    return base_path().'/../../public_html/project/salesman-mandiri';
                 });
             }
         }
