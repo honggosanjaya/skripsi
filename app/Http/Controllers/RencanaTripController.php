@@ -120,7 +120,7 @@ class RencanaTripController extends Controller
 
     return response()->json([
       'data' => $sorted_data,
-      'data_tagihan' => $tagihan,
+      // 'data_tagihan' => $tagihan,
       'status' => 'success'
     ]);
   }
