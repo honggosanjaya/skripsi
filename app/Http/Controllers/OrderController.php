@@ -1345,4 +1345,18 @@ class OrderController extends Controller
       'status' => 'success'
     ]);
   }
+
+  public function getHistoryOrderAPI($id){
+    $history = Invoice::orderBy("created_at", "DESC")
+              ->whereHas('linkOrder', function($q) use($id) {
+                $q->where('id_customer', $id);
+              })->with(['linkOrder','linkOrder.linkOrderItem'])
+              // ->get();
+              ->paginate(10);
+
+    return response()->json([
+      "status" => "success",
+      "data" => $history,
+    ], 200);
+  }
 }

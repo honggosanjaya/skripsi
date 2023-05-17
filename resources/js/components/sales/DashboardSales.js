@@ -12,6 +12,7 @@ import { useHistory } from "react-router";
 import QrReader from 'react-qr-reader';
 import LoadingIndicator from '../reuse/LoadingIndicator';
 import { convertPrice } from '../reuse/HelperFunction';
+import HistoryPembelian from './HistoryPembelian';
 
 let source;
 const DashboardSales = () => {
@@ -460,6 +461,8 @@ const DashboardSales = () => {
                   <b>Estimasi Nominal</b>
                   {detailKunjungan.estimasi_nominal && <p className='mb-0 word_wrap'>{convertPrice(detailKunjungan.estimasi_nominal)}</p>}
                 </span>
+
+                <HistoryPembelian idCust={detailKunjungan.id_customer} />
               </div>
             </Modal.Body>
             <Modal.Footer>

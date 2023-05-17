@@ -103,7 +103,8 @@ class RencanaTripController extends Controller
                 ->join('customers','customers.id','=','orders.id_customer')
                 ->join('districts','customers.id_wilayah','=','districts.id')
                 ->selectRaw('laporan_penagihans.id as id_tagihan, laporan_penagihans.id_invoice, 
-                              laporan_penagihans.status_enum as status_penagihan, customers.nama as nama_customer, 
+                              laporan_penagihans.status_enum as status_penagihan, 
+                              customers.id as id_customer, customers.nama as nama_customer, 
                               districts.nama as nama_wilayah')
                 ->orderBy('customers.nama', 'ASC')
                 ->get()->toArray();
