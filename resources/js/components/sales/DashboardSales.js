@@ -2,7 +2,7 @@ import React, { Fragment, useRef, useState, useEffect, useContext } from 'react'
 import axios from 'axios';
 import HeaderSales from './HeaderSales';
 import ListCustomer from './ListCustomer';
-import { splitCharacter } from '../reuse/HelperFunction';
+
 import { Link } from 'react-router-dom';
 import { AuthContext } from '../../contexts/AuthContext';
 import { UserContext } from '../../contexts/UserContext';
@@ -13,6 +13,7 @@ import QrReader from 'react-qr-reader';
 import LoadingIndicator from '../reuse/LoadingIndicator';
 import { convertPrice } from '../reuse/HelperFunction';
 import HistoryPembelian from './HistoryPembelian';
+import DashboardMenu from './DashboardMenu';
 
 let source;
 const DashboardSales = () => {
@@ -22,14 +23,11 @@ const DashboardSales = () => {
   const [alamatUtama, setAlamatUtama] = useState('');
   const [listCustomer, setListCustomer] = useState([]);
   const [listRencanaKunjungan, setListRencanaKunjungan] = useState([]);
-  const [detailTagihan, setDetailTagihan] = useState(null);
   const [addButton, setAddButton] = useState('');
   const [dataShow, setDataShow] = useState('inactive');
 
   const [showModal, setShowModal] = useState(false);
   const [showModalRencana, setShowModalRencana] = useState(false);
-  const [showDetailModalTagihan, setShowDetailModalTagihan] = useState(false);
-  const [showDetailModalKunjungan, setShowDetailModalKunjungan] = useState(false);
   const [showModalQR, setShowModalQR] = useState(false);
 
   const [isOrder, setIsOrder] = useState();
@@ -41,7 +39,14 @@ const DashboardSales = () => {
   var todayDate = new Date().toISOString().slice(0, 10);
   const [tanggal, setTanggal] = useState(todayDate);
   const [linkQR, setLinkQR] = useState(null);
+
+  const [detailTagihan, setDetailTagihan] = useState(null);
   const [detailKunjungan, setDetailKunjungan] = useState(null);
+  const [showDetailModalTagihan, setShowDetailModalTagihan] = useState(false);
+  const [showDetailModalKunjungan, setShowDetailModalKunjungan] = useState(false);
+  const [showModalHistoryBeli, setShowModalHistoryBeli] = useState(false);
+  const [detailHistoryBeli, setDetailHistoryBeli] = useState(null);
+  const [modalShow, setModalShow] = useState(null);
 
   const getDataRencana = () => {
     axios({
@@ -153,11 +158,8 @@ const DashboardSales = () => {
   }
 
   const handleShowModal = (order) => {
-    if (order) {
-      setIsOrder(true);
-    } else {
-      setIsOrder(false);
-    }
+    if (order) setIsOrder(true);
+    else setIsOrder(false);
     setShowModal(true);
   }
 
@@ -212,6 +214,7 @@ const DashboardSales = () => {
     if (idInvoice != 0) {
       setShowDetailModalTagihan(true);
       setShowModalRencana(false);
+      setModalShow('tagihan');
       setIsLoading(true);
       axios({
         method: "get",
@@ -230,6 +233,7 @@ const DashboardSales = () => {
     } else {
       setShowDetailModalKunjungan(true);
       setShowModalRencana(false);
+      setModalShow('kunjungan');
       const result = listRencanaKunjungan.find(obj => {
         return obj.id_rencana === idRencana
       })
@@ -262,49 +266,27 @@ const DashboardSales = () => {
       });
   }
 
+  const handleCloseDetailHistory = () => {
+    setShowModalHistoryBeli(false);
+    if (modalShow == 'kunjungan') {
+      setShowDetailModalKunjungan(true);
+    } else if (modalShow == 'tagihan') {
+      setShowDetailModalTagihan(true);
+    }
+  }
+
+  const getDate = (date) => {
+    const newDate = date.substring(0, 10);
+    const results = newDate.split('-');
+    return `${results[2]}-${results[1]}-${results[0]}`;
+  }
+
   return (
     <main className="page_main">
       {isAuth === 'true' && token !== null && dataUser.role == 'salesman' ?
         <Fragment>
           <HeaderSales isDashboard={true} />
-          <div className="page_container pt-4">
-            <div className="word d-flex justify-content-center">
-              {splitCharacter("salesman")}
-            </div>
-
-            <div className="object-movement">
-              <div className="salesman"><span className="iconify fs-2" data-icon="emojione:person-walking-light-skin-tone"></span></div>
-            </div>
-
-            <h1 className='fs-6 fw-bold'>Menu untuk Salesman</h1>
-            <button className='btn btn-primary btn-lg w-100' onClick={() => handleShowModal(false)}>
-              <span className="iconify fs-4 me-2" data-icon="bx:trip"></span> Trip
-            </button>
-            <button className='btn btn-success btn-lg w-100 mt-4' onClick={() => handleShowModal(true)}>
-              <span className="iconify fs-4 me-2" data-icon="carbon:ibm-watson-orders"></span> Order
-            </button>
-            <Link to="/salesman/reimbursement" className='btn btn-purple btn-lg w-100 mt-4'>
-              <span className="iconify fs-3 me-2" data-icon="mdi:cash-sync"></span> Reimbursement
-            </Link>
-
-            <Link to="/salesman/historyinvoice" className='btn btn-danger btn-lg w-100 mt-4'>
-              <span className="iconify fs-3 me-2" data-icon="fa-solid:file-invoice-dollar"></span> Riwayat Invoice
-            </Link>
-
-            <Link to="/lapangan/penagihan" className='btn btn-info btn-lg w-100 mt-4 text-white'>
-              <span className="iconify fs-3 me-2 text-white" data-icon="uil:bill"></span> Penagihan
-            </Link>
-
-            <Link to='/lapangan/jadwal' className='btn btn-primary btn-lg w-100 mt-3'>
-              <span className="iconify me-2" data-icon="fa-solid:shipping-fast"></span>
-              Pengiriman
-            </Link>
-
-            <Link to='/salesman/itemkanvas' className='btn btn-success btn-lg w-100 mt-3'>
-              <span className="iconify fs-3 me-2" data-icon="fluent:tray-item-remove-24-filled"></span>
-              Item Kanvas
-            </Link>
-          </div>
+          <DashboardMenu handleShowModal={handleShowModal} />
 
           <Modal show={showModal} onHide={handleCloseModal} centered={true}>
             <Modal.Header closeButton>
@@ -382,9 +364,9 @@ const DashboardSales = () => {
                             <td>{data.nama_customer ?? null}</td>
                             <td>{data.nama_wilayah ?? null}</td>
                             {(data.status_rencana ?? null) &&
-                              <td className='text-center'>{data.status_rencana == '1' ? <p className='text-success'>Sudah Dikunjungi</p> : <p className='text-danger'>Belum Dikunjungi</p>}</td>}
+                              <td className='text-center'>{data.status_rencana == '1' ? <p className='text-success mb-0'>Sudah Dikunjungi</p> : <p className='text-danger mb-0'>Belum Dikunjungi</p>}</td>}
                             {(data.status_penagihan ?? null) &&
-                              <td className='text-center'>{data.status_penagihan == '1' ? <p className='text-success'>Sudah Ditagih</p> : <p className='text-danger'>Belum Ditagih</p>}</td>}
+                              <td className='text-center'>{data.status_penagihan == '1' ? <p className='text-success mb-0'>Sudah Ditagih</p> : <p className='text-danger mb-0'>Belum Ditagih</p>}</td>}
                           </tr>
                         ))}
                       </tbody>
@@ -404,29 +386,26 @@ const DashboardSales = () => {
                   <b>No. Invoice</b>
                   <p className='mb-0 word_wrap'>{detailTagihan.invoice.nomor_invoice ?? null}</p>
                 </span>
-
                 <span className='d-flex'>
                   <b>Customer</b>
                   <p className='mb-0 word_wrap'>{detailTagihan.customer.nama ?? null}</p>
                 </span>
-
                 <span className='d-flex'>
                   <b>Telepon</b>
                   <p className='mb-0 word_wrap'>{detailTagihan.customer.telepon ?? null}</p>
                 </span>
-
                 <span className='d-flex'>
                   <b>Alamat</b>
                   {detailTagihan.customer.koordinat && <a target="_blank" href={`https://www.google.com/maps/search/?api=1&query=${detailTagihan.customer.koordinat.replace("@", ",")}`}>
                     <p className='mb-0 word_wrap'>{detailTagihan.customer.full_alamat ?? null}</p></a>}
                   {detailTagihan.customer.koordinat == null && <p className='mb-0 word_wrap'>{detailTagihan.customer.full_alamat ?? null}</p>}
                 </span>
-
                 <span className='d-flex'>
                   <b>Total Penagihan</b>
                   {detailTagihan.tagihan && <p className='mb-0 word_wrap'>{convertPrice(detailTagihan.tagihan)}</p>}
                 </span>
               </div>
+              <HistoryPembelian idCust={detailTagihan.customer.id} setShowModalHistoryBeli={setShowModalHistoryBeli} setDetailHistoryBeli={setDetailHistoryBeli} setShowDetailModalKunjungan={setShowDetailModalKunjungan} setShowDetailModalTagihan={setShowDetailModalTagihan} />
             </Modal.Body>
             <Modal.Footer>
               <Link to={`/salesman/trip/${detailTagihan.customer.id}`} className="btn btn-primary">
@@ -451,25 +430,61 @@ const DashboardSales = () => {
                   <b>Nama Toko</b>
                   <p className='mb-0 word_wrap'>{detailKunjungan.nama_customer ?? null}</p>
                 </span>
-
                 <span className='d-flex'>
                   <b>Wilayah</b>
                   <p className='mb-0 word_wrap'>{detailKunjungan.nama_wilayah ?? null}</p>
                 </span>
-
                 <span className='d-flex'>
                   <b>Estimasi Nominal</b>
                   {detailKunjungan.estimasi_nominal && <p className='mb-0 word_wrap'>{convertPrice(detailKunjungan.estimasi_nominal)}</p>}
                 </span>
-
-                <HistoryPembelian idCust={detailKunjungan.id_customer} />
               </div>
+              <HistoryPembelian idCust={detailKunjungan.id_customer} setShowModalHistoryBeli={setShowModalHistoryBeli} setDetailHistoryBeli={setDetailHistoryBeli} setShowDetailModalKunjungan={setShowDetailModalKunjungan} setShowDetailModalTagihan={setShowDetailModalTagihan} />
             </Modal.Body>
             <Modal.Footer>
               <Link to={`/salesman/trip/${detailKunjungan.id_customer}`} className="btn btn-primary">
                 <span className="iconify fs-3 me-1" data-icon="bx:trip"></span>Trip
               </Link>
               <Button className='btn btn-danger' variant="danger" onClick={handleCloseDetailModalKunjungan}>
+                <span className="iconify fs-3 me-1" data-icon="carbon:close-outline"></span>Tutup
+              </Button>
+            </Modal.Footer>
+          </Modal>}
+
+          {detailHistoryBeli && <Modal show={showModalHistoryBeli} onHide={handleCloseDetailHistory} centered={true}>
+            <Modal.Header closeButton>
+              <Modal.Title>Detail Riwayat Pembelian</Modal.Title>
+            </Modal.Header>
+            <Modal.Body>
+              <div className='info-2column'>
+                <span className='d-flex'>
+                  <b>No Invoice</b>
+                  <p className='mb-0 word_wrap'>{detailHistoryBeli.nomor_invoice ?? null}</p>
+                </span>
+                <span className='d-flex'>
+                  <b>Tanggal</b>
+                  <p className='mb-0 word_wrap'>{getDate(detailHistoryBeli.created_at)}</p>
+                </span>
+              </div>
+              <table className="table">
+                <thead>
+                  <tr>
+                    <th scope="col" className='text-center'>Nama Item</th>
+                    <th scope="col" className='text-center'>Jumlah</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {detailHistoryBeli.link_order.link_order_item.map((data, index) => (
+                    <tr key={index}>
+                      <td>{data.link_item.nama ?? null}</td>
+                      <td className='text-center'>{data.kuantitas ?? null}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </Modal.Body>
+            <Modal.Footer>
+              <Button className='btn btn-danger' variant="danger" onClick={handleCloseDetailHistory}>
                 <span className="iconify fs-3 me-1" data-icon="carbon:close-outline"></span>Tutup
               </Button>
             </Modal.Footer>
