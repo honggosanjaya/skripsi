@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\SalesmanController;
 use App\Http\Controllers\CustomerTypeController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\AuthController;
@@ -333,9 +334,36 @@ Route::prefix('excel')->middleware('supervisor-owner-administrasi')->group(funct
 });
 
 
-// Route::prefix('salesman')->middleware('salesman')->group(function() {
-//   Route::get('/', [HomeController::class, 'indexSalesman']);
-// });
+Route::get('/spa/login', [SalesmanController::class, 'login']);
+Route::get('/spa/logout', [SalesmanController::class, 'indexSalesman']);
+Route::get('/lapangan/penagihan', [SalesmanController::class, 'indexSalesman']);
+Route::get('/changepassword', [SalesmanController::class, 'indexSalesman']);
+Route::get('/lapangan/jadwal', [SalesmanController::class, 'indexSalesman']);
+Route::get('/lapangan/retur/:idCust', [SalesmanController::class, 'indexSalesman']);
+
+Route::prefix('shipper')->middleware('salesman')->group(function() {
+  Route::get('/', [ShiperController::class, 'indexSalesman']);
+  Route::get('/profil', [ShiperController::class, 'indexSalesman']);
+});
+Route::prefix('salesman')->middleware('salesman')->group(function() {
+  Route::get('/', [SalesmanController::class, 'indexSalesman']);
+  Route::get('/trip', [SalesmanController::class, 'indexSalesman']);
+  Route::get('/trip/{id}', [SalesmanController::class, 'indexSalesman']);
+  Route::get('/profil', [SalesmanController::class, 'indexSalesman']);
+  Route::get('/history', [SalesmanController::class, 'indexSalesman']);
+  Route::get('/historyinvoice', [SalesmanController::class, 'indexSalesman']);
+  Route::get('/itemkanvas', [SalesmanController::class, 'indexSalesman']);
+  Route::get('/itemkanvas/history', [SalesmanController::class, 'indexSalesman']);
+  Route::get('/catalog/{idCust}', [SalesmanController::class, 'indexSalesman']);
+  Route::get('/historyinvoice/cetak/{idInvoice}', [SalesmanController::class, 'indexSalesman']);
+  Route::get('/detailcatalog/{tipeHarga}/{idItem}', [SalesmanController::class, 'indexSalesman']);
+  Route::get('/order/{idCust}', [SalesmanController::class, 'indexSalesman']);
+  Route::get('/keranjang/{idCust}', [SalesmanController::class, 'indexSalesman']);
+  Route::get('/reimbursement', [SalesmanController::class, 'indexSalesman']);
+});
+
+
+
 // Route::prefix('shipper')->middleware('shipper')->group(function() {
 //   Route::get('/', [HomeController::class, 'indexShipper']);
 // });
