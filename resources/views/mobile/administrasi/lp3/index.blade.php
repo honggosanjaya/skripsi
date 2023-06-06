@@ -60,7 +60,7 @@
               <div class="mb-3">
                 <label class="form-label">Tanggal <span class='text-danger'>*</span></label>
                 <input type="date" name="tanggal" class="form-control @error('tanggal') is-invalid @enderror"
-                  id="tanggal" value="{{ old('tanggal') }}">
+                  id="tanggal" value="{{ old('tanggal', now()->format('Y-m-d')) }}">
                 @error('tanggal')
                   <div class="invalid-feedback">
                     {{ $message }}

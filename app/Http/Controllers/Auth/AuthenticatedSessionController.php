@@ -78,20 +78,10 @@ class AuthenticatedSessionController extends Controller
             return redirect()->intended('/supervisor');
         }
         if($request->session()->get('role')=='salesman'){
-            // Auth::guard('web')->logout();
-
-            // $request->session()->invalidate();
-
-            // $request->session()->regenerateToken();
-            return redirect()->intended('/spa/login');
+            return redirect()->intended('/salesman');
         }
         if($request->session()->get('role')=='shipper'){
-            // Auth::guard('web')->logout();
-
-            // $request->session()->invalidate();
-
-            // $request->session()->regenerateToken();
-            return redirect()->intended('/spa/login');
+            return redirect()->intended('/shipper');
         }
         if($request->session()->get('role')=='administrasi'){
             return redirect()->intended('/administrasi');
@@ -99,7 +89,6 @@ class AuthenticatedSessionController extends Controller
         if($request->session()->get('role')=='customer'){
             return redirect()->intended('/customer');
         }
-        return view('/');
 
         return redirect()->intended(RouteServiceProvider::HOME);
     }

@@ -11,8 +11,8 @@
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.7.2/font/bootstrap-icons.css">
   <script src="https://code.iconify.design/2/2.0.3/iconify.min.js"></script>
   <!-- Custom CSS -->
-  <link href=" {{ mix('css/dashboard.css') }}" rel="stylesheet">
-  <link href=" {{ mix('css/mobile.css') }}" rel="stylesheet">
+  <link href="{{ mix('css/dashboard.css') }}" rel="stylesheet">
+  <link href="{{ mix('css/mobile.css') }}" rel="stylesheet">
   <link rel="icon" href="{{ asset('images/icon-perusahaan.png') }}">
   <!-- PWA  -->
   <meta name="theme-color" content="#007bff" />
@@ -30,7 +30,7 @@
     @yield('main_content')
   </main>
 
-  <script src="{{ mix('js/bootstrap.js') }}"></script>
+  {{-- <script src="{{ mix('js/bootstrap.js') }}"></script> --}}
   <script src="{{ mix('js/main.js') }}"></script>
   @stack('JS')
   <script src="{{ asset('/sw.js') }}"></script>

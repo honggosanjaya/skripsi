@@ -856,3 +856,47 @@ ul.info-list {
 .fixed_height {
     height: 300px;
 }
+
+.sales-wrapper {
+    position: relative;
+    .profile_picture {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+    }
+    .active_indicator {
+        background-color: green;
+        width: 0.75rem;
+        height: 0.75rem;
+        border-radius: 50%;
+        position: absolute;
+        left: calc(40px - 0.5rem);
+        bottom: 0;
+    }
+}
+
+.dropdown-toggle {
+    max-height: 50px;
+}
+
+.dropdown-toggle::after {
+    display: none;
+}
+
+#hideMeAfter3Seconds {
+    animation: hideAnimation 0s ease-in 3s;
+    animation-fill-mode: forwards;
+}
+
+@keyframes hideAnimation {
+    to {
+        visibility: hidden;
+        display: none;
+        width: 0;
+        height: 0;
+    }
+}
+
+.cursor_pointer{
+  cursor: pointer;
+}

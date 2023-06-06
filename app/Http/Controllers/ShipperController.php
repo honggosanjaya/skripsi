@@ -5,12 +5,11 @@ namespace App\Http\Controllers;
 use App\Models\Staff;
 use Illuminate\Http\Request;
 
-class SalesmanController extends Controller
+class ShipperController extends Controller
 {
   public function index(){
-    return view('salesman.dashboard',[
+    return view('shipper.dashboard',[
       'isDashboard' => true,
-      'isSalesman' => true
     ]);
   }
 
@@ -18,8 +17,7 @@ class SalesmanController extends Controller
     $data = Staff::find(auth()->user()->id_users);
     return view('react.profil',[
       'page' => 'Profil Saya',
-      'data' => $data,
-      'isSalesman' => true
+      'data' => $data
     ]);
   }
 

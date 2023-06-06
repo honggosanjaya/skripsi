@@ -10,7 +10,6 @@ use PDF;
 
 class KasController extends Controller
 {
-
   public function bukuKas(Request $request, CashAccount $cashaccount){
     $counter = $request->session()->increment('counterAdminVisitKas');
     if($counter > 1){

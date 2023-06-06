@@ -136,6 +136,7 @@ class LaporanPenagihanController extends Controller
 
     return response()->json([
       'status' => 'success',
+      'id_invoice' => $lp3->id_invoice,
       'message' => 'berhasil mengonfirmasi penagihan pembayaran untuk '.$customer
     ]);
   }

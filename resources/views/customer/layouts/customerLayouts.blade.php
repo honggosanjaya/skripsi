@@ -49,7 +49,7 @@
 
 
 
-  <script src="{{ mix('js/bootstrap.js') }}"></script>
+  {{-- <script src="{{ mix('js/bootstrap.js') }}"></script> --}}
   <script src="{{ mix('js/main.js') }}"></script>
   <script src="{{ mix('js/d_customer.js') }}"></script>
   <script src="https://code.iconify.design/2/2.0.3/iconify.min.js"></script>

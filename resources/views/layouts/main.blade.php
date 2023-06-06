@@ -45,7 +45,7 @@
     </div>
   @endif
 
-  <script src="{{ mix('js/bootstrap.js') }}"></script>
+  {{-- <script src="{{ mix('js/bootstrap.js') }}"></script> --}}
   <script src="{{ mix('js/main.js') }}"></script>
   @stack('JS')
   <script src="{{ asset('/sw.js') }}"></script>

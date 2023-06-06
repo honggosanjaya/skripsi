@@ -22,8 +22,10 @@ use App\Http\Controllers\CashAccountController;
 use App\Http\Controllers\CategoryItemController;
 use App\Http\Controllers\EmailController;
 use App\Http\Controllers\KasController;
+use App\Http\Controllers\LapanganController;
 use App\Http\Controllers\LaporanPenagihanController;
 use App\Http\Controllers\RencanaTripController;
+use App\Http\Controllers\ShipperController;
 use App\Http\Controllers\TargetController;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
@@ -333,23 +335,33 @@ Route::prefix('excel')->middleware('supervisor-owner-administrasi')->group(funct
   Route::get('/aktivitas-kunjungan', [ExcelController::class, 'aktivitasKunjunganExport']);
 });
 
+// Route::prefix('lapangan')->middleware('salesman-shipper')->group(function() {
+// });
 
-Route::get('/spa/login', [SalesmanController::class, 'login']);
-Route::get('/spa/logout', [SalesmanController::class, 'indexSalesman']);
-Route::get('/lapangan/penagihan', [SalesmanController::class, 'indexSalesman']);
-Route::get('/changepassword', [SalesmanController::class, 'indexSalesman']);
-Route::get('/lapangan/jadwal', [SalesmanController::class, 'indexSalesman']);
-Route::get('/lapangan/retur/:idCust', [SalesmanController::class, 'indexSalesman']);
+Route::get('/lapangan/jadwal', [LapanganController::class, 'jadwalpengiriman']);
+Route::post('/lapangan/kirimsampai/{id}', [LapanganController::class, 'konfirmasiPengirimanSampai']);
 
-Route::prefix('shipper')->middleware('salesman')->group(function() {
+Route::get('/lapangan/penagihan', [LapanganController::class, 'penagihan']);
+Route::get('/lapangan/retur/{idCust}', [LapanganController::class, 'retur']);
+
+
+Route::get('/lapangan/handlepenagihan/{id}', [LaporanPenagihanController::class, 'handlePenagihanLapanganAPI']);
+
+
+Route::prefix('shipper')->middleware('shipper')->group(function() {
   Route::get('/', [ShiperController::class, 'indexSalesman']);
   Route::get('/profil', [ShiperController::class, 'indexSalesman']);
 });
+
 Route::prefix('salesman')->middleware('salesman')->group(function() {
-  Route::get('/', [SalesmanController::class, 'indexSalesman']);
+  Route::get('/', [SalesmanController::class, 'index']);
+  Route::get('/profil', [SalesmanController::class, 'profil']);
+  Route::get('/changepassword', [ShipperController::class, 'changepassword']);
+
+  
+
   Route::get('/trip', [SalesmanController::class, 'indexSalesman']);
   Route::get('/trip/{id}', [SalesmanController::class, 'indexSalesman']);
-  Route::get('/profil', [SalesmanController::class, 'indexSalesman']);
   Route::get('/history', [SalesmanController::class, 'indexSalesman']);
   Route::get('/historyinvoice', [SalesmanController::class, 'indexSalesman']);
   Route::get('/itemkanvas', [SalesmanController::class, 'indexSalesman']);
@@ -362,11 +374,12 @@ Route::prefix('salesman')->middleware('salesman')->group(function() {
   Route::get('/reimbursement', [SalesmanController::class, 'indexSalesman']);
 });
 
-
-
-// Route::prefix('shipper')->middleware('shipper')->group(function() {
-//   Route::get('/', [HomeController::class, 'indexShipper']);
-// });
+Route::prefix('shipper')->middleware('shipper')->group(function() {
+  Route::get('/', [ShipperController::class, 'index']);
+  Route::get('/profil', [ShipperController::class, 'profil']);
+  Route::get('/changepassword', [ShipperController::class, 'changepassword']);
+  
+});
 
 require __DIR__.'/auth.php';
 

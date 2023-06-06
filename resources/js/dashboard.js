@@ -86,3 +86,15 @@ $(document).on('click', '.menu-group', function (e) {
     $('.hamburger_icon').click();
   }
 })
+
+// ========= Preview Image ================
+window.previewImage = function () {
+  const image = document.querySelector('.input-gambar');
+  const imgPreview = document.querySelector('.img-preview');
+  imgPreview.style.display = 'block';
+  const oFReader = new FileReader();
+  oFReader.readAsDataURL(image.files[0]);
+  oFReader.onload = function (oFREvent) {
+    imgPreview.src = oFREvent.target.result;
+  }
+}

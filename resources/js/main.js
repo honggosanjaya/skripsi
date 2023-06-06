@@ -3,6 +3,9 @@ require('datatables.net-dt');
 require('datatables.net-datetime');
 require('datatables.net-searchpanes-bs5');
 
+import * as bootstrap from 'bootstrap';
+window.bootstrap = bootstrap;
+
 require('select2');
 import Swal from 'sweetalert2';
 window.Swal = Swal;
