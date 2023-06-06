@@ -71,6 +71,7 @@ class Kernel extends HttpKernel
         'salesman' => \App\Http\Middleware\IsSalesman::class,
         'shipper' => \App\Http\Middleware\IsShipper::class,
         'supervisor-owner' => \App\Http\Middleware\IsSupervisorOwner::class,
-        'supervisor-owner-administrasi' => \App\Http\Middleware\IsSupervisorOwnerAdministrasi::class
+        'supervisor-owner-administrasi' => \App\Http\Middleware\IsSupervisorOwnerAdministrasi::class,
+        'salesman-shipper' => \App\Http\Middleware\IsTenagaLapangan::class
     ];
 }

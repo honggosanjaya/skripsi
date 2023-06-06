@@ -335,16 +335,18 @@ Route::prefix('excel')->middleware('supervisor-owner-administrasi')->group(funct
   Route::get('/aktivitas-kunjungan', [ExcelController::class, 'aktivitasKunjunganExport']);
 });
 
-// Route::prefix('lapangan')->middleware('salesman-shipper')->group(function() {
-// });
+Route::prefix('lapangan')->middleware('salesman-shipper')->group(function() {
+  Route::get('/jadwal', [LapanganController::class, 'jadwalpengiriman']);
+  Route::post('/kirimsampai/{id}', [LapanganController::class, 'konfirmasiPengirimanSampai']);
+  Route::get('/penagihan', [LapanganController::class, 'penagihan']);
+  Route::get('/reimbursement', [LapanganController::class, 'reimbursement']);
+  Route::post('/submitreimbursement', [LapanganController::class, 'storeReimbursement']);
+  Route::get('/retur/{idCust}', [LapanganController::class, 'retur']);
+});
 
-Route::get('/lapangan/jadwal', [LapanganController::class, 'jadwalpengiriman']);
-Route::post('/lapangan/kirimsampai/{id}', [LapanganController::class, 'konfirmasiPengirimanSampai']);
-Route::get('/lapangan/penagihan', [LapanganController::class, 'penagihan']);
-Route::get('/lapangan/reimbursement', [LapanganController::class, 'reimbursement']);
-Route::post('/lapangan/submitreimbursement', [LapanganController::class, 'storeReimbursement']);
-Route::get('/lapangan/retur/{idCust}', [LapanganController::class, 'retur']);
-
+Route::get('/salesman/cetakinvoice/{id}', function () {
+  return view('reactView');
+});
 
 Route::prefix('shipper')->middleware('shipper')->group(function() {
   Route::get('/', [ShiperController::class, 'indexSalesman']);
@@ -382,6 +384,6 @@ Route::prefix('shipper')->middleware('shipper')->group(function() {
 
 require __DIR__.'/auth.php';
 
-Route::get('/{path}', function () {
-  return view('reactView');
-})->where('path', '.*');
+// Route::get('/{path}', function () {
+//   return view('reactView');
+// })->where('path', '.*');

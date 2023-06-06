@@ -42,10 +42,11 @@ const AuthContextProvider = (props) => {
   }
 
   const checkIsAuth = () => {
-    if (isAuth === 'true' && token !== null) {
-    } else {
-      history.push('/spa/login');
-    }
+    console.log('takeout perubahan react ke laravel');
+    // if (isAuth === 'true' && token !== null) {
+    // } else {
+    //   history.push('/spa/login');
+    // }
   }
 
   useEffect(() => {

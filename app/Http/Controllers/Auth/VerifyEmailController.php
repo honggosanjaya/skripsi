@@ -40,11 +40,17 @@ class VerifyEmailController extends Controller
       }
 
       if(config('app.enabled_email_confirmation')==true){
-        if($role == 'salesman' || $role == 'shipper'){
-          Auth::guard('web')->logout();
-          $request->session()->invalidate();
-          $request->session()->regenerateToken();
-          return redirect()->intended('/spa/login');
+        // if($role == 'salesman' || $role == 'shipper'){
+        //   Auth::guard('web')->logout();
+        //   $request->session()->invalidate();
+        //   $request->session()->regenerateToken();
+        //   return redirect()->intended('/spa/login');
+        // }
+        
+        if($role == 'salesman'){
+          return redirect()->intended('/salesman');
+        }else if($role == 'shipper'){
+          return redirect()->intended('/shipper');
         }else if($role == 'owner'){
           return redirect()->intended('/owner');
         }else if($role == 'supervisor'){

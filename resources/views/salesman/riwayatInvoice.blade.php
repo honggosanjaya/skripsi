@@ -91,20 +91,19 @@
                         <td>{{ $item->kuantitas ?? null }}</td>
                         <td>
                           @if ($item->harga_satuan ?? null)
-                            Rp. {{ number_format($invoice->harga_total ?? 0, 0, '', '.') }}
+                            Rp. {{ number_format($item->harga_satuan, 0, '', '.') }}
                           @endif
                         </td>
                       </tr>
                     @endforeach
-
                   </tbody>
                 </table>
               </div>
             </div>
             <div class="modal-footer">
-              <button type="button" class="btn btn-primary">
+              <a href="/salesman/cetakinvoice/{{ $invoice->id }}" class="btn btn-primary">
                 <span class="iconify fs-3 me-1" data-icon="bi:printer"></span>Cetak
-              </button>
+              </a>
               <button type="button" class="btn btn-danger" data-bs-dismiss="modal">
                 <span class="iconify fs-3 me-1" data-icon="carbon:close-outline"></span>Close
               </button>

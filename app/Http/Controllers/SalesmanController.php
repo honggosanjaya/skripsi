@@ -43,6 +43,7 @@ class SalesmanController extends Controller
               ->get();
 
     return view('salesman.riwayatInvoice',[
+      'page' => 'Riwayat Invoice',
       'invoices' => $datas,
       'date_start' => $date_start,
       'date_end' => $date_end

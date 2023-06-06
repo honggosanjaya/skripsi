@@ -13,19 +13,19 @@ const UserContextProvider = (props) => {
   const location = useLocation();
 
   const forceLogout = () => {
-    // console.log('dari user context logout paksa');
-    axios({
-      method: "get",
-      url: `${window.location.origin}/api/forceLogout`,
-      headers: {
-        Accept: "application/json",
-      }
-    })
-      .then(() => {
-        setIsAuth('false');
-        setToken(null);
-        history.push('/spa/login');
-      })
+    console.log('takeout perubahan react ke laravel');
+    // axios({
+    //   method: "get",
+    //   url: `${window.location.origin}/api/forceLogout`,
+    //   headers: {
+    //     Accept: "application/json",
+    //   }
+    // })
+    //   .then(() => {
+    //     setIsAuth('false');
+    //     setToken(null);
+    //     history.push('/spa/login');
+    //   })
   }
 
   useEffect(() => {
