@@ -7,7 +7,8 @@ use Illuminate\Http\Request;
 
 class ShipperController extends Controller
 {
-  public function index(){
+  public function index(Request $request){
+    $request->session()->increment('count');
     return view('shipper.dashboard',[
       'isDashboard' => true,
     ]);

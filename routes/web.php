@@ -340,12 +340,10 @@ Route::prefix('excel')->middleware('supervisor-owner-administrasi')->group(funct
 
 Route::get('/lapangan/jadwal', [LapanganController::class, 'jadwalpengiriman']);
 Route::post('/lapangan/kirimsampai/{id}', [LapanganController::class, 'konfirmasiPengirimanSampai']);
-
 Route::get('/lapangan/penagihan', [LapanganController::class, 'penagihan']);
+Route::get('/lapangan/reimbursement', [LapanganController::class, 'reimbursement']);
+Route::post('/lapangan/submitreimbursement', [LapanganController::class, 'storeReimbursement']);
 Route::get('/lapangan/retur/{idCust}', [LapanganController::class, 'retur']);
-
-
-Route::get('/lapangan/handlepenagihan/{id}', [LaporanPenagihanController::class, 'handlePenagihanLapanganAPI']);
 
 
 Route::prefix('shipper')->middleware('shipper')->group(function() {
@@ -357,8 +355,9 @@ Route::prefix('salesman')->middleware('salesman')->group(function() {
   Route::get('/', [SalesmanController::class, 'index']);
   Route::get('/profil', [SalesmanController::class, 'profil']);
   Route::get('/changepassword', [ShipperController::class, 'changepassword']);
+  Route::get('/riwayatinvoice', [SalesmanController::class, 'riwayatInvoice']);
 
-  
+
 
   Route::get('/trip', [SalesmanController::class, 'indexSalesman']);
   Route::get('/trip/{id}', [SalesmanController::class, 'indexSalesman']);
@@ -371,7 +370,7 @@ Route::prefix('salesman')->middleware('salesman')->group(function() {
   Route::get('/detailcatalog/{tipeHarga}/{idItem}', [SalesmanController::class, 'indexSalesman']);
   Route::get('/order/{idCust}', [SalesmanController::class, 'indexSalesman']);
   Route::get('/keranjang/{idCust}', [SalesmanController::class, 'indexSalesman']);
-  Route::get('/reimbursement', [SalesmanController::class, 'indexSalesman']);
+
 });
 
 Route::prefix('shipper')->middleware('shipper')->group(function() {

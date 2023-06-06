@@ -423,7 +423,7 @@ const Reimbursement = () => {
           </div>
         }
       </div>
-    </main >
+    </main>
   );
 }
 
