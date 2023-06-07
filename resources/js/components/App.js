@@ -58,9 +58,9 @@ function App() {
             <Route path={["/salesman"]}>
               <KeranjangSalesContextProvider>
                 {/* <Route exact path="/salesman" component={DashboardSales} /> */}
-                <Route exact path="/salesman/trip" component={TripSales} />
-                <Route exact path="/salesman/trip/:id" component={TripSales} />
-                <Route exact path="/salesman/history" component={HistoryTrip} />
+                {/* <Route exact path="/salesman/trip" component={TripSales} /> */}
+                {/* <Route exact path="/salesman/trip/:id" component={TripSales} /> */}
+                {/* <Route exact path="/salesman/history" component={HistoryTrip} /> */}
                 {/* <Route exact path="/salesman/historyinvoice" component={HistoryInvoice} /> */}
                 <Route exact path="/salesman/itemkanvas" component={ItemKanvas} />
                 <Route exact path="/salesman/itemkanvas/history" component={HistoryKanvas} />

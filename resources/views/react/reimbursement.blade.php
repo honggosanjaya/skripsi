@@ -1,5 +1,11 @@
 @extends('layouts.mainreact')
-
+@push('CSS')
+  <style>
+    .select2-selection__clear {
+      display: none !important;
+    }
+  </style>
+@endpush
 
 @push('JS')
   <script>
@@ -120,7 +126,7 @@
         @csrf
         <div class="mb-3">
           <label class="form-label">Jenis Pengeluaran <span class='text-danger'>*</span></label>
-          <select class="form-select selectdua" name="id_cash_account">
+          <select class="form-select select2" name="id_cash_account">
             @foreach ($cashaccount as $akun)
               @if ($akun[3] > 100 && $akun[2] != '3')
                 <option value={{ $akun[1] }}>{{ $akun[0] }}</option>

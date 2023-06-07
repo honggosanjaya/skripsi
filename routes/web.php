@@ -362,17 +362,16 @@ Route::prefix('salesman')->middleware('salesman')->group(function() {
   Route::post('/simpancustomer', [SalesmanController::class, 'simpancustomer']);
   Route::get('/trip/{id}', [SalesmanController::class, 'trip']);
 
+  Route::get('/historytrip', [SalesmanController::class, 'riwayatKunjungan']);
 
-  Route::get('/history', [SalesmanController::class, 'indexSalesman']);
-  Route::get('/historyinvoice', [SalesmanController::class, 'indexSalesman']);
   Route::get('/itemkanvas', [SalesmanController::class, 'indexSalesman']);
   Route::get('/itemkanvas/history', [SalesmanController::class, 'indexSalesman']);
+
+
   Route::get('/catalog/{idCust}', [SalesmanController::class, 'indexSalesman']);
-  Route::get('/historyinvoice/cetak/{idInvoice}', [SalesmanController::class, 'indexSalesman']);
   Route::get('/detailcatalog/{tipeHarga}/{idItem}', [SalesmanController::class, 'indexSalesman']);
   Route::get('/order/{idCust}', [SalesmanController::class, 'indexSalesman']);
   Route::get('/keranjang/{idCust}', [SalesmanController::class, 'indexSalesman']);
-
 });
 
 Route::prefix('shipper')->middleware('shipper')->group(function() {

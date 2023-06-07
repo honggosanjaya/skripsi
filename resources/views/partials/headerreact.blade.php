@@ -3,7 +3,7 @@
     <h1 class='logo text-white'>salesMan</h1>
     <div class='d-flex align-items-center'>
       @if ($isSalesman ?? null)
-        <a href="/salesman/history" class="me-3">
+        <a href="/salesman/historytrip" class="me-3">
           <span class="iconify fs-1 text-white" data-icon="ic:round-history"></span>
         </a>
       @endif
@@ -46,8 +46,13 @@
         <a href="/shipper" class="btn_redirect_back"><span class="iconify text-white"
             data-icon="eva:arrow-back-fill"></span></a>
       @else
-        <a href="{{ URL::previous() }}" class="btn_redirect_back"><span class="iconify text-white"
-            data-icon="eva:arrow-back-fill"></span></a>
+        @if ($linkback)
+          <a href="{{ $linkback }}" class="btn_redirect_back"><span class="iconify text-white"
+              data-icon="eva:arrow-back-fill"></span></a>
+        @else
+          <a href="{{ URL::previous() }}" class="btn_redirect_back"><span class="iconify text-white"
+              data-icon="eva:arrow-back-fill"></span></a>
+        @endif
       @endif
       <h1 class='page_title text-white ms-2'>{{ $page ?? 'Halaman' }}</h1>
     </div>

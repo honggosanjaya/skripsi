@@ -9,6 +9,7 @@ use App\Models\Invoice;
 use App\Models\LaporanPenagihan;
 use App\Models\RencanaTrip;
 use App\Models\Staff;
+use App\Models\Target;
 use App\Models\Trip;
 use App\Models\User;
 use Illuminate\Support\Facades\Validator;
@@ -23,46 +24,10 @@ class SalesmanController extends Controller
 {
   public function index(Request $request){
     $request->session()->increment('count');
-    // $tanggal_kunjungan = $request->tanggal_kunjungan ?? now()->format('Y-m-d');
-
-    // $rencana = RencanaTrip::where('rencana_trips.id_staff', auth()->user()->id_users)
-    //             ->whereDate('tanggal', '=', $tanggal_kunjungan)
-    //             ->join('customers','customers.id','=','rencana_trips.id_customer')
-    //             ->join('districts','customers.id_wilayah','=','districts.id')
-    //             ->selectRaw('rencana_trips.id as id_rencana, rencana_trips.status_enum as status_rencana, 
-    //                           rencana_trips.estimasi_nominal, customers.id as id_customer,
-    //                           customers.nama as nama_customer, districts.nama as nama_wilayah')
-    //             ->orderBy('customers.nama', 'ASC')
-    //             ->get()->toArray();
-
-    // $tagihan = LaporanPenagihan::where('id_staff_penagih', auth()->user()->id_users)
-    //             ->whereDate('tanggal', '=', $tanggal_kunjungan)
-    //             ->join('invoices','invoices.id','=','laporan_penagihans.id_invoice')
-    //             ->join('orders','orders.id','=','invoices.id_order')
-    //             ->join('customers','customers.id','=','orders.id_customer')
-    //             ->join('districts','customers.id_wilayah','=','districts.id')
-    //             ->selectRaw('laporan_penagihans.id as id_tagihan, laporan_penagihans.id_invoice, 
-    //                           laporan_penagihans.status_enum as status_penagihan, 
-    //                           customers.id as id_customer, customers.nama as nama_customer, 
-    //                           districts.nama as nama_wilayah')
-    //             ->orderBy('customers.nama', 'ASC')
-    //             ->get()->toArray();
-
-    // $data = array_merge($rencana, $tagihan);
-    // function sort_array_by_key($array, $sort_key){
-    //   $key_array = array_column($array, $sort_key);
-    //   array_multisort($key_array, SORT_ASC, $array);
-    //   return $array;
-    // }
-    // $sorted_data = sort_array_by_key($data, 'nama_customer');
-    
-    // dd($sorted_data);
 
     return view('salesman.dashboard',[
       'isDashboard' => true,
       'isSalesman' => true,
-      // 'listRencanaKunjungan' => $sorted_data,
-      // 'tanggal_kunjungan' => $tanggal_kunjungan
     ]);
   }
 
@@ -267,4 +232,35 @@ class SalesmanController extends Controller
       return redirect('/salesman/order/'.$id_customer);
     }
   }
+
+  public function riwayatKunjungan(Request $request){
+    $tanggal_kunjungan = $request->tanggal_kunjungan ?? now()->format('Y-m-d');
+
+    $targetkunjungan = Target::whereNull('tanggal_berakhir')->where('jenis_target','3')->first();
+    $targetec = Target::whereNull('tanggal_berakhir')->where('jenis_target','4')->first();
+
+    $trips = Trip::whereDate('waktu_masuk', $tanggal_kunjungan)
+                ->where('id_staff', auth()->user()->id_users)
+                ->with(['linkCustomer', 'linkCustomer.linkDistrict'])
+                ->get();
+
+    $ectrips = Trip::whereDate('waktu_masuk', $tanggal_kunjungan)
+              ->where('id_staff', auth()->user()->id_users)
+              ->where('status_enum','2')
+              ->with(['linkCustomer', 'linkCustomer.linkDistrict'])
+              ->get();
+
+    return view('salesman.riwayatkunjungan',[
+      'page' => 'Riwayat Kunjungan',
+      'linkback' => '/salesman',
+      'targetkunjungan' => $targetkunjungan,
+      'targetec' => $targetec,
+      'trips' => $trips,
+      'ectrips' => $ectrips,
+      'tanggal_kunjungan' => $tanggal_kunjungan,
+      'status' => 'success'
+    ]);
+
+  }
+  
 }
