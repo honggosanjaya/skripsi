@@ -44,28 +44,28 @@ function App() {
       <AuthContextProvider>
         <UserContextProvider>
           <Switch>
-            <Route path="/spa/login" component={LoginReact} />
-            <Route path="/spa/logout" component={LogoutReact} />
+            {/* <Route path="/spa/login" component={LoginReact} /> */}
+            {/* <Route path="/spa/logout" component={LogoutReact} /> */}
 
-            <Route exact path="/lapangan/penagihan" component={Penagihan} />
-            <Route exact path="/changepassword" component={ChangePassword} />
+            {/* <Route exact path="/lapangan/penagihan" component={Penagihan} /> */}
+            {/* <Route exact path="/changepassword" component={ChangePassword} /> */}
 
             <Route path={["/shipper"]}>
-              <Route exact path="/shipper" component={DashboardShipper} />
-              <Route exact path="/shipper/profil" component={Profil} />
+              {/* <Route exact path="/shipper" component={DashboardShipper} /> */}
+              {/* <Route exact path="/shipper/profil" component={Profil} /> */}
             </Route>
 
             <Route path={["/salesman"]}>
               <KeranjangSalesContextProvider>
-                <Route exact path="/salesman" component={DashboardSales} />
+                {/* <Route exact path="/salesman" component={DashboardSales} /> */}
                 <Route exact path="/salesman/trip" component={TripSales} />
                 <Route exact path="/salesman/trip/:id" component={TripSales} />
                 <Route exact path="/salesman/history" component={HistoryTrip} />
-                <Route exact path="/salesman/historyinvoice" component={HistoryInvoice} />
+                {/* <Route exact path="/salesman/historyinvoice" component={HistoryInvoice} /> */}
                 <Route exact path="/salesman/itemkanvas" component={ItemKanvas} />
                 <Route exact path="/salesman/itemkanvas/history" component={HistoryKanvas} />
                 <Route exact path="/salesman/catalog/:idCust" component={CatalogItem} />
-                <Route exact path="/salesman/historyinvoice/cetak/:idInvoice" component={PrintComponent} />
+                {/* <Route exact path="/salesman/historyinvoice/cetak/:idInvoice" component={PrintComponent} /> */}
                 <Route exact path="/salesman/detailcatalog/:tipeHarga/:idItem" component={DetailCatalogItem} />
 
                 <Route exact path="/salesman/cetakInvoice/:idInvoice" component={PrintComponent} />
@@ -74,17 +74,17 @@ function App() {
                   <Route exact path="/salesman/order/:idCust" component={Pemesanan} />
                   <Route exact path="/salesman/keranjang/:idCust" component={KeranjangSales} />
                 </HitungStokContextProvider>
-                <Route exact path="/salesman/reimbursement" component={Reimbursement} />
-                <Route exact path="/salesman/profil" component={Profil} />
+                {/* <Route exact path="/salesman/reimbursement" component={Reimbursement} /> */}
+                {/* <Route exact path="/salesman/profil" component={Profil} /> */}
               </KeranjangSalesContextProvider>
             </Route>
 
             <ReturContextProvider>
-              <Route exact path="/lapangan/jadwal" component={JadwalShipper} />
+              {/* <Route exact path="/lapangan/jadwal" component={JadwalShipper} /> */}
               <Route exact path="/lapangan/retur/:idCust" component={ReturShipper} />
             </ReturContextProvider>
 
-            <Route path="*" component={NotFound} />
+            {/* <Route path="*" component={NotFound} /> */}
           </Switch>
         </UserContextProvider>
       </AuthContextProvider>

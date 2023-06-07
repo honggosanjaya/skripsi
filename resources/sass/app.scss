@@ -1,11 +1,15 @@
 // Fonts
-@import url('https://fonts.googleapis.com/css?family=Nunito');
+@import url("https://fonts.googleapis.com/css?family=Nunito");
 
 // Variables
-@import 'variables';
+@import "variables";
 
 // Bootstrap
-@import '~bootstrap/scss/bootstrap';
+@import "~bootstrap/scss/bootstrap";
 
 // Datatable
 @import "~datatables.net-dt/css/jquery.dataTables.css";
+
+// select2
+@import "select2/src/scss/core";
+@import "select2-bootstrap-5-theme/src/include-all";

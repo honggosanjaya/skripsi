@@ -234,7 +234,7 @@
 
         <div class="mb-3">
           <label for="foto" class="form-label">Foto</label>
-          class="img-preview img-fluid">
+          <img class="img-preview img-fluid">
           <input class="form-control @error('foto') is-invalid @enderror" type="file" id="foto" name="foto"
             onchange="prevImg()">
           @error('foto')

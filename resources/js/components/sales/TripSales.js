@@ -614,7 +614,7 @@ const TripSales = () => {
           </div>
         </form>
       </div>
-    </main >
+    </main>
   );
 }
 

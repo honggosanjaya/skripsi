@@ -358,11 +358,12 @@ Route::prefix('salesman')->middleware('salesman')->group(function() {
   Route::get('/profil', [SalesmanController::class, 'profil']);
   Route::get('/changepassword', [ShipperController::class, 'changepassword']);
   Route::get('/riwayatinvoice', [SalesmanController::class, 'riwayatInvoice']);
+  Route::get('/tambahcustomer', [SalesmanController::class, 'tambahCustomer']);
+  Route::post('/simpancustomer', [SalesmanController::class, 'simpancustomer']);
+
+  Route::get('/trip/{id}', [SalesmanController::class, 'trip']);
 
 
-
-  Route::get('/trip', [SalesmanController::class, 'indexSalesman']);
-  Route::get('/trip/{id}', [SalesmanController::class, 'indexSalesman']);
   Route::get('/history', [SalesmanController::class, 'indexSalesman']);
   Route::get('/historyinvoice', [SalesmanController::class, 'indexSalesman']);
   Route::get('/itemkanvas', [SalesmanController::class, 'indexSalesman']);

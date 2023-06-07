@@ -12,6 +12,12 @@ window.Swal = Swal;
 
 $(document).ready(function () {
   $('.select-two').select2();
+
+  $('.select2').select2({
+    allowClear: true,
+    theme: "bootstrap-5",
+    width: "100%"
+  });
 });
 
 $(document).ready(function () {
