@@ -6,8 +6,6 @@ import LoadingIndicator from '../reuse/LoadingIndicator';
 import HeaderSales from './HeaderSales';
 import InfiniteScroll from 'react-infinite-scroll-component';
 import KeranjangDB from '../reuse/KeranjangDB';
-// import GroupItemDB from '../reuse/GroupItemDB';
-// import RealTimeDB from '../reuse/RealTimeDB';
 import useInfinite from '../reuse/useInfinite';
 import ProductSales from './ProductSales';
 import { KeranjangSalesContext } from '../../contexts/KeranjangSalesContext';
@@ -27,7 +25,6 @@ const Pemesanan = ({ location }) => {
   const { dataUser } = useContext(UserContext);
   const history = useHistory();
   const { produks, getAllProduks, isBelanjaLagi, setIsBelanjaLagi } = useContext(KeranjangSalesContext);
-  // const { produks, groupProduks, getAllProduks, getAllGroupProduks, isBelanjaLagi, setIsBelanjaLagi, dataGroupItem } = useContext(KeranjangSalesContext);
   const [kataKunci, setKataKunci] = useState('');
   const [errorMessage, setErrorMessage] = useState(null);
   const [orderId, setOrderId] = useState(null);
@@ -57,8 +54,6 @@ const Pemesanan = ({ location }) => {
   const [idItemKanvas, setIdItemKanvas] = useState([]);
   const [isHaveCodeCust, setIsHaveCodeCust] = useState(false);
   const Swal = require('sweetalert2');
-  // const [allItems, setAllItems] = useState([]);
-  // const [realTimeItems, setRealTimeItems] = useState([]);
 
   useEffect(() => {
     if (filterBy) {
@@ -171,17 +166,6 @@ const Pemesanan = ({ location }) => {
       .catch(error => {
         console.log(error.message);
       });
-
-    // axios({
-    //   method: "get",
-    //   url: `${window.location.origin}/api/salesman/allitems`,
-    //   headers: {
-    //     Accept: "application/json",
-    //   },
-    // })
-    //   .then((response) => {
-    //     setAllItems(response.data.data);
-    //   })
   }, []);
 
   useEffect(() => {
@@ -247,13 +231,6 @@ const Pemesanan = ({ location }) => {
     if (error) setErrorMessage(error.message);
   }, [error]);
 
-  // const getRealTimeItem = () => {
-  //   const produks = RealTimeDB.getAllProduks();
-  //   produks.then((response) => {
-  //     setRealTimeItems(response);
-  //   })
-  // }
-
   if (error) return (
     <main className="page_main">
       <HeaderSales title="Salesman" />
@@ -290,28 +267,6 @@ const Pemesanan = ({ location }) => {
   const handleShowFilter = () => setShowFilter(true);
   const handleCloseFilter = () => setShowFilter(false);
 
-  // const getStokRealTime = (item) => {
-  //   const groupProduks = GroupItemDB.getAllProduks();
-  //   const myArr = [];
-  //   groupProduks.then((response) => {
-  //     item.link_grouping_item.map((itm) => {
-  //       const exist2 = response.find((x) => x.id === itm.id_item);
-  //       if (exist2) {
-  //         const x = GroupItemDB.getProduk(itm.id_item);
-  //         x.then((val) => {
-  //           const stokSisa = (val.stokAwal - val.val) - (itm.value_item / itm.value);
-  //           const formula = stokSisa / (itm.value_item / itm.value);
-  //           myArr.push(Math.floor(formula));
-  //         })
-  //       } else {
-  //         const stokSisa = (checkStokAwalItemPembentuk(itm).stok - (itm.value_item / itm.value));
-  //         const formula = stokSisa / (itm.value_item / itm.value);
-  //         myArr.push(Math.floor(formula));
-  //       }
-  //     })
-  //   })
-  // }
-
   const checkTipeHarga = (produk, item) => {
     if (customer.tipe_harga == 2 && item.harga2_satuan) {
       produk.harga = item.harga2_satuan;
@@ -321,13 +276,6 @@ const Pemesanan = ({ location }) => {
       produk.harga = item.harga1_satuan;
     }
   }
-
-  // const checkStokAwalItemPembentuk = (item) => {
-  //   const thisItem = allItems.filter(x =>
-  //     x.id == item.id_item
-  //   );
-  //   return thisItem[0];
-  // }
 
   const handleKeluarToko = () => {
     if (idTrip) {
@@ -375,20 +323,6 @@ const Pemesanan = ({ location }) => {
       KeranjangDB.deleteProduk(produk.id);
       getAllProduks();
     })
-
-    // const groupProduks = GroupItemDB.getAllProduks();
-    // groupProduks.then((response) => {
-    //   response.map((produk) => {
-    //     GroupItemDB.deleteProduk(produk.id);
-    //   })
-    // })
-
-    // const realTimeItems = RealTimeDB.getAllProduks();
-    // realTimeItems.then((response) => {
-    //   response.map((produk) => {
-    //     RealTimeDB.deleteProduk(produk.id);
-    //   })
-    // })
   }
 
   const handleKodeCustomer = (e) => {
@@ -515,7 +449,6 @@ const Pemesanan = ({ location }) => {
       getAllProduks();
       if (exist.jumlah == (item.stok ?? maxStok)) {
         alert('maksimal stok di keranjang');
-        // return
       }
     }
     else if ((!exist && maxStok > 0) || (!exist && item.stok > 0)) {
@@ -538,84 +471,6 @@ const Pemesanan = ({ location }) => {
       KeranjangDB.putProduk(produk);
       getAllProduks();
     }
-
-    // const groupProduks = GroupItemDB.getAllProduks();
-    // groupProduks.then((response) => {
-    //   item.link_grouping_item.map((itm) => {
-    //     const exist2 = response.find((x) => x.id === itm.id_item);
-    //     if (exist2) {
-    //       const x = GroupItemDB.getProduk(itm.id_item);
-    //       x.then((val) => {
-    //         let valBefore = val.val ?? 0;
-
-    //         const filterDataGroupItem = dataGroupItem.filter(x =>
-    //           x.id_item == itm.id_item
-    //         );
-
-    //         const arrOfObj = [];
-    //         filterDataGroupItem.map((x) => {
-    //           const temp = [];
-    //           const stokSisa = (val.stokAwal - val.val) - (x.value_item / x.value);
-    //           const formula = stokSisa / (x.value_item / x.value);
-    //           temp.push(Math.floor(formula));
-
-    //           const obj = {
-    //             id: x.id_group_item,
-    //             realTerpengaruh: Math.min(...temp)
-    //           }
-    //           arrOfObj.push(obj);
-
-    //           const rt = RealTimeDB.getProduk(x.id_group_item);
-    //           rt.then((dt) => {
-    //             const realTerpengaruhBefore = dt.realTerpengaruh;
-    //             if (realTerpengaruhBefore > Math.min(...temp)) {
-    //               RealTimeDB.updateProduk(obj);
-    //               getRealTimeItem();
-    //             }
-    //           })
-    //         })
-
-    //         const groupItm = {
-    //           id: itm.id_item,
-    //           val: valBefore + (itm.value_item / itm.value),
-    //           stokAwal: checkStokAwalItemPembentuk(itm).stok,
-    //           itemTerpengaruh: arrOfObj,
-    //           maxStok: maxStok
-    //         };
-    //         GroupItemDB.updateProduk(groupItm);
-    //       })
-    //     } else {
-    //       const filterDataGroupItem = dataGroupItem.filter(x =>
-    //         x.id_item == itm.id_item
-    //       );
-
-    //       const arrOfObj = [];
-    //       filterDataGroupItem.map((x) => {
-    //         const temp = [];
-    //         const stokSisa = (checkStokAwalItemPembentuk(itm).stok - (x.value_item / x.value));
-    //         const formula = stokSisa / (x.value_item / x.value);
-    //         temp.push(Math.floor(formula));
-
-    //         const obj = {
-    //           id: x.id_group_item,
-    //           realTerpengaruh: Math.min(...temp)
-    //         }
-    //         arrOfObj.push(obj);
-    //         RealTimeDB.putProduk(obj);
-    //         getRealTimeItem();
-    //       })
-
-    //       const groupItm = {
-    //         id: itm.id_item,
-    //         val: itm.value_item / itm.value,
-    //         stokAwal: checkStokAwalItemPembentuk(itm).stok,
-    //         itemTerpengaruh: arrOfObj,
-    //         maxStok: maxStok
-    //       };
-    //       GroupItemDB.putProduk(groupItm);
-    //     }
-    //   })
-    // })
   }
 
   const handleKurangJumlah = (item, keep) => {
@@ -657,53 +512,6 @@ const Pemesanan = ({ location }) => {
         getAllProduks();
       }
     }
-    // const groupProduks = GroupItemDB.getAllProduks();
-    // groupProduks.then((response) => {
-    //   item.link_grouping_item.map((itm) => {
-    //     const exist2 = response.find((x) => x.id === itm.id_item);
-    //     if (exist2) {
-    //       const x = GroupItemDB.getProduk(itm.id_item);
-    //       x.then((val) => {
-    //         let valBefore = val.val ?? 0;
-    //         const groupItm = {
-    //           id: itm.id_item,
-    //           val: valBefore - (itm.value_item / itm.value),
-    //           stokAwal: checkStokAwalItemPembentuk(itm).stok,
-    //           maxStok: val.maxStok
-    //         };
-    //         GroupItemDB.updateProduk(groupItm);
-
-    //         const filterDataGroupItem = dataGroupItem.filter(data =>
-    //           data.id_item == itm.id_item
-    //         );
-
-    //         const arrOfObj = [];
-    //         filterDataGroupItem.map((x) => {
-    //           const temp = [];
-    //           const stokSisa = (val.stokAwal - val.val) + (x.value_item / x.value);
-    //           const formula = stokSisa / (x.value_item / x.value);
-    //           temp.push(Math.floor(formula));
-
-    //           const obj = {
-    //             id: x.id_group_item,
-    //             realTerpengaruh: Math.min(...temp)
-    //           }
-    //           arrOfObj.push(obj);
-
-    //           const rt = RealTimeDB.getProduk(x.id_group_item);
-    //           rt.then((dt) => {
-    //             const realTerpengaruhBefore = dt.realTerpengaruh;
-    //             const realTerpengaruhNow = Math.min(...temp) > val.maxStok ? val.maxStok : Math.min(...temp);
-    //             if (realTerpengaruhBefore < realTerpengaruhNow) {
-    //               RealTimeDB.updateProduk(obj);
-    //               getRealTimeItem();
-    //             }
-    //           })
-    //         })
-    //       })
-    //     }
-    //   })
-    // })
   }
 
   const checkifexist = (item) => {
@@ -783,75 +591,6 @@ const Pemesanan = ({ location }) => {
       }
     }
   }
-
-  // const handleValueChange = (item, newVal, keep) => {
-  //   let inStokKanvas = idItemKanvas.includes(item.id);
-  //   let sisaStok = 0;
-  //   let canStokKanvas = false;
-  //   if (inStokKanvas) {
-  //     sisaStok = itemKanvas.find(o => o.id_item == item.id).sisa_stok;
-  //   }
-  //   setIsHandleKodeCust(false);
-  //   if (keep == true) setShouldKeepOrder(true);
-
-  //   const exist = produks.find((x) => x.id === item.id);
-  //   let jumlahBefore = exist ? exist.jumlah ?? 0 : 0;
-  //   let jumlahNow = isNaN(parseInt(newVal)) ? 0 : parseInt(newVal);
-
-  //   if (isNaN(newVal) == false) {
-  //     if (isNaN(parseInt(newVal))) {
-  //       if (inStokKanvas && sisaStok >= 0) canStokKanvas = true;
-  //     } else {
-  //       if (inStokKanvas && sisaStok >= parseInt(newVal)) canStokKanvas = true;
-  //     }
-
-  //     const produk = {
-  //       id: item.id,
-  //       nama: item.nama,
-  //       orderId: orderId ? parseInt(orderId) : 'belum ada',
-  //       customer: parseInt(idCust),
-  //       jumlah: isNaN(parseInt(newVal)) ? 0 : parseInt(newVal),
-  //       gambar: item.gambar,
-  //       stok: item.stok,
-  //       canStokKanvas: canStokKanvas,
-  //       group: item.link_grouping_item
-  //     };
-  //     checkTipeHarga(produk, item);
-  //     if (exist) {
-  //       KeranjangDB.updateProduk(produk);
-  //     } else {
-  //       KeranjangDB.putProduk(produk);
-  //     }
-  //     getAllProduks();
-  //   }
-
-  //   const groupProduks = GroupItemDB.getAllProduks();
-  //   groupProduks.then((response) => {
-  //     item.link_grouping_item.map((itm) => {
-  //       const exist2 = response.find((x) => x.id === itm.id_item);
-
-  //       if (exist2) {
-  //         const x = GroupItemDB.getProduk(itm.id_item);
-  //         x.then((val) => {
-  //           let valBefore = val.val ?? 0;
-  //           const groupItm = {
-  //             id: itm.id_item,
-  //             val: valBefore + ((jumlahNow - jumlahBefore) * (itm.value_item / itm.value)),
-  //             stokAwal: checkStokAwalItemPembentuk(itm).stok
-  //           };
-  //           GroupItemDB.updateProduk(groupItm);
-  //         })
-  //       } else {
-  //         const groupItm = {
-  //           id: itm.id_item,
-  //           val: jumlahNow * (itm.value_item / itm.value),
-  //           stokAwal: checkStokAwalItemPembentuk(itm).stok
-  //         };
-  //         GroupItemDB.putProduk(groupItm);
-  //       }
-  //     })
-  //   })
-  // }
 
   const handleSubmitStokTerakhir = (item, newVal) => {
     axios({
@@ -958,12 +697,6 @@ const Pemesanan = ({ location }) => {
           checkifexist={checkifexist} handleValueChange={handleValueChange}
           handleKurangJumlah={handleKurangJumlah} handleSubmitStokTerakhir={handleSubmitStokTerakhir}
           jumlahOrderRealTime={jumlahOrderRealTime} jumlahGroupingItemStok={jumlahGroupingItemStok} tipeHarga={customer.tipe_harga} />
-
-        {/* <HitungStok historyItem={historyItem} handleTambahJumlah={handleTambahJumlah}
-          checkifexist={checkifexist} handleValueChange={handleValueChange}
-          handleKurangJumlah={handleKurangJumlah} handleSubmitStokTerakhir={handleSubmitStokTerakhir}
-          jumlahOrderRealTime={jumlahOrderRealTime} jumlahGroupingItemStok={jumlahGroupingItemStok} tipeHarga={customer.tipe_harga}
-          dataGroupItem={dataGroupItem} getAllGroupProduks={getAllGroupProduks} realTimeItems={realTimeItems} /> */}
 
         <KeluarToko handleShow={handleShow} alasanPenolakan={alasanPenolakan}
           setAlasanPenolakan={setAlasanPenolakan} handleClose={handleClose}
