@@ -360,7 +360,6 @@ Route::prefix('salesman')->middleware('salesman')->group(function() {
   Route::get('/riwayatinvoice', [SalesmanController::class, 'riwayatInvoice']);
   Route::get('/tambahcustomer', [SalesmanController::class, 'tambahCustomer']);
   Route::post('/simpancustomer', [SalesmanController::class, 'simpancustomer']);
-
   Route::get('/trip/{id}', [SalesmanController::class, 'trip']);
 
 

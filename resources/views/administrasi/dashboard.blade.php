@@ -76,8 +76,7 @@
                     }
                   @endphp
                   <p class="mb-0">Pesanan dari {{ $notif->linkCustomer->nama ?? null }} sebesar
-                    Rp.
-                    {{ number_format($total_pesanan ?? 0, 0, '', '.') }}
+                    Rp. {{ number_format($total_pesanan ?? 0, 0, '', '.') }}
                   </p>
                 </a>
               </div>

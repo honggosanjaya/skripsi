@@ -45,7 +45,7 @@
       })
     }
 
-    function showCards(customer, index) {
+    function showCustomers(customer, index) {
       if (customer.koordinat) {
         return `<div class="accordion-item">
                 <div class="accordion-header">
@@ -134,11 +134,11 @@
         success: function(response) {
           if (response.status == 'success') {
             $('.customer_tdk_ditemukan_msg').addClass('d-none');
-            let cards = "";
+            let customers = "";
             response.data.forEach((customer, index) => {
-              cards += showCards(customer, index);
+              customers += showCustomers(customer, index);
             });
-            $("#accordionFlushExample").html(cards);
+            $("#accordionFlushExample").html(customers);
           } else {
             $('.customer_tdk_ditemukan_msg').removeClass('d-none');
           }
@@ -150,9 +150,164 @@
       $(this).parents('.accordion-item').find('.foto_customer').toggleClass('d-none');
     })
   </script>
+
+  <script>
+    let listRencanaKunjungan;
+
+    function showRencanas(rencana) {
+      return `<tr data-idkunjungan=${rencana.id_rencana} data-idinvoice=${rencana.id_invoice} data-idlp3=${rencana.id_tagihan} class="btn_detail_rencana" data-bs-toggle="modal" data-bs-target="#detailRencanaModal">
+        <td>${rencana.nama_customer}</td>
+        <td>${rencana.nama_wilayah}</td>
+        <td class="status_rencana ${(rencana.status_rencana == '1' || rencana.status_penagihan == '1') ? 'text-success' : 'text-danger'}">
+          ${(rencana.status_rencana ?? '') && (rencana.status_rencana == '1' ? 'Sudah Dikunjungi' : 'Belum Dikunjungi')}
+          ${(rencana.status_penagihan ?? '') && (rencana.status_penagihan == '1' ? 'Sudah Ditagih' : 'Belum Ditagih')}
+        </td>
+      </tr>`;
+    }
+
+    function getRencanaKunjungan() {
+      $('.loader').removeClass('d-none');
+      const id_staff = $('input[name="id_staff"]').val()
+      const tanggal_kunjungan = $('input[name="tanggal_kunjungan"]').val()
+      $.ajax({
+        url: window.location.origin + `/api/getrencanakunjungan/${id_staff}`,
+        method: "post",
+        data: {
+          date: tanggal_kunjungan
+        },
+        success: function(response) {
+          $('.loader').addClass('d-none');
+          // console.log(response);
+          if (response.status == 'success') {
+            listRencanaKunjungan = response.data;
+            let rencanas = "";
+            response.data.forEach((rencana) => {
+              rencanas += showRencanas(rencana);
+            });
+            $(".tbody_rencanakunjungan").html(rencanas);
+          }
+        }
+      })
+    }
+
+    $('.btn_rencana_trip').on('click', function() {
+      getRencanaKunjungan();
+    })
+
+    $('input[name="tanggal_kunjungan"]').on('change', function() {
+      getRencanaKunjungan();
+    })
+
+    function convertPrice(price) {
+      let convertedPrice = 'Rp. ' + price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+      return convertedPrice;
+    }
+
+    $(document).on('click', '.btn_detail_rencana', function() {
+      const idkunjungan = $(this).attr("data-idkunjungan");
+      const idinvoice = $(this).attr("data-idinvoice");
+
+      if (idkunjungan != 'undefined') {
+        const result = listRencanaKunjungan.find(obj => {
+          return obj.id_rencana == idkunjungan
+        })
+        // console.log(result);
+
+        let detailrencana = `<div class='info-2column'>
+          <span class='d-flex'>
+            <b>Nama Toko</b>
+            <p class='mb-0 word_wrap'>${result.nama_customer}</p>
+          </span>
+          <span class='d-flex'>
+            <b>Wilayah</b>
+            <p class='mb-0 word_wrap'>${result.nama_wilayah}</p>
+          </span>
+          <span class='d-flex'>
+            <b>Estimasi Nominal</b>
+            <p class='mb-0 word_wrap'>
+              ${(result.estimasi_nominal ?? '') && convertPrice(result.estimasi_nominal)}
+            </p>
+          </span>
+        </div>`;
+        $(".detail_rencana_wrapper").html(detailrencana);
+        $('#detailRencanaModal .btn_trip').attr("href", `/salesman/trip/${result.id_customer}`);
+        $('#detailRencanaModal .btn_sudah_tagih').addClass('d-none');
+      }
+      if (idinvoice != 'undefined') {
+        $.ajax({
+          url: window.location.origin + `/api/administrasi/detailpenagihan/${idinvoice}`,
+          method: "get",
+          success: function(response) {
+            $('.loader').addClass('d-none');
+            // console.log(response);
+            if (response.status == 'success') {
+              $('.loader').addClass('d-none');
+              let detailtagihan = `<div class='info-2column'>
+                <span class='d-flex'>
+                  <b>No. Invoice</b>
+                  <p class='mb-0 word_wrap'>${response.data.invoice.nomor_invoice}</p>
+                </span>
+                <span class='d-flex'>
+                  <b>Customer</b>
+                  <p class='mb-0 word_wrap'>${response.data.customer.nama}</p>
+                </span>
+                <span class='d-flex'>
+                  <b>Telepon</b>
+                  <p class='mb-0 word_wrap'>${response.data.customer.telepon}</p>
+                </span>
+                <span class='d-flex'>
+                  <b>Alamat</b>
+                  <p class='mb-0 word_wrap'>${response.data.customer.full_alamat}</p>
+                </span>
+                <span class='d-flex'>
+                  <b>Total Penagihan</b>
+                  <p class='mb-0 word_wrap'>
+                    ${(response.data.tagihan ?? '') && convertPrice(response.data.tagihan)}
+                  </p>
+                </span>
+              </div>`;
+              $(".detail_rencana_wrapper").html(detailtagihan);
+              $('#detailRencanaModal .btn_trip').attr("href", `/salesman/trip/${response.data.customer.id}`);
+              if (response.data.lp3 == null) {
+                $('#detailRencanaModal .btn_sudah_tagih').addClass('d-none');
+              } else {
+                if (response.data.lp3.status_enum == '-1') {
+                  $('#detailRencanaModal .btn_sudah_tagih').val(response.data.lp3.id).removeClass('d-none');
+                } else {
+                  $('#detailRencanaModal .btn_sudah_tagih').addClass('d-none');
+                }
+              }
+            }
+          }
+        })
+      }
+    })
+
+    $('#detailRencanaModal').on('hidden.bs.modal', function() {
+      $('#rencanaTripModal').modal('show')
+    })
+
+    $('#detailRencanaModal .btn_sudah_tagih').on('click', function(e) {
+      const idLp3 = e.target.value;
+      $.ajax({
+        url: window.location.origin + `/api/lapangan/handlepenagihan/${idLp3}`,
+        method: "get",
+        success: function(response) {
+          $('.loader').addClass('d-none');
+          // console.log(response);
+          if (response.status == 'success') {
+            $('#detailRencanaModal .btn_sudah_tagih').addClass('d-none');
+            $(`.btn_detail_rencana[data-idlp3=${idLp3}]`).find('.status_rencana').removeClass('text-danger')
+              .addClass('text-success').text('Sudah Ditagih');
+          }
+        }
+      })
+    })
+  </script>
 @endpush
 
 @section('main_content')
+  <input type="hidden" value="{{ auth()->user()->id_users }}" name="id_staff">
   <div class="page_container pt-4">
     <h1 class='fs-6 fw-bold mb-4'>Menu untuk Salesman</h1>
     <button class='btn btn-primary btn-lg w-100' data-bs-toggle="modal" data-bs-target="#cariCustomerModal">
@@ -169,7 +324,7 @@
           </div>
           <div class="modal-body">
             <div class="d-flex justify-content-between">
-              <button class="btn btn-primary">
+              <button class="btn btn-primary btn_rencana_trip" data-bs-toggle="modal" data-bs-target="#rencanaTripModal">
                 <span class="iconify fs-3 me-1" data-icon="flat-color-icons:planner"></span>Rencana Trip
               </button>
               <button class="btn btn-success">
@@ -202,6 +357,66 @@
             <a href="/salesman/tambahcustomer" class="btn btn-primary w-100 mt-4">
               Masih belum menemukan? <br /> Silahkan tambah baru!
             </a>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="modal fade" id="rencanaTripModal" tabindex="-1" aria-labelledby="rencanaTripModalLabel"
+      aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h1 class="modal-title fs-5" id="rencanaTripModalLabel">Rencana Kunjungan</h1>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+            <div class="mb-3">
+              <label class="form-label">Tanggal Kunjungan</label>
+              <input type='date' class="form-control" name="tanggal_kunjungan" value="{{ date('Y-m-d') }}">
+            </div>
+            <div class="loader d-none"></div>
+            <div class="table-responsive">
+              <table class="table">
+                <thead>
+                  <tr>
+                    <th scope="col" class='text-center'>Nama Toko</th>
+                    <th scope="col" class='text-center'>Wilayah</th>
+                    <th scope="col" class='text-center'>Status</th>
+                  </tr>
+                </thead>
+                <tbody class="tbody_rencanakunjungan">
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="modal fade" id="detailRencanaModal" tabindex="-1" aria-labelledby="detailRencanaModalLabel"
+      aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h1 class="modal-title fs-5" id="detailRencanaModalLabel">Detail Rencana</h1>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+            <div class="loader d-none"></div>
+            <div class="detail_rencana_wrapper">
+            </div>
+          </div>
+          <div class="modal-footer">
+            <a href="#" class="btn btn-primary btn_trip btn-sm">
+              <span class="iconify me-1" data-icon="bx:trip"></span>Trip
+            </a>
+            <button type="button" class="btn btn-success btn_sudah_tagih btn-sm">
+              <span class="iconify me-1" data-icon="icon-park-outline:doc-success"></span>Sudah Ditagih
+            </button>
+            <Button type="button" class="btn btn-danger btn-sm" data-bs-dismiss="modal" aria-label="Close">
+              <span class="iconify me-1" data-icon="carbon:close-outline"></span>Tutup
+            </Button>
           </div>
         </div>
       </div>
