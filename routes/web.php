@@ -361,11 +361,10 @@ Route::prefix('salesman')->middleware('salesman')->group(function() {
   Route::get('/tambahcustomer', [SalesmanController::class, 'tambahCustomer']);
   Route::post('/simpancustomer', [SalesmanController::class, 'simpancustomer']);
   Route::get('/trip/{id}', [SalesmanController::class, 'trip']);
-
   Route::get('/historytrip', [SalesmanController::class, 'riwayatKunjungan']);
 
-  Route::get('/itemkanvas', [SalesmanController::class, 'indexSalesman']);
-  Route::get('/itemkanvas/history', [SalesmanController::class, 'indexSalesman']);
+  Route::get('/itemkanvas', [SalesmanController::class, 'kanvas']);
+  Route::get('/itemkanvas/history', [SalesmanController::class, 'historyKanvas']);
 
 
   Route::get('/catalog/{idCust}', [SalesmanController::class, 'indexSalesman']);

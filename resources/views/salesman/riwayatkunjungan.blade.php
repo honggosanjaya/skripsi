@@ -5,7 +5,7 @@
 
 @section('main_content')
   <div class="page_container pt-4">
-    <form action="/salesman/historytrip">
+    <form action="/salesman/historytrip" class="mb-4">
       <div class="mb-3">
         <label class="form-label">Tanggal Kunjungan</label>
         <input type='date' class="form-control" value="{{ $tanggal_kunjungan ?? date('Y-m-d') }}" name="tanggal_kunjungan">
@@ -19,23 +19,23 @@
 
 
     @if ($targetkunjungan ?? null)
-      <h6 class='mt-4'>Jumlah Kunjungan : {{ count($trips) }} / {{ $targetkunjungan->value ?? 0 }}
+      <h6>Jumlah Kunjungan : {{ count($trips) }} / {{ $targetkunjungan->value ?? 0 }}
         <span class='text-primary'>( {{ round((count($trips) / $targetkunjungan->value) * 100, 3) }}% terpenuhi)</span>
       </h6>
     @else
-      <h6 class='mt-4'>Jumlah Kunjungan : {{ count($trips) }}</h6>
+      <h6>Jumlah Kunjungan : {{ count($trips) }}</h6>
     @endif
 
     @if ($targetec ?? null)
-      <h6 class='mt-4'>Jumlah Effective Call : {{ count($ectrips) }} / {{ $targetec->value ?? 0 }}
+      <h6>Jumlah Effective Call : {{ count($ectrips) }} / {{ $targetec->value ?? 0 }}
         <span class='text-primary'>( {{ round((count($ectrips) / $targetec->value) * 100, 3) }}% terpenuhi)</span>
       </h6>
     @else
-      <h6 class='mt-4'>Jumlah Effective Call : {{ count($ectrips) }}</h6>
+      <h6>Jumlah Effective Call : {{ count($ectrips) }}</h6>
     @endif
 
 
-    <div class="table-responsive">
+    <div class="table-responsive mt-4">
       <table class="table">
         <thead>
           <tr>

@@ -6,6 +6,7 @@ use App\Models\Customer;
 use App\Models\CustomerType;
 use App\Models\District;
 use App\Models\Invoice;
+use App\Models\Kanvas;
 use App\Models\LaporanPenagihan;
 use App\Models\RencanaTrip;
 use App\Models\Staff;
@@ -18,6 +19,7 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Support\Facades\Storage;
 use Intervention\Image\ImageManagerStatic as Image;
+use Illuminate\Support\Facades\DB;
 use Util;
 
 class SalesmanController extends Controller
@@ -35,6 +37,7 @@ class SalesmanController extends Controller
     $data = Staff::find(auth()->user()->id_users);
     return view('react.profil',[
       'page' => 'Profil Saya',
+      'linkback' => '/salesman',
       'data' => $data,
       'isSalesman' => true
     ]);
@@ -69,6 +72,7 @@ class SalesmanController extends Controller
   public function tambahCustomer(){
     return view('salesman.tambahCustomer',[
       'page' => "Trip",
+      'linkback' => '/salesman',
       'jenises' => CustomerType::get(),
       'wilayah' => District::orderBy('nama', 'ASC')->get()
     ]);
@@ -78,6 +82,7 @@ class SalesmanController extends Controller
     $customer = Customer::find($id);
     return view('salesman.tambahCustomer',[
       'page' => "Trip",
+      'linkback' => '/salesman',
       'customer' => $customer,
       'jenises' => CustomerType::get(),
       'wilayah' => District::orderBy('nama', 'ASC')->get()
@@ -264,4 +269,30 @@ class SalesmanController extends Controller
 
   }
   
+  public function kanvas(){
+    $kanvas = Kanvas::where('id_staff_yang_membawa', auth()->user()->id_users)
+              ->whereNull('waktu_dikembalikan')
+              ->with(['linkItem'])
+              ->get();
+
+    return view('salesman.kanvas',[
+      'page' => 'Item Kanvas',
+      'linkback' => '/salesman',
+      'kanvas' => $kanvas,
+    ]);
+  }
+
+  public function historyKanvas(Request $request){
+    $listkanvas = Kanvas::where('id_staff_yang_membawa', auth()->user()->id_users)
+                  ->select(DB::raw('GROUP_CONCAT(id) as ids'),'nama','id_staff_pengonfirmasi_pembawaan','id_staff_pengonfirmasi_pengembalian','waktu_dibawa','waktu_dikembalikan', DB::raw('COUNT(id_item) as banyak_jenis_item')) 
+                  ->groupBy('nama','id_staff_pengonfirmasi_pembawaan','id_staff_pengonfirmasi_pengembalian','waktu_dibawa','waktu_dikembalikan')
+                  ->orderBy('waktu_dibawa', 'DESC')
+                  ->get();
+
+    return view('salesman.historykanvas',[
+      'page' => 'History Kanvas',
+      'linkback' => '/salesman/itemkanvas',
+      'listkanvas' => $listkanvas,
+    ]);
+  }
 }

@@ -1024,7 +1024,7 @@ class ItemController extends Controller
       $listkanvas = Kanvas::whereNull('waktu_dikembalikan')
                     ->select(DB::raw('GROUP_CONCAT(id) as ids'),'nama','id_staff_pengonfirmasi_pembawaan','id_staff_yang_membawa','waktu_dibawa', DB::raw('COUNT(id_item) as banyak_jenis_item')) 
                     ->groupBy('nama','id_staff_pengonfirmasi_pembawaan','waktu_dibawa','id_staff_yang_membawa')
-                    ->orderBy('id', 'DESC')
+                    ->orderBy('created_at', 'DESC')
                     ->get();
       
       return view('administrasi.kanvas.index', [
@@ -1048,6 +1048,7 @@ class ItemController extends Controller
         'id_staff_yang_membawa' => 'required',
       ]);
 
+      $sekarang = now();
       for($i=0; $i<count($request->id_item); $i++){
         Kanvas::insert([
           "nama" => $request->nama,
@@ -1056,7 +1057,7 @@ class ItemController extends Controller
           "sisa_stok" => $request->jumlah_item[$i],
           "id_staff_pengonfirmasi_pembawaan" => auth()->user()->id_users,
           "id_staff_yang_membawa" => $request->id_staff_yang_membawa,
-          "waktu_dibawa" => now(),
+          "waktu_dibawa" => $sekarang,
           "created_at" => now()
         ]);
 
