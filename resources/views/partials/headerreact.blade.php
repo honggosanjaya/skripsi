@@ -46,7 +46,7 @@
         <a href="/shipper" class="btn_redirect_back"><span class="iconify text-white"
             data-icon="eva:arrow-back-fill"></span></a>
       @else
-        @if ($linkback)
+        @if ($linkback ?? null)
           <a href="{{ $linkback }}" class="btn_redirect_back"><span class="iconify text-white"
               data-icon="eva:arrow-back-fill"></span></a>
         @else

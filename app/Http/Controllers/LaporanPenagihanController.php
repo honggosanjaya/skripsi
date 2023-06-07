@@ -125,19 +125,14 @@ class LaporanPenagihanController extends Controller
   }
 
   public function handlePenagihanLapanganAPI($id){
-    $lp3 = LaporanPenagihan::where('id',$id)->first();
-    $invoice = Invoice::where('id', $lp3->id_invoice)->first();
-    $order = Order::where('id', $invoice->id_order)->first();
-    $customer = Customer::where('id', $order->id_customer)->first()->nama;
-
     LaporanPenagihan::where('id',$id)->update([
       'status_enum' => '1'
     ]);
 
     return response()->json([
       'status' => 'success',
-      'id_invoice' => $lp3->id_invoice,
-      'message' => 'berhasil mengonfirmasi penagihan pembayaran untuk '.$customer
+      'id_invoice' => LaporanPenagihan::find($id)->id_invoice,
+      'message' => 'berhasil mengonfirmasi penagihan pembayaran'
     ]);
   }
 

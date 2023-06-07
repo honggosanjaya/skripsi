@@ -98,14 +98,14 @@ class LapanganController extends Controller
   }
 
   public function penagihan(){
-    $Alltagihans = LaporanPenagihan::where('id_staff_penagih',auth()->user()->id_users)
+    $tagihans = LaporanPenagihan::where('id_staff_penagih',auth()->user()->id_users)
                   ->orderBy('tanggal', 'ASC')
                   ->with('linkInvoice')
                   ->get();
 
     return view('shipper.penagihan',[
       'page' => 'LP3',
-      'tagihans' => $Alltagihans,
+      'tagihans' => $tagihans,
     ]);    
   }
 

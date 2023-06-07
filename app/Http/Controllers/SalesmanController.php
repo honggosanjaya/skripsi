@@ -59,6 +59,7 @@ class SalesmanController extends Controller
 
     return view('salesman.riwayatInvoice',[
       'page' => 'Riwayat Invoice',
+      'linkback' => '/salesman',
       'invoices' => $datas,
       'date_start' => $date_start,
       'date_end' => $date_end
