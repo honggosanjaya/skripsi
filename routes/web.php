@@ -362,22 +362,22 @@ Route::prefix('salesman')->middleware('salesman')->group(function() {
   Route::post('/simpancustomer', [SalesmanController::class, 'simpancustomer']);
   Route::get('/trip/{id}', [SalesmanController::class, 'trip']);
   Route::get('/historytrip', [SalesmanController::class, 'riwayatKunjungan']);
-
   Route::get('/itemkanvas', [SalesmanController::class, 'kanvas']);
   Route::get('/itemkanvas/history', [SalesmanController::class, 'historyKanvas']);
+  Route::get('/catalog/{idCust}', [SalesmanController::class, 'catalog']);
+  Route::get('/detailcatalog/{idCust}/{idItem}', [SalesmanController::class, 'detailCatalog']);
 
 
-  Route::get('/catalog/{idCust}', [SalesmanController::class, 'indexSalesman']);
-  Route::get('/detailcatalog/{tipeHarga}/{idItem}', [SalesmanController::class, 'indexSalesman']);
-  Route::get('/order/{idCust}', [SalesmanController::class, 'indexSalesman']);
+  Route::get('/order/{idCust}', [SalesmanController::class, 'order']);
   Route::get('/keranjang/{idCust}', [SalesmanController::class, 'indexSalesman']);
+
+
 });
 
 Route::prefix('shipper')->middleware('shipper')->group(function() {
   Route::get('/', [ShipperController::class, 'index']);
   Route::get('/profil', [ShipperController::class, 'profil']);
   Route::get('/changepassword', [ShipperController::class, 'changepassword']);
-  
 });
 
 require __DIR__.'/auth.php';

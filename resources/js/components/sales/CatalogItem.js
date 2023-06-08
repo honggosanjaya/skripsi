@@ -93,7 +93,7 @@ const CatalogItem = () => {
           </div>
         ))}
       </div>
-    </main >
+    </main>
   );
 }
 

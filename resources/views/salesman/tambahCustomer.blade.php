@@ -141,6 +141,17 @@
 
 @section('main_content')
   <div class="page_container py-4">
+    @if ($customer->id ?? null)
+      <div class="d-flex mb-4">
+        <a href="/lapangan/retur/{{ $customer->id }}" class="btn btn-sm btn-primary">
+          <span class="iconify fs-4 me-2" data-icon="material-symbols:change-circle-outline-rounded"></span>Retur
+        </a>
+        <a href="/salesman/catalog/{{ $customer->id }}" class="btn btn-purple btn-sm ms-3">
+          <span class="iconify fs-4 me-2" data-icon="carbon:shopping-catalog"></span>Katalog
+        </a>
+      </div>
+    @endif
+
     <form method="POST" action="/salesman/simpancustomer" enctype="multipart/form-data" class="form_trip">
       @csrf
       <div class="mb-3">

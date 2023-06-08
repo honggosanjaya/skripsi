@@ -6,6 +6,7 @@ use App\Models\Customer;
 use App\Models\CustomerType;
 use App\Models\District;
 use App\Models\Invoice;
+use App\Models\Item;
 use App\Models\Kanvas;
 use App\Models\LaporanPenagihan;
 use App\Models\RencanaTrip;
@@ -294,5 +295,105 @@ class SalesmanController extends Controller
       'linkback' => '/salesman/itemkanvas',
       'listkanvas' => $listkanvas,
     ]);
+  }
+
+  public function catalog($idCust){
+    $listItems = [];
+    $tipeHarga = Customer::find($idCust)->tipe_harga;
+
+    $items = Item::where('status_enum', '1')
+            ->select('id', 'nama', 'kode_barang', 'stok', 'satuan', 'harga1_satuan', 'harga2_satuan', 'harga3_satuan', 'deskripsi') 
+            ->with(['linkGaleryItem'])
+            ->get();
+
+    foreach($items as $item){
+      $data = [
+        'id' => $item->id,
+        'nama' => $item->nama,
+        'kode_barang' => $item->kode_barang,
+        'stok' => $item->stok,
+        'satuan' => $item->satuan,
+        'gambar' => $item->linkGaleryItem,
+        'deskripsi' => $item->deskripsi
+      ];
+
+      if($tipeHarga == 2 && $item->harga2_satuan ?? null){
+        $data['harga_satuan'] = $item->harga2_satuan;
+      }if($tipeHarga == 3 && $item->harga3_satuan ?? null){
+        $data['harga_satuan'] = $item->harga3_satuan;
+      } else{
+        $data['harga_satuan'] = $item->harga1_satuan;
+      }
+
+      array_push($listItems, $data);
+    }
+
+    // dd($listItems);
+    return view('salesman.catalog',[
+      'page' => 'Katalog',
+      'linkback' => '/salesman/trip/'.$idCust,
+      'idCust' => $idCust,
+      'data' => $listItems,
+    ]);
+  }
+
+  public function detailCatalog($idCust, $idItem){
+    $item = Item::where('id', $idItem)
+              ->with(['linkGaleryItem'])
+              ->first();
+    $tipeHarga = Customer::find($idCust)->tipe_harga;
+
+    $detailItem = [
+      'id' => $item->id,
+      'nama' => $item->nama,
+      'kode_barang' => $item->kode_barang,
+      'stok' => $item->stok,
+      'satuan' => $item->satuan,
+      'deskripsi' => $item->deskripsi,
+      'link_item' => $item->link_item,
+      'link_galery_item' => $item->linkGaleryItem,
+    ];
+
+    if($tipeHarga == 3 && $item->harga3_satuan != null){
+      $detailItem['harga_satuan'] = $item->harga3_satuan;
+    }else if($tipeHarga == 2  && $item->harga2_satuan != null){
+      $detailItem['harga_satuan'] = $item->harga2_satuan;
+    }else{
+      $detailItem['harga_satuan'] = $item->harga1_satuan;
+    }
+    
+    $relatedItem = Item::where('link_item', $item->link_item)
+                    ->where('id', '!=', $item->id)
+                    ->take(15)->get();
+
+    $tenNewProduct = Item::latest()->where('id', '!=', $item->id)->take(10)->get();
+
+    if($item->id_category != null){
+      $fiveCategoryProduct = Item::where('id_category', $item->id_category)
+      ->where('id', '!=', $idItem)->take(5)->get();
+    }else{
+      $fiveCategoryProduct = [];
+    }
+
+    return view('salesman.detailcatalog',[
+      'page' => 'Detail Katalog',
+      'linkback' => '/salesman/catalog',
+      'item' => $detailItem,
+      'tipeHarga' => $tipeHarga,
+      'idCust' => $idCust,
+      'related_item' => $relatedItem,
+      'new_item' => $tenNewProduct,
+      'category_item' => $fiveCategoryProduct
+    ]); 
+  }
+  
+  public function order(Request $request, $idCust){
+    $customer=Customer::with(['linkCustomerType','linkDistrict'])->find($id);
+
+    // return view('salesman.order',[
+    //   'page' => 'Item Kanvas',
+    //   'linkback' => '/salesman',
+    //   'kanvas' => $kanvas,
+    // ]);
   }
 }

@@ -57,18 +57,18 @@ function App() {
 
             <Route path={["/salesman"]}>
               <KeranjangSalesContextProvider>
+                <Route exact path="/salesman/cetakInvoice/:idInvoice" component={PrintComponent} />
                 {/* <Route exact path="/salesman" component={DashboardSales} /> */}
                 {/* <Route exact path="/salesman/trip" component={TripSales} /> */}
                 {/* <Route exact path="/salesman/trip/:id" component={TripSales} /> */}
                 {/* <Route exact path="/salesman/history" component={HistoryTrip} /> */}
                 {/* <Route exact path="/salesman/historyinvoice" component={HistoryInvoice} /> */}
                 {/* <Route exact path="/salesman/itemkanvas" component={ItemKanvas} /> */}
-                <Route exact path="/salesman/itemkanvas/history" component={HistoryKanvas} />
-                <Route exact path="/salesman/catalog/:idCust" component={CatalogItem} />
+                {/* <Route exact path="/salesman/itemkanvas/history" component={HistoryKanvas} /> */}
                 {/* <Route exact path="/salesman/historyinvoice/cetak/:idInvoice" component={PrintComponent} /> */}
-                <Route exact path="/salesman/detailcatalog/:tipeHarga/:idItem" component={DetailCatalogItem} />
+                {/* <Route exact path="/salesman/catalog/:idCust" component={CatalogItem} /> */}
+                {/* <Route exact path="/salesman/detailcatalog/:tipeHarga/:idItem" component={DetailCatalogItem} /> */}
 
-                <Route exact path="/salesman/cetakInvoice/:idInvoice" component={PrintComponent} />
 
                 <HitungStokContextProvider>
                   <Route exact path="/salesman/order/:idCust" component={Pemesanan} />
