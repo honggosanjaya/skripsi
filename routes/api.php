@@ -121,3 +121,4 @@ Route::get('/salesman/itemkanvasactive/{idStaf}', [ItemController::class, 'getAc
 Route::post('/salesman/getProductCatalog', [ItemController::class, 'getProductCatalog']);
 Route::post('/salesman/getDetailProductCatalog', [ItemController::class, 'getDetailProductCatalog']);
 Route::get('/historyPembelian/{idCustomer}', [OrderController::class, 'getHistoryOrderAPI']);
+// Route::post('/salesman/cart', [CartController::class, 'addToCartSales']);

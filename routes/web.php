@@ -367,11 +367,10 @@ Route::prefix('salesman')->middleware('salesman')->group(function() {
   Route::get('/catalog/{idCust}', [SalesmanController::class, 'catalog']);
   Route::get('/detailcatalog/{idCust}/{idItem}', [SalesmanController::class, 'detailCatalog']);
 
-
   Route::get('/order/{idCust}', [SalesmanController::class, 'order']);
+  Route::post('/addtocart', [CartController::class, 'addToCartSales']);
+
   Route::get('/keranjang/{idCust}', [SalesmanController::class, 'indexSalesman']);
-
-
 });
 
 Route::prefix('shipper')->middleware('shipper')->group(function() {

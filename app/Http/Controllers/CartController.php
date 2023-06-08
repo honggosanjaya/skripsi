@@ -290,4 +290,40 @@ class CartController extends Controller
         return redirect('/administrasi/stok/produk/pricelist/edit')->with('successMessage', 'Berhasil menghapus semua item dalam cart');
       }
   }
+
+  public function addToCartSales(Request $request){
+    foreach($request->id as $key=>$id){
+      if($request->quantity[$key] != null){
+        $cartItem = \Cart::session(auth()->user()->id.'salesman')->get($id);
+
+        if($cartItem !== null){
+          \Cart::session(auth()->user()->id.'salesman')->update(
+            $id,[
+                'quantity' => [
+                    'relative' => false,
+                    'value' => $request->quantity[$key]
+                ],
+            ]);
+    
+          if($request->quantity[$key] == 0){
+            \Cart::session(auth()->user()->id.'salesman')->remove($id);
+          }
+        } else if($cartItem == null && $request->quantity[$key] != 0){
+          \Cart::session(auth()->user()->id.'salesman')->add([
+            'id' => $id,
+            'quantity' => $request->quantity[$key],
+            'name' => $request->nama[$key],
+            'price' => $request->harga_satuan[$key],
+            'attributes' => array(
+              'gambar' => $request->gambar[$key],
+            )
+          ]);
+        }
+      }
+    }
+
+    $cartItems = \Cart::session(auth()->user()->id.'salesman')->getContent();
+    // return redirect()->back()->with('success', 'your message,here'); 
+    return view('salesman.keranjang', compact('cartItems'));
+  }
 }

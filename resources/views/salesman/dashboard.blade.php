@@ -76,7 +76,12 @@
                       <span class="iconify me-1" data-icon="bxs:map"></span>
                       <span class="mb-0 word_wrap">GPS</span>
                     </a>
-                    <a href="/salesman/trip/${customer.id}" class="btn btn-success">Trip</a>
+                    <a href="/salesman/trip/${customer.id}" class="btn btn-success caricst_btn_trip">
+                      <span class="iconify me-1" data-icon="bx:trip"></span>Trip
+                    </a>
+                    <a href="/salesman/order/${customer.id}" class="btn btn-success caricst_btn_order">
+                      <span class="iconify me-1" data-icon="carbon:ibm-watson-orders"></span>Order
+                    </a>
                   </div>
                   <div class="foto_customer d-none">
                   ${customer.foto ? '<img src="'+urlAsset+'/storage/customer/'+customer.foto+'">' 
@@ -109,7 +114,12 @@
                     <button type="button" class="btn btn-primary btn_lihat_foto">
                       <span class="iconify me-1" data-icon="ant-design:picture-outlined"></span>Lihat Foto
                     </button>
-                    <a href="/salesman/trip/${customer.id}" class="btn btn-success">Trip</a>
+                    <a href="/salesman/trip/${customer.id}" class="btn btn-success caricst_btn_trip">
+                      <span class="iconify me-1" data-icon="bx:trip"></span>Trip
+                    </a>
+                    <a href="/salesman/order/${customer.id}" class="btn btn-success caricst_btn_order">
+                      <span class="iconify me-1" data-icon="carbon:ibm-watson-orders"></span>Order
+                    </a>
                   </div>
                   <div class="foto_customer d-none">
                   ${customer.foto ? '<img src="'+urlAsset+'/storage/customer/'+customer.foto+'">' 
@@ -304,13 +314,39 @@
       })
     })
   </script>
+
+  <script>
+    var isOrder = false;
+    var cariCustomerModal = new bootstrap.Modal(document.getElementById('cariCustomerModal'));
+    $('.btn_menu_trip').on('click', function() {
+      $('.btn_scan_qr').removeClass('d-none');
+      cariCustomerModal.show();
+      isOrder = false;
+    })
+
+    $('.btn_menu_order').on('click', function() {
+      $('.btn_scan_qr').addClass('d-none');
+      cariCustomerModal.show();
+      isOrder = true;
+    })
+
+    $(document).on('click', '.accordion-button', function() {
+      if (isOrder == false) {
+        $('.caricst_btn_trip').removeClass('d-none');
+        $('.caricst_btn_order').addClass('d-none');
+      } else {
+        $('.caricst_btn_trip').addClass('d-none');
+        $('.caricst_btn_order').removeClass('d-none');
+      }
+    })
+  </script>
 @endpush
 
 @section('main_content')
   <input type="hidden" value="{{ auth()->user()->id_users }}" name="id_staff">
   <div class="page_container pt-4">
     <h1 class='fs-6 fw-bold mb-4'>Menu untuk Salesman</h1>
-    <button class='btn btn-primary btn-lg w-100' data-bs-toggle="modal" data-bs-target="#cariCustomerModal">
+    <button class='btn btn-primary btn-lg w-100 btn_menu_trip'>
       <span class="iconify fs-4 me-2" data-icon="bx:trip"></span> Trip
     </button>
 
@@ -327,7 +363,7 @@
               <button class="btn btn-primary btn_rencana_trip" data-bs-toggle="modal" data-bs-target="#rencanaTripModal">
                 <span class="iconify fs-3 me-1" data-icon="flat-color-icons:planner"></span>Rencana Trip
               </button>
-              <button class="btn btn-success">
+              <button class="btn btn-success btn_scan_qr">
                 <span class="iconify fs-3 me-1" data-icon="bx:qr-scan"></span>Scan QR
               </button>
             </div>
@@ -422,9 +458,7 @@
       </div>
     </div>
 
-
-    {{-- ======== --}}
-    <button class='btn btn-success btn-lg w-100 mt-4'>
+    <button class='btn btn-success btn-lg w-100 mt-4 btn_menu_order'>
       <span class="iconify fs-4 me-2" data-icon="carbon:ibm-watson-orders"></span> Order
     </button>
 

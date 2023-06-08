@@ -332,23 +332,22 @@ class OrderController extends Controller
   }
 
   public function keluarTripOrderApi(Request $request, $id){
+    // dd($request->all());
     $isBelanjaLagi = $request->isBelanjaLagi;
-    $idCust = Trip::find($id)->id_customer; 
 
-    if($isBelanjaLagi == false){
+    if($isBelanjaLagi == 'false'){
       Trip::find($id)->update([
         'waktu_keluar' => now(),
         'updated_at' => now(),
         'status_enum' => '1',
         'alasan_penolakan' => $request->alasan_penolakan
       ]);
-    }else if($isBelanjaLagi == true){
+    }else if($isBelanjaLagi == 'true'){
       Trip::find($id)->update([
         'waktu_keluar' => now(),
         'updated_at' => now()
       ]);
     }
-    // Customer::where('id', $idCust)->update(['updated_at'=> now()]);
 
     return response()->json([
       'status' => 'success',

@@ -5,10 +5,13 @@ namespace App\Http\Controllers;
 use App\Models\Customer;
 use App\Models\CustomerType;
 use App\Models\District;
+use App\Models\GroupItem;
+use App\Models\History;
 use App\Models\Invoice;
 use App\Models\Item;
 use App\Models\Kanvas;
 use App\Models\LaporanPenagihan;
+use App\Models\OrderItem;
 use App\Models\RencanaTrip;
 use App\Models\Staff;
 use App\Models\Target;
@@ -27,7 +30,8 @@ class SalesmanController extends Controller
 {
   public function index(Request $request){
     $request->session()->increment('count');
-
+    \Cart::session(auth()->user()->id.'salesman')->clear();
+    
     return view('salesman.dashboard',[
       'isDashboard' => true,
       'isSalesman' => true,
@@ -377,7 +381,7 @@ class SalesmanController extends Controller
 
     return view('salesman.detailcatalog',[
       'page' => 'Detail Katalog',
-      'linkback' => '/salesman/catalog',
+      'linkback' => '/salesman/catalog/'.$idCust,
       'item' => $detailItem,
       'tipeHarga' => $tipeHarga,
       'idCust' => $idCust,
@@ -388,12 +392,77 @@ class SalesmanController extends Controller
   }
   
   public function order(Request $request, $idCust){
-    $customer=Customer::with(['linkCustomerType','linkDistrict'])->find($id);
+    // $pageWasRefreshed = isset($_SERVER['HTTP_CACHE_CONTROL']) && $_SERVER['HTTP_CACHE_CONTROL'] === 'max-age=0';
+    // if(!($request->clearcart ?? null) == false){
+    //   if(!$pageWasRefreshed) {
+    //     \Cart::session(auth()->user()->id.'salesman')->clear();
+    //   }
+    // }
 
-    // return view('salesman.order',[
-    //   'page' => 'Item Kanvas',
-    //   'linkback' => '/salesman',
-    //   'kanvas' => $kanvas,
-    // ]);
+    $customer = Customer::where('id',$idCust)->with(['linkCustomerType','linkDistrict'])->first();
+    $history = History::where('id_customer',$idCust)->with(['linkItem', 'linkItem.linkGroupingItem'])->get();
+    $latestOrderItem = [];
+    $histories = History::select('id_item')->where('id_customer',$idCust)->get();
+
+    foreach($histories as $h){
+      $query = OrderItem::where('id_item',$h['id_item'])
+              ->whereHas('linkOrder', function($q) use($idCust){
+                  $q->where('id_customer', $idCust);
+                })
+              ->join('order_tracks','order_items.id_order','=','order_tracks.id_order')
+              ->select('order_items.id', 'order_items.id_order' ,'id_item', 'harga_satuan', 'order_tracks.waktu_diteruskan' ,'order_items.created_at')
+              ->where('order_tracks.waktu_diteruskan', '!=', null)
+              ->latest()->first();
+
+      $latestOrderItem[$h->id_item] = array($query,);
+    }
+    // dd($latestOrderItem);
+
+    $groupItems = GroupItem::whereHas('linkItem', function($q) {
+                    $q->where('status_enum', '1')->where('stok','>',0);
+                  })->get()->groupBy('id_group_item');
+
+    $groupingItemStok = [];
+    foreach($groupItems as $groupItem){
+      $groupingStok = [];
+      foreach($groupItem as $group){
+        $item = Item::find($group->id_item);
+        $groupStok = floor(($item->stok / ($group->value_item / $group->value)));
+        array_push($groupingStok, (int)$groupStok);
+      }
+      $groupingItemStok[$groupItem[0]->id_group_item] = min($groupingStok);
+    }
+
+    $items = $history->pluck('id_item');
+    $group_items = GroupItem::pluck('id_item')->toArray();
+    $items = Item::orderBy("status_enum", "ASC")->whereNotIn('id',$items->toArray())
+             ->whereNotIn('id',array_unique($group_items))->with(['linkGroupingItem'])
+             ->get();
+            //  ->paginate(4);
+
+    $orderItemUnconfirmed = OrderItem::whereHas('linkOrder',function($q) {
+                            $q->where('status_enum', '-1');
+                          })
+                          ->whereHas('linkOrder',function($q) {
+                            $q->whereHas('linkOrderTrack',function($q) {
+                              $q->where('status_enum','!=', '-1');
+                            });
+                          })
+                          ->select('id_item', DB::raw('SUM(kuantitas) as jumlah_blmkonfirmasi'))      
+                          ->groupBy('id_item')->pluck('jumlah_blmkonfirmasi','id_item')->all();
+
+    // dd($latestOrderItem);
+    // dd($history);
+    return view('salesman.pemesanan',[
+      'page' => 'Order',
+      'isorder' => true,
+      'linkback' => '/salesman',
+      'customer' => $customer,
+      'items' => $items,
+      "orderRealTime" => $orderItemUnconfirmed,
+      "groupingItemStok" => $groupingItemStok,
+      'history' => $history,
+      'latestOrderItems' => $latestOrderItem
+    ]);
   }
 }

@@ -56,12 +56,5 @@
       @endif
       <h1 class='page_title text-white ms-2'>{{ $page ?? 'Halaman' }}</h1>
     </div>
-
-    @if ($idOrder ?? null)
-      <a href="#" class="btn">
-        <span class="iconify text-white" data-icon="clarity:shopping-cart-solid"></span>
-        {{-- <span class='text-white fw-bold'>{jumlahProdukKeranjang}</span> --}}
-      </a>
-    @endif
   @endif
 </header>
