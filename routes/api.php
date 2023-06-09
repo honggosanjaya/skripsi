@@ -14,7 +14,7 @@ use App\Http\Controllers\DistrictController;
 use App\Http\Controllers\KasController;
 use App\Http\Controllers\LaporanPenagihanController;
 use App\Http\Controllers\RencanaTripController;
-use App\Http\Controllers\ReportController;
+use App\Http\Controllers\SalesmanController;
 use App\Http\Controllers\StaffController;
 use App\Http\Controllers\TargetController;
 use Illuminate\Http\Request;
@@ -121,4 +121,11 @@ Route::get('/salesman/itemkanvasactive/{idStaf}', [ItemController::class, 'getAc
 Route::post('/salesman/getProductCatalog', [ItemController::class, 'getProductCatalog']);
 Route::post('/salesman/getDetailProductCatalog', [ItemController::class, 'getDetailProductCatalog']);
 Route::get('/historyPembelian/{idCustomer}', [OrderController::class, 'getHistoryOrderAPI']);
-// Route::post('/salesman/cart', [CartController::class, 'addToCartSales']);
+Route::get('/salesman/removeallcart', [SalesmanController::class, 'removeAllCartAPI']);
+Route::post('/salesman/changecartitems', [SalesmanController::class, 'changeCartItemsAPI']);
+Route::get('/salesman/removecartitem/{idItem}', [SalesmanController::class, 'removeCartItemAPI']);
+Route::get('/salesman/getcartitem', [SalesmanController::class, 'getCartItemsAPI']);
+Route::post('/salesman/event/{kode}', [SalesmanController::class, 'dataKodeEventAPI']);
+
+
+

@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Customer;
 use App\Models\CustomerType;
 use App\Models\District;
+use App\Models\Event;
 use App\Models\GroupItem;
 use App\Models\History;
 use App\Models\Invoice;
@@ -392,13 +393,6 @@ class SalesmanController extends Controller
   }
   
   public function order(Request $request, $idCust){
-    // $pageWasRefreshed = isset($_SERVER['HTTP_CACHE_CONTROL']) && $_SERVER['HTTP_CACHE_CONTROL'] === 'max-age=0';
-    // if(!($request->clearcart ?? null) == false){
-    //   if(!$pageWasRefreshed) {
-    //     \Cart::session(auth()->user()->id.'salesman')->clear();
-    //   }
-    // }
-
     $customer = Customer::where('id',$idCust)->with(['linkCustomerType','linkDistrict'])->first();
     $history = History::where('id_customer',$idCust)->with(['linkItem', 'linkItem.linkGroupingItem'])->get();
     $latestOrderItem = [];
@@ -462,7 +456,112 @@ class SalesmanController extends Controller
       "orderRealTime" => $orderItemUnconfirmed,
       "groupingItemStok" => $groupingItemStok,
       'history' => $history,
-      'latestOrderItems' => $latestOrderItem
+      'latestOrderItems' => $latestOrderItem,
+      'isBelanjaLagi' => $request->isBelanjaLagi??false
     ]);
+  }
+
+  public function removeAllCartAPI(){
+    \Cart::session(auth()->user()->id.'salesman')->clear();
+    return response()->json([
+      "status" => "success",
+      "message" => "Semua item di keranjang berhasil dihapus",
+    ], 200);
+  }
+
+  public function changeCartItemsAPI(Request $request){
+    $cartItem = \Cart::session($request->iduser.'salesman')->get($request->id);
+    $perubahan = $cartItem->price;
+
+    if($cartItem !== null){
+      \Cart::session($request->iduser.'salesman')->update(
+        $request->id,[
+            'quantity' => [
+                'relative' => false,
+                'value' => $request->quantity
+            ],
+        ]
+      );
+    } 
+
+    return response()->json([
+      'status' => 'success',
+      'message' => 'Qty produk di keranjang berhasil diubah',
+      'perubahan' => $perubahan
+    ]);
+  }
+
+  public function removeCartItemAPI($idItem){
+    $cartItem = \Cart::session(auth()->user()->id.'salesman')->get($idItem);
+    $perubahan = $cartItem->price;
+
+    \Cart::session(auth()->user()->id.'salesman')->remove((int)$idItem);
+
+    return response()->json([
+      'status' => 'success',
+      'message' => 'Berhail menghapus item dalam cart',
+      'perubahan' => $perubahan
+    ]);
+  }
+
+  public function getCartItemsAPI(){
+    $cartItems = \Cart::session(auth()->user()->id.'salesman')->getContent();
+    $myCart = $cartItems->toArray();
+
+    // dd($myCart);
+    return response()->json([
+      "status" => "success",
+      "message" => "berhasil mendapatkan data cart items",
+      "data" => array_values($myCart),
+    ]);
+  }
+  
+  public function dataKodeEventAPI(Request $request, $kode){
+    $total_pesanan = $request->total_pesanan;
+    $event = Event::where('kode', $kode)
+            ->where('status_enum','!=', '-2')
+            // ->whereDate('date_start', '<=', now())
+            // ->whereDate('date_end', '>=', now())
+            ->first();
+
+    if($event!==null){
+      if($event->date_start <= now() && $event->date_end >= now()){
+        if($total_pesanan >= ($event->min_pembelian ?? 0)){
+          if($event->diskon){
+            $potongan = $event->diskon * $total_pesanan /100;
+            return response()->json([
+              'status' => 'success',
+              'message' => 'mendapatkan diskon sebesar Rp. '.number_format($potongan, 0, '', '.'),
+              'data' => $event,
+              'potongan' => $potongan
+            ]);
+          }else{
+            $potongan = $total_pesanan - $event->potongan;
+            return response()->json([
+              'status' => 'success',
+              'message' => 'mendapatkan potongan sebesar Rp. '.number_format($potongan, 0, '', '.'),
+              'data' => $event,
+              'potongan' => $potongan
+            ]);
+          }
+        
+        }else{
+          return response()->json([
+            'status' => 'error',
+            'message' => 'minimum pembelian Rp'.$event->min_pembelian
+          ]);
+        }
+      }else{
+        return response()->json([
+          'status' => 'error',
+          'message' => 'event sudah berakhir'
+        ]);
+      }
+    } else{
+      return response()->json([
+        'status' => 'error',
+        'message' => 'kode event tidak ditemukan'
+      ]);
+    }
   }
 }

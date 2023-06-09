@@ -31,17 +31,15 @@ use Util;
 
 class OrderController extends Controller
 {  
-  public function simpanDataOrderSalesmanAPI(Request $request){    
+  public function simpanDataOrderSalesmanAPI(Request $request){   
+    // dd($request->all()); 
     $validator = Validator::make($request->all(), [
       'keranjang' => ['required'],
-      'idCustomer' => ['required','numeric'],
-      'idStaf' => ['required','numeric'],
-      'estimasiWaktuPengiriman' => ['required','numeric'],
-      'jatuhTempo' => ['required','numeric'],
+      'idCustomer' => ['required'],
+      'estimasiWaktuPengiriman' => ['required'],
       'keterangan' => ['nullable', 'string', 'max:255'],
       'kodeEvent' => ['nullable', 'string', 'max:50'],
       'totalHarga' => ['required'],
-      // 'idTrip' => ['required','numeric'],
       'tipeRetur' => ['nullable','numeric'],
       'metode_pembayaran' => ['nullable','numeric'],
     ]);
@@ -53,226 +51,182 @@ class OrderController extends Controller
       ]);
     }
 
-    $jatuh_tempo = $request->jatuhTempo;
-    $totalPesanan = $request->totalHarga;
     $keranjangItems = $request->keranjang;
-    $idStaf = $request->idStaf;
-    $estimasiWaktuPengiriman = $request->estimasiWaktuPengiriman;
-    $keterangan = $request->keterangan;
+    $idStaf = auth()->user()->id;
     $id_order = $request->kodePesanan ?? 'belum ada';
     $id_customer = $request->idCustomer;
     $tipeRetur = $request->tipeRetur ?? null;
     $stok_kanvas = $request->stok_kanvas ?? false;
 
     if($stok_kanvas == true){
-      $listKanvas = Kanvas::where('id_staff_yang_membawa', $idStaf)->whereNull('waktu_dikembalikan')->get();
+      $listKanvas = Kanvas::where('id_staff_yang_membawa', $idStaf)
+                    ->whereNull('waktu_dikembalikan')->get();
 
       foreach($keranjangItems as $item){
         foreach($listKanvas as $kanvas){
           if($kanvas->id_item == $item['id']){
             Kanvas::where('id_staff_yang_membawa', $idStaf)
-                      ->whereNull('waktu_dikembalikan')
-                      ->where('id_item', $kanvas->id_item)
-                      ->update([
-                        "sisa_stok" => $kanvas->sisa_stok - $item['jumlah'],
-                        "updated_at" => now()
-                      ]);
+            ->whereNull('waktu_dikembalikan')
+            ->where('id_item', $kanvas->id_item)
+            ->update([
+              "sisa_stok" => $kanvas->sisa_stok - $item['quantity'],
+              "updated_at" => now()
+            ]);
           }
-        }
-
-
-        $stokMaksimalTerakhir = History::where("id_item", $item['id'])->orderBy("id", "DESC")->first()->stok_maksimal_customer ?? 0;
-
-        $stokSekarang = (History::where("id_item", $item['id'])->orderBy("id", "DESC")->first()->stok_terakhir_customer ?? 0) + $item['jumlah'];
-
-
-        if($stokSekarang > $stokMaksimalTerakhir){
-          History::updateOrCreate(
-            ['id_customer' => $id_customer, 'id_item' => $item['id']],
-            ['stok_maksimal_customer' => $stokSekarang, 'stok_terakhir_customer' => $stokSekarang]
-          );
-        }else{
-          History::updateOrCreate(
-            ['id_customer' => $id_customer, 'id_item' => $item['id']],
-            ['stok_maksimal_customer' => $stokMaksimalTerakhir, 'stok_terakhir_customer' => $stokSekarang]
-          );
         }
       }
     }
     
-    $customertype=Customer::with(['linkCustomerType'])->find($id_customer);
-
     if($id_order == "belum ada"){
-      $limitPembelian = Customer::find($id_customer)->limit_pembelian;
-      if($limitPembelian == null || $limitPembelian>=$totalPesanan || $request->limit_pembelian == 'nolimit'){
+      if($stok_kanvas == true){
+        $id_order=Order::insertGetId([
+          'id_customer' => $id_customer,
+          'id_staff' => $idStaf,
+          'status_enum' => '1',
+          'created_at'=> now(),
+          'metode' => '1'
+        ]);
 
-        if($stok_kanvas == true){
-          $id_order=Order::insertGetId([
-            'id_customer' => $id_customer,
-            'id_staff' => $idStaf,
-            'status_enum' => '1',
-            'created_at'=> now(),
-            'metode' => '1'
+        OrderTrack::insert([
+          'id_order' => $id_order,
+          'status_enum' => '4',
+          'waktu_order'=> now(),
+          'waktu_diteruskan' => now(),
+          'waktu_dikonfirmasi' => now(),
+          'waktu_berangkat' => now(),
+          'waktu_sampai' => now(),
+          'created_at'=> now(),
+          'waktu_diteruskan' => now(),
+          'estimasi_waktu_pengiriman' => $request->estimasiWaktuPengiriman,
+        ]);
+      }else{
+        $id_order=Order::insertGetId([
+          'id_customer' => $id_customer,
+          'id_staff' => $idStaf,
+          'status_enum' => '-1',
+          'created_at'=> now(),
+          'metode' => '2'
+        ]);
+
+        OrderTrack::insert([
+          'id_order' => $id_order,
+          'status_enum' => '1',
+          'waktu_order'=> now(),
+          'created_at'=> now(),
+          'waktu_diteruskan' => now(),
+          'estimasi_waktu_pengiriman' => $request->estimasiWaktuPengiriman,
+        ]);
+      }
+      
+      $data = [];
+      foreach($keranjangItems as $item){
+        array_push($data,[
+          'id_order' => $id_order,
+          'id_item' => $item['id'],
+          'kuantitas' => $item['quantity'],
+          'harga_satuan' => $item['price'],
+          'created_at' =>  now(),
+          'updated_at' => now(),
+          'keterangan' => $request->keterangan??null,
+        ]);
+      }
+      OrderItem::insert($data);
+      Customer::find($id_customer)->update([
+        'tipe_retur' => $tipeRetur,
+        'metode_pembayaran' => $request->metode_pembayaran??null
+      ]);
+    }
+    else{   
+      foreach($keranjangItems as $item){
+        $updateitem=OrderItem::where('id_order', $id_order)->where('id_item', $item['id'])->first();
+        //jika data order item di database ditemukan
+        if ($updateitem??null) {
+          # update...
+          $updateitem->update([
+            'id_order' => $id_order,
+            'id_item' => $item['id'],
+            'kuantitas' => $item['quantity'],
+            'harga_satuan' => $item['price'],
+            'keterangan' => $request->keterangan,
           ]);
-        }else{
-          $id_order=Order::insertGetId([
-            'id_customer' => $id_customer,
-            'id_staff' => $idStaf,
-            'status_enum' => '-1',
-            'created_at'=> now(),
-            'metode' => '2'
-          ]);
-        }
-        
-        $data = [];
-        foreach($keranjangItems as $item){
-          array_push($data,[
+        } else {
+          # create...
+          OrderItem::insert([
             'id_order' => $id_order,
             'id_item' => $item['id'],
             'kuantitas' => $item['jumlah'],
-            'harga_satuan' => $item['harga']-($item['harga']*$customertype->linkCustomerType->diskon/100),
+            'harga_satuan' => $item['price'],
+            'keterangan' => $request->keterangan,
             'created_at' =>  now(),
-            'keterangan' => $request->keterangan??null,
+            'updated_at' => now(),
           ]);
-        }
+        } 
+      }
 
-        if($stok_kanvas == true){
-          OrderTrack::insert([
-            'id_order' => $id_order,
-            'status_enum' => '4',
-            'waktu_order'=> now(),
-            'waktu_diteruskan' => now(),
-            'waktu_dikonfirmasi' => now(),
-            'waktu_berangkat' => now(),
-            'waktu_sampai' => now(),
-            'created_at'=> now(),
-            'waktu_diteruskan' => now(),
-            'estimasi_waktu_pengiriman' => $estimasiWaktuPengiriman,
-          ]);
-        }else{
-          OrderTrack::insert([
-            'id_order' => $id_order,
-            'status_enum' => '1',
-            'waktu_order'=> now(),
-            'created_at'=> now(),
-            'waktu_diteruskan' => now(),
-            'estimasi_waktu_pengiriman' => $estimasiWaktuPengiriman,
-          ]);
-        }
+      $orderItems=OrderItem::where('id_order', $id_order)->get();
+      foreach($orderItems as $orderItem){
+        // cari $orderItem->id_item ada tidak di id item di cart, jika tidak ada jalankan if
+        $key = array_search($orderItem->id_item, array_column($keranjangItems, 'id'));
+          if($key === false){
+            # delete...
+            $orderItem->delete();
+          }
+      }
 
-        OrderItem::insert($data);
-        Customer::find($id_customer)->update([
-          'tipe_retur' => $tipeRetur,
-          'metode_pembayaran' => $request->metode_pembayaran??null
+      if($stok_kanvas == true){
+        Order::where('id', $id_order)->update([
+          'id_staff' => $idStaf,
+          'status_enum' => '1',
+          'metode' => '1'
+        ]);
+
+        OrderTrack::where('id_order', $id_order)->update([
+          'waktu_diteruskan' => now(),
+          'waktu_dikonfirmasi' => now(),
+          'waktu_berangkat' => now(),
+          'waktu_sampai' => now(),
+          'status_enum' => '4',
+          'estimasi_waktu_pengiriman' => $request->estimasiWaktuPengiriman,
         ]);
       }else{
-        return response()->json([
-          'status' => 'error',
-          'error_message' => 'Total pesanan melebihi limit pembelian'
+        Order::where('id', $id_order)->update([
+          'id_staff' => $idStaf,
+          'metode' => '2'
+        ]);
+
+        OrderTrack::where('id_order', $id_order)->update([
+          'waktu_diteruskan' => now(),
+          'status_enum' => '1',
+          'estimasi_waktu_pengiriman' => $request->estimasiWaktuPengiriman,
         ]);
       }
-    }
-    else{   
-      $limitPembelian = Customer::find($id_customer)->limit_pembelian;
-      if($limitPembelian == null || $limitPembelian>=$totalPesanan || $request->limit_pembelian == 'nolimit'){
-        foreach($keranjangItems as $item){
-          $updateitem=OrderItem::where('id_order', $id_order)->where('id_item', $item['id'])->first();
-          //jika data order item di database ditemukan
-          if ($updateitem??null) {
-            # update...
-            $updateitem->update([
-              'id_order' => $id_order,
-              'id_item' => $item['id'],
-              'kuantitas' => $item['jumlah'],
-              'created_at' =>  now(),
-              'harga_satuan' => $item['harga']-($item['harga']*$customertype->linkCustomerType->diskon/100),
-              'keterangan' => $keterangan,
-            ]);
-          } else {
-            # create...
-            OrderItem::insert([
-              'id_order' => $id_order,
-              'id_item' => $item['id'],
-              'kuantitas' => $item['jumlah'],
-              'created_at' =>  now(),
-              'harga_satuan' => $item['harga']-($item['harga']*$customertype->linkCustomerType->diskon/100),
-              'keterangan' => $keterangan,
-            ]);
-          } 
-        }
 
-        $orderItems=OrderItem::where('id_order', $id_order)->get();
-        foreach($orderItems as $orderItem){
-          // cari $orderItem->id_item ada tidak di id item di cart, jika tidak ada jalankan if
-          $key = array_search($orderItem->id_item, array_column($keranjangItems, 'id'));
-            if($key === false){
-              # delete...
-              $orderItem->delete();
-            }
-        }
-
-        if($stok_kanvas == true){
-          Order::where('id', $id_order)->update([
-            'id_staff' => $idStaf,
-            'status_enum' => '1',
-            'metode' => '1'
-          ]);
-
-          OrderTrack::where('id_order', $id_order)->update([
-            'waktu_diteruskan' => now(),
-            'waktu_dikonfirmasi' => now(),
-            'waktu_berangkat' => now(),
-            'waktu_sampai' => now(),
-            'status_enum' => '4',
-            'estimasi_waktu_pengiriman' => $estimasiWaktuPengiriman,
-          ]);
-
-        }else{
-          Order::where('id', $id_order)->update([
-            'id_staff' => $idStaf,
-            'metode' => '2'
-          ]);
-
-          OrderTrack::where('id_order', $id_order)->update([
-            'waktu_diteruskan' => now(),
-            'status_enum' => '1',
-            'estimasi_waktu_pengiriman' => $estimasiWaktuPengiriman,
-          ]);
-        }
-
-        Customer::find($id_customer)->update([
-          'tipe_retur' => $tipeRetur,
-          'metode_pembayaran' => $request->metode_pembayaran??null
-        ]);    
-      }else{
-        return response()->json([
-          'status' => 'error',
-          'error_message' => 'Total pesanan melebihi limit pembelian'
-        ]);
-      }   
+      Customer::find($id_customer)->update([
+        'tipe_retur' => $tipeRetur,
+        'metode_pembayaran' => $request->metode_pembayaran??null
+      ]);    
     }
 
-    $kode_event = $request->kodeEvent ?? null;
     $id_event = null;
-    if ($kode_event != null) {
-      $id_event = Event::where('kode', $kode_event)->first()->id;
+    if ($request->kodeEvent ?? null) {
+      $id_event = Event::where('kode', $request->kodeEvent)->first()->id;
     }
     $invoice_count="INV-". explode("-",Invoice::orderBy("id", "DESC")->first()->nomor_invoice ?? 'INV-0')[1] + 1 ."-".date_format(now(),"YmdHis");
     Invoice::insert([
       'id_order' => $id_order,
       'id_event' => $id_event,
       'nomor_invoice' => $invoice_count,
-      'harga_total' => $totalPesanan,
+      'harga_total' => $request->totalHarga,
       'counter_unduh' => 0,
       'metode_pembayaran' => $request->metode_pembayaran??null,
-      'jatuh_tempo' => $jatuh_tempo,
-      'created_at' => now()
+      'jatuh_tempo' => $request->jatuhTempo ?? 7,
+      'created_at' => now(),
+      'updated_at' => now()
     ]);
 
     if($request->idTrip ?? null){
       Trip::find($request->idTrip)->update([
         'waktu_keluar' => now(),
-        'updated_at' => now(),
         'status_enum' => '2',
         'alasan_penolakan' => $request->alasan_penolakan
       ]);
@@ -284,7 +238,6 @@ class OrderController extends Controller
       if($old_trip ?? null){
         Trip::find($old_trip->id)->update([
           'waktu_keluar' => now(),
-          'updated_at' => now(),
           'status_enum' => '2',
           'alasan_penolakan' => $request->alasan_penolakan
         ]);
@@ -302,8 +255,6 @@ class OrderController extends Controller
       }
     }
     
-    Customer::find($id_customer)->update(['updated_at'=> now()]);
-
     if (Customer::find($id_customer)->time_to_effective_call==null) {
       Customer::find($id_customer)->update([
         'time_to_effective_call' => now(),
@@ -311,6 +262,7 @@ class OrderController extends Controller
       ]);
     }
 
+    \Cart::session(auth()->user()->id.'salesman')->clear();
     return response()->json([
       'status' => 'success',
       'success_message' => 'berhasil membuat pesanan'

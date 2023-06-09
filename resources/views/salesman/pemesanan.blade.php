@@ -17,7 +17,7 @@
 @push('JS')
   <script>
     var idTrip = null;
-    var totalCart = 0;
+    var totalCart = parseInt($('input[name="jumlah_item_keranjang"]').val());
 
     function catatTripOrder(koordinat) {
       $.ajax({
@@ -32,6 +32,7 @@
         success: function(response) {
           console.log(response);
           idTrip = response.data.id;
+          $('input[name="idtrip"]').val(response.data.id);
         }
       })
     }
@@ -62,12 +63,14 @@
         }).then((result) => {
           navigator.geolocation.getCurrentPosition(function(position) {
             const koordinat = position.coords.latitude + '@' + position.coords.longitude;
+            $('input[name="koordinat"]').val(koordinat);
             catatTripOrder(koordinat);
           });
         })
       } else if (result.state === 'granted') {
         navigator.geolocation.getCurrentPosition(function(position) {
           const koordinat = position.coords.latitude + '@' + position.coords.longitude;
+          $('input[name="koordinat"]').val(koordinat);
           catatTripOrder(koordinat);
         });
       } else if (result.state === 'denied') {
@@ -144,6 +147,36 @@
       })
     })
 
+    $('.btn_belanjalagi_keluar').on('click', function() {
+      Swal.fire({
+        title: 'Apakah anda yakin?',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Ya, Keluar!'
+      }).then((result) => {
+        if (result.isConfirmed) {
+          if (idTrip != null) {
+            $('.loader').removeClass('d-none');
+            $.ajax({
+              url: window.location.origin + `/api/keluarToko/${idTrip}`,
+              method: "post",
+              data: {
+                'alasan_penolakan': null,
+                'isBelanjaLagi': true,
+              },
+              success: function(response) {
+                console.log(response);
+                let redirect = "{{ env('MIX_APP_URL') }}" + '/salesman';
+                window.location.replace(redirect);
+              }
+            })
+          }
+        }
+      })
+    })
+
     $('#tidakJadiPesanModal .btn-danger').on('click', function() {
       Swal.fire({
         title: 'Apakah anda yakin?',
@@ -163,7 +196,7 @@
               method: "post",
               data: {
                 'alasan_penolakan': alasanPenolakan,
-                'isBelanjaLagi': false,
+                'isBelanjaLagi': "{{ $isBelanjaLagi }}",
               },
               success: function(response) {
                 console.log(response);
@@ -240,11 +273,19 @@
       <small class='text-danger error_kode_customer'></small>
     </div>
 
-    <form action="/salesman/addtocart" method="POST">
+    <form action="/salesman/addtocart/{{ $customer->id }}" method="POST">
       @csrf
+      <input type="hidden" name="idtrip" value="">
+      <input type="hidden" name="koordinat" value="0@0">
+      <input type="hidden" name="kodePesanan" value="">
+      <input type="hidden" name="jumlah_item_keranjang"
+        value="{{ \Cart::session(auth()->user()->id . 'salesman')->getTotalQuantity() }}">
+
       <button type="submit" class="btn btn_cart">
         <span class="iconify fs-2 text-white" data-icon="clarity:shopping-cart-solid"></span>
-        <span class='text-white fw-bold jumlah_item_keranjang'>0</span>
+        <span class='text-white fw-bold jumlah_item_keranjang'>
+          {{ \Cart::session(auth()->user()->id . 'salesman')->getTotalQuantity() }}
+        </span>
       </button>
 
       <div class="history-item mt-4">
@@ -253,14 +294,15 @@
           @foreach ($history as $item)
             @php
               $cartItem = \Cart::session(auth()->user()->id . 'salesman')->get($item->linkItem->id);
-              
               if ($customer->tipe_harga == 2 && ($item->linkItem->harga2_satuan ?? null)) {
-                  $harga_satuan = $item->linkItem->harga2_satuan;
+                  $harga_blmdiskon = $item->linkItem->harga2_satuan;
               } elseif ($customer->tipe_harga == 3 && ($item->linkItem->harga3_satuan ?? null)) {
-                  $harga_satuan = $item->linkItem->harga3_satuan;
+                  $harga_blmdiskon = $item->linkItem->harga3_satuan;
               } else {
-                  $harga_satuan = $item->linkItem->harga1_satuan;
+                  $harga_blmdiskon = $item->linkItem->harga1_satuan;
               }
+              
+              $harga_sdhdiskon = $harga_blmdiskon - (($customer->linkCustomerType->diskon ?? 0) * $harga_blmdiskon) / 100;
             @endphp
 
             <div class='card_historyItem position-relative p-3'>
@@ -290,7 +332,7 @@
                 </div>
                 <div class="col-10">
                   <h1 class="fs-6 ms-2 mb-1 text-capitalize fw-bold">{{ $item->linkItem->nama }}</h1>
-                  <p class="mb-0 ms-2">{{ $harga_satuan }} / {{ $item->linkItem->satuan ?? null }}</p>
+                  <p class="mb-0 ms-2">{{ $harga_sdhdiskon }} / {{ $item->linkItem->satuan ?? null }}</p>
                 </div>
 
                 <p class="mb-0">Max stok : {{ $item->stok_maksimal_customer ?? null }}</p>
@@ -359,7 +401,9 @@
                     class="input-gambarcart-{{ $item->linkItem->id }}">
                 @endif
 
-                <input type="hidden" value="{{ $harga_satuan }}" name="harga_satuan[]"
+                <input type="hidden" value="{{ $harga_sdhdiskon }}" name="harga_satuan[]"
+                  class="input-hargasatuancart-{{ $item->linkItem->id }}">
+                <input type="hidden" value="{{ $harga_blmdiskon }}" name="harga_normal[]"
                   class="input-hargasatuancart-{{ $item->linkItem->id }}">
               @endif
             </div>
@@ -370,9 +414,13 @@
       </div>
 
       <div class="my-5 d-flex justify-content-between align-items-center">
-        <h1 class="fs-6 fw-bold"> Customer tidak jadi pesan ?</h1>
-        <button type="button" class="btn btn-danger" data-bs-toggle="modal"
-          data-bs-target="#tidakJadiPesanModal">Keluar</button>
+        <h1 class="fs-6 fw-bold">Customer tidak jadi pesan ?</h1>
+        @if (($isBelanjaLagi ?? null) == 'true')
+          <button type="button" class="btn btn-danger btn_belanjalagi_keluar">Keluar</button>
+        @else
+          <button type="button" class="btn btn-danger" data-bs-toggle="modal"
+            data-bs-target="#tidakJadiPesanModal">Keluar</button>
+        @endif
       </div>
 
       <div>
@@ -383,24 +431,23 @@
           </button>
         </div>
 
-        {{-- <form class='mb-3'> --}}
         <div class="input-group">
           <input type="text" class="form-control" name="cari_produk" placeholder="Cari Produk...">
-          <button type="button" class="btn btn-primary">Cari</button>
+          <button type="button" class="btn btn-primary btn_cari_produk">Cari</button>
         </div>
-        {{-- </form> --}}
 
-        <div class="productCard_wrapper">
+        <div class="productCard_wrapper mt-4">
           @foreach ($items as $item)
             @php
               $cartItem = \Cart::session(auth()->user()->id . 'salesman')->get($item->id);
               if ($customer->tipe_harga == 2 && ($item->harga2_satuan ?? null)) {
-                  $harga_satuan = $item->harga2_satuan;
+                  $harga_blmdiskon = $item->harga2_satuan;
               } elseif ($customer->tipe_harga == 3 && ($item->harga3_satuan ?? null)) {
-                  $harga_satuan = $item->harga3_satuan;
+                  $harga_blmdiskon = $item->harga3_satuan;
               } else {
-                  $harga_satuan = $item->harga1_satuan;
+                  $harga_blmdiskon = $item->harga1_satuan;
               }
+              $harga_sdhdiskon = $harga_blmdiskon - (($customer->linkCustomerType->diskon ?? 0) * $harga_blmdiskon) / 100;
             @endphp
 
             <div class="card product_card" data-iditem="{{ $item->id }}">
@@ -415,16 +462,6 @@
               <div class="product_desc">
                 <h1 class='nama_produk fs-6'>{{ $item->nama }}</h1>
                 <p class='mb-0 text-decoration-line-through'>
-                  @php
-                    if ($customer->tipe_harga == 2) {
-                        $harga_blmdiskon = $item->harga2_satuan;
-                    } elseif ($customer->tipe_harga == 3) {
-                        $harga_blmdiskon = $item->harga3_satuan;
-                    } else {
-                        $harga_blmdiskon = $item->harga1_satuan;
-                    }
-                    $harga_sdhdiskon = $harga_blmdiskon - (($customer->linkCustomerType->diskon ?? 0) * $harga_blmdiskon) / 100;
-                  @endphp
                   Rp. {{ number_format($harga_blmdiskon ?? 0, 0, '', '.') }}
                 </p>
                 <p class='mb-0'>
@@ -472,9 +509,10 @@
                     class="input-gambarcart-{{ $item->id }}">
                 @endif
 
-                <input type="hidden" value="{{ $harga_satuan }}" name="harga_satuan[]"
+                <input type="hidden" value="{{ $harga_sdhdiskon }}" name="harga_satuan[]"
                   class="input-hargasatuancart-{{ $item->id }}">
-
+                <input type="hidden" value="{{ $harga_blmdiskon }}" name="harga_normal[]"
+                  class="input-hargasatuancart-{{ $item->id }}">
               </div>
             </div>
           @endforeach

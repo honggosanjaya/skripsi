@@ -19,6 +19,7 @@ import FilterItem from './FilterItem';
 const Pemesanan = ({ location }) => {
   const { idCust } = useParams();
   const [urlApi, setUrlApi] = useState(`api/salesman/listitems/${idCust}`);
+  const [filterBy, setFilterBy] = useState(null);
   const { page, setPage, erorFromInfinite, paginatedData, isReachedEnd, orderRealTime, groupingItemStok } = useInfinite(`${urlApi}`, 4);
   const { token } = useContext(AuthContext);
   const { dataUser } = useContext(UserContext);
@@ -32,8 +33,10 @@ const Pemesanan = ({ location }) => {
   const [koordinat, setKoordinat] = useState(null);
   const [idTrip, setIdTrip] = useState(null);
   const [show, setShow] = useState(false);
+  const [showFilter, setShowFilter] = useState(false);
   const [alasanPenolakan, setAlasanPenolakan] = useState(null);
   const { state: idTripTetap } = location;
+  const jamMasuk = Date.now() / 1000;
   const [customer, setCustomer] = useState([]);
   const [historyItem, setHistoryItem] = useState([]);
   const { newHistoryItem, setNewHistoryItem, kodePesanan, setKodePesanan, setIsKodePesananValid } = useContext(HitungStokContext);
@@ -50,9 +53,87 @@ const Pemesanan = ({ location }) => {
   const [itemKanvas, setItemKanvas] = useState([]);
   const [idItemKanvas, setIdItemKanvas] = useState([]);
   const [isHaveCodeCust, setIsHaveCodeCust] = useState(false);
-  const Swal = require('sweetalert2')
+  const Swal = require('sweetalert2');
 
   useEffect(() => {
+    if (filterBy) {
+      setUrlApi(`api/salesman/filteritems/${idCust}/${filterBy}`);
+    } else {
+      setUrlApi(`api/salesman/listitems/${idCust}`);
+    }
+  }, [filterBy])
+
+  useEffect(() => {
+    setNewHistoryItem(historyItem);
+  }, [historyItem]);
+
+  const { data: dataCustomer, error } = useSWR(
+    [`${window.location.origin}/api/tripCustomer/${idCust}`, token], {
+    revalidateOnFocus: false,
+  });
+
+  useEffect(() => {
+    navigator.permissions.query({ name: 'geolocation' }).then((result) => {
+      if (result.state === 'prompt') {
+        let timerInterval;
+        let seconds = 7;
+        Swal.fire({
+          title: 'Peringatan Izin Akses Lokasi Perangkat',
+          html: 'Selanjutnya kami akan meminta akses lokasi anda, mohon untuk mengizinkannya. <br><br> Tunggu <b></b> detik untuk menutupnya',
+          icon: 'info',
+          allowOutsideClick: false,
+          allowEscapeKey: false,
+          timer: 7000,
+          didOpen: () => {
+            Swal.showLoading();
+            const b = Swal.getHtmlContainer().querySelector('b')
+            timerInterval = setInterval(() => {
+              if (seconds > 0) {
+                seconds -= 1;
+              }
+              b.textContent = seconds;
+            }, 1000);
+          },
+        }).then((result) => {
+          navigator.geolocation.getCurrentPosition(function (position) {
+            setKoordinat(position.coords.latitude + '@' + position.coords.longitude)
+          });
+        })
+      } else if (result.state === 'granted') {
+        navigator.geolocation.getCurrentPosition(function (position) {
+          setKoordinat(position.coords.latitude + '@' + position.coords.longitude)
+        });
+      } else if (result.state === 'denied') {
+        setKoordinat('0@0');
+        let timerInterval2;
+        let seconds2 = 4;
+        Swal.fire({
+          title: 'Tidak Ada Akses Lokasi Perangkat',
+          html: 'Agar memudahkan kunjungan silahkan buka pengaturan browser anda dan ijinkan aplikasi mengakses lokasi. <br><br> Tunggu <b></b> detik untuk menutupnya',
+          icon: 'info',
+          allowOutsideClick: false,
+          allowEscapeKey: false,
+          confirmButtonText: 'Tutup',
+          didOpen: () => {
+            Swal.showLoading();
+            const b = Swal.getHtmlContainer().querySelector('b')
+            timerInterval2 = setInterval(() => {
+              if (seconds2 > 0) {
+                seconds2 -= 1;
+              }
+              b.textContent = seconds2;
+            }, 1000);
+            setTimeout(() => { Swal.hideLoading() }, 4000);
+          },
+        })
+      }
+    });
+
+    if (idTripTetap) {
+      setIdTrip(idTripTetap);
+    }
+    getAllProduks();
+    // getAllGroupProduks();
     axios({
       method: "get",
       url: `${window.location.origin}/api/salesman/historyitems/${idCust}`,
@@ -70,7 +151,21 @@ const Pemesanan = ({ location }) => {
         console.log(error.message);
       });
 
-
+    axios({
+      method: "get",
+      url: `${window.location.origin}/api/tripCustomer/${idCust}`,
+      headers: {
+        Accept: "application/json",
+      },
+    })
+      .then(response => {
+        console.log('cust.', response.data.data);
+        setDiskon(response.data.data.link_customer_type.diskon);
+        setCustomer(response.data.data);
+      })
+      .catch(error => {
+        console.log(error.message);
+      });
   }, []);
 
   useEffect(() => {
@@ -93,7 +188,36 @@ const Pemesanan = ({ location }) => {
     }
   }, [dataUser])
 
+  useEffect(() => {
+    navigator.permissions.query({ name: 'geolocation' }).then((result) => {
+      if (result.state !== 'granted') {
+        setKoordinat('0@0')
+      }
+    });
 
+    if (dataUser.nama && koordinat && idTripTetap == null && idTrip == null) {
+      axios({
+        method: "post",
+        url: `${window.location.origin}/api/tripOrderCustomer`,
+        data: {
+          idCustomer: parseInt(idCust),
+          idStaff: dataUser.id_staff,
+          koordinat: koordinat,
+          jam_masuk: jamMasuk,
+        },
+        headers: {
+          Accept: "application/json",
+        },
+      })
+        .then((response) => {
+          console.log('trip', response.data.data);
+          setIdTrip(response.data.data.id);
+        })
+        .catch((error) => {
+          console.log(error.message);
+        });
+    }
+  }, [dataUser, koordinat]);
 
   useEffect(() => {
     produks.map((produk) => {
@@ -107,6 +231,41 @@ const Pemesanan = ({ location }) => {
     if (error) setErrorMessage(error.message);
   }, [error]);
 
+  if (error) return (
+    <main className="page_main">
+      <HeaderSales title="Salesman" />
+      <AlertComponent errorMsg={errorMessage} />
+    </main>
+  )
+
+  if (!dataCustomer) return (
+    <main className="page_main">
+      <HeaderSales title="Salesman" />
+      <LoadingIndicator />
+    </main>
+  )
+
+  const handleShow = () => {
+    if (isBelanjaLagi == false) {
+      setShow(true);
+    } else {
+      Swal.fire({
+        title: 'Apakah anda yakin?',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Ya, Keluar!'
+      }).then((result) => {
+        if (result.isConfirmed) {
+          handleKeluarToko();
+        }
+      })
+    }
+  };
+  const handleClose = () => setShow(false);
+  const handleShowFilter = () => setShowFilter(true);
+  const handleCloseFilter = () => setShowFilter(false);
 
   const checkTipeHarga = (produk, item) => {
     if (customer.tipe_harga == 2 && item.harga2_satuan) {
@@ -118,6 +277,39 @@ const Pemesanan = ({ location }) => {
     }
   }
 
+  const handleKeluarToko = () => {
+    if (idTrip) {
+      setIsLoading(true);
+      setShouldDisabled(true);
+      axios({
+        method: "post",
+        url: `${window.location.origin}/api/keluarToko/${idTrip}`,
+        headers: {
+          Accept: "application/json",
+        },
+        data: {
+          'alasan_penolakan': alasanPenolakan,
+          'isBelanjaLagi': isBelanjaLagi,
+          'idCust': idCust,
+          'idStaf': dataUser.id_staff,
+          'koordinat': koordinat,
+        }
+      })
+        .then((response) => {
+          setShouldDisabled(false);
+          console.log('trip', response.data.message);
+          setIsLoading(false);
+          setIsBelanjaLagi(false);
+          hapusSemuaProduk();
+          history.push('/salesman');
+        })
+        .catch((error) => {
+          setShouldDisabled(false);
+          setIsLoading(false);
+          console.log(error.message);
+        });
+    }
+  }
 
   const lihatKeranjang = () => {
     history.push({
@@ -400,6 +592,37 @@ const Pemesanan = ({ location }) => {
     }
   }
 
+  const handleSubmitStokTerakhir = (item, newVal) => {
+    axios({
+      method: "post",
+      url: `${window.location.origin}/api/salesman/updateStock`,
+      headers: {
+        Accept: "application/json",
+      },
+      data: {
+        'id_customer': idCust,
+        'id_item': item.link_item.id,
+        'quantity': newVal
+      }
+    })
+      .then((response) => {
+        console.log('stok terakhir customer', response.data);
+      })
+      .catch((error) => {
+        console.log(error.message);
+      });
+
+    const exist = newHistoryItem.find((x) => x.link_item.id === item.link_item.id);
+    if (exist) {
+      setNewHistoryItem(
+        newHistoryItem.map((x) => {
+          if (x.link_item.id === item.link_item.id)
+            return { ...exist, isSelected: !x.isSelected }
+          else return x
+        }));
+    }
+  }
+
   const handleDeleteProduct = (item) => {
     KeranjangDB.deleteProduk(item.id);
     getAllProduks();
@@ -419,7 +642,12 @@ const Pemesanan = ({ location }) => {
     history.push('/salesman');
   }
 
-
+  const handleFilterChange = (newFilter) => {
+    setFilterBy(newFilter);
+    if (newFilter != null) {
+      setShouldKeepOrder(false);
+    }
+  }
 
   const handleCancelUseCodeCust = () => {
     setKodePesanan('');
@@ -465,10 +693,55 @@ const Pemesanan = ({ location }) => {
           }
         </div>
 
+        <HitungStok historyItem={historyItem} handleTambahJumlah={handleTambahJumlah}
+          checkifexist={checkifexist} handleValueChange={handleValueChange}
+          handleKurangJumlah={handleKurangJumlah} handleSubmitStokTerakhir={handleSubmitStokTerakhir}
+          jumlahOrderRealTime={jumlahOrderRealTime} jumlahGroupingItemStok={jumlahGroupingItemStok} tipeHarga={customer.tipe_harga} />
 
+        <KeluarToko handleShow={handleShow} alasanPenolakan={alasanPenolakan}
+          setAlasanPenolakan={setAlasanPenolakan} handleClose={handleClose}
+          handleKeluarToko={handleKeluarToko} show={show} shouldDisabled={shouldDisabled} />
 
+        <FilterItem showFilter={showFilter} handleCloseFilter={handleCloseFilter}
+          filterBy={filterBy} setFilterBy={setFilterBy} handleFilterChange={handleFilterChange} />
 
+        <div>
+          <div className="d-flex justify-content-between mb-3">
+            <h1 className='fs-5 mb-0 fw-bold'>Item</h1>
+            <button className='btn' onClick={handleShowFilter}>
+              <span className="iconify fs-3" data-icon="ci:filter"></span>
+            </button>
+          </div>
 
+          <div className='mb-3'>
+            <form onSubmit={handleCariProduk}>
+              <div className="input-group">
+                <input type="text" className="form-control" placeholder="Cari Produk..."
+                  value={kataKunci} onChange={(e) => setKataKunci(e.target.value)}
+                />
+                <button type="submit" className="btn btn-primary">Cari</button>
+              </div>
+            </form>
+          </div>
+
+          {erorFromInfinite && <p className="text-danger">something is wrong</p>}
+          <InfiniteScroll
+            dataLength={paginatedData?.length ?? 0}
+            next={() => setPage(page + 1)}
+            hasMore={!isReachedEnd}
+            loader={<p>Loading...</p>}
+            endMessage={<p className="text-center">No more data</p>}>
+            {paginatedData &&
+              <ProductSales listItems={paginatedData} handleTambahJumlah={handleTambahJumlah}
+                checkifexist={checkifexist} handleValueChange={handleValueChange}
+                handleKurangJumlah={handleKurangJumlah} orderRealTime={orderRealTime}
+                groupingItemStok={groupingItemStok}
+                produkDlmKeranjang={produks} isHandleKodeCust={isHandleKodeCust}
+                shouldKeepOrder={shouldKeepOrder} diskonTypeCust={diskon} tipeHarga={customer.tipe_harga}
+              />
+            }
+          </InfiniteScroll>
+        </div>
       </div>
     </main>
   );

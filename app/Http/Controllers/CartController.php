@@ -291,7 +291,8 @@ class CartController extends Controller
       }
   }
 
-  public function addToCartSales(Request $request){
+  public function addToCartSales(Request $request, $idCust){
+    // dd($request->all());
     foreach($request->id as $key=>$id){
       if($request->quantity[$key] != null){
         $cartItem = \Cart::session(auth()->user()->id.'salesman')->get($id);
@@ -316,6 +317,7 @@ class CartController extends Controller
             'price' => $request->harga_satuan[$key],
             'attributes' => array(
               'gambar' => $request->gambar[$key],
+              'harga_normal' => $request->harga_normal[$key]
             )
           ]);
         }
@@ -323,7 +325,11 @@ class CartController extends Controller
     }
 
     $cartItems = \Cart::session(auth()->user()->id.'salesman')->getContent();
-    // return redirect()->back()->with('success', 'your message,here'); 
-    return view('salesman.keranjang', compact('cartItems'));
+    $customer = Customer::where('id',$idCust)->with(['linkCustomerType','linkDistrict'])->first();
+    $myCart = $cartItems->toArray();
+    $idTrip = $request->idtrip;
+    $koordinat = $request->koordinat;
+    $kodePesanan = $request->kodePesanan;
+    return view('salesman.keranjang', compact('cartItems', 'customer', 'myCart', 'idTrip','koordinat','kodePesanan'));
   }
 }
