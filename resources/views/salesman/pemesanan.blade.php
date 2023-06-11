@@ -11,10 +11,32 @@
       top: -3rem;
       right: 1rem;
     }
+
+    div.scrollmenu {
+      overflow: auto;
+      white-space: nowrap;
+    }
+
+    div.scrollmenu button {
+      display: inline-block;
+    }
   </style>
 @endpush
 
 @push('JS')
+  <script>
+    $('.search_barang').on('keyup', function(e) {
+      let keyword = e.target.value;
+      $('.product_card').each(function() {
+        if ($(this).data("search").toLowerCase().indexOf(keyword) >= 0) {
+          $(this).removeClass('d-none');
+        } else {
+          $(this).addClass('d-none');
+        };
+      });
+    });
+  </script>
+
   <script>
     var idTrip = null;
     var totalCart = parseInt($('input[name="jumlah_item_keranjang"]').val());
@@ -243,6 +265,65 @@
       $('.jumlah_item_keranjang').text(totalCart);
     })
   </script>
+
+  <script>
+    $('.btn_filter').on('click', function() {
+      $('.filter_section').toggleClass('d-none');
+    });
+
+    var rooms = $('.product_card');
+    var roomList = $('.productCard_wrapper');
+
+    function sortPriceMax() {
+      roomList.empty();
+      rooms.sort(function(a, b) {
+        return $(a).data('price') - $(b).data('price')
+      });
+      roomList.append(rooms);
+    }
+
+    function sortPriceMin() {
+      roomList.empty();
+      rooms.sort(function(a, b) {
+        return $(b).data('price') - $(a).data('price')
+      });
+      roomList.append(rooms);
+    }
+
+    $('.harga_rendah').on('click', function() {
+      sortPriceMax();
+    });
+
+    $('.harga_tinggi').on('click', function() {
+      sortPriceMin();
+    });
+
+    $('.tanpa_filter').on('click', function() {
+      roomList.empty();
+      rooms.sort(function(a, b) {
+        return $(a).data('order') - $(b).data('order')
+      });
+      roomList.append(rooms);
+    })
+
+    $('.kecil_besar').on('click', function() {
+      var alphabeticallyOrderedDivs = $('.product_card').sort(function(a, b) {
+        return String.prototype.localeCompare.call($(a).data('search').toLowerCase(), $(b).data('search')
+          .toLowerCase());
+      });
+      roomList.empty();
+      roomList.append(alphabeticallyOrderedDivs);
+    });
+
+    $('.besar_kecil').on('click', function() {
+      var alphabeticallyOrderedDivs = $('.product_card').sort(function(a, b) {
+        return String.prototype.localeCompare.call($(b).data('search').toLowerCase(), $(a).data('search')
+          .toLowerCase());
+      });
+      roomList.empty();
+      roomList.append(alphabeticallyOrderedDivs);
+    });
+  </script>
 @endpush
 
 @section('main_content')
@@ -426,18 +507,26 @@
       <div>
         <div class="d-flex justify-content-between mb-3">
           <h1 class='fs-5 mb-0 fw-bold'>Item</h1>
-          <button type="button" class='btn'>
+          <button type="button" class='btn btn_filter'>
             <span class="iconify fs-3" data-icon="ci:filter"></span>
           </button>
         </div>
 
-        <div class="input-group">
-          <input type="text" class="form-control" name="cari_produk" placeholder="Cari Produk...">
-          <button type="button" class="btn btn-primary btn_cari_produk">Cari</button>
+        <div class="filter_section mb-3 d-none">
+          <label class="form-label">Urutkan</label>
+          <div class="scrollmenu">
+            <button type="button" class="btn btn-outline-secondary harga_rendah me-2">Harga Terendah</button>
+            <button type="button" class="btn btn-outline-secondary harga_tinggi me-2">Harga Tertinggi</button>
+            <button type="button" class="btn btn-outline-secondary kecil_besar me-2">A-Z</button>
+            <button type="button" class="btn btn-outline-secondary besar_kecil me-2">Z-A</button>
+            <button type="button" class="btn btn-secondary tanpa_filter">Tanpa Filter</button>
+          </div>
         </div>
 
+        <input type="text" class="form-control search_barang" name="cari_produk" placeholder="Cari Produk...">
+
         <div class="productCard_wrapper mt-4">
-          @foreach ($items as $item)
+          @foreach ($items as $index => $item)
             @php
               $cartItem = \Cart::session(auth()->user()->id . 'salesman')->get($item->id);
               if ($customer->tipe_harga == 2 && ($item->harga2_satuan ?? null)) {
@@ -450,7 +539,8 @@
               $harga_sdhdiskon = $harga_blmdiskon - (($customer->linkCustomerType->diskon ?? 0) * $harga_blmdiskon) / 100;
             @endphp
 
-            <div class="card product_card" data-iditem="{{ $item->id }}">
+            <div class="card product_card" data-iditem="{{ $item->id }}" data-search="{{ $item->nama }}"
+              data-price="{{ $harga_sdhdiskon ?? 0 }}" data-order={{ $index }}>
               <div class="product_img">
                 @if ($item->gambar ?? null)
                   <img src="{{ asset('storage/item/' . $item->gambar) }}" class="img-fluid">

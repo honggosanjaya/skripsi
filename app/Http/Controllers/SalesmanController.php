@@ -432,7 +432,6 @@ class SalesmanController extends Controller
     $items = Item::orderBy("status_enum", "ASC")->whereNotIn('id',$items->toArray())
              ->whereNotIn('id',array_unique($group_items))->with(['linkGroupingItem'])
              ->get();
-            //  ->paginate(4);
 
     $orderItemUnconfirmed = OrderItem::whereHas('linkOrder',function($q) {
                             $q->where('status_enum', '-1');

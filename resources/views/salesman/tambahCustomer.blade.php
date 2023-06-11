@@ -31,12 +31,12 @@
     });
 
     $('.btn_selesai_keluar').on("click", function(e) {
-      $('input[name="status_enum"]').val(e.target.value);
+      $('input[name="status_enum"]').val('trip');
       $('.form_trip').submit();
     });
 
     $('.btn_order').on("click", function(e) {
-      $('input[name="status_enum"]').val(e.target.value);
+      $('input[name="status_enum"]').val('order');
       $('.form_trip').submit();
     });
 
@@ -311,7 +311,7 @@
       <input type="hidden" value="" name="status_enum">
       <input type="hidden" value="{{ now() }}" name="jam_masuk">
       <input type="hidden" value="{{ auth()->user()->id_users }}" name="id_staff">
-      <input type="hidden" value="" name="koordinat">
+      <input type="hidden" value="0@0" name="koordinat">
       <input type="hidden" value="{{ $customer->id ?? null }}" name="id">
 
       <div class="d-flex justify-content-end">
