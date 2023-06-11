@@ -5,6 +5,10 @@
     .button_bottom {
       max-height: auto !important;
     }
+
+    .form-label.disabled {
+      color: gray !important;
+    }
   </style>
 @endpush
 
@@ -208,7 +212,7 @@
               idTrip: $('input[name="id_trip"]').val(),
               tipeRetur: "{{ $customer->tipe_retur }}",
               metode_pembayaran: $('select[name="metode_pembayaran"]').val(),
-              stok_kanvas: $('input[name="from_kanvas"]').val(),
+              stok_kanvas: $('input[name="pakai_kanvas"]').val(),
               koordinat: $('input[name="koordinat"]').val(),
               kodePesanan: $('input[name="kodePesanan"]').val(),
               limit_pembelian: $('input[name="limit_pembelian"]').val()
@@ -291,16 +295,22 @@
   </script>
 
   <script>
-    $('input[name="from_kanvas"]').on('change', function(e) {
-      console.log(e.target.value);
+    $('input[name="stok_kanvas"]').on('change', function(e) {
+      if (!$(this).is(":checked")) {
+        $('input[name="pakai_kanvas"]').val(false);
+        $('.kanvasgudang').text('gudang');
+      } else {
+        $('input[name="pakai_kanvas"]').val(true);
+        $('.kanvasgudang').text('kanvas');
+      }
     });
   </script>
 @endpush
 
 @section('main_content')
-  <input type="text" value="{{ $idTrip }}" name="id_trip">
-  <input type="text" value="{{ $koordinat ?? '0@0' }}" name="koordinat">
-  <input type="text" value="{{ $kodePesanan ?? null }}" name="kodePesanan">
+  <input type="hidden" value="{{ $idTrip }}" name="id_trip">
+  <input type="hidden" value="{{ $koordinat ?? '0@0' }}" name="koordinat">
+  <input type="hidden" value="{{ $kodePesanan ?? null }}" name="kodePesanan">
 
   <div class="loader d-none"></div>
   <div class="alert alert-info mb-0" role="alert">
@@ -351,9 +361,10 @@
 
       <div class="mb-btnBottom">
         <div class="form-check form-switch mt-3">
-          <input class="form-check-input" type="checkbox" name="from_kanvas">
-          <label class="form-label">Ambil dari stok kanvas</label>
+          <input class="form-check-input" type="checkbox" name="stok_kanvas" {{ $canStokKanvas ? '' : 'disabled' }}>
+          <label class="form-label {{ $canStokKanvas ? '' : 'disabled' }}">Ambil dari stok kanvas</label>
         </div>
+        <input type="hidden" name="pakai_kanvas">
 
         <label class="form-label">Keterangan Pesanan</label>
         <textarea class="form-control" name="keterangan_pesanan"></textarea>
@@ -444,12 +455,13 @@
               <p class='mb-0 fw-bold'>Event</p>
               <p class='mb-0 diskon_event'>- 0</p>
             </div>
-            <hr />
+            <hr>
             <div class="d-flex justify-content-between px-2">
               <p class='mb-0 fw-bold'>Total Akhir</p>
               <p class='mb-0 total_akhir_pesanan'></p>
             </div>
-            <p class="mb-0 text-center mt-3"><b>Nb:</b>Pesanan ini diambilkan dari stok kanvas gudang</p>
+            <p class="mb-0 text-center mt-3"><b>Nb:</b> Pesanan ini diambilkan dari stok <span
+                class="kanvasgudang"></span></p>
           </div>
           <div class="modal-footer">
             <button class="btn btn-success btn_checkout">

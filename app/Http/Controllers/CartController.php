@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\CashAccount;
 use Illuminate\Http\Request;
 use App\Models\Customer;
+use App\Models\Kanvas;
 
 class CartController extends Controller
 {
@@ -325,11 +326,22 @@ class CartController extends Controller
     }
 
     $cartItems = \Cart::session(auth()->user()->id.'salesman')->getContent();
+
+    $kanvas = Kanvas::where('id_staff_yang_membawa', auth()->user()->id)
+              ->whereNull('waktu_dikembalikan')
+              ->whereNull('id_staff_pengonfirmasi_pengembalian')
+              ->get();
+    if($kanvas->count() == 0){
+      $canStokKanvas = false;
+    }else{
+      $canStokKanvas = !array_diff($cartItems->pluck('id')->toArray(), $kanvas->pluck('id_item')->toArray());
+    }
+
     $customer = Customer::where('id',$idCust)->with(['linkCustomerType','linkDistrict'])->first();
     $myCart = $cartItems->toArray();
     $idTrip = $request->idtrip;
     $koordinat = $request->koordinat;
     $kodePesanan = $request->kodePesanan;
-    return view('salesman.keranjang', compact('cartItems', 'customer', 'myCart', 'idTrip','koordinat','kodePesanan'));
+    return view('salesman.keranjang', compact('cartItems', 'customer', 'myCart', 'idTrip','koordinat','kodePesanan','canStokKanvas'));
   }
 }
