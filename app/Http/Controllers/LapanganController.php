@@ -50,9 +50,9 @@ class LapanganController extends Controller
                     ->with(['linkOrderTrack','linkInvoice','linkCustomer','linkOrderItem'])
                     ->orderBy('id','DESC')->get();
     // dd($sudahsampais);
-
     return view('react.jadwalpengiriman',[
       'page' => 'Jadwal Pengiriman',
+      'linkback' => '/'.session('role'),
       'perludikirims' => $perludikirims,
       'sudahsampais' => $sudahsampais
     ]);            
@@ -197,6 +197,11 @@ class LapanganController extends Controller
 
   public function retur(Request $request, $idCust){
     $id_invoice = $request->idinvoice ?? null;
+    if($request->idinvoice ?? null){
+      $linkback = '/salesman/trip/'.$idCust;
+    }else{
+      $linkback = '/lapangan/jadwal';
+    }
     $latestOrderItem = [];
     $histories = History::select('id_item')->where('id_customer',$idCust)->get();
     
@@ -250,7 +255,8 @@ class LapanganController extends Controller
       "orderRealTime" => $orderItemUnconfirmed,
       "groupingItemStok" => $groupingItemStok,
       'cartItems' => \Cart::session(auth()->user()->id.'retur')->getContent(),
-      'id_invoice' => $id_invoice
+      'id_invoice' => $id_invoice,
+      'linkback' => $linkback
     ]);  
   }
 
