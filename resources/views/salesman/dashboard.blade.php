@@ -9,10 +9,42 @@
       object-fit: cover;
       object-position: center;
     }
+
+    #preview {
+      width: 100%;
+      display: block;
+      margin: auto;
+    }
   </style>
 @endpush
 
 @push('JS')
+  <script src="https://rawgit.com/schmich/instascan-builds/master/instascan.min.js"></script>
+  <script>
+    let scanner = new Instascan.Scanner({
+      video: document.getElementById('preview'),
+      mirror: false,
+      backgroundScan: false,
+    });
+
+    $('.btn_scan_qr').on('click', function() {
+      scanner.addListener('scan', function(content) {
+        window.location.replace(content);
+      });
+      Instascan.Camera.getCameras().then(function(cameras) {
+        if (cameras.length > 0) {
+          scanner.start(cameras[0]);
+        }
+      }).catch(function(e) {
+        console.log(e);
+      });
+    });
+
+    $('#scannerModal').on('hidden.bs.modal', function() {
+      $('#cariCustomerModal').modal('show');
+      scanner.stop();
+    })
+  </script>
   <script>
     @if (session()->has('successMessage'))
       Swal.fire({
@@ -363,7 +395,7 @@
               <button class="btn btn-primary btn_rencana_trip" data-bs-toggle="modal" data-bs-target="#rencanaTripModal">
                 <span class="iconify fs-3 me-1" data-icon="flat-color-icons:planner"></span>Rencana Trip
               </button>
-              <button class="btn btn-success btn_scan_qr">
+              <button class="btn btn-success btn_scan_qr" data-bs-toggle="modal" data-bs-target="#scannerModal">
                 <span class="iconify fs-3 me-1" data-icon="bx:qr-scan"></span>Scan QR
               </button>
             </div>
@@ -453,6 +485,20 @@
             <Button type="button" class="btn btn-danger btn-sm" data-bs-dismiss="modal" aria-label="Close">
               <span class="iconify me-1" data-icon="carbon:close-outline"></span>Tutup
             </Button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="modal fade" id="scannerModal" tabindex="-1" aria-labelledby="scannerModalLabel" aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h1 class="modal-title fs-5" id="scannerModalLabel">Scan QR Code</h1>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+            <video id="preview"></video>
           </div>
         </div>
       </div>
