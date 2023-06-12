@@ -123,13 +123,13 @@
       }
     });
 
-    $('.kode_customer .btn-danger').on('click', function() {
+    $('.kode_customer .btn_batal_kode').on('click', function() {
       $(this).addClass('d-none');
       $('.kode_customer .btn-primary').removeClass('d-none');
       $('.form_kode_customer').addClass('d-none');
     })
 
-    $('.kode_customer .btn-primary').on('click', function() {
+    $('.kode_customer .btn_punya_kode').on('click', function() {
       $(this).addClass('d-none');
       $('.kode_customer .btn-danger').removeClass('d-none');
       $('.form_kode_customer').removeClass('d-none');
@@ -324,6 +324,49 @@
       roomList.append(alphabeticallyOrderedDivs);
     });
   </script>
+
+  <script>
+    const idCust = "{{ $customer->id }}";
+    $('.form_kode_customer button').on('click', function() {
+      const kodePesanan = $('input[name="kode_pesanan"]').val();
+      if (kodePesanan != '') {
+        $.ajax({
+          url: window.location.origin + `/api/kodeCustomer/${kodePesanan}`,
+          method: "get",
+          success: function(response) {
+            if (response.status == 'success') {
+              console.log(response);
+              if (response.dataOrder.id_customer == idCust) {
+                $('.error_kode_customer').text('');
+                $('.success_kode_customer').text(response.message);
+                $('input[name="quantity[]"]').val('');
+                $('.product_card').attr('data-kodecust', 'z');
+                response.dataOrderItem.map(function(item) {
+                  $(`.product_card[data-iditem="${item.id_item}"]`).find('input[name="quantity[]"]').val(
+                    item.kuantitas);
+                  $(`.product_card[data-iditem="${item.id_item}"]`).attr('data-kodecust', 'a');
+
+                  var alphabeticallyOrderedDivs = $('.product_card').sort(function(a, b) {
+                    return String.prototype.localeCompare.call($(a).data('kodecust').toLowerCase(), $(b)
+                      .data('kodecust')
+                      .toLowerCase());
+                  });
+                  $('.productCard_wrapper').empty();
+                  $('.productCard_wrapper').append(alphabeticallyOrderedDivs);
+                })
+              } else {
+                $('.success_kode_customer').text('');
+                $('.error_kode_customer').text('customer tidak sesuai');
+              }
+            } else {
+              $('.success_kode_customer').text('');
+              $('.error_kode_customer').text(response.message);
+            }
+          }
+        })
+      }
+    });
+  </script>
 @endpush
 
 @section('main_content')
@@ -332,26 +375,18 @@
     <div class="kode_customer">
       <div class="d-flex justify-content-between mb-3">
         <p class='fw-bold mb-0'>Sudah punya kode customer?</p>
-        <button class="btn btn-danger btn-sm d-none">Batal</button>
-        <button class="btn btn-primary btn-sm">Punya</button>
+        <button class="btn btn-danger btn-sm d-none btn_batal_kode">Batal</button>
+        <button class="btn btn-primary btn-sm btn_punya_kode">Punya</button>
       </div>
 
-      <form class="form_kode_customer d-none">
+      <div class="form_kode_customer d-none">
         <div class="input-group">
           <input type="text" class="form-control" name="kode_pesanan">
-          <button type="submit" class="btn btn-primary" disabled>
-            <div class="btn_text">
-              {{-- <div class="spinner-border" role="status">
-                <span class="visually-hidden">Loading...</span>
-              </div> --}}
-              Proses
-            </div>
-          </button>
+          <button class="btn btn-primary">Proses</button>
         </div>
-      </form>
-
-      <small class='text-success success_kode_customer'></small>
-      <small class='text-danger error_kode_customer'></small>
+        <small class='text-success success_kode_customer'></small>
+        <small class='text-danger error_kode_customer'></small>
+      </div>
     </div>
 
     <form action="/salesman/addtocart/{{ $customer->id }}" method="POST">
@@ -540,7 +575,7 @@
             @endphp
 
             <div class="card product_card" data-iditem="{{ $item->id }}" data-search="{{ $item->nama }}"
-              data-price="{{ $harga_sdhdiskon ?? 0 }}" data-order={{ $index }}>
+              data-price="{{ $harga_sdhdiskon ?? 0 }}" data-order={{ $index + 1 }} data-kodecust="z">
               <div class="product_img">
                 @if ($item->gambar ?? null)
                   <img src="{{ asset('storage/item/' . $item->gambar) }}" class="img-fluid">
