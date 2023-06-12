@@ -66,11 +66,11 @@
           {{-- <a class="underline text-sm text-gray-600 hover:text-gray-900" href="/spa/login">
             {{ __('Login sebagai Tenaga Lapangan') }}
           </a> --}}
-          {{-- @if (Route::has('password.request'))
+          @if (Route::has('password.request'))
             <a class="underline text-sm text-gray-600 hover:text-gray-900 mt-3" href="{{ route('password.request') }}">
               {{ __('Lupa Password?') }}
             </a>
-          @endif --}}
+          @endif
 
           {{-- <a class="underline text-sm text-gray-600 hover:text-gray-900 logout-link mt-3" href="/logout">
             {{ __('Logout') }}

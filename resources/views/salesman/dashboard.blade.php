@@ -195,9 +195,10 @@
 
   <script>
     let listRencanaKunjungan;
+    let listHistoryPembelian;
 
     function showRencanas(rencana) {
-      return `<tr data-idkunjungan=${rencana.id_rencana} data-idinvoice=${rencana.id_invoice} data-idlp3=${rencana.id_tagihan} class="btn_detail_rencana" data-bs-toggle="modal" data-bs-target="#detailRencanaModal">
+      return `<tr data-idcustomer=${rencana.id_customer} data-idkunjungan=${rencana.id_rencana} data-idinvoice=${rencana.id_invoice} data-idlp3=${rencana.id_tagihan} class="btn_detail_rencana" data-bs-toggle="modal" data-bs-target="#detailRencanaModal">
         <td>${rencana.nama_customer}</td>
         <td>${rencana.nama_wilayah}</td>
         <td class="status_rencana ${(rencana.status_rencana == '1' || rencana.status_penagihan == '1') ? 'text-success' : 'text-danger'}">
@@ -245,15 +246,21 @@
       return convertedPrice;
     }
 
+    function getDate(date) {
+      const newDate = date.substring(0, 10);
+      const results = newDate.split('-');
+      return `${results[2]}-${results[1]}-${results[0]}`;
+    }
+
     $(document).on('click', '.btn_detail_rencana', function() {
       const idkunjungan = $(this).attr("data-idkunjungan");
       const idinvoice = $(this).attr("data-idinvoice");
+      const idcustomer = $(this).attr("data-idcustomer");
 
       if (idkunjungan != 'undefined') {
         const result = listRencanaKunjungan.find(obj => {
           return obj.id_rencana == idkunjungan
         })
-        // console.log(result);
 
         let detailrencana = `<div class='info-2column'>
           <span class='d-flex'>
@@ -283,7 +290,6 @@
             $('.loader').addClass('d-none');
             // console.log(response);
             if (response.status == 'success') {
-              $('.loader').addClass('d-none');
               let detailtagihan = `<div class='info-2column'>
                 <span class='d-flex'>
                   <b>No. Invoice</b>
@@ -323,6 +329,30 @@
           }
         })
       }
+
+      function showHistoryBeli(data) {
+        return `<div class="d-flex py-2 align-items-center justify-content-between border-bottom data_history_beli" data-idinvoice="${data.id}">
+          <h6 class='mb-0'>${getDate(data.created_at)}</h6>
+          <h6 class='mb-0'>${convertPrice(data.harga_total)}</h6>
+          </div>`;
+      }
+      $('.loader').removeClass('d-none');
+      $.ajax({
+        url: window.location.origin + `/api/historyPembelian/${idcustomer}`,
+        method: "get",
+        success: function(response) {
+          $('.loader').addClass('d-none');
+          console.log(response);
+          if (response.status == 'success') {
+            listHistoryPembelian = response.data;
+            let historypembelian = `<p class='mb-0 fw-bold'>History Pembelian</p>`;
+            response.data.forEach((data) => {
+              historypembelian += showHistoryBeli(data);
+            });
+            $(".history_pembelian").html(historypembelian);
+          }
+        }
+      })
     })
 
     $('#detailRencanaModal').on('hidden.bs.modal', function() {
@@ -372,9 +402,71 @@
       }
     })
   </script>
+
+  <script>
+    function showHslBeliItem(item) {
+      return `<tr>
+                <td>${item.link_item.nama}</td>
+                <td class='text-center'>${item.kuantitas}</td>
+              </tr>`;
+    }
+
+    $(document).on('click', '.data_history_beli', function() {
+      const idinvoice = $(this).attr("data-idinvoice");
+      const result = listHistoryPembelian.find(obj => {
+        return obj.id == idinvoice
+      })
+
+      let detailHistBeliItem = "";
+      result.link_order.link_order_item.forEach((item) => {
+        detailHistBeliItem += showHslBeliItem(item);
+      });
+
+      let detailHistBeli = `<div>
+          <div class='info-2column'>
+            <span class='d-flex'>
+              <b>No Invoice</b>
+              <p class='mb-0 word_wrap'>${result.nomor_invoice}</p>
+            </span>
+            <span class='d-flex'>
+              <b>Tanggal</b>
+              <p class='mb-0 word_wrap'>${getDate(result.created_at)}</p>
+            </span>
+          </div>
+          <table class="table">
+            <thead>
+              <tr>
+                <th scope="col" class='text-center'>Nama Item</th>
+                <th scope="col" class='text-center'>Jumlah</th>
+              </tr>
+            </thead>
+            <tbody>
+              ${detailHistBeliItem}
+            </tbody>
+          </table>
+        </div>`
+
+      $('.modal_detail_rencana_wrapper1').addClass('d-none');
+      $('.modal_detail_rencana_wrapper2').removeClass('d-none');
+      $('.modal_detail_rencana_wrapper2').html(detailHistBeli);
+      $('#detailRencanaModal .modal-footer').addClass('d-none');
+      $('#detailRencanaModal .btn-close').addClass('d-none');
+      $('#detailRencanaModal .btn-close2').removeClass('d-none');
+    })
+
+    $(document).on('click', '.btn-close2', function() {
+      $('.modal_detail_rencana_wrapper1').removeClass('d-none');
+      $('.modal_detail_rencana_wrapper2').addClass('d-none');
+      $('.modal_detail_rencana_wrapper2').html('');
+      $('#detailRencanaModal .modal-footer').removeClass('d-none');
+      $('#detailRencanaModal .btn-close').removeClass('d-none');
+      $('#detailRencanaModal .btn-close2').addClass('d-none');
+    })
+  </script>
 @endpush
 
 @section('main_content')
+  <div class="loader d-none"></div>
   <input type="hidden" value="{{ auth()->user()->id_users }}" name="id_staff">
   <div class="page_container pt-4">
     <h1 class='fs-6 fw-bold mb-4'>Menu untuk Salesman</h1>
@@ -443,7 +535,6 @@
               <label class="form-label">Tanggal Kunjungan</label>
               <input type='date' class="form-control" name="tanggal_kunjungan" value="{{ date('Y-m-d') }}">
             </div>
-            <div class="loader d-none"></div>
             <div class="table-responsive">
               <table class="table">
                 <thead>
@@ -469,10 +560,16 @@
           <div class="modal-header">
             <h1 class="modal-title fs-5" id="detailRencanaModalLabel">Detail Rencana</h1>
             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            <i class="bi bi-x-lg btn-close2 d-none"></i>
           </div>
           <div class="modal-body">
-            <div class="loader d-none"></div>
-            <div class="detail_rencana_wrapper">
+            <div class="modal_detail_rencana_wrapper1">
+              <div class="detail_rencana_wrapper">
+              </div>
+              <div class="history_pembelian mt-4">
+              </div>
+            </div>
+            <div class="modal_detail_rencana_wrapper2 d-none">
             </div>
           </div>
           <div class="modal-footer">

@@ -1302,7 +1302,9 @@ class OrderController extends Controller
               ->whereHas('linkOrder', function($q) use($id) {
                 $q->where('id_customer', $id);
               })->with(['linkOrder','linkOrder.linkOrderItem'])
-              ->paginate(10);
+              // ->paginate(10);
+              ->take(10)
+              ->get();
 
     return response()->json([
       "status" => "success",
