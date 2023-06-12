@@ -24,7 +24,7 @@
 
 @section('main_content')
   <div class="page_container pt-4">
-    <h1 class='fs-6 fw-bold'>Menu untuk Tenaga Pengirim</h1>
+    <h1 class='fs-6 fw-bold mb-3'>Menu untuk Tenaga Pengirim</h1>
 
     <a href='/lapangan/jadwal' class='btn btn-primary btn-lg w-100 mt-3'>
       <span class="iconify me-2" data-icon="fa-solid:shipping-fast"></span>

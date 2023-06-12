@@ -469,7 +469,7 @@
   <div class="loader d-none"></div>
   <input type="hidden" value="{{ auth()->user()->id_users }}" name="id_staff">
   <div class="page_container pt-4">
-    <h1 class='fs-6 fw-bold mb-4'>Menu untuk Salesman</h1>
+    <h1 class='fs-6 fw-bold mb-3'>Menu untuk Salesman</h1>
     <button class='btn btn-primary btn-lg w-100 btn_menu_trip'>
       <span class="iconify fs-4 me-2" data-icon="bx:trip"></span> Trip
     </button>
