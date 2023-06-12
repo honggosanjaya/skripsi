@@ -85,6 +85,7 @@ class SalesmanController extends Controller
   }
 
   public function trip($id){
+    \Cart::session(auth()->user()->id.'retur')->clear();
     $customer = Customer::find($id);
     return view('salesman.tambahCustomer',[
       'page' => "Trip",

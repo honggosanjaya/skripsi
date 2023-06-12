@@ -31,32 +31,32 @@ class ReturController extends Controller
     }
 
     public function pengajuanReturAPI(Request $request){
-      $cartItems = $request->cartItems;
-      $id_staff_pengaju = $request->id_staff_pengaju;
-      $id_customer = $request->id_customer;
-      $id_invoice = $request->id_invoice;
-      $customer = Customer::find($id_customer);
-      $data = [];
+      // dd($request->all());
+      $cartItems = \Cart::session(auth()->user()->id.'retur')->getContent();
+      $customer = Customer::find($request->id_customer);
       $retur_count="RTR-".explode("-",Retur::orderBy("id", "DESC")->first()->no_retur ?? 'RTR-0')[1] + 1 ."-".date_format(now(),"YmdHis");
+      $data = [];
       
       foreach($cartItems as $item){
         array_push($data,[
-          'id_customer' => $item['id_customer'],
-          'id_staff_pengaju' => $id_staff_pengaju,
-          'id_item' => $item['id'],
+          'id_customer' => $request->id_customer,
+          'id_staff_pengaju' => auth()->user()->id,
+          'id_item' => $item->id,
           'no_retur' => $retur_count,
-          'id_invoice' => $id_invoice,
-          'kuantitas' => $item['kuantitas'],
-          'harga_satuan' => $item['harga_satuan'],
+          'id_invoice' => $request->id_invoice,
+          'kuantitas' => $item->quantity,
+          'harga_satuan' => $item->price,
           'tipe_retur' => $customer->tipe_retur,
-          'alasan' => $item['alasan'],
+          'alasan' => $item->attributes->alasan,
           'status_enum' => '0',
-          'created_at'=>now()
+          'created_at'=>now(),
+          'updated_at'=>now()
         ]);
       }
       
       Retur::insert($data);
-
+      \Cart::session(auth()->user()->id.'retur')->clear();
+      
       return response()->json([
         "status" => "success",
         "message" => "berhasil mengajukan retur",

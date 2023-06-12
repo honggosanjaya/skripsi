@@ -71,8 +71,8 @@ function App() {
 
 
                 <HitungStokContextProvider>
-                  <Route exact path="/salesman/order/:idCust" component={Pemesanan} />
-                  <Route exact path="/salesman/keranjang/:idCust" component={KeranjangSales} />
+                  {/* <Route exact path="/salesman/order/:idCust" component={Pemesanan} /> */}
+                  {/* <Route exact path="/salesman/keranjang/:idCust" component={KeranjangSales} /> */}
                 </HitungStokContextProvider>
                 {/* <Route exact path="/salesman/reimbursement" component={Reimbursement} /> */}
                 {/* <Route exact path="/salesman/profil" component={Profil} /> */}
@@ -81,7 +81,7 @@ function App() {
 
             <ReturContextProvider>
               {/* <Route exact path="/lapangan/jadwal" component={JadwalShipper} /> */}
-              <Route exact path="/lapangan/retur/:idCust" component={ReturShipper} />
+              {/* <Route exact path="/lapangan/retur/:idCust" component={ReturShipper} /> */}
             </ReturContextProvider>
 
             {/* <Route path="*" component={NotFound} /> */}

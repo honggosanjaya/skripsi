@@ -3,9 +3,14 @@
 namespace App\Http\Controllers;
 
 use App\Models\CashAccount;
+use App\Models\Customer;
+use App\Models\GroupItem;
+use App\Models\History;
 use App\Models\Invoice;
+use App\Models\Item;
 use App\Models\LaporanPenagihan;
 use App\Models\Order;
+use App\Models\OrderItem;
 use App\Models\OrderTrack;
 use App\Models\Reimbursement;
 use App\Models\Staff;
@@ -20,6 +25,7 @@ use Illuminate\Support\Facades\Validator;
 class LapanganController extends Controller
 {
   public function jadwalpengiriman(){
+    \Cart::session(auth()->user()->id.'retur')->clear();
     $id_staff = auth()->user()->id_users;
     $perludikirims = Order::whereHas('linkOrderTrack',function($q) use($id_staff) {
                         $q->where('id_staff_pengirim', $id_staff);
@@ -189,8 +195,114 @@ class LapanganController extends Controller
     return redirect('/lapangan/reimbursement')->with('successMessage', 'Berhasil mengajukan reimbursement');
   }
 
-  public function retur(Request $request){
+  public function retur(Request $request, $idCust){
+    $id_invoice = $request->idinvoice ?? null;
+    $latestOrderItem = [];
+    $histories = History::select('id_item')->where('id_customer',$idCust)->get();
     
+    foreach($histories as $h){
+      $query = OrderItem::where('id_item',$h['id_item'])
+      ->whereHas('linkOrder', function($q) use($idCust){
+          $q->where('id_customer', $idCust);
+        })
+      ->join('order_tracks','order_items.id_order','=','order_tracks.id_order')
+      ->select('order_items.id', 'order_items.id_order' ,'id_item', 'harga_satuan', 'order_tracks.waktu_diteruskan' ,'order_items.created_at')
+      ->where('order_tracks.waktu_diteruskan', '!=', null)
+      ->latest()->first();
+
+      $latestOrderItem[$h->id_item] = array(
+        $query,
+      );
+    }
+
+    $orderItemUnconfirmed = OrderItem::whereHas('linkOrder',function($q) {
+                  $q->where('status_enum', '-1');
+                })
+                ->whereHas('linkOrder',function($q) {
+                  $q->whereHas('linkOrderTrack',function($q) {
+                    $q->where('status_enum','!=', '-1');
+                  });
+                })
+                ->select('id_item', DB::raw('SUM(kuantitas) as jumlah_blmkonfirmasi'))      
+                ->groupBy('id_item')->pluck('jumlah_blmkonfirmasi','id_item')->all();
+
+
+    $groupItems = GroupItem::whereHas('linkItem', function($q) {
+                    $q->where('status_enum', '1')->where('stok','>',0);
+                  })->get()->groupBy('id_group_item');
+
+    $groupingItemStok = [];
+    foreach($groupItems as $groupItem){
+      $groupingStok = [];
+      foreach($groupItem as $group){
+        $item = Item::find($group->id_item);
+        $groupStok = floor(($item->stok / ($group->value_item / $group->value)));
+        array_push($groupingStok, (int)$groupStok);
+      }
+      $groupingItemStok[$groupItem[0]->id_group_item] = min($groupingStok);
+    }
+
+    return view('react.retur',[
+      'page' => 'Retur',
+      "history" => History::where('id_customer',$idCust)->with(['linkItem', 'linkItem.linkGroupingItem'])->get(),
+      "customer" => Customer::where('id',$idCust)->with('linkCustomerType')->first(),
+      "latestOrderItems" => $latestOrderItem,
+      "orderRealTime" => $orderItemUnconfirmed,
+      "groupingItemStok" => $groupingItemStok,
+      'cartItems' => \Cart::session(auth()->user()->id.'retur')->getContent(),
+      'id_invoice' => $id_invoice
+    ]);  
+  }
+
+  public function returAddToCart(Request $request){
+    // dd($request->all());
+    $cartItem = \Cart::session(auth()->user()->id.'retur')->get($request->id_item);
+
+    if($cartItem !== null){
+      if($request->kuantitas == 0){
+        \Cart::session(auth()->user()->id.'retur')->remove($request->id_item);
+      }else{
+        \Cart::session(auth()->user()->id.'retur')->update(
+          $request->id_item,
+          [
+              'quantity' => [
+                  'relative' => false,
+                  'value' => $request->kuantitas
+              ],
+              'attributes' => array(
+                'alasan' => $request->alasan,
+                'gambar' => $request->gambar
+              )
+          ]
+        );
+      }
+    } else if($cartItem == null){
+      \Cart::session(auth()->user()->id.'retur')->add([
+        'id' => $request->id_item,
+        'name' => $request->nama_item,
+        'price' => $request->harga_satuan,
+        'quantity' => $request->kuantitas,
+        'attributes' => array(
+          'alasan' => $request->alasan,
+          'gambar' => $request->gambar
+        )
+      ]);
+    }
+
+    $cartItems = \Cart::session(auth()->user()->id.'retur')->getContent()->toArray();
+    return response()->json([
+      'status' => 'success',
+      'message' => 'Produk berhasil ditambahkan ke keranjang',
+      'data' => array_values($cartItems)
+    ]);
+  }
+
+  public function returClearCart(){
+    \Cart::session(auth()->user()->id.'retur')->clear();
+    return response()->json([
+      'status' => 'success',
+      'message' => 'Berhasil menghapus keranjang',
+    ]);
   }
   
 }

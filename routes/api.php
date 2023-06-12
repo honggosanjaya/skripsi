@@ -12,6 +12,7 @@ use App\Http\Controllers\ReturController;
 use App\Http\Controllers\Controller;
 use App\Http\Controllers\DistrictController;
 use App\Http\Controllers\KasController;
+use App\Http\Controllers\LapanganController;
 use App\Http\Controllers\LaporanPenagihanController;
 use App\Http\Controllers\RencanaTripController;
 use App\Http\Controllers\SalesmanController;
@@ -127,5 +128,5 @@ Route::get('/salesman/removecartitem/{idItem}', [SalesmanController::class, 'rem
 Route::get('/salesman/getcartitem', [SalesmanController::class, 'getCartItemsAPI']);
 Route::post('/salesman/event/{kode}', [SalesmanController::class, 'dataKodeEventAPI']);
 
-
-
+Route::post('/lapangan/retur/cart', [LapanganController::class, 'returAddToCart']);
+Route::get('/lapangan/retur/clearcart', [LapanganController::class, 'returClearCart']);

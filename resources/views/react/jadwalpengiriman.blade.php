@@ -352,7 +352,7 @@
                   </div>
                   <div class="modal-footer">
                     @if (count($sudahsampai->linkInvoice->linkRetur) == 0 && $sudahsampai->linkOrderTrack->status_enum == '4')
-                      <a href="/lapangan/retur/{{ $sudahsampai->id_customer ?? null }}"
+                      <a href="/lapangan/retur/{{ $sudahsampai->id_customer ?? null }}?idinvoice={{ $sudahsampai->linkInvoice->id }}"
                         class="btn btn-warning btn_ajukan_retur">
                         <span class="iconify fs-3 me-1" data-icon="ic:baseline-assignment-return"></span>Ajukan Retur
                       </a>
