@@ -39,7 +39,7 @@
             <div class="col">
               <div class="mb-3">
                 <label for="id_staff" class="form-label">Nama Salesman <span class='text-danger'>*</span></label>
-                <select class="form-select @error('id_staff') is-invalid @enderror" id="id_staff" name="id_staff"
+                <select class="form-select select2 @error('id_staff') is-invalid @enderror" id="id_staff" name="id_staff"
                   value="{{ old('id_staff') }}">
                   @foreach ($staffs as $staff)
                     <option value="{{ $staff->id }}">
@@ -59,7 +59,7 @@
               <div class="mb-3">
                 <label class="form-label">Tanggal <span class='text-danger'>*</span></label>
                 <input type="date" name="tanggal" class="form-control @error('tanggal') is-invalid @enderror"
-                  id="tanggal" value="{{ old('tanggal') }}" />
+                  id="tanggal" value="{{ old('tanggal', date('Y-m-d')) }}" />
                 @error('tanggal')
                   <div class="invalid-feedback">{{ $message }}</div>
                 @enderror
@@ -75,7 +75,7 @@
                   <span class="visually-hidden">Loading...</span>
                 </div>
               </div>
-              <select class="form-select select-district select-two" id="id_district" name="id_district">
+              <select class="form-select select-district select2" id="id_district" name="id_district">
                 <option disabled selected value>
                   Pilih Wilayah
                 </option>
@@ -99,7 +99,7 @@
               <div class="form-input">
                 <div class="row">
                   <div class="col">
-                    <select class="select-customer form-select @error('id_customer') is-invalid @enderror"
+                    <select class="select-customer form-select select2 @error('id_customer') is-invalid @enderror"
                       id="id_customer" name="id_customer[]">
                       <option disabled selected value>
                         Pilih Customer

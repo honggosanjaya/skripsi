@@ -101,7 +101,11 @@
   @push('JS')
     <script>
       $(document).ready(function() {
-        $('.select-account-parent').select2();
+        $('.select-account-parent').select2({
+          allowClear: true,
+          theme: "bootstrap-5",
+          width: "100%"
+        });
       });
     </script>
   @endpush

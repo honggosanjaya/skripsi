@@ -58,7 +58,7 @@
           <div class="col">
             <div class="mb-3">
               <label for="id_wilayah" class="form-label">Wilayah</label>
-              <select class="form-select select-two" name="id_wilayah">
+              <select class="form-select select2" name="id_wilayah">
                 <option value>-- Pilih Wilayah --</option>
                 @foreach ($districts as $district)
                   @if (old('id_wilayah', $customer->id_wilayah) == $district->id)

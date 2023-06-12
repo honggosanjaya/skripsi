@@ -140,7 +140,11 @@
   @push('JS')
     <script>
       $(document).ready(function() {
-        $('.select-cash-account').select2();
+        $('.select-cash-account').select2({
+          allowClear: true,
+          theme: "bootstrap-5",
+          width: "100%"
+        });
       });
     </script>
     <script src="{{ mix('js/administrasi.js') }}"></script>

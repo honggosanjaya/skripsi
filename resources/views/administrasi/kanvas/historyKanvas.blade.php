@@ -48,7 +48,7 @@
         <div class="col">
           <div class="mb-3">
             <label class="form-label">Nama Kanvas<span class="text-danger">*</span></label>
-            <select class="form-select select-history-kanvas select-two" required>
+            <select class="form-select select-history-kanvas select2" required>
               <option disabled selected value>Pilih Kanvas</option>
               @foreach ($listkanvas as $kanvas)
                 <option value="{{ str_replace(',', '-', $kanvas->ids) }}">{{ $kanvas->nama ?? null }}</option>
@@ -63,8 +63,8 @@
           <div class="mb-3">
             <label for="id_staff_yang_membawa" class="form-label">Sales Yang Membawa<span
                 class="text-danger">*</span></label>
-            <select class="form-select @error('id_staff_yang_membawa') is-invalid @enderror" id="id_staff_yang_membawa"
-              name="id_staff_yang_membawa" value="{{ old('id_staff_yang_membawa') }}">
+            <select class="form-select select2 @error('id_staff_yang_membawa') is-invalid @enderror"
+              id="id_staff_yang_membawa" name="id_staff_yang_membawa" value="{{ old('id_staff_yang_membawa') }}">
               @foreach ($staffs as $staff)
                 <option value="{{ $staff->id }}">{{ $staff->nama ?? null }}</option>
               @endforeach
@@ -241,11 +241,6 @@
   </div>
 
   @push('JS')
-    <script>
-      $(document).ready(function() {
-        $('.select-history-kanvas').select2();
-      });
-    </script>
     <script src="{{ mix('js/administrasi.js') }}"></script>
   @endpush
 @endsection

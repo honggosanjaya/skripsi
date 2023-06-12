@@ -65,7 +65,7 @@
             @php
               $isHasChooseWilayah = false;
             @endphp
-            <select class="form-select select-two" name="id_wilayah">
+            <select class="form-select select-2" name="id_wilayah">
               @if ($isHasChooseWilayah == false)
                 <option selected value>-- Pilih Wilayah --</option>
               @else

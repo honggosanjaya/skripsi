@@ -41,7 +41,7 @@
         </div>
 
         <div class="row">
-          <div class="col">
+          <div class="col-6">
             <div class="mb-3">
               <label for="id_jenis" class="form-label">Jenis Customer <span class="text-danger">*</span></label>
               <select class="form-select" name="id_jenis">
@@ -55,13 +55,13 @@
               </select>
             </div>
           </div>
-          <div class="col">
+          <div class="col-6">
             <div class="mb-3">
               <label for="id_wilayah" class="form-label">Wilayah</label>
               @php
                 $isHasChooseWilayah = false;
               @endphp
-              <select class="form-select select-two" name="id_wilayah">
+              <select class="form-select select2" name="id_wilayah">
                 @if ($isHasChooseWilayah == false)
                   <option selected value>-- Pilih Wilayah --</option>
                 @else

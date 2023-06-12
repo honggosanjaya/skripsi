@@ -39,7 +39,7 @@
             <div class="col">
               <div class="mb-3">
                 <label for="id_staff" class="form-label">Nama Salesman <span class='text-danger'>*</span></label>
-                <select class="form-select @error('id_staff') is-invalid @enderror" id="id_staff" name="id_staff"
+                <select class="form-select select2 @error('id_staff') is-invalid @enderror" id="id_staff" name="id_staff"
                   value="{{ old('id_staff') }}">
                   @foreach ($staffs as $staff)
                     <option value="{{ $staff->id }}">
@@ -56,7 +56,7 @@
               <div class="mb-3">
                 <label class="form-label">Tanggal <span class='text-danger'>*</span></label>
                 <input type="date" name="tanggal" class="form-control @error('tanggal') is-invalid @enderror"
-                  id="tanggal" value="{{ old('tanggal') }}" />
+                  id="tanggal" value="{{ old('tanggal', date('Y-m-d')) }}" />
                 @error('tanggal')
                   <div class="invalid-feedback">{{ $message }}</div>
                 @enderror
@@ -64,7 +64,7 @@
             </div>
           </div>
 
-          <div class="row">
+          <div class="row mb-3">
             <div class="col-6">
               <div class="d-flex justify-content-between">
                 <label class="form-label">Kunjungi Berdasar Wilayah</label>
@@ -72,7 +72,7 @@
                   <span class="visually-hidden">Loading...</span>
                 </div>
               </div>
-              <select class="form-select select-district select-two" id="id_district" name="id_district">
+              <select class="form-select select-district select2" id="id_district" name="id_district">
                 <option disabled selected value>
                   Pilih Wilayah
                 </option>
@@ -86,51 +86,49 @@
           </div>
 
           <div class="form-group">
-            <div>
+            <div class="row">
+              <div class="col-6">
+                <label for="id_customer" class="form-label">Customer yang Dikunjungi <span
+                    class='text-danger'>*</span></label>
+              </div>
+            </div>
+            <div class="form-input">
               <div class="row">
                 <div class="col-6">
-                  <label for="id_customer" class="form-label">Customer yang Dikunjungi <span
-                      class='text-danger'>*</span></label>
+                  <select class="select-customer form-select select2 @error('id_customer') is-invalid @enderror"
+                    id="id_customer" name="id_customer[]">
+                    <option disabled selected value>
+                      Pilih Customer
+                    </option>
+                    @foreach ($customers as $customer)
+                      <option value="{{ $customer->id }}">
+                        {{ $customer->nama ?? null }}
+                      </option>
+                    @endforeach
+                  </select>
+                  @error('id_customer')
+                    <div class="invalid-feedback">{{ $message }}</div>
+                  @enderror
                 </div>
               </div>
-              <div class="form-input">
-                <div class="row">
-                  <div class="col-6">
-                    <select class="select-customer form-select @error('id_customer') is-invalid @enderror"
-                      id="id_customer" name="id_customer[]">
-                      <option disabled selected value>
-                        Pilih Customer
-                      </option>
-                      @foreach ($customers as $customer)
-                        <option value="{{ $customer->id }}">
-                          {{ $customer->nama ?? null }}
-                        </option>
-                      @endforeach
-                    </select>
-                    @error('id_customer')
-                      <div class="invalid-feedback">{{ $message }}</div>
-                    @enderror
+              <div class="row mt-2">
+                <div class="col-6">
+                  <div class="input-group mb-3">
+                    <span class="input-group-text" id="basic-addon1">Estimasi Nominal</span>
+                    <input type="number" class="form-control input-estimasi-nominal" placeholder="boleh dikosongi"
+                      name="estimasi_nominal[]">
                   </div>
                 </div>
-                <div class="row mt-2">
-                  <div class="col-6">
-                    <div class="input-group mb-3">
-                      <span class="input-group-text" id="basic-addon1">Estimasi Nominal</span>
-                      <input type="number" class="form-control input-estimasi-nominal" placeholder="boleh dikosongi"
-                        name="estimasi_nominal[]">
-                    </div>
-                  </div>
-                </div>
-                <div class="row">
-                  <div class="col-6">
-                    <div class="d-flex justify-content-end my-3">
-                      <button class="btn btn-danger remove-form me-3 d-none" type="button">
-                        -
-                      </button>
-                      <button class="btn btn-success add-form" type="button">
-                        +
-                      </button>
-                    </div>
+              </div>
+              <div class="row">
+                <div class="col-6">
+                  <div class="d-flex justify-content-end my-3">
+                    <button class="btn btn-danger remove-form me-3 d-none" type="button">
+                      -
+                    </button>
+                    <button class="btn btn-success add-form" type="button">
+                      +
+                    </button>
                   </div>
                 </div>
               </div>

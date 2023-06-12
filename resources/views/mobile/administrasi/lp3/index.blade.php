@@ -40,7 +40,7 @@
             <div class="col">
               <div class="mb-3">
                 <label for="id_staff_penagih" class="form-label">Nama Penagih <span class='text-danger'>*</span></label>
-                <select class="form-select @error('id_staff_penagih') is-invalid @enderror" id="id_staff_penagih"
+                <select class="form-select select2 @error('id_staff_penagih') is-invalid @enderror" id="id_staff_penagih"
                   name="id_staff_penagih" value="{{ old('id_staff_penagih') }}">
                   @foreach ($staffs as $staff)
                     <option value="{{ $staff->id }}">{{ $staff->nama ?? null }}</option>
@@ -78,7 +78,7 @@
                   <span class="visually-hidden">Loading...</span>
                 </div>
               </div>
-              <select class="form-select select-district select-two" id="id_district" name="id_district">
+              <select class="form-select select-district select2" id="id_district" name="id_district">
                 <option disabled selected value>
                   Pilih Wilayah
                 </option>
@@ -107,8 +107,8 @@
               <div class="form-input">
                 <div class="row">
                   <div class="col">
-                    <select class="select-invoice form-select @error('id_invoice') is-invalid @enderror" id="id_invoice"
-                      name="id_invoice[]">
+                    <select class="select-invoice form-select select2 @error('id_invoice') is-invalid @enderror"
+                      id="id_invoice" name="id_invoice[]">
                       <option disabled selected value>Pilih Invoice</option>
                       @foreach ($invoices as $invoice)
                         <option value="{{ $invoice->id }}">{{ $invoice->nomor_invoice ?? null }}</option>
