@@ -130,3 +130,5 @@ Route::post('/salesman/event/{kode}', [SalesmanController::class, 'dataKodeEvent
 
 Route::post('/lapangan/retur/cart', [LapanganController::class, 'returAddToCart']);
 Route::get('/lapangan/retur/clearcart', [LapanganController::class, 'returClearCart']);
+Route::get('/salesman/estimasiPermintaanToko/{id}', [OrderController::class, 'estimasiPermintaanToko']);
+Route::post('/salesman/estimasiPermintaanToko/catatan/{idRencanaTrip}', [OrderController::class, 'storeCatatanEstimasiPermintaanToko']);

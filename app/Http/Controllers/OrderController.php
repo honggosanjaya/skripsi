@@ -1311,4 +1311,109 @@ class OrderController extends Controller
       "data" => $history,
     ], 200);
   }
+
+  public function estimasiPermintaanToko(Request $request, $id){
+    if($request->idrencanatrip ?? null){
+       $rencana = RencanaTrip::find($request->idrencanatrip);
+       if($rencana ?? null){
+         $history_pengambilan = json_decode($rencana->estimasi_pembelian);
+         $keterangan_estimasi = $rencana->keterangan;
+       }
+    }else{
+      $history_pengambilan = null;
+    }
+
+    if($history_pengambilan == null){      
+      $rencana_trip = RencanaTrip::where('id_customer', $id)->where('id_staff', auth()->user()->id)
+                      ->where('tanggal', date('Y-m-d'))->whereNotNull('estimasi_pembelian')->first();
+      
+      if($rencana_trip ?? null){
+        $history_pengambilan = json_decode($rencana_trip->estimasi_pembelian);
+      }else{
+        $customer = Customer::where('id',$id)->with(['linkCustomerType'])->first();
+        $id_item_history = History::where('id_customer',$id)->pluck('id_item')->toArray();
+        $order_items = OrderItem::whereIn('id_item', $id_item_history)
+                      ->whereHas('linkOrder', function($q) use($id) {
+                        $q->where('id_customer', $id)->whereHas('linkOrderTrack', function($ot) {
+                          $ot->whereBetween('waktu_sampai',[now()->subYears(1),now()])->orderBy('waktu_sampai','DESC');
+                        });
+                      })
+                      ->with(['linkOrder','linkOrder.linkOrderTrack'])
+                      ->get()
+                      ->groupBy('id_item');
+  
+        $history_pengambilan = [];
+        foreach($order_items as $orderitem){
+          $total_kuantitas = 0;
+          $jarak_pembelian = 0;
+          $jumlah_pengulangan = count($orderitem);
+  
+          foreach($orderitem as $index=>$item){
+            $total_kuantitas += $item->kuantitas;
+            if(($index+1) == $jumlah_pengulangan){
+              $beda_bulan = 0;
+            }else{
+              $d1 = $item->linkOrder->linkOrderTrack->waktu_sampai;
+              $d2 = $orderitem[$index+1]->linkOrder->linkOrderTrack->waktu_sampai;
+              $beda_bulan = (int)abs((strtotime($d1) - strtotime($d2))/(60*60*24*30));
+            }
+            $jarak_pembelian += $beda_bulan;
+            if ($index == $jumlah_pengulangan - 1){
+              $pembelian_terakhir = $item->linkOrder->linkOrderTrack->waktu_sampai;
+            }
+          }
+  
+          $itm = Item::find($orderitem[0]->id_item);
+          if($itm ?? null){
+            $nama_item = $itm->nama;
+            if ($customer->tipe_harga == 2 && ($itm->harga2_satuan ?? null)) {
+              $harga_blmdiskon = $itm->harga2_satuan;
+            } elseif ($customer->tipe_harga == 3 && ($itm->harga3_satuan ?? null)) {
+                $harga_blmdiskon = $itm->harga3_satuan;
+            } else {
+                $harga_blmdiskon = $itm->harga1_satuan;
+            }
+            $harga_sdhdiskon = $harga_blmdiskon - (($customer->linkCustomerType->diskon ?? 0) * $harga_blmdiskon) / 100;
+          }
+  
+          if($pembelian_terakhir ?? null){
+            $jarak_pengambilan = round($jarak_pembelian/(($jumlah_pengulangan-1) == 0 ? 1 : $jumlah_pengulangan-1));
+            $count_months = "+". (int)$jarak_pengambilan ." months";
+            $order_berikutnya = date('Y-m-d', strtotime($count_months, strtotime($pembelian_terakhir)));
+            if($order_berikutnya < now()){
+              array_push($history_pengambilan,[
+                'id_item' => $orderitem[0]->id_item,
+                'nama_item' => $nama_item ?? null,
+                'rata_pengambilan' => ceil($total_kuantitas/$jumlah_pengulangan),
+                'durasi_rata_pengambilan' => $jarak_pengambilan,
+                'price' => $harga_sdhdiskon ?? 0,
+              ]);
+            }
+          }
+        }
+  
+        RencanaTrip::where('id_customer', $id)->where('id_staff', auth()->user()->id)
+                    ->where('tanggal', date('Y-m-d'))->update([
+                      'estimasi_pembelian' => json_encode($history_pengambilan)
+                    ]);
+      }
+    }
+
+    return response()->json([
+      'status' => 'success',
+      'data' => $history_pengambilan,
+      'catatan' => $keterangan_estimasi ?? null
+    ]);
+  }
+
+  public function storeCatatanEstimasiPermintaanToko(Request $request, $idRencanaTrip){
+    RencanaTrip::where('id',$idRencanaTrip)->update([
+      'keterangan' => $request->catatan ?? null,
+    ]);
+
+    return response()->json([
+      "status" => "success",
+      "data" => "berhasil menambahkan catatan estimasi permintaan toko",
+    ], 200);
+  }
 }

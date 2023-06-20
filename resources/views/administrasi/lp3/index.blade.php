@@ -102,8 +102,8 @@
               <div class="form-input">
                 <div class="row">
                   <div class="col">
-                    <select class="select-invoice form-select select2 @error('id_invoice') is-invalid @enderror"
-                      id="id_invoice" name="id_invoice[]">
+                    <select class="select-invoice form-select @error('id_invoice') is-invalid @enderror" id="id_invoice"
+                      name="id_invoice[]">
                       <option disabled selected value>Pilih Invoice</option>
                       @foreach ($invoices as $invoice)
                         <option value="{{ $invoice->id }}">{{ $invoice->nomor_invoice ?? null }}</option>

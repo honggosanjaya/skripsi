@@ -52,7 +52,7 @@
           jam_masuk: Date.now() / 1000,
         },
         success: function(response) {
-          console.log(response);
+          // console.log(response);
           idTrip = response.data.id;
           $('input[name="idtrip"]').val(response.data.id);
         }
@@ -189,7 +189,7 @@
                 'isBelanjaLagi': true,
               },
               success: function(response) {
-                console.log(response);
+                // console.log(response);
                 let redirect = "{{ env('MIX_APP_URL') }}" + '/salesman';
                 window.location.replace(redirect);
               }
@@ -221,7 +221,7 @@
                 'isBelanjaLagi': "{{ $isBelanjaLagi }}",
               },
               success: function(response) {
-                console.log(response);
+                // console.log(response);
                 idTrip = response.data.id;
                 let redirect = "{{ env('MIX_APP_URL') }}" + '/salesman';
                 window.location.replace(redirect);
@@ -335,7 +335,7 @@
           method: "get",
           success: function(response) {
             if (response.status == 'success') {
-              console.log(response);
+              // console.log(response);
               if (response.dataOrder.id_customer == idCust) {
                 $('.error_kode_customer').text('');
                 $('.success_kode_customer').text(response.message);
@@ -366,17 +366,91 @@
         })
       }
     });
+
+    function convertPrice(price) {
+      let convertedPrice = 'Rp. ' + price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+      return convertedPrice;
+    }
+
+    function showItems(item, index) {
+      return `<tr>
+                <td class="align-middle">${item.nama_item}</td>
+                <td class="text-center align-middle">${item.rata_pengambilan}</td>
+                <td class="text-center align-middle">${item.durasi_rata_pengambilan}</td>
+                <td class="align-middle">${convertPrice(item.price)}</td>
+              </tr>`;
+    }
+
+    $('.btn_estimasi_permintaan').on('click', function(e) {
+      $.ajax({
+        url: window.location.origin + `/api/salesman/estimasiPermintaanToko/${e.target.value}`,
+        method: "get",
+        success: function(response) {
+          // console.log(response);
+          if (response.status == 'success') {
+            if (response.data.length > 0) {
+              let items = "";
+              response.data.forEach((item, index) => {
+                items += showItems(item, index);
+              });
+              $("#estimasiPembelianModal tbody").html(items);
+            } else {
+              $("#estimasiPembelianModal tbody").html(`<tr>
+                  <td colspan="4" class="text-danger text-center">Tidak Ada Data</td>
+                </tr>`);
+            }
+            $('#estimasiPembelianModal').modal('show');
+          }
+        }
+      })
+    });
   </script>
 @endpush
 
 @section('main_content')
   <div class="page_container pt-4">
     <div class="loader d-none"></div>
+    <button type="button" value="{{ $customer->id }}" class="btn btn-primary btn_estimasi_permintaan mb-3">
+      Estimasi Permintaan
+    </button>
+
+    <div class="modal fade" id="estimasiPembelianModal" tabindex="-1" aria-labelledby="estimasiPembelianModalLabel"
+      aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h1 class="modal-title fs-5" id="estimasiPembelianModalLabel">Estimasi Pembelian</h1>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+            <table class="table">
+              <thead>
+                <tr>
+                  <th scope="col" class="text-center">Nama Barang</th>
+                  <th scope="col" class="text-center">Rata2 Ambil</th>
+                  <th scope="col" class="text-center">Durasi Rata2</th>
+                  <th scope="col" class="text-center">Harga Satuan</th>
+                </tr>
+              </thead>
+              <tbody>
+
+              </tbody>
+            </table>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-danger" data-bs-dismiss="modal">
+              <span class="iconify me-1" data-icon="carbon:close-outline"></span>Tutup
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
     <div class="kode_customer">
       <div class="d-flex justify-content-between mb-3">
         <p class='fw-bold mb-0'>Sudah punya kode customer?</p>
         <button class="btn btn-danger btn-sm d-none btn_batal_kode">Batal</button>
-        <button class="btn btn-primary btn-sm btn_punya_kode">Punya</button>
+        <button class="btn btn-success btn-sm btn_punya_kode">Punya</button>
       </div>
 
       <div class="form_kode_customer d-none">

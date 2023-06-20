@@ -196,6 +196,7 @@
   <script>
     let listRencanaKunjungan;
     let listHistoryPembelian;
+    let showRencanaTripModal = true;
 
     function showRencanas(rencana) {
       return `<tr data-idcustomer=${rencana.id_customer} data-idkunjungan=${rencana.id_rencana} data-idinvoice=${rencana.id_invoice} data-idlp3=${rencana.id_tagihan} class="btn_detail_rencana" data-bs-toggle="modal" data-bs-target="#detailRencanaModal">
@@ -280,6 +281,9 @@
         </div>`;
         $(".detail_rencana_wrapper").html(detailrencana);
         $('#detailRencanaModal .btn_trip').attr("href", `/salesman/trip/${result.id_customer}`);
+        $('#detailRencanaModal .btn_estimasi_permintaan').val(result.id_customer);
+        $('#detailRencanaModal .btn_estimasi_permintaan').attr('data-idrencanatrip', idkunjungan);
+        $('input[name="id_rencana_trip"]').val(idkunjungan);
         $('#detailRencanaModal .btn_sudah_tagih').addClass('d-none');
       }
       if (idinvoice != 'undefined') {
@@ -316,6 +320,8 @@
               </div>`;
               $(".detail_rencana_wrapper").html(detailtagihan);
               $('#detailRencanaModal .btn_trip').attr("href", `/salesman/trip/${response.data.customer.id}`);
+              $('#detailRencanaModal .btn_estimasi_permintaan').val(response.data.customer.id);
+              $('#detailRencanaModal .btn_estimasi_permintaan').attr('data-idrencanatrip', '');
               if (response.data.lp3 == null) {
                 $('#detailRencanaModal .btn_sudah_tagih').addClass('d-none');
               } else {
@@ -342,7 +348,7 @@
         method: "get",
         success: function(response) {
           $('.loader').addClass('d-none');
-          console.log(response);
+          // console.log(response);
           if (response.status == 'success') {
             listHistoryPembelian = response.data;
             let historypembelian = `<p class='mb-0 fw-bold'>History Pembelian</p>`;
@@ -356,7 +362,9 @@
     })
 
     $('#detailRencanaModal').on('hidden.bs.modal', function() {
-      $('#rencanaTripModal').modal('show')
+      if (showRencanaTripModal) {
+        $('#rencanaTripModal').modal('show')
+      }
     })
 
     $('#detailRencanaModal .btn_sudah_tagih').on('click', function(e) {
@@ -461,6 +469,80 @@
       $('#detailRencanaModal .modal-footer').removeClass('d-none');
       $('#detailRencanaModal .btn-close').removeClass('d-none');
       $('#detailRencanaModal .btn-close2').addClass('d-none');
+    })
+
+    function showItems(item, index) {
+      return `<tr>
+                <td class="align-middle">${item.nama_item}</td>
+                <td class="text-center align-middle">${item.rata_pengambilan}</td>
+                <td class="text-center align-middle">${item.durasi_rata_pengambilan}</td>
+                <td class="align-middle">${convertPrice(item.price)}</td>
+              </tr>`;
+    }
+
+    $('.btn_estimasi_permintaan').on('click', function(e) {
+      let idRencanaTrip = $(this).attr("data-idrencanatrip");
+      let urlApi;
+      if (idRencanaTrip != undefined && idRencanaTrip != '') {
+        urlApi = `/api/salesman/estimasiPermintaanToko/${e.target.value}?idrencanatrip=${idRencanaTrip}`;
+        $('.catatanEstimasiBeli').removeClass('d-none');
+      } else {
+        urlApi = `/api/salesman/estimasiPermintaanToko/${e.target.value}`;
+        $('.catatanEstimasiBeli').addClass('d-none');
+      }
+
+      $.ajax({
+        url: window.location.origin + urlApi,
+        method: "get",
+        success: function(response) {
+          // console.log(response);
+          if (response.status == 'success') {
+            if (response.catatan) {
+              $('textarea[name="catatan_estimasi_pembelian"]').val(response.catatan);
+            } else {
+              $('textarea[name="catatan_estimasi_pembelian"]').val('');
+            }
+            if (response.data.length > 0) {
+              let items = "";
+              response.data.forEach((item, index) => {
+                items += showItems(item, index);
+              });
+              $("#estimasiPembelianModal tbody").html(items);
+            } else {
+              $("#estimasiPembelianModal tbody").html(`<tr>
+                  <td colspan = "4" class = "text-danger text-center">Tidak Ada Data</td> 
+                </tr>`);
+            }
+            showRencanaTripModal = false;
+            $('#detailRencanaModal').modal('hide');
+            $('#estimasiPembelianModal').modal('show');
+            $('#rencanaTripModal').modal('hide');
+          }
+        }
+      })
+    });
+
+    $('#estimasiPembelianModal').on('hidden.bs.modal', function() {
+      $('#detailRencanaModal').modal('show');
+      $('#rencanaTripModal').modal('hide');
+      showRencanaTripModal = true;
+    });
+
+    $('#estimasiPembelianModal').on('hidden.bs.modal', function() {
+      let idRencanaTrip = $('input[name="id_rencana_trip"]').val();
+      const catatan = $('textarea[name="catatan_estimasi_pembelian"]').val();
+      if (catatan !== undefined && idRencanaTrip !== undefined && idRencanaTrip !== '') {
+        $.ajax({
+          url: window.location.origin + `/api/salesman/estimasiPermintaanToko/catatan/${idRencanaTrip}`,
+          method: "post",
+          data: {
+            catatan: catatan
+          },
+          success: function(response) {
+            // console.log(response);
+          }
+        })
+      }
     })
   </script>
 @endpush
@@ -573,15 +655,17 @@
             </div>
           </div>
           <div class="modal-footer">
-            <a href="#" class="btn btn-primary btn_trip btn-sm">
+            <input type="hidden" name="id_rencana_trip">
+            <button class="btn btn-sm btn-primary btn_estimasi_permintaan">Estimasi Permintaan</button>
+            <a href="#" class="btn btn-success btn_trip btn-sm">
               <span class="iconify me-1" data-icon="bx:trip"></span>Trip
             </a>
-            <button type="button" class="btn btn-success btn_sudah_tagih btn-sm">
+            <button type="button" class="btn btn-purple btn_sudah_tagih btn-sm">
               <span class="iconify me-1" data-icon="icon-park-outline:doc-success"></span>Sudah Ditagih
             </button>
-            <Button type="button" class="btn btn-danger btn-sm" data-bs-dismiss="modal" aria-label="Close">
+            <button type="button" class="btn btn-danger btn-sm" data-bs-dismiss="modal" aria-label="Close">
               <span class="iconify me-1" data-icon="carbon:close-outline"></span>Tutup
-            </Button>
+            </button>
           </div>
         </div>
       </div>
@@ -596,6 +680,42 @@
           </div>
           <div class="modal-body">
             <video id="preview"></video>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="modal fade" id="estimasiPembelianModal" tabindex="-1" aria-labelledby="estimasiPembelianModalLabel"
+      aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h1 class="modal-title fs-5" id="estimasiPembelianModalLabel">Estimasi Pembelian</h1>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+            <div class="form-floating mb-3 catatanEstimasiBeli d-none">
+              <textarea class="form-control" name="catatan_estimasi_pembelian"></textarea>
+              <label for="floatingTextarea">Catatan</label>
+            </div>
+
+            <table class="table">
+              <thead>
+                <tr>
+                  <th scope="col" class="text-center">Nama Barang</th>
+                  <th scope="col" class="text-center">Rata2 Ambil</th>
+                  <th scope="col" class="text-center">Durasi Rata2</th>
+                  <th scope="col" class="text-center">Harga Satuan</th>
+                </tr>
+              </thead>
+              <tbody>
+              </tbody>
+            </table>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-danger" data-bs-dismiss="modal">
+              <span class="iconify me-1" data-icon="carbon:close-outline"></span>Tutup
+            </button>
           </div>
         </div>
       </div>

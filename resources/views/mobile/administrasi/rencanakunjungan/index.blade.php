@@ -99,7 +99,7 @@
               <div class="form-input">
                 <div class="row">
                   <div class="col">
-                    <select class="select-customer form-select select2 @error('id_customer') is-invalid @enderror"
+                    <select class="select-customer form-select @error('id_customer') is-invalid @enderror"
                       id="id_customer" name="id_customer[]">
                       <option disabled selected value>
                         Pilih Customer
