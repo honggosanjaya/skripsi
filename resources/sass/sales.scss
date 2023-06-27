@@ -171,24 +171,24 @@ label {
 //     left: 0 !important;
 // }
 
-.modal-body {
-    max-height: 80vh;
-    overflow-y: auto;
-}
+// .modal-body {
+//     max-height: 80vh;
+//     overflow-y: auto;
+// }
 
-.modal-dialog {
-    width: 100%;
-    max-width: 412px;
-    overflow-y: initial !important;
-    .modal-title {
-        font-size: 1.2rem !important;
-        text-align: center;
-        font-weight: 600;
-    }
-}
+// .modal-dialog {
+//     width: 100%;
+//     max-width: 412px;
+//     overflow-y: initial !important;
+//     .modal-title {
+//         font-size: 1.2rem !important;
+//         text-align: center;
+//         font-weight: 600;
+//     }
+// }
 
 .box-list-customer {
-    max-height: 200px;
+    max-height: 400px;
     overflow-y: auto;
     &::-webkit-scrollbar {
         width: 12px;
@@ -903,4 +903,10 @@ ul.info-list {
 
 .cursor_pointer {
     cursor: pointer;
+}
+
+@media only screen and (min-width: 768px) {
+    .modal-dialog {
+        max-width: 412px;
+    }
 }

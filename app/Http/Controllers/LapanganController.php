@@ -112,6 +112,7 @@ class LapanganController extends Controller
     return view('shipper.penagihan',[
       'page' => 'LP3',
       'tagihans' => $tagihans,
+      'linkback' => '/'.session('role'),
     ]);    
   }
 
@@ -157,6 +158,7 @@ class LapanganController extends Controller
       'page' => 'Reimbursement',
       'histories' => $histories,
       'cashaccount' => $temp,
+      'linkback' => '/'.session('role')
     ]);  
   }
 

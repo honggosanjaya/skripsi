@@ -42,7 +42,7 @@ class CustomerController extends Controller
       return response()->json([
         'message' => 'data not found',
         'status' => 'error'
-      ],404);
+      ]);
     }
 
     public function dataCustomerApi($id){

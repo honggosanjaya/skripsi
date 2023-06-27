@@ -75,7 +75,7 @@
         <tbody>
           @if ($tagihans->count() > 0)
             @foreach ($tagihans as $data)
-              <tr class="data_lp3 cursor_pointer" data-idinvoice={{ $data->linkInvoice->id }}
+              <tr class="data_lp3 cursor_pointer" data-idinvoice={{ $data->linkInvoice->id ?? null }}
                 data-sudahtagih={{ $data->status_enum }}>
                 <td>{{ $data->linkInvoice->linkOrder->linkCustomer->nama ?? null }}</td>
                 <td>{{ $data->linkInvoice->linkOrder->linkCustomer->linkDistrict->nama ?? null }}</td>

@@ -175,6 +175,8 @@
         },
         success: function(response) {
           if (response.status == 'success') {
+            $('.input_cari_customer').addClass('d-none');
+            $('.btn_crcst_kembali').removeClass('d-none');
             $('.customer_tdk_ditemukan_msg').addClass('d-none');
             let customers = "";
             response.data.forEach((customer, index) => {
@@ -186,11 +188,17 @@
           }
         }
       })
-    })
+    });
 
     $(document).on('click', '.btn_lihat_foto', function() {
       $(this).parents('.accordion-item').find('.foto_customer').toggleClass('d-none');
-    })
+    });
+
+    $('.btn_crcst_kembali').on('click', function(e) {
+      $(this).addClass('d-none');
+      $('.input_cari_customer').removeClass('d-none');
+      $('#accordionFlushExample').empty();
+    });
   </script>
 
   <script>
@@ -575,17 +583,23 @@
             </div>
 
             <form class="mt-4 form_cari_customer">
-              <div class="mb-3">
-                <label class="form-label">Nama Customer</label>
-                <input type="text" class="form-control" name="nama_customer">
+              <div class="input_cari_customer">
+                <div class="mb-3">
+                  <label class="form-label">Nama Customer</label>
+                  <input type="text" class="form-control" name="nama_customer">
+                </div>
+                <div class="mb-3">
+                  <label class="form-label">Alamat Utama</label>
+                  <input type="text" class="form-control" name="alamat_utama">
+                </div>
+                <div class="d-flex justify-content-end">
+                  <button type="submit" class="btn btn-primary">
+                    <span class="iconify me-2" data-icon="fe:search"></span>Cari</button>
+                </div>
               </div>
-              <div class="mb-3">
-                <label class="form-label">Alamat Utama</label>
-                <input type="text" class="form-control" name="alamat_utama">
-              </div>
-              <div class="d-flex justify-content-end">
-                <button type="submit" class="btn btn-primary">
-                  <span class="iconify me-2" data-icon="fe:search"></span>Cari</button>
+              <div class="d-flex justify-content-end btn_crcst_kembali d-none">
+                <button type="button" class="btn btn-primary">
+                  <span class="iconify me-2" data-icon="fe:search"></span>Cari Kembali</button>
               </div>
             </form>
 
