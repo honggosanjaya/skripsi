@@ -14,6 +14,7 @@ return [
     */
 
     'name' => env('APP_NAME', 'Laravel'),
+    'manifest' => env('MANIFEST', 'manifest.json'),
     'enabled_email_confirmation' => env('EMAIL_ACTIVATE', false),
     'company_name' => env('COMPANY_NAME', 'Company'),
     'company_address' => env('COMPANY_ADDRESS', 'Address'),

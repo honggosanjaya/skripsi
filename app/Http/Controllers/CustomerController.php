@@ -252,6 +252,9 @@ class CustomerController extends Controller
 
         $nama_customer = str_replace(" ", "-", $customer->nama);
         $file_name = 'CUST-' . $nama_customer . '-' .date_format(now(),"YmdHis"). '.' . $request->foto->extension();
+        if (!file_exists(public_path('storage/customer/'))) {
+          mkdir(public_path('storage/customer/'), 775, true);
+        }
         Image::make($request->file('foto'))->resize(350, null, function ($constraint) {
           $constraint->aspectRatio();
         })->save(public_path('storage/customer/') . $file_name);
@@ -365,6 +368,9 @@ class CustomerController extends Controller
 
       if ($request->foto) {
         $file_name = 'CUST-' . $request->nama . '-' .date_format(now(),"YmdHis"). '.' . $request->foto->extension();
+        if (!file_exists(public_path('storage/customer/'))) {
+          mkdir(public_path('storage/customer/'), 775, true);
+        }
         Image::make($request->file('foto'))->resize(350, null, function ($constraint) {
           $constraint->aspectRatio();
         })->save(public_path('storage/customer/') . $file_name);
@@ -522,6 +528,9 @@ class CustomerController extends Controller
 
       if ($request->foto) {
         $file_name = 'CUST-' . $request->nama . '-' .date_format(now(),"YmdHis"). '.' . $request->foto->extension();
+        if (!file_exists(public_path('storage/customer/'))) {
+          mkdir(public_path('storage/customer/'), 775, true);
+        }
         Image::make($request->file('foto'))->resize(350, null, function ($constraint) {
           $constraint->aspectRatio();
         })->save(public_path('storage/customer/') . $file_name);

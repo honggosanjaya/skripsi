@@ -1,0 +1,9 @@
+{
+    "version": 3,
+    "mappings": "AAAA,AAAA,oBAAoB,CAAC;EACjB,SAAS,EAAE,2BAA2B;EACtC,mBAAmB,EAAE,QAAQ;CAChC;;AAED,UAAU,CAAV,aAAU;EACN,EAAE;IACE,UAAU,EAAE,MAAM;IAClB,OAAO,EAAE,IAAI;IACb,KAAK,EAAE,CAAC;IACR,MAAM,EAAE,CAAC",
+    "sources": [
+        "supervisor.scss"
+    ],
+    "names": [],
+    "file": "supervisor.css"
+}

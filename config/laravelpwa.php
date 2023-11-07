@@ -1,10 +1,10 @@
 <?php
 
 return [
-    'name' => 'salesMan',
+    'name' => env('MANIFEST', 'salesman'),
     'manifest' => [
-        'name' => 'salesMan',
-        'short_name' => 'salesMan',
+        'name' => env('MANIFEST', 'salesman'),
+        'short_name' => env('MANIFEST', 'salesman'),
         'start_url' => env('APP_URL',''),
         'background_color' => '#ffffff',
         'theme_color' => 'rgb(2, 121, 247)',

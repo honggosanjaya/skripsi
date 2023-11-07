@@ -305,6 +305,9 @@ class CashAccountController extends Controller
     if ($fileFoto !== null) {
       $nama_pengaju = str_replace(" ", "-", $reimbursement->linkStaffPengaju->nama);
       $file_name = 'RBS-' . $nama_pengaju . '-' .date_format(now(),"YmdHis"). '.' . $request->foto->extension();
+      if (!file_exists(public_path('storage/reimbursement/'))) {
+        mkdir(public_path('storage/reimbursement/'), 775, true);
+      }
       Image::make($request->file('foto'))->resize(350, null, function ($constraint) {
         $constraint->aspectRatio();
       })->save(public_path('storage/reimbursement/') . $file_name);

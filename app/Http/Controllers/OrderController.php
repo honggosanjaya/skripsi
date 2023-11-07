@@ -1038,6 +1038,9 @@ class OrderController extends Controller
 
       $file= $request->file('foto');
       $file_name=  'DLV-'.$order->id.'.'.$file->getClientOriginalExtension();
+      if (!file_exists(public_path('storage/pengiriman/'))) {
+        mkdir(public_path('storage/pengiriman/'), 775, true);
+      }
       Image::make($request->file('foto'))->resize(350, null, function ($constraint) {
         $constraint->aspectRatio();
       })->save(public_path('storage/pengiriman/') . $file_name);

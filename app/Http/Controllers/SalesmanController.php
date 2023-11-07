@@ -231,6 +231,9 @@ class SalesmanController extends Controller
       $file = $request->file('bukti_galeri') ?? $request->file('bukti_kamera');
       $nama_customer = str_replace(" ", "-", $customer->nama);
       $file_name = 'CUST-' . $nama_customer. '-' .date_format(now(),"YmdHis"). '.' . $file->getClientOriginalExtension();
+      if (!file_exists(public_path('storage/customer/'))) {
+        mkdir(public_path('storage/customer/'), 775, true);
+      }
       Image::make($file)->resize(350, null, function ($constraint) {
         $constraint->aspectRatio();
       })->save(public_path('storage/customer/'). $file_name, 80);

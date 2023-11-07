@@ -13,7 +13,7 @@
   <!-- PWA  -->
   <meta name="theme-color" content="#007bff" />
   <link rel="apple-touch-icon" href="{{ asset('images/icon-perusahaan.png') }}">
-  <link rel="manifest" href="{{ asset('/manifest.json') }}">
+  <link rel="manifest" href="{{ asset('/'.config('app.manifest')) }}">
   {{-- icon --}}
   <script src="https://code.iconify.design/2/2.0.3/iconify.min.js"></script>
 </head>

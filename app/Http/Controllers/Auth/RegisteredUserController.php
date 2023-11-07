@@ -72,6 +72,9 @@ class RegisteredUserController extends Controller
             $file= $request->file('foto_profil');
             $nama_staff = str_replace(" ", "-", $request->nama);
             $filename = 'STF-' . $nama_staff . '-' .date_format(now(),"YmdHis"). '.' . $file->getClientOriginalExtension();
+            if (!file_exists(public_path('storage/staff/'))) {
+                mkdir(public_path('storage/staff/'), 775, true);
+            }
             Image::make($request->file('foto_profil'))->resize(350, null, function ($constraint) {
               $constraint->aspectRatio();
             })->save(public_path('storage/staff/') . $filename);

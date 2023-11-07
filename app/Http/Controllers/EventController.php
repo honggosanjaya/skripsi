@@ -68,6 +68,9 @@ class EventController extends Controller
       $file= $request->file('gambar');
       $filename=  'EVN-'.$nama_event.'.'.$file->getClientOriginalExtension();
       $request->gambar= $filename;
+      if (!file_exists(public_path('storage/event/'))) {
+        mkdir(public_path('storage/event/'), 775, true);
+      }
       Image::make($request->file('gambar'))->resize(350, null, function ($constraint) {
         $constraint->aspectRatio();
       })->save(public_path('storage/event/') . $filename);
@@ -160,6 +163,9 @@ class EventController extends Controller
         $filename=  'EVN-'.$nama_event.'.'.$file->getClientOriginalExtension();
         $request->gambar= $filename;
         $foto = $request->gambar;
+        if (!file_exists(public_path('storage/event/'))) {
+          mkdir(public_path('storage/event/'), 775, true);
+        }
         Image::make($request->file('gambar'))->resize(350, null, function ($constraint) {
           $constraint->aspectRatio();
         })->save(public_path('storage/event/') . $filename);

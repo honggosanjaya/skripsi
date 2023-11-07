@@ -83,6 +83,9 @@ class StaffController extends Controller
         $file= $request->file('foto_profil');
         $nama_staff = str_replace(" ", "-", $request->nama);
         $filename = 'STF-' . $nama_staff . '-' .date_format(now(),"YmdHis"). '.' . $file->getClientOriginalExtension();
+        if (!file_exists(public_path('storage/staff/'))) {
+          mkdir(public_path('storage/staff/'), 775, true);
+        }
         Image::make($request->file('foto_profil'))->resize(350, null, function ($constraint) {
           $constraint->aspectRatio();
         })->save(public_path('storage/staff/') . $filename);
@@ -175,10 +178,12 @@ class StaffController extends Controller
         if($request->oldGambar){
           \Storage::delete('/staff/'.$request->oldGambar);
         }
-
         $nama_staff = str_replace(" ", "-", $validatedData['nama']);
         $file= $request->file('foto_profil');
         $file_name = 'STF-'. $nama_staff.'-' .date_format(now(),"YmdHis").'.'.  $file->getClientOriginalExtension();
+        if (!file_exists(public_path('storage/staff/'))) {
+          mkdir(public_path('storage/staff/'), 775, true);
+        }
         Image::make($request->file('foto_profil'))->resize(350, null, function ($constraint) {
           $constraint->aspectRatio();
         })->save(public_path('storage/staff/') . $file_name);

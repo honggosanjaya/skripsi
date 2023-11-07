@@ -63,12 +63,18 @@ class LapanganController extends Controller
       if($request->bukti_galeri ?? null){
         $file = $request->file('bukti_galeri');
         $file_name=  'DLV-'.$id.'.'.$file->getClientOriginalExtension();
+        if (!file_exists(public_path('storage/pengiriman/'))) {
+          mkdir(public_path('storage/pengiriman/'), 775, true);
+        }
         Image::make($request->file('bukti_galeri'))->resize(350, null, function ($constraint) {
           $constraint->aspectRatio();
         })->save(public_path('storage/pengiriman/') . $file_name);
       }elseif($request->bukti_kamera ?? null){
         $file = $request->file('bukti_kamera');
         $file_name=  'DLV-'.$id.'.'.$file->getClientOriginalExtension();
+        if (!file_exists(public_path('storage/pengiriman/'))) {
+          mkdir(public_path('storage/pengiriman/'), 775, true);
+        }
         Image::make($request->file('bukti_kamera'))->resize(350, null, function ($constraint) {
           $constraint->aspectRatio();
         })->save(public_path('storage/pengiriman/') . $file_name);
@@ -186,6 +192,9 @@ class LapanganController extends Controller
       $file= $request->file('gambar');
       $nama_pengaju = Staff::find(auth()->user()->id_users)->nama;
       $file_name = 'RBS-' . $nama_pengaju. '-' .date_format(now(),"YmdHis"). '.' . $file->getClientOriginalExtension();
+      if (!file_exists(public_path('storage/reimbursement/'))) {
+        mkdir(public_path('storage/reimbursement/'), 775, true);
+      }
       Image::make($request->file('gambar'))->resize(350, null, function ($constraint) {
         $constraint->aspectRatio();
       })->save(public_path('storage/reimbursement/'). $file_name, 80);

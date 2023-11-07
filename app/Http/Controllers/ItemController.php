@@ -393,6 +393,9 @@ class ItemController extends Controller
       $nama_item = str_replace(" ", "-", $request->nama);
       $file_name = 'ITM-' . $nama_item . '-' .date_format(now(),"YmdHis"). '.' . $images[0]->extension();
       $validatedData['gambar'] = $file_name;
+      if (!file_exists(public_path('storage/item/'))) {
+        mkdir(public_path('storage/item/'), 775, true);
+      }
       Image::make($images[0])->resize(350, null, function ($constraint) {
         $constraint->aspectRatio();
       })->save(public_path('storage/item/') . $file_name);
@@ -404,6 +407,9 @@ class ItemController extends Controller
       foreach($images as $key=>$image){
         $nama_item = str_replace(" ", "-", $request->nama);
         $file_name = 'ITM-' . $nama_item . '-' .$key . '-' .date_format(now(),"YmdHis"). '.' . $image->extension();
+        if (!file_exists(public_path('storage/item/'))) {
+          mkdir(public_path('storage/item/'), 775, true);
+        }
         Image::make($image)->resize(350, null, function ($constraint) {
           $constraint->aspectRatio();
         })->save(public_path('storage/item/') . $file_name);
@@ -529,6 +535,9 @@ class ItemController extends Controller
       $nama_item = str_replace(" ", "-", $request->nama);
       $file_name = 'ITM-' . $nama_item . '-' .date_format(now(),"YmdHis"). '.' . $images[0]->extension();
       $validatedData['gambar'] = $file_name;
+      if (!file_exists(public_path('storage/item/'))) {
+        mkdir(public_path('storage/item/'), 775, true);
+      }
       Image::make($images[0])->resize(350, null, function ($constraint) {
         $constraint->aspectRatio();
       })->save(public_path('storage/item/') . $file_name);
@@ -554,6 +563,9 @@ class ItemController extends Controller
       foreach($images as $key=>$image){
         $nama_item = str_replace(" ", "-", $request->nama);
         $file_name = 'ITM-' . $nama_item . '-' .$key . '-' .$key . '-' .date_format(now(),"YmdHis"). '.' . $image->extension();
+        if (!file_exists(public_path('storage/item/'))) {
+          mkdir(public_path('storage/item/'), 775, true);
+        }
         Image::make($image)->resize(350, null, function ($constraint) {
           $constraint->aspectRatio();
         })->save(public_path('storage/item/') . $file_name);
